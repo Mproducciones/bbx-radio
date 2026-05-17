@@ -51,28 +51,27 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
         ctx!.fill()
       }
 
-      if (logoImage.complete) {
+      if (logoImage.complete && logoImage.naturalWidth > 0) {
         const alpha = progress < 0.2 ? progress / 0.2 : progress > 0.8 ? (1 - progress) / 0.2 : 1
 
         ctx!.save()
         ctx!.translate(canvas!.width / 2, canvas!.height / 2)
 
-        // Zoom in - zoom out simple
-        const zoom = 1 + Math.sin(elapsed / 500) * 0.15
+        const zoom = 1 + Math.sin(elapsed / 500) * 0.05
         ctx!.scale(zoom, zoom)
 
-        // Glow
+        // Glow ring
+        const logoSize = Math.min(canvas!.width * 0.55, 280)
         ctx!.shadowColor = '#db8918'
-        ctx!.shadowBlur = 40 * alpha
+        ctx!.shadowBlur = 60 * alpha
         ctx!.beginPath()
-        ctx!.arc(0, 0, 80, 0, Math.PI * 2)
-        ctx!.fillStyle = `rgba(219, 137, 24, ${alpha * 0.15})`
+        ctx!.arc(0, 0, logoSize / 2 + 10, 0, Math.PI * 2)
+        ctx!.fillStyle = `rgba(219, 137, 24, ${alpha * 0.12})`
         ctx!.fill()
         ctx!.shadowBlur = 0
 
-        // Logo
+        // Logo — full resolution, centered
         ctx!.globalAlpha = alpha
-        const logoSize = 80
         ctx!.drawImage(logoImage, -logoSize / 2, -logoSize / 2, logoSize, logoSize)
         ctx!.restore()
       }

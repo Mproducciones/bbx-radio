@@ -95,9 +95,14 @@ export default function HomePage() {
               <p className="text-white font-semibold text-base mb-1">¿Quieres pedir una canción?</p>
               <p className="text-[var(--color-ink-300)] text-xs">Contacta directamente al locutor por WhatsApp</p>
             </div>
-            <a href="https://wa.me/56950291592" target="_blank" rel="noopener noreferrer" className="relative group overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white px-5 py-3 rounded-xl font-semibold text-sm shadow-lg shadow-[#25D366]/30 hover:shadow-[#25D366]/50 transition-all duration-300 hover:scale-105">
-              <span className="relative z-10">WhatsApp</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#128C7E] to-[#25D366] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <a
+              href="https://wa.me/56950291592"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#128C7E] hover:bg-[#0e7a6d] text-white px-5 py-3 rounded-xl font-bold text-sm shadow-lg shadow-[#128C7E]/30 transition-all duration-300 hover:scale-105 flex-shrink-0"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
+            >
+              WhatsApp
             </a>
           </div>
         </div>
