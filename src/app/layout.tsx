@@ -5,7 +5,6 @@ import { AdminAccessButton } from '@/components/admin/AdminAccessButton'
 import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
-import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -103,7 +102,6 @@ export default function RootLayout({
               <div className="md:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 16px))' }} />
             </div>
           </div>
-          <ThreeFingerGesture />
           <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />

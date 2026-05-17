@@ -40,7 +40,10 @@ export default function HomePage() {
             <h1 className="font-display text-2xl text-white leading-none">{RADIO.name}</h1>
             <p className="text-[var(--color-ink-400)] text-xs mt-1">{RADIO.slogan}</p>
           </div>
-          <span className="font-display text-[var(--color-mag-400)] text-3xl">{RADIO.frequency}</span>
+          <span
+            className="font-display text-[var(--color-mag-400)] text-3xl cursor-pointer select-none"
+            onClick={() => window.location.href = '/bbx'}
+          >{RADIO.frequency}</span>
         </header>
 
         <RotatingBanner interval={5} position="top" />
