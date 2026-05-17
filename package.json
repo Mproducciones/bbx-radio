@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "validate": "node scripts/validate.mjs",
     "cap:sync": "cap sync android",
     "cap:sync:prod": "cross-env CAPACITOR_SERVER_URL=https://bbx-radio-9k9y.vercel.app cap sync android",
     "cap:sync:local": "cross-env CAPACITOR_SERVER_URL=http://192.168.100.45:3000 cap sync android",
