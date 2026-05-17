@@ -18,6 +18,8 @@ import { cn } from '@/lib/utils'
 const TABS = [
   { href: '/', label: 'En Vivo', icon: LiveIcon },
   { href: '/noticias', label: 'Noticias', icon: NewsIcon },
+  { href: '/eventos', label: 'Eventos', icon: EventsIcon },
+  { href: '/replay', label: 'Replay', icon: ReplayIcon },
   { href: '/anunciate', label: 'Publicidad', icon: BusinessIcon },
 ]
 
@@ -54,8 +56,8 @@ export function BottomNav() {
               {isActive && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-[var(--color-mag-400)]" />
               )}
-              <Icon className="w-5 h-5" />
-              <span className={cn('text-[10px] font-medium', isActive ? 'font-semibold' : '')}>
+              <Icon className="w-[18px] h-[18px]" />
+              <span className={cn('text-[9px] font-medium leading-none', isActive ? 'font-semibold' : '')}>
                 {label}
               </span>
             </Link>
@@ -90,6 +92,22 @@ function BusinessIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.47 0 12.36 0c-1.73 0-3.24.87-4.36 2.18L6 5H4c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9.97 4.29C10.58 3.49 11.42 3 12.36 3c1.67 0 3 1.33 3 3 0 .47-.1.92-.26 1.32-.04.1-.12.36-.1.68H9.39c.01-.29-.08-.57-.16-.71C9 6.9 9 6.45 9 6c0-.66.31-1.26.79-1.71C9.87 4.22 9.92 4.25 9.97 4.29zM20 20H4V8h16v12z" />
+    </svg>
+  )
+}
+
+function EventsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+    </svg>
+  )
+}
+
+function ReplayIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
     </svg>
   )
 }
