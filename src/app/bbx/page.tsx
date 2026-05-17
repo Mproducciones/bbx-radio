@@ -59,6 +59,16 @@ const PLANES = [
 
 const MANUAL_SECTIONS = [
   {
+    titulo: 'Cómo acceder a este panel',
+    icono: '🔑',
+    pasos: [
+      'Toca el número "93.3 FM" en la esquina superior derecha de la app — lleva directo aquí',
+      'Alternativa: toca rápido dos veces la pantalla con 2 dedos al mismo tiempo',
+      'Este panel es invisible para usuarios normales — no aparece en ningún menú',
+      'Comparte el acceso solo con personas de confianza',
+    ],
+  },
+  {
     titulo: '1. Acceder al panel de administración',
     icono: '🔐',
     pasos: [
@@ -253,8 +263,8 @@ export default function BbxPage() {
                 </div>
                 <div className="text-right flex-shrink-0 ml-4">
                   <p className="text-white font-bold text-2xl">${plan.precio}</p>
-                  <p className="text-[#444468] text-xs">/mes</p>
-                  <p className="text-[#666690] text-xs mt-1">Setup ${plan.setup}</p>
+                  <p className="text-[#8888AA] text-xs">/mes</p>
+                  <p className="text-[#8888AA] text-xs mt-1">Setup ${plan.setup}</p>
                 </div>
               </div>
               <div className="space-y-1.5">
@@ -386,15 +396,15 @@ export default function BbxPage() {
                       >
                         <div>
                           <p className="text-white text-xs font-semibold">{row.radios} radios · Plan {row.plan}</p>
-                          <p className="text-[#444468] text-xs">Ingresos ${row.ingreso} · Gastos {row.gastos}</p>
+                          <p className="text-[#8888AA] text-xs">Ingresos ${row.ingreso} · Gastos {row.gastos}</p>
                         </div>
                         <div className="text-right">
                           <p className="text-[#db8918] text-sm font-bold">${row.neto}</p>
-                          <p className="text-[#444468] text-xs">neto/mes</p>
+                          <p className="text-[#8888AA] text-xs">neto/mes</p>
                         </div>
                       </div>
                     ))}
-                    <p className="text-[#444468] text-xs text-center mt-2 pt-2 border-t border-[#1A1A2E]">
+                    <p className="text-[#8888AA] text-xs text-center mt-2 pt-2 border-t border-[#1A1A2E]">
                       + Ingresos de setup: $100.000 por cada radio nueva
                     </p>
                   </div>
@@ -405,7 +415,7 @@ export default function BbxPage() {
         </div>
       )}
 
-      <div className="mt-8 text-center text-[#2D2D4A] text-xs pb-4">
+      <div className="mt-8 text-center text-[#444468] text-xs pb-4">
         BBX Radio System · Solo visible para administradores
       </div>
     </div>
