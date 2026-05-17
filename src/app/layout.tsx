@@ -5,6 +5,7 @@ import { AdminAccessButton } from '@/components/admin/AdminAccessButton'
 import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
+import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -75,14 +76,24 @@ export default function RootLayout({
         <link rel="apple-touch-startup-image" href="/splash-screen.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
         <link rel="apple-touch-startup-image" href="/splash-screen.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
         
-        {/* Service Worker Registration */}
+        {/* Service Worker Registration + auto-update */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
-                    // Error silencioso en producción
+                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    // Buscar actualizaciones cada 30 minutos
+                    setInterval(function() { reg.update(); }, 30 * 60 * 1000);
+                  }).catch(function() {});
+
+                  // Recargar la página cuando el nuevo SW toma control
+                  var refreshing = false;
+                  navigator.serviceWorker.addEventListener('controllerchange', function() {
+                    if (!refreshing) {
+                      refreshing = true;
+                      window.location.reload();
+                    }
                   });
                 });
               }
@@ -102,6 +113,7 @@ export default function RootLayout({
               <div className="md:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 16px))' }} />
             </div>
           </div>
+          <ThreeFingerGesture />
           <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />
