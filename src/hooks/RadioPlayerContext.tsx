@@ -21,8 +21,8 @@ interface RadioPlayerContextValue {
 
 const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null)
 
-// Misma fuente que Bienvenida TV → misma nitidez de audio
-const HLS_URL = 'https://panel.tvstream.cl:1936/8012/8012/playlist.m3u8'
+const HLS_URL      = 'https://panel.tvstream.cl:1936/8012/8012/playlist.m3u8'
+const FALLBACK_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -74,19 +74,27 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     node.connect(ctx.destination)
     setAnalyser(node)
 
-    // Safari / iOS tienen HLS nativo
+    const useFallback = () => {
+      video.src = FALLBACK_URL
+    }
+
+    // Safari / iOS: HLS nativo
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = HLS_URL
     } else if (Hls.isSupported()) {
-      const hls = new Hls({ enableWorker: false, liveSyncDurationCount: 1 })
+      const hls = new Hls({ enableWorker: false, liveSyncDurationCount: 3 })
       hls.loadSource(HLS_URL)
       hls.attachMedia(video)
       hls.on(Hls.Events.ERROR, (_: unknown, data: { fatal: boolean }) => {
-        if (data.fatal) { setHasError(true); setIsPlaying(false) }
+        if (data.fatal) {
+          hls.destroy()
+          useFallback()
+        }
       })
       hlsRef.current = hls
     } else {
-      setHasError(true)
+      // HLS no soportado → stream directo
+      useFallback()
     }
 
     video.addEventListener('canplay', () => setIsLoading(false))
@@ -163,6 +171,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       <video
         ref={videoRef}
         playsInline
+        crossOrigin="anonymous"
         aria-hidden="true"
         style={{ position: 'fixed', top: 0, left: 0, width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
       />
