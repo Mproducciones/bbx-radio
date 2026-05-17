@@ -76,12 +76,8 @@ export function ProgramSchedule({ programs, className }: ProgramScheduleProps) {
         </AnimatePresence>
       </div>
 
-      {/* Day selector */}
-      <div
-        ref={scrollRef}
-        className="flex gap-2 overflow-x-auto pb-1"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
+      {/* Day selector — grid de 7 para que todos quepan en cualquier pantalla */}
+      <div ref={scrollRef} className="grid grid-cols-7 gap-1">
         {DAYS.map((d) => {
           const isActive = d.key === selectedDay
           const isToday = d.key === today
@@ -91,7 +87,7 @@ export function ProgramSchedule({ programs, className }: ProgramScheduleProps) {
               data-active={isActive}
               onClick={() => setSelectedDay(d.key)}
               className={cn(
-                'flex-shrink-0 flex flex-col items-center px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150',
+                'flex flex-col items-center py-1.5 rounded-lg text-xs font-medium transition-all duration-150',
                 isActive
                   ? 'bg-[var(--color-mag-400)] text-white scale-105'
                   : 'bg-[var(--color-ink-700)] text-[var(--color-ink-300)] hover:bg-[var(--color-ink-600)] hover:text-white'

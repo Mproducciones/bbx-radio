@@ -53,7 +53,8 @@ export function NowPlayingCard({
               src="/LOGO_BIENVENIDA (1)_PhotoGrid.png"
               alt={radio.name}
               fill
-              sizes="48px"
+              sizes="(max-width: 768px) 48px, 48px"
+              quality={100}
               className="object-cover"
               priority
             />

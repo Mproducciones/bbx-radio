@@ -6,7 +6,7 @@ interface NoticiasCardProps {
 }
 
 export function NoticiasCard({ item, type }: NoticiasCardProps) {
-  const imageUrl = item.image ? urlFor(item.image).url() : null
+  const imageUrl = item.image ? urlFor(item.image).width(800).quality(90).url() : null
   const link = item.externalLink || (item.slug ? `/noticias/${item.slug.current}` : '#')
 
   return (

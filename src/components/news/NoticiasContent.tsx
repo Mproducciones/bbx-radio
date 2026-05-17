@@ -29,7 +29,7 @@ interface NoticiasContentProps {
 
 export function NoticiasContent({ articles, releases }: NoticiasContentProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {articles.map((article) => (
         <NoticiasCard key={article._id} item={article} type="article" />
       ))}
