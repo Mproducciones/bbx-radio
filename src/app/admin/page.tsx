@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 type LoginState = 'idle' | 'loading' | 'error' | 'success'
 
@@ -45,7 +46,12 @@ export default function AdminLoginPage() {
   return (
     <main className="min-h-[70vh] flex items-center justify-center px-4">
       <section className="w-full max-w-sm rounded-xl border border-[var(--color-ink-700)] bg-[rgba(0,0,0,0.35)] p-5">
-        <h1 className="text-white font-semibold text-lg mb-4">Admin</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-white font-semibold text-lg">Admin</h1>
+          <Link href="/" className="text-[var(--color-ink-400)] hover:text-white text-xs transition-colors">
+            ← Volver a la app
+          </Link>
+        </div>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-3">
           <label className="flex flex-col gap-1">

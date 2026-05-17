@@ -3,7 +3,7 @@
 export function LogoutButton() {
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
-    window.location.href = '/admin'
+    window.location.href = '/'
   }
 
   return (
