@@ -3,61 +3,47 @@
 import { useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 
-// Deslizar 2 dedos hacia arriba rápidamente → abre /bbx
-// Distancia mínima: 90px · Tiempo máximo: 500ms
+// Toca 5 veces rápido la esquina inferior derecha → abre /bbx
+// Zona: últimos 80px desde la derecha y 120px desde abajo
+const ZONE_X = 80
+const ZONE_Y = 120
+const REQUIRED_TAPS = 5
+const MAX_INTERVAL_MS = 2500
+
 export function ThreeFingerGesture() {
   const router = useRouter()
   const pathname = usePathname()
-  const startY = useRef<number[]>([])
-  const startTime = useRef(0)
+  const tapsRef = useRef<number[]>([])
 
   useEffect(() => {
     if (pathname === '/bbx') return
 
-    function onTouchStart(e: TouchEvent) {
-      if (e.touches.length === 2) {
-        startY.current = [e.touches[0].clientY, e.touches[1].clientY]
-        startTime.current = Date.now()
-      } else {
-        startY.current = []
-      }
-    }
-
     function onTouchEnd(e: TouchEvent) {
-      if (startY.current.length !== 2) return
-      if (e.changedTouches.length < 1) return
+      const t = e.changedTouches[0]
+      if (!t) return
 
-      const elapsed = Date.now() - startTime.current
-      if (elapsed > 500) { startY.current = []; return }
+      const fromRight = window.innerWidth - t.clientX
+      const fromBottom = window.innerHeight - t.clientY
 
-      // Calcular cuánto subieron ambos dedos (negativo = arriba)
-      const t = e.changedTouches
-      if (t.length < 2) { startY.current = []; return }
+      if (fromRight > ZONE_X || fromBottom > ZONE_Y) {
+        tapsRef.current = []
+        return
+      }
 
-      const dy0 = t[0].clientY - startY.current[0]
-      const dy1 = t[1].clientY - startY.current[1]
+      const now = Date.now()
+      tapsRef.current.push(now)
 
-      // Ambos dedos deben subir más de 90px
-      if (dy0 < -90 && dy1 < -90) {
+      // Descartar toques viejos
+      tapsRef.current = tapsRef.current.filter(ts => now - ts < MAX_INTERVAL_MS)
+
+      if (tapsRef.current.length >= REQUIRED_TAPS) {
+        tapsRef.current = []
         router.push('/bbx')
       }
-
-      startY.current = []
     }
 
-    function onTouchCancel() {
-      startY.current = []
-    }
-
-    document.addEventListener('touchstart', onTouchStart, { passive: true })
     document.addEventListener('touchend', onTouchEnd, { passive: true })
-    document.addEventListener('touchcancel', onTouchCancel, { passive: true })
-
-    return () => {
-      document.removeEventListener('touchstart', onTouchStart)
-      document.removeEventListener('touchend', onTouchEnd)
-      document.removeEventListener('touchcancel', onTouchCancel)
-    }
+    return () => document.removeEventListener('touchend', onTouchEnd)
   }, [pathname, router])
 
   return null

@@ -82,8 +82,26 @@ export function AudioVisualizer({
       analyser.getByteFrequencyData(dataArray)
       const step = Math.floor(dataArray.length / barCount)
 
+      // Detectar si iOS bloqueó el analyser (todos en cero)
+      const total = dataArray.reduce((a, b) => a + b, 0)
+      const iOsBlocked = total === 0
+
+      const t = Date.now() / 1000
+
       for (let i = 0; i < barCount; i++) {
-        const value = dataArray[i * step] / 255
+        let value: number
+
+        if (iOsBlocked) {
+          // Simulación animada para iOS: ondas senoidales con fase por barra
+          const center = barCount / 2
+          const dist = 1 - Math.abs(i - center) / center
+          value = (0.15 + dist * 0.5) *
+            (0.5 + 0.5 * Math.abs(Math.sin(t * 2.5 + i * 0.35))) *
+            (0.7 + 0.3 * Math.sin(t * 1.1 + i * 0.15))
+        } else {
+          value = dataArray[i * step] / 255
+        }
+
         const barH = Math.max(value * height, 3)
         const x = i * barWidth + gap / 2
 
