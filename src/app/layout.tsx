@@ -4,6 +4,7 @@ import { DesktopSidebar } from '@/components/nav/DesktopSidebar'
 import { AdminAccessButton } from '@/components/admin/AdminAccessButton'
 import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
+import { InstallBanner } from '@/components/pwa/InstallBanner'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -104,6 +105,7 @@ export default function RootLayout({
             </div>
           </div>
           <ClientBottomNav />
+          <InstallBanner />
           <AdminAccessButton />
         </RadioPlayerProvider>
       </body>
