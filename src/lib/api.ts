@@ -42,13 +42,18 @@ export async function fetchEventos() {
 }
 
 export async function fetchReplay() {
-  const query = `*[_type == "replay"] | order(publishedAt desc) {
+  const query = `*[_type == "replay"] | order(broadcastDate desc) {
     _id,
     title,
-    date,
+    program,
+    host,
+    "date": broadcastDate,
     duration,
-    description
-  }[0...10]`
-  
+    description,
+    youtubeUrl,
+    soundcloudUrl,
+    spotifyUrl
+  }[0...20]`
+
   return sanityClient.fetch(query)
 }

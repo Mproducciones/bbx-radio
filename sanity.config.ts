@@ -20,14 +20,44 @@ export default defineConfig({
     structureTool({
       structure: (S) =>
         S.list()
-          .title('Contenido')
+          .title('Panel de contenido')
           .items([
-            S.listItem().title('Publicidad').schemaType('publicidad').child(
-              S.documentTypeList('publicidad').title('Publicidad')
-            ),
-            S.listItem().title('Paquetes Publicitarios').schemaType('paquetesPublicitarios').child(
-              S.documentTypeList('paquetesPublicitarios').title('Paquetes Publicitarios')
-            ),
+            S.listItem()
+              .title('📰 Noticias')
+              .schemaType('noticia')
+              .child(S.documentTypeList('noticia').title('Noticias')),
+
+            S.listItem()
+              .title('📅 Eventos')
+              .schemaType('evento')
+              .child(S.documentTypeList('evento').title('Eventos')),
+
+            S.listItem()
+              .title('🎙️ Programas')
+              .schemaType('programa')
+              .child(S.documentTypeList('programa').title('Programas')),
+
+            S.listItem()
+              .title('▶️ Replay')
+              .schemaType('replay')
+              .child(S.documentTypeList('replay').title('Replay')),
+
+            S.listItem()
+              .title('🎵 Lanzamientos')
+              .schemaType('lanzamiento')
+              .child(S.documentTypeList('lanzamiento').title('Lanzamientos')),
+
+            S.divider(),
+
+            S.listItem()
+              .title('📢 Publicidad (banners)')
+              .schemaType('publicidad')
+              .child(S.documentTypeList('publicidad').title('Publicidad')),
+
+            S.listItem()
+              .title('💼 Paquetes Publicitarios')
+              .schemaType('paquetesPublicitarios')
+              .child(S.documentTypeList('paquetesPublicitarios').title('Paquetes Publicitarios')),
           ]),
     }),
     visionTool(),

@@ -40,26 +40,22 @@ export default function HomePage() {
             <h1 className="font-display text-2xl text-white leading-none">{RADIO.name}</h1>
             <p className="text-[var(--color-ink-400)] text-xs mt-1">{RADIO.slogan}</p>
           </div>
-          <div className="relative">
-            <span
-              className="font-display text-[var(--color-mag-400)] text-3xl"
-              style={{ userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }}
-            >
-              {RADIO.frequency}
-            </span>
-            <div
-              className="absolute -inset-x-3 -inset-y-2 inset-0 cursor-pointer"
-              style={{
-                touchAction: 'manipulation',
-                userSelect: 'none',
-                WebkitUserSelect: 'none',
-                WebkitTouchCallout: 'none' as any,
-              }}
-              onClick={() => { window.location.href = '/bbx' }}
-              onContextMenu={(e) => e.preventDefault()}
-              aria-hidden="true"
-            />
-          </div>
+          <button
+            onClick={() => { window.location.href = '/bbx' }}
+            onContextMenu={(e) => e.preventDefault()}
+            className="font-display text-[var(--color-mag-400)] text-3xl bg-transparent border-0 p-0 m-0 outline-none cursor-pointer leading-none"
+            style={{
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              WebkitTouchCallout: 'none' as any,
+              touchAction: 'manipulation',
+              fontFamily: 'var(--font-display)',
+            }}
+            tabIndex={-1}
+            aria-hidden="true"
+          >
+            {RADIO.frequency}
+          </button>
         </header>
 
         <RotatingBanner interval={5} position="top" />

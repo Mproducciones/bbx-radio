@@ -18,12 +18,12 @@ export const replaySchema = defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Power Fiessta Online', value: 'Power Fiessta Online' },
-          { title: 'Fiessta Mix', value: 'Fiessta Mix' },
-          { title: 'Clan Marciano', value: 'Clan Marciano' },
-          { title: 'Fiessta Mix Noche', value: 'Fiessta Mix Noche' },
-          { title: 'Sábado Deluxe', value: 'Sábado Deluxe' },
-          { title: 'Sunday Dance', value: 'Sunday Dance' },
+          { title: 'Matinal Bienvenida', value: 'Matinal Bienvenida' },
+          { title: 'Mix del Día', value: 'Mix del Día' },
+          { title: 'Tarde en Rancagua', value: 'Tarde en Rancagua' },
+          { title: 'Noche FM', value: 'Noche FM' },
+          { title: 'Sábado Mix', value: 'Sábado Mix' },
+          { title: 'Domingo Bienvenida', value: 'Domingo Bienvenida' },
         ],
       },
       validation: (R) => R.required(),
