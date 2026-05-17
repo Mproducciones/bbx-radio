@@ -1,38 +1,51 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 // Doble toque con 2 dedos → abre /bbx
-// No conflicta con admin (2 dedos QUIETOS 1.5s)
-const MAX_GAP_MS = 500 // máximo entre los dos toques
+// Detecta cuando se levantan 2 dedos (touchend con 0 restantes)
+// dos veces seguidas en menos de 600ms
+const MAX_GAP_MS = 600
 
 export function ThreeFingerGesture() {
-  const router = useRouter()
   const pathname = usePathname()
-  const lastTwoFingerTap = useRef<number>(0)
+  const lastRelease = useRef<number>(0)
+  const fingerCount = useRef<number>(0)
 
   useEffect(() => {
     if (pathname === '/bbx') return
 
     function onTouchStart(e: TouchEvent) {
-      if (e.touches.length !== 2) return
+      fingerCount.current = e.touches.length
+    }
 
-      const now = Date.now()
-      const gap = now - lastTwoFingerTap.current
+    function onTouchEnd(e: TouchEvent) {
+      // Solo nos interesa cuando se levantaban exactamente 2 dedos
+      // y ya no queda ninguno en pantalla
+      if (fingerCount.current === 2 && e.touches.length === 0) {
+        const now = Date.now()
+        const gap = now - lastRelease.current
 
-      if (gap < MAX_GAP_MS && gap > 80) {
-        // Segundo toque con 2 dedos dentro del intervalo → abrir BBX
-        router.push('/bbx')
-        lastTwoFingerTap.current = 0
-      } else {
-        lastTwoFingerTap.current = now
+        if (gap < MAX_GAP_MS && gap > 100) {
+          // Segundo release de 2 dedos → navegar
+          lastRelease.current = 0
+          window.location.href = '/bbx'
+        } else {
+          lastRelease.current = now
+        }
       }
+      fingerCount.current = e.touches.length
     }
 
     document.addEventListener('touchstart', onTouchStart, { passive: true })
-    return () => document.removeEventListener('touchstart', onTouchStart)
-  }, [pathname, router])
+    document.addEventListener('touchend', onTouchEnd, { passive: true })
+
+    return () => {
+      document.removeEventListener('touchstart', onTouchStart)
+      document.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [pathname])
 
   return null
 }
