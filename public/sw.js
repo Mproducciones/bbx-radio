@@ -3,9 +3,9 @@
  */
 'use strict'
 
-const CACHE_NAME = 'radio-bienvenida-v3'
-const STATIC_CACHE = 'radio-bienvenida-static-v3'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v3'
+const CACHE_NAME = 'radio-bienvenida-v5'
+const STATIC_CACHE = 'radio-bienvenida-static-v5'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v5'
 
 // Archivos estáticos para cachear inmediatamente
 const STATIC_FILES = [
