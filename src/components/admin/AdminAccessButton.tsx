@@ -74,8 +74,7 @@ export function AdminAccessButton() {
       setShowModal(false)
       setEmail('')
       setPassword('')
-      // Redirigir directo al panel de Sanity Studio
-      router.push('/studio')
+      router.push('/admin')
     } catch {
       setError('Error de conexión')
     } finally {
@@ -111,15 +110,15 @@ export function AdminAccessButton() {
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
             <label className="text-[var(--color-ink-300)] text-xs font-medium block mb-1">
-              Email
+              Usuario
             </label>
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@demo.com"
+              placeholder="usuario"
               className="pulso-input text-sm"
-              autoComplete="email"
+              autoComplete="username"
               required
               disabled={loading}
             />

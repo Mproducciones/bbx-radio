@@ -124,34 +124,46 @@ const MANUAL_SECTIONS = [
 
 const SETUP_STEPS = [
   {
-    n: 1, titulo: 'Datos de la radio',
-    desc: 'Abre src/lib/radioConfig.ts y cambia: name, slogan, frequency, streamUrl, city y el arreglo PROGRAMS.',
-    codigo: ['name: \'Radio Ejemplo\'', 'frequency: \'99.9 FM\'', 'streamUrl: \'https://stream.ejemplo.cl\''],
+    n: 1,
+    icono: '🖼️',
+    titulo: 'Logo de la radio',
+    desc: 'Enviar el logo en formato PNG con fondo transparente. Mínimo 512×512 px. Si tienen versión horizontal y cuadrada, mejor.',
+    nota: 'Este logo aparece en la pantalla de inicio, al instalar la app y en la barra de navegación.',
   },
   {
-    n: 2, titulo: 'Color principal',
-    desc: 'En src/app/globals.css cambia los dos valores de color primario:',
-    codigo: ['--color-pulso-primary: #TU_COLOR;', '--color-mag-400:         #TU_COLOR;'],
+    n: 2,
+    icono: '🎨',
+    titulo: 'Color principal',
+    desc: 'Confirmar el color corporativo de la radio en formato hexadecimal (#RRGGBB) o simplemente decir "el mismo naranja de nuestra web".',
+    nota: 'Este color se aplica en todos los botones, íconos activos y acentos de la app.',
   },
   {
-    n: 3, titulo: 'Logo e íconos',
-    desc: 'Reemplaza en public/icons/ los archivos: icon-192.png (192×192) e icon-512.png (512×512). Actualiza también manifest.json con el nombre de la app.',
-    codigo: [],
+    n: 3,
+    icono: '📡',
+    titulo: 'URL del stream de audio',
+    desc: 'Proporcionar el enlace del stream HLS (.m3u8) o el URL de la transmisión en vivo. Lo entrega el proveedor de streaming (Sonic Panel, Centova, etc.).',
+    nota: 'Sin esta URL el reproductor no funciona. Verificar que el stream esté activo antes de entregar.',
   },
   {
-    n: 4, titulo: 'Redes sociales',
-    desc: 'En src/app/page.tsx actualiza el arreglo SOCIAL_LINKS con Facebook, Instagram y WhatsApp del cliente. El número de WhatsApp también se edita en Sanity → Paquetes Publicitarios.',
-    codigo: [],
+    n: 4,
+    icono: '📱',
+    titulo: 'Redes sociales',
+    desc: 'Enviar los links completos de Facebook, Instagram, Twitter/X y el número de WhatsApp de contacto con la radio.',
+    nota: 'El WhatsApp también se usa como botón de contacto en la sección de publicidad.',
   },
   {
-    n: 5, titulo: 'Sanity CMS',
-    desc: 'Crea un proyecto nuevo en sanity.io para el cliente y actualiza las variables de entorno en Vercel:',
-    codigo: ['NEXT_PUBLIC_SANITY_PROJECT_ID=xxxxxxxx', 'NEXT_PUBLIC_SANITY_DATASET=production', 'SANITY_API_TOKEN=skXXXXXXXX'],
+    n: 5,
+    icono: '🎙️',
+    titulo: 'Programación',
+    desc: 'Lista de programas con: nombre del programa, nombre del conductor, días que se emite y horario de inicio y término.',
+    nota: 'La app muestra automáticamente qué programa está en vivo en este momento según el horario.',
   },
   {
-    n: 6, titulo: 'Deploy en Vercel',
-    desc: 'Fork del repositorio en GitHub → conectar a nuevo proyecto Vercel → agregar variables de entorno → Deploy. Opcional: dominio personalizado del cliente.',
-    codigo: [],
+    n: 6,
+    icono: '✅',
+    titulo: 'Revisión y lanzamiento',
+    desc: 'BBX presenta una demo con los datos del cliente para aprobación. Una vez confirmado, se publica y se entrega el usuario y contraseña del Studio.',
+    nota: 'Tiempo estimado de entrega: 48 a 72 horas desde que se reciben todos los materiales.',
   },
 ]
 
@@ -428,34 +440,32 @@ export default function AdminPage() {
       {tab === 'setup' && (
         <div className="flex flex-col gap-4">
           <div className="bg-[#0F0F1A] rounded-xl p-4 border border-[var(--color-mag-400)]/20">
-            <p className="text-white font-semibold text-sm mb-1">⚙️ Checklist — Nuevo cliente</p>
-            <p className="text-[#8888AA] text-xs">6 pasos, ~2 horas. Después el cliente gestiona todo desde Studio.</p>
+            <p className="text-white font-semibold text-sm mb-1">📋 Materiales que necesita el cliente</p>
+            <p className="text-[#8888AA] text-xs">Todo lo que hay que pedirle al cliente antes de configurar su app.</p>
           </div>
 
           {SETUP_STEPS.map(step => (
             <div key={step.n} className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
               <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
-                <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">
-                  {step.n}
-                </span>
-                <h3 className="text-white font-semibold text-sm">{step.titulo}</h3>
+                <span className="text-xl">{step.icono}</span>
+                <div>
+                  <p className="text-[10px] text-[#40B9BF] font-bold uppercase tracking-wider">Paso {step.n}</p>
+                  <h3 className="text-white font-semibold text-sm">{step.titulo}</h3>
+                </div>
               </div>
-              <div className="p-4 space-y-2">
-                <p className="text-[#8888AA] text-xs">{step.desc}</p>
-                {step.codigo.length > 0 && (
-                  <div className="bg-[#07070E] rounded-lg p-3 font-mono text-xs space-y-1 mt-2">
-                    {step.codigo.map((line, i) => (
-                      <p key={i} className="text-[#40B9BF]">{line}</p>
-                    ))}
-                  </div>
-                )}
+              <div className="p-4 space-y-3">
+                <p className="text-[#CCCCDD] text-xs leading-relaxed">{step.desc}</p>
+                <div className="flex items-start gap-2 bg-[#07070E] rounded-lg p-3">
+                  <span className="text-[var(--color-mag-400)] flex-shrink-0">💡</span>
+                  <p className="text-[#8888AA] text-xs leading-relaxed">{step.nota}</p>
+                </div>
               </div>
             </div>
           ))}
 
           <div className="bg-[var(--color-mag-400)]/10 border border-[var(--color-mag-400)]/30 rounded-xl p-4 text-center">
-            <p className="text-[var(--color-mag-400)] font-bold text-sm mb-1">Tiempo total: ~2 horas</p>
-            <p className="text-[#8888AA] text-xs">Después el cliente gestiona su contenido desde Studio. No vuelves al código.</p>
+            <p className="text-[var(--color-mag-400)] font-bold text-sm mb-1">Entrega en 48 a 72 horas</p>
+            <p className="text-[#8888AA] text-xs">Una vez recibidos todos los materiales, BBX configura y lanza la app.</p>
           </div>
         </div>
       )}
