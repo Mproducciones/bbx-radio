@@ -263,9 +263,24 @@ export default function AdminPage() {
               disabled={loginState === 'loading'}
               className="mt-1 w-full rounded-xl bg-[var(--color-mag-400)] hover:bg-[var(--color-mag-600)] text-white font-semibold py-2.5 px-4 transition-colors disabled:opacity-60"
             >
-              {loginState === 'loading' ? 'Verificando...' : 'Ingresar'}
+              {loginState === 'loading' ? 'Verificando...' : 'Ingresar al dashboard'}
             </button>
-            <p className="text-[var(--color-ink-500)] text-[10px] text-center mt-1">
+
+            <div className="relative flex items-center gap-2 my-1">
+              <div className="flex-1 h-px bg-[var(--color-ink-700)]" />
+              <span className="text-[var(--color-ink-500)] text-[10px]">o</span>
+              <div className="flex-1 h-px bg-[var(--color-ink-700)]" />
+            </div>
+
+            <a
+              href="/studio"
+              className="w-full rounded-xl bg-[var(--color-ink-800)] hover:bg-[var(--color-ink-700)] border border-[var(--color-ink-600)] text-white font-semibold py-2.5 px-4 transition-colors text-sm text-center block"
+              style={{ color: '#ffffff' }}
+            >
+              Ir al Studio directamente →
+            </a>
+
+            <p className="text-[var(--color-ink-500)] text-[10px] text-center">
               Solo personal autorizado · BBX
             </p>
           </form>
