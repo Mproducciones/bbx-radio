@@ -161,13 +161,6 @@ export function AdminAccessButton() {
           </button>
         </form>
 
-        {/* Cerrar */}
-        <button
-          onClick={() => setShowModal(false)}
-          className="w-full text-center text-[var(--color-ink-400)] text-xs mt-4 hover:text-[var(--color-ink-200)] transition-colors"
-        >
-          Cancelar
-        </button>
       </div>
     </div>
   )
