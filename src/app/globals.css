@@ -192,10 +192,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Reset de links — Tailwind v4 no resetea <a> automáticamente */
-a {
-  color: inherit;
-  text-decoration: none;
+/* Reset de links dentro de @layer base para que text-* de Tailwind lo sobreescriba */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 /* ── COMPONENT UTILITIES ──────────────────────────────────── */
