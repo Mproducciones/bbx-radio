@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-type Tab = 'planes' | 'manual' | 'ventas'
+type Tab = 'planes' | 'manual' | 'ventas' | 'setup'
 
 const PLANES = [
   {
@@ -217,18 +217,18 @@ export default function BbxPage() {
       </div>
 
       {/* Tabs */}
-      <div className="grid grid-cols-3 gap-2 mb-8 bg-[#0F0F1A] rounded-xl p-1">
-        {(['planes', 'manual', 'ventas'] as Tab[]).map((t) => (
+      <div className="grid grid-cols-4 gap-1.5 mb-8 bg-[#0F0F1A] rounded-xl p-1">
+        {(['planes', 'manual', 'ventas', 'setup'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`py-2.5 rounded-lg text-sm font-semibold transition-all capitalize ${
+            className={`py-2.5 rounded-lg text-xs font-semibold transition-all capitalize ${
               tab === t
                 ? 'bg-[#db8918] text-white shadow-lg'
                 : 'text-[#666690] hover:text-white'
             }`}
           >
-            {t === 'planes' ? '💰 Planes' : t === 'manual' ? '📖 Manual' : '🚀 Ventas'}
+            {t === 'planes' ? '💰 Planes' : t === 'manual' ? '📖 Manual' : t === 'ventas' ? '🚀 Ventas' : '⚙️ Setup'}
           </button>
         ))}
       </div>
@@ -412,6 +412,137 @@ export default function BbxPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── SETUP NUEVO CLIENTE ── */}
+      {tab === 'setup' && (
+        <div className="flex flex-col gap-5">
+          <div className="bg-[#0F0F1A] rounded-xl p-4 border border-[#db8918]/20">
+            <p className="text-white font-semibold text-sm mb-1">⚙️ Checklist — Nuevo cliente</p>
+            <p className="text-[#8888AA] text-xs">Cambia estos 6 puntos una sola vez. Después el cliente gestiona todo desde Sanity.</p>
+          </div>
+
+          {/* Paso 1 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <h3 className="text-white font-semibold text-sm">Datos de la radio</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <p className="text-[#8888AA] text-xs mb-3">Abre el archivo <span className="text-[#40B9BF] font-mono">src/lib/radioConfig.ts</span> y cambia:</p>
+              <div className="bg-[#07070E] rounded-lg p-3 font-mono text-xs space-y-1">
+                <p><span className="text-[#666690]">name:</span> <span className="text-[#40B9BF]">'Radio Ejemplo'</span></p>
+                <p><span className="text-[#666690]">slogan:</span> <span className="text-[#40B9BF]">'Tu radio · 99.9 FM'</span></p>
+                <p><span className="text-[#666690]">frequency:</span> <span className="text-[#40B9BF]">'99.9 FM'</span></p>
+                <p><span className="text-[#666690]">streamUrl:</span> <span className="text-[#40B9BF]">'https://stream.ejemplo.cl'</span></p>
+                <p><span className="text-[#666690]">city:</span> <span className="text-[#40B9BF]">'Santiago'</span></p>
+              </div>
+              <p className="text-[#666690] text-xs">También actualiza los programas en el arreglo <span className="text-[#40B9BF] font-mono">PROGRAMS</span> del mismo archivo.</p>
+            </div>
+          </div>
+
+          {/* Paso 2 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <h3 className="text-white font-semibold text-sm">Color principal</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <p className="text-[#8888AA] text-xs mb-3">Abre <span className="text-[#40B9BF] font-mono">src/app/globals.css</span> y cambia el color primario:</p>
+              <div className="bg-[#07070E] rounded-lg p-3 font-mono text-xs space-y-1">
+                <p><span className="text-[#666690]">--color-pulso-primary:</span> <span className="text-[#40B9BF]">#TU_COLOR;</span></p>
+                <p><span className="text-[#666690]">--color-mag-400:</span> <span className="text-[#40B9BF]">#TU_COLOR;</span></p>
+              </div>
+              <p className="text-[#666690] text-xs">Esos dos valores controlan todos los botones, badges y acentos de la app.</p>
+            </div>
+          </div>
+
+          {/* Paso 3 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <h3 className="text-white font-semibold text-sm">Logo e íconos</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <p className="text-[#8888AA] text-xs mb-3">Reemplaza estos archivos en la carpeta <span className="text-[#40B9BF] font-mono">public/</span> con los del cliente:</p>
+              <div className="space-y-1.5">
+                {[
+                  ['Logo principal', 'El logo que aparece en la splash screen y al instalar'],
+                  ['public/icons/icon-192.png', 'Ícono PWA 192×192 px'],
+                  ['public/icons/icon-512.png', 'Ícono PWA 512×512 px'],
+                ].map(([archivo, desc]) => (
+                  <div key={archivo} className="flex items-start gap-2">
+                    <span className="text-[#40B9BF] flex-shrink-0 mt-0.5">→</span>
+                    <div>
+                      <p className="text-white text-xs font-mono">{archivo}</p>
+                      <p className="text-[#666690] text-xs">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[#666690] text-xs mt-2">También actualiza el <span className="text-[#40B9BF] font-mono">manifest.json</span> con el nombre de la app y el color de tema.</p>
+            </div>
+          </div>
+
+          {/* Paso 4 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">4</span>
+              <h3 className="text-white font-semibold text-sm">Redes sociales</h3>
+            </div>
+            <div className="p-4">
+              <p className="text-[#8888AA] text-xs mb-2">En <span className="text-[#40B9BF] font-mono">src/app/page.tsx</span>, actualiza el arreglo <span className="text-[#40B9BF] font-mono">SOCIAL_LINKS</span> con los links del cliente (Facebook, Instagram, WhatsApp).</p>
+              <p className="text-[#666690] text-xs">El número de WhatsApp también aparece en la sección Anúnciate — actualízalo en Sanity Studio → Paquetes Publicitarios.</p>
+            </div>
+          </div>
+
+          {/* Paso 5 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">5</span>
+              <h3 className="text-white font-semibold text-sm">Sanity CMS (contenido)</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <p className="text-[#8888AA] text-xs mb-2">Crea un proyecto nuevo en <span className="text-[#40B9BF]">sanity.io</span> para el cliente y actualiza las variables de entorno en Vercel:</p>
+              <div className="bg-[#07070E] rounded-lg p-3 font-mono text-xs space-y-1">
+                <p><span className="text-[#666690]">NEXT_PUBLIC_SANITY_PROJECT_ID=</span><span className="text-[#40B9BF]">xxxxxxxx</span></p>
+                <p><span className="text-[#666690]">NEXT_PUBLIC_SANITY_DATASET=</span><span className="text-[#40B9BF]">production</span></p>
+                <p><span className="text-[#666690]">SANITY_API_TOKEN=</span><span className="text-[#40B9BF]">skXXXXXXXX</span></p>
+              </div>
+              <p className="text-[#666690] text-xs">Alternativa rápida: usa el mismo proyecto Sanity con un dataset diferente (ej: <span className="font-mono">radio-ejemplo</span>).</p>
+            </div>
+          </div>
+
+          {/* Paso 6 */}
+          <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+              <span className="w-7 h-7 rounded-full bg-[#40B9BF]/20 text-[#40B9BF] text-xs font-bold flex items-center justify-center flex-shrink-0">6</span>
+              <h3 className="text-white font-semibold text-sm">Deploy en Vercel</h3>
+            </div>
+            <div className="p-4 space-y-2">
+              <div className="space-y-2">
+                {[
+                  'Fork del repositorio bbx-radio en GitHub',
+                  'Conectar el fork a un nuevo proyecto en Vercel',
+                  'Agregar las variables de entorno del paso 5',
+                  'Deploy → la app queda en cliente.vercel.app',
+                  'Opcional: conectar dominio personalizado del cliente',
+                ].map((paso, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="w-4 h-4 rounded-full bg-[#db8918]/20 text-[#db8918] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <p className="text-[#CCCCDD] text-xs">{paso}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Nota final */}
+          <div className="bg-[#db8918]/10 border border-[#db8918]/30 rounded-xl p-4 text-center">
+            <p className="text-[#db8918] font-bold text-sm mb-1">Tiempo total: ~2 horas</p>
+            <p className="text-[#8888AA] text-xs">Después de esto, el cliente gestiona su propio contenido desde <span className="text-white">/studio</span>. No necesitas tocar el código nunca más.</p>
+          </div>
         </div>
       )}
 
