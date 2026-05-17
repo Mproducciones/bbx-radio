@@ -1,0 +1,27 @@
+{
+  "name": "Bienvenida 93.3 — Admin",
+  "short_name": "Admin Radio",
+  "description": "Panel de administración de Radio Bienvenida 93.3 FM",
+  "start_url": "/studio",
+  "scope": "/studio",
+  "display": "standalone",
+  "background_color": "#0F0F14",
+  "theme_color": "#db8918",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "es-CL"
+}

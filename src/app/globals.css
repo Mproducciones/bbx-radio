@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── PULSO DESIGN SYSTEM — TAILWIND v4 THEME ─────────────── */
+@theme {
+  /* Brand — Radio Bienvenida 93.3 FM — color-enfasis: #db8918 */
+  --color-pulso-primary:   #db8918;
+  --color-pulso-secondary: #40B9BF;
+  --color-pulso-tertiary:  #7D59B5;
+  --color-pulso-accent:    #FBEF2D;
+  --color-pulso-success:   #00D9A0;
+  --color-pulso-warning:   #FBC700;
+  --color-pulso-error:     #BB0B23;
+  --color-pulso-info:      #40B9BF;
+
+  /* Amber/orange ramp — #db8918 exacto de radiobienvenida.cl */
+  --color-mag-50:  #FDF4E3;
+  --color-mag-100: #F9DFAA;
+  --color-mag-200: #F2C16A;
+  --color-mag-400: #db8918;   /* color-enfasis exacto */
+  --color-mag-600: #a86611;
+  --color-mag-800: #6B400A;
+  --color-mag-900: #3D2405;
+
+  /* Cyan/teal ramp — #40B9BF exacto de su app */
+  --color-cyn-50:  #E8F9FA;
+  --color-cyn-100: #BEF0F2;
+  --color-cyn-200: #88E3E6;
+  --color-cyn-400: #40B9BF;   /* --sd-quinary exacto */
+  --color-cyn-600: #2E8A8F;
+  --color-cyn-800: #1A5254;
+  --color-cyn-900: #0D2E30;
+
+  /* Purple ramp — #7D59B5 exacto del player de su app */
+  --color-pur-50:  #F2EEF9;
+  --color-pur-100: #D9CDF0;
+  --color-pur-200: #BAA8E3;
+  --color-pur-400: #7D59B5;   /* --sd-player-background exacto */
+  --color-pur-600: #5E4089;
+  --color-pur-800: #362552;
+  --color-pur-900: #1F1530;
+
+  /* Amber */
+  --color-amb-50:  #FFF8E1;
+  --color-amb-400: #FFB300;
+  --color-amb-600: #CC8A00;
+
+  /* Ink scale */
+  --color-ink-50:  #EEEEEE;
+  --color-ink-100: #CCCCDD;
+  --color-ink-200: #AAAABB;
+  --color-ink-300: #8888AA;
+  --color-ink-400: #666690;
+  --color-ink-500: #444468;
+  --color-ink-600: #2D2D4A;
+  --color-ink-700: #1A1A2E;
+  --color-ink-800: #0F0F1A;
+  --color-ink-900: #07070E;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', cursive;
+  --font-ui:      'Outfit', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-sans:    'Outfit', sans-serif;
+
+  /* Font sizes */
+  --text-xs:   11px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   24px;
+  --text-2xl:  32px;
+  --text-3xl:  48px;
+  --text-4xl:  64px;
+
+  /* Spacing — escala completa compatible con Tailwind + PULSO DS 8px grid */
+  --spacing-0:    0px;
+  --spacing-px:   1px;
+  --spacing-0\.5: 2px;
+  --spacing-1:    4px;
+  --spacing-1\.5: 6px;
+  --spacing-2:    8px;
+  --spacing-2\.5: 10px;
+  --spacing-3:    12px;
+  --spacing-3\.5: 14px;
+  --spacing-4:    16px;
+  --spacing-5:    24px;
+  --spacing-6:    32px;
+  --spacing-7:    48px;
+  --spacing-8:    64px;
+  --spacing-9:    96px;
+  --spacing-10:   128px;
+  --spacing-11:   44px;
+  --spacing-12:   48px;
+  --spacing-14:   56px;
+  --spacing-16:   64px;
+  --spacing-20:   80px;
+  --spacing-24:   96px;
+  --spacing-28:   112px;
+  --spacing-32:   128px;
+  --spacing-36:   144px;
+  --spacing-40:   160px;
+  --spacing-44:   176px;
+  --spacing-48:   192px;
+  --spacing-52:   208px;
+  --spacing-56:   224px;
+  --spacing-64:   256px;
+  --spacing-72:   288px;
+  --spacing-80:   320px;
+  --spacing-96:   384px;
+
+  /* Border radius */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-glow-primary:   0 0 24px rgba(219, 137, 24, 0.45);
+  --shadow-glow-secondary: 0 0 20px rgba(64, 185, 191, 0.35);
+  --shadow-glow-tertiary:  0 0 20px rgba(125, 89, 181, 0.40);
+  --shadow-card:           0 2px 12px rgba(0, 0, 0, 0.40);
+
+  /* Motion */
+  --ease-standard:   cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-material:   cubic-bezier(0.40, 0.00, 0.20, 1);
+  --ease-decelerate: cubic-bezier(0.00, 0.00, 0.20, 1);
+
+  --duration-xs:  80ms;
+  --duration-sm:  150ms;
+  --duration-md:  250ms;
+  --duration-lg:  400ms;
+  --duration-xl:  600ms;
+  --duration-2xl: 1000ms;
+
+  /* Z-index */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-tooltip: 400;
+
+  /* Animations */
+  --animate-shimmer:  pulso-shimmer 1.5s ease-in-out infinite;
+  --animate-live-dot: pulso-live-dot 1.4s ease-in-out infinite;
+  --animate-spin-disc: pulso-spin 6s linear infinite;
+  --animate-toast-in: pulso-toast-in 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-waveform: pulso-waveform 1.2s ease-in-out infinite alternate;
+  --animate-gradient: pulso-gradient 3s ease-in-out infinite;
+
+  @keyframes pulso-shimmer {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.9; }
+  }
+  @keyframes pulso-live-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.3; transform: scale(0.7); }
+  }
+  @keyframes pulso-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes pulso-toast-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  @keyframes pulso-waveform {
+    from { transform: scaleY(0.2); }
+    to   { transform: scaleY(1); }
+  }
+  @keyframes pulso-gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+  }
+}
+
+/* ── BASE STYLES ──────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-ink-900);
+  color: var(--color-ink-50);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── COMPONENT UTILITIES ──────────────────────────────────── */
+.pulso-btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--text-base);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2) var(--spacing-5);
+  cursor: pointer;
+  transition: all var(--duration-sm) var(--ease-standard);
+  border: none;
+  outline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.pulso-btn-primary {
+  background: var(--color-mag-400);
+  color: #ffffff;
+}
+.pulso-btn-primary:hover  { background: var(--color-mag-600); }
+.pulso-btn-primary:active { transform: scale(0.97); }
+.pulso-btn-primary:focus-visible { outline: 2px solid var(--color-mag-400); }
+
+.pulso-btn-secondary {
+  background: transparent;
+  color: var(--color-mag-400);
+  border: 1.5px solid var(--color-mag-400);
+}
+.pulso-btn-secondary:hover { background: rgba(219, 137, 24, 0.08); }
+
+.pulso-btn-ghost {
+  background: transparent;
+  color: var(--color-ink-200);
+}
+.pulso-btn-ghost:hover { background: var(--color-ink-800); }
+
+.pulso-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  background: rgba(219, 137, 24, 0.10);
+  border: 1px solid rgba(219, 137, 24, 0.30);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-mag-400);
+  text-transform: uppercase;
+}
+
+.pulso-card {
+  background: var(--color-ink-700);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+}
+
+.pulso-player-card {
+  background: linear-gradient(135deg,
+    rgba(219, 137, 24, 0.06) 0%,
+    rgba(125, 89, 181, 0.06) 100%
+  );
+  border: 1px solid rgba(219, 137, 24, 0.14);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+}
+
+.pulso-input {
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  background: var(--color-ink-800);
+  border: 1px solid var(--color-ink-600);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-50);
+  padding: var(--spacing-2) var(--spacing-3);
+  width: 100%;
+  transition: border-color var(--duration-sm) var(--ease-standard);
+  outline: none;
+}
+.pulso-input:focus {
+  border-color: var(--color-mag-400);
+  box-shadow: 0 0 0 3px rgba(219, 137, 24, 0.15);
+}
+
+.pulso-skeleton {
+  background: var(--color-ink-800);
+  border-radius: var(--radius-sm);
+  animation: var(--animate-shimmer);
+}
+
+/* Hide development indicators (including the black "n" button) */
+.turbopack-indicator,
+.dev-indicator,
+.next-dev-indicator,
+[style*="position: fixed"][style*="z-index: 99999"],
+[style*="position: fixed"][style*="z-index: 999999"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide Next.js dev tools button */
+button[aria-label*="Next.js"],
+button[title*="Next.js"],
+.nextjs-dev-tools-button {
+  display: none !important;
+}
+
+/* Ensure the loading screen is hidden on mobile */
+@media (max-width: 768px) {
+  .loading-screen {
+    display: none !important;
+  }
+}

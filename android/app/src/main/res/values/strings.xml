@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Radio Bienvenida 93.3 FM</string>
+    <string name="title_activity_main">Radio Bienvenida 93.3 FM</string>
+    <string name="package_name">cl.radiobienvenida.app</string>
+    <string name="custom_url_scheme">cl.radiobienvenida.app</string>
+</resources>
