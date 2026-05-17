@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Tab = 'planes' | 'manual' | 'ventas'
 
@@ -176,9 +177,23 @@ const VENTAS_SECTIONS = [
 
 export default function BbxPage() {
   const [tab, setTab] = useState<Tab>('planes')
+  const router = useRouter()
 
   return (
     <div className="min-h-screen bg-[#07070E] px-4 py-6 max-w-2xl mx-auto">
+      {/* Botón cerrar */}
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 text-[#666690] hover:text-white transition-colors bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl px-4 py-2 text-sm"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+          Volver a la app
+        </button>
+      </div>
+
       {/* Header BBX */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 bg-[#db8918]/10 border border-[#db8918]/30 rounded-full px-4 py-1.5 mb-4">
