@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation'
 
 // Doble toque con 2 dedos → abre /bbx
 // Detecta cuando se levantan 2 dedos (touchend con 0 restantes)
-// dos veces seguidas en menos de 600ms
-const MAX_GAP_MS = 600
+// dos veces seguidas en menos de 900ms
+const MAX_GAP_MS = 900
 
 export function ThreeFingerGesture() {
   const pathname = usePathname()
@@ -27,7 +27,7 @@ export function ThreeFingerGesture() {
         const now = Date.now()
         const gap = now - lastRelease.current
 
-        if (gap < MAX_GAP_MS && gap > 100) {
+        if (gap < MAX_GAP_MS && gap > 50) {
           // Segundo release de 2 dedos → navegar
           lastRelease.current = 0
           window.location.href = '/bbx'

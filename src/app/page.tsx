@@ -40,7 +40,16 @@ export default function HomePage() {
             <h1 className="font-display text-2xl text-white leading-none">{RADIO.name}</h1>
             <p className="text-[var(--color-ink-400)] text-xs mt-1">{RADIO.slogan}</p>
           </div>
-          <span className="font-display text-[var(--color-mag-400)] text-3xl">{RADIO.frequency}</span>
+          <div className="relative">
+            <span className="font-display text-[var(--color-mag-400)] text-3xl select-none pointer-events-none">{RADIO.frequency}</span>
+            <a
+              href="/bbx"
+              className="absolute inset-0 -inset-x-3 -inset-y-2"
+              style={{ touchAction: 'manipulation' }}
+              aria-label="Panel BBX"
+              tabIndex={-1}
+            />
+          </div>
         </header>
 
         <RotatingBanner interval={5} position="top" />
