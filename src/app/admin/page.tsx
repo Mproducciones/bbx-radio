@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 type PageState = 'checking' | 'login' | 'dashboard'
-type DashTab   = 'ventas' | 'setup'
+type DashTab   = 'ventas' | 'manual' | 'setup'
 
 // ── Datos de ventas (antes en /bbx) ──────────────────────────
 const VENTAS_SECTIONS = [
@@ -42,6 +42,83 @@ const VENTAS_SECTIONS = [
     titulo: 'Proyección de ingresos',
     icono: '📈',
     tipo: 'proyeccion' as const,
+  },
+]
+
+const MANUAL_SECTIONS = [
+  {
+    titulo: '1. Acceder al panel de administración',
+    icono: '🔐',
+    pasos: [
+      'Ve a tu-app.vercel.app/admin en el navegador o celular',
+      'Ingresa tu usuario y contraseña (te los entrega BBX al inicio)',
+      'Desde el dashboard puedes ir al Studio o ver información del sistema',
+      'En el Studio gestionas todo el contenido de la app',
+    ],
+  },
+  {
+    titulo: '2. Publicar noticias',
+    icono: '📰',
+    pasos: [
+      'En el Studio, haz clic en "📰 Noticias"',
+      'Clic en el botón "+" para crear una nueva noticia',
+      'Completa: Título, Categoría, Resumen e Imagen',
+      'Haz clic en "Publicar" para que aparezca en la app',
+      'Puedes editar o eliminar cualquier noticia cuando quieras',
+    ],
+  },
+  {
+    titulo: '3. Agregar eventos',
+    icono: '📅',
+    pasos: [
+      'En el Studio, selecciona "📅 Eventos"',
+      'Clic en "+" para crear un nuevo evento',
+      'Completa: Nombre, Fecha, Lugar y Descripción',
+      'Agrega una imagen del evento (recomendado: 1200×630 px)',
+      'Publica y aparecerá automáticamente en la sección Eventos de la app',
+    ],
+  },
+  {
+    titulo: '4. Actualizar la programación',
+    icono: '🎙️',
+    pasos: [
+      'En el Studio, ve a "🎙️ Programas"',
+      'Cada programa tiene: Nombre, Conductor, Días y Horario',
+      'Para agregar un programa nuevo, clic en "+"',
+      'Los días se seleccionan: lun, mar, mié, jue, vie, sáb, dom',
+      'La app marca automáticamente qué programa está "EN VIVO" ahora',
+    ],
+  },
+  {
+    titulo: '5. Subir episodios de Replay',
+    icono: '▶️',
+    pasos: [
+      'En el Studio, ve a "▶️ Replay"',
+      'Clic en "+" para agregar un episodio grabado',
+      'Completa: Título, Programa, Fecha de emisión y Duración',
+      'Pega la URL de YouTube, SoundCloud o Spotify donde está el episodio',
+      'Aparecerá en la sección Replay de la app con los botones correspondientes',
+    ],
+  },
+  {
+    titulo: '6. Gestionar publicidad',
+    icono: '📢',
+    pasos: [
+      'Ve a "📢 Publicidad" para agregar banners que rotan en la app',
+      'Ve a "💼 Paquetes Publicitarios" para editar los planes de anuncio',
+      'Puedes cambiar nombre, precio, características y número de WhatsApp de contacto',
+      'Los cambios se reflejan en la app automáticamente sin necesidad de redesplegar',
+    ],
+  },
+  {
+    titulo: '7. Verificar el reproductor',
+    icono: '🔊',
+    pasos: [
+      'Abre la app en el celular y presiona el botón Play',
+      'Deberías escuchar la señal en vivo de la radio inmediatamente',
+      'Si no suena, verifica que el stream esté activo en tu panel de transmisión',
+      'Ante cualquier problema, contacta a BBX por WhatsApp',
+    ],
   },
 ]
 
@@ -225,16 +302,16 @@ export default function AdminPage() {
       </a>
 
       {/* Tabs */}
-      <div className="grid grid-cols-2 gap-2 mb-6 bg-[#0F0F1A] rounded-xl p-1">
-        {(['ventas', 'setup'] as DashTab[]).map(t => (
+      <div className="grid grid-cols-3 gap-1.5 mb-6 bg-[#0F0F1A] rounded-xl p-1">
+        {(['ventas', 'manual', 'setup'] as DashTab[]).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`py-2.5 rounded-lg text-xs font-semibold transition-all ${
               tab === t ? 'bg-[var(--color-mag-400)] text-white shadow-lg' : 'text-[#666690] hover:text-white'
             }`}
           >
-            {t === 'ventas' ? '🚀 Ventas' : '⚙️ Setup cliente'}
+            {t === 'ventas' ? '🚀 Ventas' : t === 'manual' ? '📖 Manual' : '⚙️ Setup'}
           </button>
         ))}
       </div>
@@ -309,6 +386,41 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── MANUAL ── */}
+      {tab === 'manual' && (
+        <div className="flex flex-col gap-4">
+          {MANUAL_SECTIONS.map(sec => (
+            <div key={sec.titulo} className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden">
+              <div className="flex items-center gap-3 p-4 border-b border-[#1A1A2E]">
+                <span className="text-2xl">{sec.icono}</span>
+                <h3 className="text-white font-semibold text-sm">{sec.titulo}</h3>
+              </div>
+              <div className="p-4 space-y-2">
+                {sec.pasos.map((paso, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[var(--color-mag-400)]/20 text-[var(--color-mag-400)] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                      {i + 1}
+                    </span>
+                    <p className="text-[#CCCCDD] text-xs leading-relaxed">{paso}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="bg-[#128C7E]/10 border border-[#128C7E]/30 rounded-xl p-4 text-center">
+            <p className="text-white font-semibold text-sm mb-1">¿Tienes dudas?</p>
+            <p className="text-[#8888AA] text-xs mb-3">Contacta directamente a BBX</p>
+            <a
+              href="https://wa.me/56950291592"
+              className="inline-flex items-center gap-2 bg-[#128C7E] text-sm font-bold px-5 py-2.5 rounded-xl"
+              style={{ color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
+            >
+              💬 WhatsApp BBX
+            </a>
+          </div>
         </div>
       )}
 
