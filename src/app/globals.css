@@ -192,6 +192,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Reset de links — Tailwind v4 no resetea <a> automáticamente */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 /* ── COMPONENT UTILITIES ──────────────────────────────────── */
 .pulso-btn {
   font-family: var(--font-ui);
