@@ -41,13 +41,23 @@ export default function HomePage() {
             <p className="text-[var(--color-ink-400)] text-xs mt-1">{RADIO.slogan}</p>
           </div>
           <div className="relative">
-            <span className="font-display text-[var(--color-mag-400)] text-3xl select-none pointer-events-none">{RADIO.frequency}</span>
-            <a
-              href="/bbx"
-              className="absolute inset-0 -inset-x-3 -inset-y-2"
-              style={{ touchAction: 'manipulation' }}
-              aria-label="Panel BBX"
-              tabIndex={-1}
+            <span
+              className="font-display text-[var(--color-mag-400)] text-3xl"
+              style={{ userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }}
+            >
+              {RADIO.frequency}
+            </span>
+            <div
+              className="absolute -inset-x-3 -inset-y-2 inset-0 cursor-pointer"
+              style={{
+                touchAction: 'manipulation',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+                WebkitTouchCallout: 'none' as any,
+              }}
+              onClick={() => { window.location.href = '/bbx' }}
+              onContextMenu={(e) => e.preventDefault()}
+              aria-hidden="true"
             />
           </div>
         </header>
