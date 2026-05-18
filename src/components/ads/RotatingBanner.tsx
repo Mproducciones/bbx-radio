@@ -41,6 +41,7 @@ const MOCK_ADS = {
 export function RotatingBanner({ interval = 5, position = 'top', refreshInterval = 5 }: RotatingBannerProps) {
   const [ads, setAds] = useState<Ad[]>([])
   const [index, setIndex] = useState(0)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const load = async () => {
@@ -52,6 +53,7 @@ export function RotatingBanner({ interval = 5, position = 'top', refreshInterval
           if (Array.isArray(data) && data.length > 0) setAds(data)
         }
       } catch {}
+      setReady(true)
     }
     load()
     const t = setInterval(load, refreshInterval * 1000)
@@ -64,6 +66,8 @@ export function RotatingBanner({ interval = 5, position = 'top', refreshInterval
     const t = setInterval(() => setIndex((p) => (p + 1) % total), interval * 1000)
     return () => clearInterval(t)
   }, [total, interval])
+
+  if (!ready) return null
 
   const wrap = {
     top:    'w-full max-w-4xl mx-auto mb-4',
