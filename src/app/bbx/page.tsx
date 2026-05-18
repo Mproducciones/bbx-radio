@@ -21,7 +21,7 @@ const PLANES = [
   },
   {
     nombre: 'Pro',
-    precio: '60.000',
+    precio: '80.000',
     setup: '100.000',
     color: '#db8918',
     popular: true,
@@ -38,7 +38,7 @@ const PLANES = [
   },
   {
     nombre: 'Premium',
-    precio: '90.000',
+    precio: '120.000',
     setup: '150.000',
     color: '#7D59B5',
     descripcion: 'Para radios que quieren máxima presencia y control total.',
@@ -82,7 +82,7 @@ export default function BbxPage() {
         <h1 className="text-4xl font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
           Aplicaciones para radios
         </h1>
-        <p className="text-[#8888AA] text-sm">by Bryan Brito · desde $35.000/mes</p>
+        <p className="text-[#8888AA] text-sm">by Bryan Brito · desde $35.000/mes · Pro desde $80.000/mes</p>
       </div>
 
       {/* Planes */}
