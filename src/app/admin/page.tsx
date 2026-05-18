@@ -254,7 +254,7 @@ export default function AdminPage() {
           <p className="text-[#666690] text-xs">Soporte directo con BBX</p>
         </div>
         <a
-          href="https://wa.me/56950291592"
+          href="https://wa.me/5692225555"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white text-xs font-bold px-4 py-2 rounded-xl flex-shrink-0"
