@@ -3,13 +3,13 @@
  */
 'use strict'
 
-const CACHE_NAME = 'radio-bienvenida-v5'
-const STATIC_CACHE = 'radio-bienvenida-static-v5'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v5'
+const CACHE_NAME = 'radio-bienvenida-v6'
+const STATIC_CACHE = 'radio-bienvenida-static-v6'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v6'
 
-// Archivos estáticos para cachear inmediatamente
+// Solo assets que nunca cambian de nombre entre deploys
+// IMPORTANTE: NO cachear '/' — el HTML apunta a CSS con hash que cambia en cada deploy
 const STATIC_FILES = [
-  '/',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -84,15 +84,9 @@ self.addEventListener('fetch', function(event) {
       .catch(function() {
         // Fallback a cache si no hay red
         return caches.match(event.request).then(function(cached) {
-          if (cached) {
-            return cached
-          }
-          // Página offline personalizada
-          return caches.match('/').then(function(cached) {
-            return cached || new Response('Offline - Radio Bienvenida', { 
-              status: 503,
-              headers: { 'Content-Type': 'text/plain' }
-            })
+          return cached || new Response('Offline - Radio Bienvenida', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain' }
           })
         })
       })
