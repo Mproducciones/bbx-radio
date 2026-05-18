@@ -148,7 +148,7 @@ export default function BbxPage() {
           <p className="text-white font-semibold text-sm mb-1">¿Te interesa?</p>
           <p className="text-[#8888AA] text-xs mb-3">Conversamos y armamos un plan para tu radio</p>
           <a
-            href="https://wa.me/56950291592"
+            href="https://wa.me/5692225555"
             className="inline-flex items-center gap-2 bg-[#128C7E] text-sm font-bold px-5 py-2.5 rounded-xl"
             style={{ color: '#ffffff', textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
           >
