@@ -133,7 +133,7 @@ export default function AdminPage() {
             <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-4">
               <Image src="/icons/icon-192.png" alt="Radio Bienvenida" width={64} height={64} className="w-full h-full object-cover" />
             </div>
-            <h1 className="text-white font-bold text-2xl">Radio Bienvenida</h1>
+            <h1 className="text-white font-display text-3xl leading-none">Radio Bienvenida</h1>
             <p className="text-[#666690] text-sm mt-1">Panel de administración</p>
           </div>
 
@@ -197,7 +197,7 @@ export default function AdminPage() {
             <Image src="/icons/icon-192.png" alt="Radio Bienvenida" width={40} height={40} className="w-full h-full object-cover" />
           </div>
           <div>
-            <p className="text-white font-bold text-base leading-tight">Radio Bienvenida</p>
+            <p className="text-white font-display text-xl leading-none">Radio Bienvenida</p>
             <p className="text-[#666690] text-xs">Panel de administración</p>
           </div>
         </div>

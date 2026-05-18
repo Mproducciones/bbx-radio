@@ -80,7 +80,7 @@ export default function BbxPage() {
           <span className="w-2 h-2 rounded-full bg-[#db8918]" style={{ animation: 'var(--animate-live-dot)' }} />
           <span className="text-[#db8918] text-xs font-bold tracking-widest uppercase">BBX Radio System</span>
         </div>
-        <h1 className="text-4xl font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
+        <h1 className="font-display text-4xl text-white mb-1">
           Aplicaciones para radios
         </h1>
         <p className="text-[#8888AA] text-sm">by Bryan Brito · desde $60.000/mes</p>
