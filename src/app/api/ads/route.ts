@@ -1,18 +1,26 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 
+const ALLOWED_TIPOS = ['banner-top', 'banner-middle', 'banner-bottom', 'interstitial']
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
-    const query = searchParams.get('query')
+    const tipo = searchParams.get('tipo')
 
-    if (!query) {
-      return NextResponse.json({ error: 'Missing query parameter' }, { status: 400 })
+    if (!tipo || !ALLOWED_TIPOS.includes(tipo)) {
+      return NextResponse.json({ error: 'Invalid tipo parameter' }, { status: 400 })
     }
 
-    const ads = await sanityClient.fetch(query)
+    const ads = await sanityClient.fetch(
+      `*[_type == "publicidad" && activo == true && tipo == $tipo] | order(prioridad desc) {
+        _id, nombre, tipo, imagen, imagenUrl, enlace, activo, prioridad
+      }`,
+      { tipo }
+    )
+
     return NextResponse.json(ads)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch ads' }, { status: 500 })
   }
 }

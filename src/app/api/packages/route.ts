@@ -1,18 +1,15 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url)
-    const query = searchParams.get('query')
-
-    if (!query) {
-      return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 })
-    }
-
-    const data = await sanityClient.fetch(query)
+    const data = await sanityClient.fetch(
+      `*[_type == "paquetesPublicitarios"][0] {
+        titulo, subtitulo, paqueteBasico, paquetePremium, paqueteEmpresarial, whatsapp
+      }`
+    )
     return NextResponse.json(data)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch packages' }, { status: 500 })
   }
 }

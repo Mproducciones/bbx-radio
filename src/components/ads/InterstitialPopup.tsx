@@ -26,18 +26,7 @@ export function InterstitialPopup({ showAfter = 3, refreshInterval = 5 }: Inters
 
   const fetchAd = async () => {
     try {
-      const query = `*[_type == "publicidad" && activo == true && tipo == "popup_intersticial"] | order(prioridad desc) {
-        _id,
-        nombre,
-        tipo,
-        imagen,
-        imagenUrl,
-        enlace,
-        activo,
-        prioridad
-      }[0]`
-
-      const response = await fetch(`/api/ads?query=${encodeURIComponent(query)}`)
+      const response = await fetch(`/api/ads?tipo=interstitial`)
 
       if (response.ok) {
         const data = await response.json()

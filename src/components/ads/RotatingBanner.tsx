@@ -30,32 +30,16 @@ export function RotatingBanner({ interval = 5, position = 'top', refreshInterval
     try {
       // Mapear posición a tipo de banner
       const tipoMap = {
-        top: 'banner_superior',
-        middle: 'banner_intermedio',
-        bottom: 'banner_inferior',
+        top: 'banner-top',
+        middle: 'banner-middle',
+        bottom: 'banner-bottom',
       }
-      
+
       const tipo = tipoMap[position]
-      
-      const query = `*[_type == "publicidad" && activo == true && tipo == "${tipo}"] | order(prioridad desc) {
-        _id,
-        nombre,
-        tipo,
-        imagen,
-        imagenUrl,
-        enlace,
-        activo,
-        prioridad
-      }`
-
-      console.log('Fetching ads with query:', query)
-
-      const response = await fetch(`/api/ads?query=${encodeURIComponent(query)}`)
-      console.log('Response status:', response.status)
+      const response = await fetch(`/api/ads?tipo=${encodeURIComponent(tipo)}`)
 
       if (response.ok) {
         const data = await response.json()
-        console.log('Ads data received:', data)
         setAds(data)
       }
     } catch (error) {

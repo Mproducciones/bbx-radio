@@ -46,16 +46,7 @@ export function SponsorLanding() {
   useEffect(() => {
     async function fetchPackages() {
       try {
-        const query = `*[_type == "paquetesPublicitarios"][0] {
-          titulo,
-          subtitulo,
-          paqueteBasico,
-          paquetePremium,
-          paqueteEmpresarial,
-          whatsapp
-        }`
-        
-        const response = await fetch(`/api/packages?query=${encodeURIComponent(query)}`)
+        const response = await fetch(`/api/packages`)
         
         if (response.ok) {
           const result = await response.json()
