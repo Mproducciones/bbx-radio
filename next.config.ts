@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
             "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co",
             "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
             "connect-src 'self' https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com",
-            "frame-src 'none'",
+            "frame-src https://vercel.live",
             "object-src 'none'",
             "base-uri 'self'",
           ].join("; "),
