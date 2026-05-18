@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 type PageState = 'checking' | 'login' | 'dashboard'
@@ -57,6 +58,7 @@ const MANUAL_SECTIONS = [
 ]
 
 export default function AdminPage() {
+  const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('checking')
   const [username, setUsername]   = useState('')
   const [password, setPassword]   = useState('')
@@ -92,9 +94,7 @@ export default function AdminPage() {
 
   async function onLogout() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' })
-    setPageState('login')
-    setUsername('')
-    setPassword('')
+    router.push('/')
   }
 
   // ── Cargando ──────────────────────────────────────────────
