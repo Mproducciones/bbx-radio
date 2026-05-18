@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 const PLANES = [
   {
     nombre: 'Básico',
-    precio: '35.000',
+    precio: '60.000',
     setup: '80.000',
     color: '#40B9BF',
-    descripcion: 'Ideal para radios pequeñas que quieren presencia digital.',
+    descripcion: 'Reproductor en vivo con tu marca. Sin panel de contenido.',
     incluye: [
       'App PWA instalable en Android e iOS',
       'Reproductor en vivo con HLS',
@@ -17,7 +17,7 @@ const PLANES = [
       'Hosting incluido en Vercel',
       'Actualizaciones automáticas',
     ],
-    noIncluye: ['CMS de noticias y eventos', 'Página de publicidad', 'APK nativa Android'],
+    noIncluye: ['Noticias y eventos', 'Página de publicidad', 'Panel de administración', 'APK nativa Android'],
   },
   {
     nombre: 'Pro',
@@ -82,7 +82,7 @@ export default function BbxPage() {
         <h1 className="text-4xl font-bold text-white mb-1" style={{ fontFamily: 'var(--font-display)' }}>
           Aplicaciones para radios
         </h1>
-        <p className="text-[#8888AA] text-sm">by Bryan Brito · desde $35.000/mes · Pro desde $80.000/mes</p>
+        <p className="text-[#8888AA] text-sm">by Bryan Brito · desde $60.000/mes</p>
       </div>
 
       {/* Planes */}
