@@ -21,7 +21,7 @@ const DEMO: Lanzamiento[] = [
     artist: 'Artista Local',
     releaseType: 'Single',
     genre: 'Pop',
-    releaseDate: new Date().toISOString().split('T')[0],
+    releaseDate: '2026-05-18',
     description: 'El nuevo single que está sonando en toda la región.',
   },
   {
@@ -30,7 +30,7 @@ const DEMO: Lanzamiento[] = [
     artist: 'Banda Regional',
     releaseType: 'EP',
     genre: 'Rock',
-    releaseDate: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0],
+    releaseDate: '2026-05-11',
   },
 ]
 

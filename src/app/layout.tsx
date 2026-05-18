@@ -63,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" data-theme="dark">
+    <html lang="es" data-theme="dark" suppressHydrationWarning>
       <head>
         {/* iOS PWA */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -102,7 +102,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen antialiased">
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
         <WelcomeAnimation />
         <RadioPlayerProvider>
           {/* Desktop: 2-column layout. Mobile: single column. */}

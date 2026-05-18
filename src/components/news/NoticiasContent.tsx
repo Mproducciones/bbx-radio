@@ -34,7 +34,7 @@ const DEMO_ARTICLES: Article[] = [
     slug: { current: 'exitos-mes' },
     category: 'Música',
     excerpt: 'Repasamos los temas que más sonaron en nuestra programación durante este mes. ¿Está tu favorito?',
-    publishedAt: new Date(Date.now() - 1 * 86400000).toISOString(),
+    publishedAt: '2026-05-17T10:00:00.000Z',
   },
   {
     _id: 'demo-2',
@@ -42,7 +42,7 @@ const DEMO_ARTICLES: Article[] = [
     slug: { current: 'agenda-cultural' },
     category: 'Entretenimiento',
     excerpt: 'Conciertos, ferias y actividades familiares para disfrutar en la región.',
-    publishedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    publishedAt: '2026-05-16T10:00:00.000Z',
   },
   {
     _id: 'demo-3',
@@ -50,7 +50,7 @@ const DEMO_ARTICLES: Article[] = [
     slug: { current: 'nuevo-programa' },
     category: 'Radio',
     excerpt: 'Estamos emocionados de presentar un nuevo espacio lleno de música y entretenimiento para toda la familia.',
-    publishedAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+    publishedAt: '2026-05-14T10:00:00.000Z',
   },
   {
     _id: 'demo-4',
@@ -58,7 +58,7 @@ const DEMO_ARTICLES: Article[] = [
     slug: { current: 'entrevista-artista' },
     category: 'Entrevistas',
     excerpt: 'Conversamos con uno de los artistas más destacados del momento sobre su proceso creativo y próximos proyectos.',
-    publishedAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+    publishedAt: '2026-05-12T10:00:00.000Z',
   },
 ]
 
@@ -69,7 +69,7 @@ const DEMO_RELEASES: Release[] = [
     slug: { current: 'hit-verano' },
     artist: 'Artista Nacional',
     album: 'Nuevo Sencillo',
-    publishedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+    publishedAt: '2026-05-15T10:00:00.000Z',
   },
 ]
 
