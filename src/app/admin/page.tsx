@@ -196,10 +196,7 @@ export default function AdminPage() {
           <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
             <Image src="/icons/icon-512.png" alt="Radio Bienvenida" width={40} height={40} className="w-full h-full object-contain" />
           </div>
-          <div>
-            <p className="text-white font-display text-xl leading-none">Radio Bienvenida</p>
-            <p className="text-[#666690] text-xs">Panel de administración</p>
-          </div>
+          <p className="text-[#666690] text-xs">Panel de administración</p>
         </div>
         <button
           onClick={onLogout}
