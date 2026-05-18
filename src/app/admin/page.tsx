@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { FEATURES } from '@/lib/plan'
 
 type PageState = 'checking' | 'login' | 'dashboard'
 
-const MANUAL_SECTIONS = [
+const ALL_MANUAL_SECTIONS = [
   {
     titulo: 'Publicar noticias',
     icono: '📰',
+    show: FEATURES.noticias,
     pasos: [
       'En el Studio, haz clic en "Noticias"',
       'Clic en el botón "+" para crear una nueva noticia',
@@ -20,6 +22,7 @@ const MANUAL_SECTIONS = [
   {
     titulo: 'Agregar eventos',
     icono: '📅',
+    show: FEATURES.eventos,
     pasos: [
       'En el Studio, selecciona "Eventos"',
       'Clic en "+" para crear un nuevo evento',
@@ -30,6 +33,7 @@ const MANUAL_SECTIONS = [
   {
     titulo: 'Actualizar la programación',
     icono: '🎙️',
+    show: true,
     pasos: [
       'En el Studio, ve a "Programas"',
       'Cada programa tiene: Nombre, Conductor, Días y Horario',
@@ -39,6 +43,7 @@ const MANUAL_SECTIONS = [
   {
     titulo: 'Subir episodios de Replay',
     icono: '▶️',
+    show: FEATURES.replay,
     pasos: [
       'En el Studio, ve a "Replay"',
       'Clic en "+" y completa: Título, Programa, Fecha y Duración',
@@ -49,6 +54,7 @@ const MANUAL_SECTIONS = [
   {
     titulo: 'Gestionar publicidad',
     icono: '📢',
+    show: FEATURES.publicidad,
     pasos: [
       'Ve a "Publicidad" para agregar banners que rotan en la app',
       'Ve a "Paquetes Publicitarios" para editar los planes de anuncio',
@@ -58,6 +64,7 @@ const MANUAL_SECTIONS = [
   {
     titulo: 'Publicar lanzamientos musicales',
     icono: '🎵',
+    show: FEATURES.lanzamientos,
     pasos: [
       'En el Studio, ve a "Lanzamiento musical"',
       'Clic en "+" y completa: Título, Artista, Tipo (Single/EP/Álbum) y Fecha',
@@ -228,7 +235,7 @@ export default function AdminPage() {
       <div className="mb-3">
         <p className="text-[#8888AA] text-xs font-semibold uppercase tracking-wider mb-3">Cómo usar tu panel</p>
         <div className="flex flex-col gap-2">
-          {MANUAL_SECTIONS.map(sec => (
+          {ALL_MANUAL_SECTIONS.filter(s => s.show).map(sec => (
             <details key={sec.titulo} className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-xl overflow-hidden group">
               <summary className="flex items-center gap-3 p-4 cursor-pointer list-none">
                 <span className="text-lg">{sec.icono}</span>

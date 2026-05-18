@@ -4,7 +4,6 @@ import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { ProgramSchedule } from '@/components/schedule/ProgramSchedule'
 import { HlsPlayer } from '@/components/player/HlsPlayer'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
-import { InterstitialPopup } from '@/components/ads/InterstitialPopup'
 import {
   SocialLinks,
   FacebookIcon,
@@ -32,8 +31,7 @@ export default function HomePage() {
 
   return (
     <>
-      <InterstitialPopup showAfter={5} />
-      <main className="min-h-screen bg-[var(--color-ink-900)] px-4 py-4 max-w-md md:max-w-3xl mx-auto flex flex-col gap-4">
+<main className="min-h-screen bg-[var(--color-ink-900)] px-4 py-4 max-w-md md:max-w-3xl mx-auto flex flex-col gap-4">
         {/* Header + player only on mobile — desktop shows them in the sidebar */}
         <header className="md:hidden flex items-center justify-between">
           <div>
