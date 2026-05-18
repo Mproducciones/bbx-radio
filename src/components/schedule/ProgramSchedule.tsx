@@ -37,12 +37,12 @@ function getLiveProgram(programs: Program[]): Program | undefined {
 }
 
 export function ProgramSchedule({ programs, className }: ProgramScheduleProps) {
-  const today = getToday()
-  const [selectedDay, setSelectedDay] = useState<DayKey>(today)
+  const [selectedDay, setSelectedDay] = useState<DayKey>('mon')
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // Scroll activo al día actual al montar
   useEffect(() => {
+    const today = getToday()
+    setSelectedDay(today)
     const container = scrollRef.current
     if (!container) return
     const activeBtn = container.querySelector('[data-active="true"]') as HTMLElement
