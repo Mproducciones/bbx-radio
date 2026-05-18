@@ -26,11 +26,11 @@ async function sign(payload: string): Promise<string> {
 
 async function verify(payload: string, sig: string): Promise<boolean> {
   const expected = await sign(payload)
-  if (expected.length !== sig.length) return false
+  const a = new TextEncoder().encode(expected)
+  const b = new TextEncoder().encode(sig)
+  if (a.length !== b.length) return false
   let diff = 0
-  for (let i = 0; i < expected.length; i++) {
-    diff |= expected.charCodeAt(i) ^ sig.charCodeAt(i)
-  }
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i]
   return diff === 0
 }
 
@@ -51,7 +51,8 @@ export async function createSignedAdminSessionCookie({
   username: string
   maxAgeSeconds: number
 }): Promise<NextResponse> {
-  const payload = JSON.stringify({ u: username, iat: Math.floor(Date.now() / 1000) })
+  const now = Math.floor(Date.now() / 1000)
+  const payload = JSON.stringify({ u: username, iat: now, exp: now + maxAgeSeconds })
   const sig = await sign(payload)
   const value = btoa(payload) + '.' + sig
 
@@ -87,8 +88,10 @@ export async function getAdminSessionFromRequest(
   if (!(await verify(payload, sig))) return null
 
   try {
-    const parsed = JSON.parse(payload) as { u: string; iat: number }
+    const parsed = JSON.parse(payload) as { u: string; iat: number; exp: number }
     if (!parsed?.u || typeof parsed.u !== 'string') return null
+    // Verificar expiración server-side
+    if (!parsed.exp || Math.floor(Date.now() / 1000) > parsed.exp) return null
     return { username: parsed.u }
   } catch {
     return null

@@ -1,21 +1,43 @@
-/**
- * Service Worker para Radio Bienvenida 93.3 FM
- */
 'use strict'
 
-const CACHE_NAME = 'radio-bienvenida-v7'
-const STATIC_CACHE = 'radio-bienvenida-static-v7'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v7'
+const STATIC_CACHE = 'radio-bienvenida-static-v8'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v8'
 
-// Solo assets que nunca cambian de nombre entre deploys
-// IMPORTANTE: NO cachear '/' — el HTML apunta a CSS con hash que cambia en cada deploy
 const STATIC_FILES = [
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
 ]
 
-// Instalación: cachear archivos estáticos
+const CACHEABLE_ORIGINS = [
+  self.location.origin,
+  'https://cdn.sanity.io',
+  'https://fonts.googleapis.com',
+  'https://fonts.gstatic.com',
+]
+
+const NEVER_CACHE = [
+  '/api/',
+  '/admin',
+  '/studio',
+  '.m3u8',
+  '.ts',
+  'sonicstream',
+  'tvstream',
+  'stream',
+]
+
+const MAX_DYNAMIC_ENTRIES = 60
+
+async function trimCache(cacheName, maxItems) {
+  const cache = await caches.open(cacheName)
+  const keys = await cache.keys()
+  if (keys.length > maxItems) {
+    await cache.delete(keys[0])
+    await trimCache(cacheName, maxItems)
+  }
+}
+
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(STATIC_CACHE).then(function(cache) {
@@ -25,7 +47,6 @@ self.addEventListener('install', function(event) {
   self.skipWaiting()
 })
 
-// Activación: limpiar cachés antiguos
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -43,22 +64,17 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim()
 })
 
-// Interceptar fetch: Network-first para contenido dinámico, Cache-first para estáticos
 self.addEventListener('fetch', function(event) {
   var url = event.request.url
+  var method = event.request.method
 
-  // No cachear streams de audio/video
-  if (
-    url.includes('.m3u8') ||
-    url.includes('.ts') ||
-    url.includes('sonicstream') ||
-    url.includes('tvstream') ||
-    url.includes('stream')
-  ) {
-    return
-  }
+  if (method !== 'GET') return
 
-  // Para archivos estáticos, usar cache-first
+  if (NEVER_CACHE.some(function(pattern) { return url.includes(pattern) })) return
+
+  var allowed = CACHEABLE_ORIGINS.some(function(origin) { return url.startsWith(origin) })
+  if (!allowed) return
+
   if (STATIC_FILES.some(function(file) { return url.includes(file) })) {
     event.respondWith(
       caches.match(event.request).then(function(cached) {
@@ -68,37 +84,31 @@ self.addEventListener('fetch', function(event) {
     return
   }
 
-  // Para contenido dinámico, usar network-first con fallback a cache
   event.respondWith(
     fetch(event.request)
       .then(function(response) {
-        // Cachear respuestas exitosas
         if (response.status === 200) {
-          var clone = response.clone()
-          caches.open(DYNAMIC_CACHE).then(function(cache) {
-            cache.put(event.request, clone)
-          })
+          var contentType = response.headers.get('content-type') || ''
+          var isCacheable = contentType.includes('text/') ||
+            contentType.includes('application/json') ||
+            contentType.includes('image/')
+          if (isCacheable) {
+            var clone = response.clone()
+            caches.open(DYNAMIC_CACHE).then(function(cache) {
+              cache.put(event.request, clone)
+              trimCache(DYNAMIC_CACHE, MAX_DYNAMIC_ENTRIES)
+            })
+          }
         }
         return response
       })
       .catch(function() {
-        // Fallback a cache si no hay red
         return caches.match(event.request).then(function(cached) {
-          return cached || new Response('Offline - Radio Bienvenida', {
+          return cached || new Response('Offline', {
             status: 503,
             headers: { 'Content-Type': 'text/plain' }
           })
         })
       })
   )
-})
-
-// Sync background para cuando vuelve la conexión
-self.addEventListener('sync', function(event) {
-  if (event.tag === 'sync-ads') {
-    event.waitUntil(
-      // Aquí podrías implementar sincronización de datos
-      Promise.resolve()
-    )
-  }
 })
