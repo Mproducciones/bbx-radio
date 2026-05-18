@@ -20,7 +20,6 @@ export const publicidadSchema = defineType({
           { title: 'Banner Superior', value: 'banner_superior' },
           { title: 'Banner Intermedio', value: 'banner_intermedio' },
           { title: 'Banner Inferior', value: 'banner_inferior' },
-          { title: 'Pop-up Intersticial', value: 'popup_intersticial' },
         ],
         layout: 'radio',
       },

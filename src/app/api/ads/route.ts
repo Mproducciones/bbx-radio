@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 
-const ALLOWED_TIPOS = ['banner-top', 'banner-middle', 'banner-bottom', 'interstitial']
+const ALLOWED_TIPOS = ['banner_superior', 'banner_intermedio', 'banner_inferior']
 
 export async function GET(req: Request) {
   try {
