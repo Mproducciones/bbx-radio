@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import Image from 'next/image'
 
 type PageState = 'checking' | 'login' | 'dashboard'
 
@@ -113,10 +113,8 @@ export default function AdminPage() {
         <section className="w-full max-w-sm">
           {/* Logo / Brand */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#db8918]/15 border border-[#db8918]/30 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-[#db8918]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18zm-2.5-5.5L16 12l-6.5-3.5v7z"/>
-              </svg>
+            <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-4">
+              <Image src="/icons/icon-192.png" alt="Radio Bienvenida" width={64} height={64} className="w-full h-full object-cover" />
             </div>
             <h1 className="text-white font-bold text-2xl">Radio Bienvenida</h1>
             <p className="text-[#666690] text-sm mt-1">Panel de administración</p>
@@ -178,10 +176,8 @@ export default function AdminPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#db8918]/15 border border-[#db8918]/30 flex items-center justify-center">
-            <svg className="w-5 h-5 text-[#db8918]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18zm-2.5-5.5L16 12l-6.5-3.5v7z"/>
-            </svg>
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
+            <Image src="/icons/icon-192.png" alt="Radio Bienvenida" width={40} height={40} className="w-full h-full object-cover" />
           </div>
           <div>
             <p className="text-white font-bold text-base leading-tight">Radio Bienvenida</p>
@@ -199,7 +195,7 @@ export default function AdminPage() {
       {/* Botón principal — Studio */}
       <a
         href="/studio"
-        className="flex items-center justify-between w-full rounded-2xl p-5 mb-3 transition-all group"
+        className="flex items-center justify-between w-full rounded-2xl p-5 mb-6 transition-all group"
         style={{ background: 'linear-gradient(135deg, #db8918 0%, #a86611 100%)' }}
       >
         <div className="flex items-center gap-4">
@@ -217,35 +213,6 @@ export default function AdminPage() {
           <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
         </svg>
       </a>
-
-      {/* Accesos rápidos */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <a
-          href="/studio/estructura.publicidad"
-          className="bg-[#0F0F1A] border border-[#1A1A2E] hover:border-[#db8918]/40 rounded-xl p-4 transition-colors"
-        >
-          <div className="w-8 h-8 bg-[#db8918]/10 rounded-lg flex items-center justify-center mb-2">
-            <svg className="w-4 h-4 text-[#db8918]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/>
-            </svg>
-          </div>
-          <p className="text-white text-xs font-semibold">Publicidad</p>
-          <p className="text-[#666690] text-[10px] mt-0.5">Banners y anuncios</p>
-        </a>
-
-        <a
-          href="/studio/estructura.replay"
-          className="bg-[#0F0F1A] border border-[#1A1A2E] hover:border-[#db8918]/40 rounded-xl p-4 transition-colors"
-        >
-          <div className="w-8 h-8 bg-[#db8918]/10 rounded-lg flex items-center justify-center mb-2">
-            <svg className="w-4 h-4 text-[#db8918]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-            </svg>
-          </div>
-          <p className="text-white text-xs font-semibold">Replay</p>
-          <p className="text-[#666690] text-[10px] mt-0.5">Episodios grabados</p>
-        </a>
-      </div>
 
       {/* Manual de uso */}
       <div className="mb-3">
