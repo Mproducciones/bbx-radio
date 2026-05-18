@@ -14,14 +14,18 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { FEATURES } from '@/lib/plan'
 
-const TABS = [
-  { href: '/', label: 'En Vivo', icon: LiveIcon },
-  { href: '/noticias', label: 'Noticias', icon: NewsIcon },
-  { href: '/eventos', label: 'Eventos', icon: EventsIcon },
-  { href: '/replay', label: 'Replay', icon: ReplayIcon },
-  { href: '/anunciate', label: 'Publicidad', icon: BusinessIcon },
+const ALL_TABS = [
+  { href: '/',              label: 'En Vivo',       icon: LiveIcon,     show: true },
+  { href: '/noticias',      label: 'Noticias',      icon: NewsIcon,     show: FEATURES.noticias },
+  { href: '/eventos',       label: 'Eventos',       icon: EventsIcon,   show: FEATURES.eventos },
+  { href: '/replay',        label: 'Replay',        icon: ReplayIcon,   show: FEATURES.replay },
+  { href: '/anunciate',     label: 'Publicidad',    icon: BusinessIcon, show: FEATURES.publicidad },
+  { href: '/lanzamientos',  label: 'Lanzamientos',  icon: ReleasesIcon, show: FEATURES.lanzamientos },
 ]
+
+const TABS = ALL_TABS.filter(t => t.show)
 
 export function BottomNav() {
   const pathname = usePathname()
@@ -108,6 +112,14 @@ function ReplayIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+    </svg>
+  )
+}
+
+function ReleasesIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
     </svg>
   )
 }

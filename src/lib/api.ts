@@ -16,17 +16,20 @@ export async function fetchNoticias() {
 }
 
 export async function fetchLanzamientos() {
-  const query = `*[_type == "lanzamiento"] | order(publishedAt desc) {
+  const query = `*[_type == "lanzamiento"] | order(releaseDate desc) {
     _id,
     title,
-    slug,
     artist,
-    album,
-    publishedAt,
-    image,
-    externalLink
-  }[0...10]`
-  
+    releaseType,
+    genre,
+    releaseDate,
+    description,
+    cover,
+    spotifyUrl,
+    youtubeUrl,
+    appleMusicUrl
+  }[0...20]`
+
   return sanityClient.fetch(query)
 }
 

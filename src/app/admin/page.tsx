@@ -55,6 +55,16 @@ const MANUAL_SECTIONS = [
       'Los cambios se reflejan en la app sin necesidad de redesplegar',
     ],
   },
+  {
+    titulo: 'Publicar lanzamientos musicales',
+    icono: '🎵',
+    pasos: [
+      'En el Studio, ve a "Lanzamiento musical"',
+      'Clic en "+" y completa: Título, Artista, Tipo (Single/EP/Álbum) y Fecha',
+      'Agrega la portada y los links de Spotify, YouTube o Apple Music',
+      'Aparece automáticamente en la sección Lanzamientos de la app',
+    ],
+  },
 ]
 
 export default function AdminPage() {
