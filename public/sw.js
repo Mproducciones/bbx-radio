@@ -3,9 +3,9 @@
  */
 'use strict'
 
-const CACHE_NAME = 'radio-bienvenida-v6'
-const STATIC_CACHE = 'radio-bienvenida-static-v6'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v6'
+const CACHE_NAME = 'radio-bienvenida-v7'
+const STATIC_CACHE = 'radio-bienvenida-static-v7'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v7'
 
 // Solo assets que nunca cambian de nombre entre deploys
 // IMPORTANTE: NO cachear '/' — el HTML apunta a CSS con hash que cambia en cada deploy
