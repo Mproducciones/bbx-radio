@@ -186,7 +186,7 @@ export default function AdminPage() {
         </div>
         <button
           onClick={onLogout}
-          className="text-[#444468] hover:text-white text-xs transition-colors bg-[#0F0F1A] border border-[#1A1A2E] rounded-lg px-3 py-1.5"
+          className="text-white text-xs transition-colors rounded-lg px-3 py-1.5 bg-red-600 hover:bg-red-500"
         >
           Salir
         </button>
