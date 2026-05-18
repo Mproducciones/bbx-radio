@@ -36,11 +36,11 @@ const nextConfig: NextConfig = {
           key: "Content-Security-Policy",
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://vercel.live",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
             "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
             "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com",
-            "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl",
+            "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
             "connect-src 'self' https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com",
             "frame-src 'none'",
             "object-src 'none'",
