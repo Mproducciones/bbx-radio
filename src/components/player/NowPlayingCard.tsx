@@ -50,12 +50,12 @@ export function NowPlayingCard({
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-[var(--color-ink-600)] flex items-center justify-center overflow-hidden shadow-lg shadow-[var(--color-mag-400)]/30 relative">
             <Image
-              src="/LOGO_BIENVENIDA (1)_PhotoGrid.png"
+              src="/icons/icon-512.png"
               alt={radio.name}
               fill
               sizes="(max-width: 768px) 48px, 48px"
               quality={100}
-              className="object-cover"
+              className="object-contain"
               priority
             />
           </div>
