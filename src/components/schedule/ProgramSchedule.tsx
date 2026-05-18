@@ -65,7 +65,7 @@ export function ProgramSchedule({ programs, className }: ProgramScheduleProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="font-display text-2xl text-white">Programación</h2>
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={selectedDay}
             initial={{ opacity: 0, y: -4 }}
@@ -105,7 +105,7 @@ export function ProgramSchedule({ programs, className }: ProgramScheduleProps) {
       </div>
 
       {/* Programs list */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={selectedDay}
           initial={{ opacity: 0, x: 10 }}

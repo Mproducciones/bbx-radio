@@ -84,7 +84,7 @@ export function NowPlayingCard({
       </div>
 
       {/* Player area: visualizer nativo o embed Zeno como fallback */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {showZenoFallback ? (
           <motion.div
             key="zeno"
@@ -111,7 +111,7 @@ export function NowPlayingCard({
             </div>
 
             {/* Now Playing info */}
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={nowPlaying.title}
                 initial={{ opacity: 0, y: 8 }}
