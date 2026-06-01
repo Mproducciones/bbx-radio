@@ -33,7 +33,21 @@ export function PremiumAdBanner() {
     fetch('/api/ads?tipo=banner_premium')
       .then(r => r.ok ? r.json() : [])
       .then((ads: PremiumAd[]) => {
-        if (ads.length > 0) { setAd(ads[0]); setVisible(true) }
+        if (ads.length > 0) {
+          setAd(ads[0])
+        } else {
+          // Demo visible para mostrar el formato a potenciales anunciantes
+          setAd({
+            _id: 'demo',
+            nombre: 'Tu negocio aquí',
+            cliente: 'Tu Empresa · Rancagua',
+            tagline: 'Llega a miles de oyentes en O\'Higgins',
+            cta: 'Anunciate',
+            colorAccent: '#db8918',
+            enlace: '/anunciate',
+          })
+        }
+        setVisible(true)
       })
       .catch(() => {})
   }, [pathname])
