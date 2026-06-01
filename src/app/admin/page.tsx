@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { FEATURES } from '@/lib/plan'
+import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
+import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
 
 type PageState = 'checking' | 'login' | 'dashboard'
 
@@ -206,6 +208,9 @@ export default function AdminPage() {
         </button>
       </div>
 
+      {/* Contador de oyentes en tiempo real */}
+      <LiveListenerCounter />
+
       {/* Botón principal — Studio */}
       <a
         href="/studio"
@@ -255,6 +260,9 @@ export default function AdminPage() {
           ))}
         </div>
       </div>
+
+      {/* Solicitudes de canciones */}
+      <SolicitudesPanel />
 
       {/* Soporte */}
       <a

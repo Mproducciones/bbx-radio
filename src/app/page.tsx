@@ -13,6 +13,7 @@ import {
 } from '@/components/nav/SocialLinks'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO, NOW_PLAYING, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
+import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 
 const SOCIAL_LINKS = [
   { label: 'Facebook', href: 'https://www.facebook.com/RadioBienvenida', icon: FacebookIcon, color: '#1877F2' },
@@ -95,30 +96,7 @@ export default function HomePage() {
 
         <RotatingBanner interval={5} position="bottom" />
 
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/20 border border-[#25D366]/30 p-5">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#25D366]/10 via-transparent to-[#25D366]/10 animate-gradient" />
-          <div className="relative flex items-center gap-4">
-            <div className="relative">
-              <div className="absolute inset-0 bg-[#25D366] rounded-full blur-lg opacity-50 animate-pulse" />
-              <div className="relative w-14 h-14 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-full flex items-center justify-center shadow-lg shadow-[#25D366]/30">
-                <WhatsAppIcon className="w-7 h-7 text-white" />
-              </div>
-            </div>
-            <div className="flex-1">
-              <p className="text-white font-semibold text-base mb-1">¿Quieres pedir una canción?</p>
-              <p className="text-[var(--color-ink-300)] text-xs">Contacta directamente al locutor por WhatsApp</p>
-            </div>
-            <a
-              href="https://wa.me/56950291592"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#128C7E] hover:bg-[#0e7a6d] text-white px-5 py-3 rounded-xl font-bold text-sm shadow-lg shadow-[#128C7E]/30 transition-all duration-300 hover:scale-105 flex-shrink-0"
-              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
-            >
-              WhatsApp
-            </a>
-          </div>
-        </div>
+        <SongRequestForm />
 
         <footer className="text-center text-[var(--color-ink-500)] text-xs pb-4 flex flex-col items-center gap-3 pt-4 border-t border-[var(--color-ink-700)]">
           <SocialLinks links={SOCIAL_LINKS} />

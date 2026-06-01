@@ -1,14 +1,3 @@
-/**
- * Hook personalizado para el reproductor de radio
- * 
- * Maneja:
- * - Reproducción de audio stream
- * - Control de volumen
- * - Estado de carga y errores
- * - Visualizador de audio (AudioContext)
- * - Fallback a ZenoEmbed si el stream falla
- */
-
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
@@ -30,6 +19,24 @@ interface UseRadioPlayerReturn {
   setVolume: (v: number) => void
 }
 
+function getSessionId(): string {
+  if (typeof sessionStorage === 'undefined') return Math.random().toString(36).slice(2)
+  let id = sessionStorage.getItem('pulso_session')
+  if (!id) {
+    id = Date.now().toString(36) + Math.random().toString(36).slice(2)
+    sessionStorage.setItem('pulso_session', id)
+  }
+  return id
+}
+
+function pingListener(action: 'join' | 'leave') {
+  const sessionId = getSessionId()
+  const url = action === 'join' ? '/api/listeners/join' : '/api/listeners/leave'
+  navigator.sendBeacon
+    ? navigator.sendBeacon(url, JSON.stringify({ sessionId }))
+    : fetch(url, { method: 'POST', body: JSON.stringify({ sessionId }), headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})
+}
+
 export function useRadioPlayer({
   streamUrl,
   onError,
@@ -43,6 +50,20 @@ export function useRadioPlayer({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const ctxRef = useRef<AudioContext | null>(null)
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const startHeartbeat = useCallback(() => {
+    pingListener('join')
+    heartbeatRef.current = setInterval(() => pingListener('join'), 30_000)
+  }, [])
+
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatRef.current) {
+      clearInterval(heartbeatRef.current)
+      heartbeatRef.current = null
+    }
+    pingListener('leave')
+  }, [])
 
   const initAudio = useCallback(() => {
     if (audioRef.current) return
@@ -52,7 +73,6 @@ export function useRadioPlayer({
     audio.preload = 'none'
     audioRef.current = audio
 
-    // AudioContext se crea solo después de gesto del usuario (requisito móvil)
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
     ctxRef.current = ctx
 
@@ -71,9 +91,10 @@ export function useRadioPlayer({
       setIsPlaying(false)
       setIsLoading(false)
       setHasError(true)
+      stopHeartbeat()
       onError?.(new Error('Error al cargar el stream'))
     })
-  }, [streamUrl, onError])
+  }, [streamUrl, onError, stopHeartbeat])
 
   const play = useCallback(async () => {
     setHasError(false)
@@ -87,20 +108,21 @@ export function useRadioPlayer({
       audio.load()
       await audio.play()
       setIsPlaying(true)
-    } catch (err) {
-      // Safari iOS bloquea autoplay → mostrar error manejable
+      startHeartbeat()
+    } catch {
       setIsPlaying(false)
       setHasError(true)
       onError?.(new Error('Reproducción bloqueada. Presiona Play nuevamente.'))
     } finally {
       setIsLoading(false)
     }
-  }, [initAudio])
+  }, [initAudio, startHeartbeat])
 
   const pause = useCallback(() => {
     audioRef.current?.pause()
     setIsPlaying(false)
-  }, [])
+    stopHeartbeat()
+  }, [stopHeartbeat])
 
   const toggle = useCallback(() => {
     if (isPlaying) pause()
@@ -116,8 +138,9 @@ export function useRadioPlayer({
     return () => {
       audioRef.current?.pause()
       ctxRef.current?.close()
+      stopHeartbeat()
     }
-  }, [])
+  }, [stopHeartbeat])
 
   return { isPlaying, isLoading, hasError, volume, analyser, play, pause, toggle, setVolume }
 }

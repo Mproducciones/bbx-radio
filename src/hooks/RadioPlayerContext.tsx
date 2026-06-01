@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useRef, useCallback, useEffect, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
+import { useListeningMilestone } from '@/hooks/useListeningMilestone'
+import { MilestoneBadge } from '@/components/player/MilestoneBadge'
 
 interface RadioPlayerContextValue {
   isPlaying: boolean
@@ -22,6 +24,27 @@ const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null)
 
 const STREAM_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 
+function getSessionId(): string {
+  if (typeof sessionStorage === 'undefined') return Math.random().toString(36).slice(2)
+  let id = sessionStorage.getItem('pulso_session')
+  if (!id) {
+    id = Date.now().toString(36) + Math.random().toString(36).slice(2)
+    sessionStorage.setItem('pulso_session', id)
+  }
+  return id
+}
+
+function pingListener(action: 'join' | 'leave') {
+  const sessionId = getSessionId()
+  const url = action === 'join' ? '/api/listeners/join' : '/api/listeners/leave'
+  const body = JSON.stringify({ sessionId })
+  if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+    navigator.sendBeacon(url, body)
+  } else {
+    fetch(url, { method: 'POST', body, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})
+  }
+}
+
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -32,9 +55,25 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   const pathname = usePathname()
   const prevPathRef = useRef(pathname)
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const ctxRef = useRef<AudioContext | null>(null)
+
+  const milestone = useListeningMilestone(isPlaying)
+
+  const startHeartbeat = useCallback(() => {
+    pingListener('join')
+    heartbeatRef.current = setInterval(() => pingListener('join'), 30_000)
+  }, [])
+
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatRef.current) {
+      clearInterval(heartbeatRef.current)
+      heartbeatRef.current = null
+    }
+    pingListener('leave')
+  }, [])
 
   // Cerrar TV al navegar fuera de "/"
   useEffect(() => {
@@ -51,7 +90,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     prevPathRef.current = pathname
   }, [pathname, isTvOpen])
 
-  // Inicializar audio + Web Audio API una sola vez
   useEffect(() => {
     const audio = new Audio(STREAM_URL)
     audio.crossOrigin = 'anonymous'
@@ -63,7 +101,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     const ctx = new AudioCtx()
     ctxRef.current = ctx
 
-    // audio → analyser → speakers (visualizador + sonido)
     const source = ctx.createMediaElementSource(audio)
     const node = ctx.createAnalyser()
     node.fftSize = 256
@@ -77,17 +114,18 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       setIsPlaying(false)
       setIsLoading(false)
       setHasError(true)
+      stopHeartbeat()
     })
 
     return () => {
       audio.pause()
       audio.src = ''
       ctx.close()
+      stopHeartbeat()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Sincronizar volumen
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume
   }, [volume])
@@ -102,18 +140,20 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       setIsLoading(true)
       await audio.play()
       setIsPlaying(true)
+      startHeartbeat()
     } catch {
       setHasError(true)
       setIsPlaying(false)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [startHeartbeat])
 
   const pause = useCallback(() => {
     audioRef.current?.pause()
     setIsPlaying(false)
-  }, [])
+    stopHeartbeat()
+  }, [stopHeartbeat])
 
   const toggle = useCallback(() => {
     if (isPlaying) pause()
@@ -125,8 +165,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const openTv = useCallback(() => {
     audioRef.current?.pause()
     setIsPlaying(false)
+    stopHeartbeat()
     setIsTvOpen(true)
-  }, [])
+  }, [stopHeartbeat])
 
   const closeTv = useCallback(() => {
     setIsTvOpen(false)
@@ -136,12 +177,14 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       if (ctx?.state === 'suspended') ctx.resume()
       audio.play().catch(() => {})
       setIsPlaying(true)
+      startHeartbeat()
     }
-  }, [])
+  }, [startHeartbeat])
 
   return (
     <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, play, pause, toggle, setVolume }}>
       {children}
+      <MilestoneBadge milestone={milestone} />
     </RadioPlayerContext.Provider>
   )
 }
