@@ -41,7 +41,7 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
   // Crear partículas una sola vez
   const particlesRef = useRef<Particle[]>([])
   if (particlesRef.current.length === 0) {
-    for (let i = 0; i < 140; i++) {
+    for (let i = 0; i < 60; i++) {
       const layer = i < 40 ? 0 : i < 90 ? 1 : 2
       const baseRadius = layer === 0
         ? 80  + Math.random() * 120
@@ -105,8 +105,8 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     const [r1, g1, b1] = hexToRgb(primaryColor.startsWith('#') ? primaryColor : '#db8918')
     const [r2, g2, b2] = hexToRgb(secondaryColor.startsWith('#') ? secondaryColor : '#40B9BF')
 
-    // Fade — más transparente = trail más largo (sensación motion blur)
-    ctx.fillStyle = `rgba(7,7,14,${isPlaying ? 0.10 : 0.20})`
+    // Fade — más transparente = trail más largo
+    ctx.fillStyle = `rgba(7,7,14,${isPlaying ? 0.15 : 0.30})`
     ctx.fillRect(0, 0, W, H)
 
     // Glow central — respira con el bajo

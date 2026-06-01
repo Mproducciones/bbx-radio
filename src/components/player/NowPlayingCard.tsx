@@ -6,7 +6,6 @@ import { ZenoEmbed } from './ZenoEmbed'
 import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
-import { StoryGenerator } from './StoryGenerator'
 
 interface NowPlayingCardProps {
   radio: RadioConfig
@@ -125,7 +124,7 @@ export function NowPlayingCard({
               </AnimatePresence>
             </div>
 
-            {/* Controles + compartir */}
+            {/* Controles */}
             <div className="flex items-center gap-4">
               <PlayButton isPlaying={isPlaying} isLoading={isLoading} onToggle={onToggle} color={colors.primary} glow={colors.glow} />
 
@@ -139,8 +138,6 @@ export function NowPlayingCard({
                   aria-label="Volumen"
                 />
               </div>
-
-              <StoryGenerator radio={radio} nowPlaying={nowPlaying} colors={colors} />
             </div>
 
           </motion.div>
