@@ -6,6 +6,7 @@ import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
 import { MiniPlayer } from '@/components/player/MiniPlayer'
+import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
@@ -110,7 +111,9 @@ export default function RootLayout({
           <div className="md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
             <div className="flex-1 md:overflow-y-auto">
-              {children}
+              <SwipeLayout>
+                {children}
+              </SwipeLayout>
               {/* Mobile-only bottom spacer so content clears the fixed BottomNav */}
               <div className="md:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 16px))' }} />
             </div>
