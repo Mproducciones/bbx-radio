@@ -5,105 +5,6 @@ import { motion } from 'framer-motion'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 // ── Mockup del celular ────────────────────────────────────────────────────────
-function AppMockup() {
-  return (
-    <div className="relative w-[160px] mx-auto select-none">
-      <div className="absolute inset-[-20px] blur-3xl opacity-30 rounded-full"
-        style={{ background: 'radial-gradient(circle, #db8918 0%, #7B2FFF 60%, transparent 100%)' }} />
-      <div className="relative rounded-[28px] overflow-hidden shadow-2xl"
-        style={{ background: '#05050D', border: '2.5px solid rgba(255,255,255,0.1)', aspectRatio: '9/19.5' }}>
-
-        {/* Status bar */}
-        <div className="flex justify-between px-3 pt-2 pb-1">
-          <p className="text-[7px] text-white/40">9:41</p>
-          <div className="flex gap-1 items-center">
-            <div className="w-1 h-1 rounded-full bg-white/40" />
-            <div className="w-1 h-1 rounded-full bg-white/40" />
-            <div className="w-1 h-1 rounded-full bg-white/40" />
-          </div>
-        </div>
-
-        {/* Header */}
-        <div className="px-3 flex justify-between items-center mb-2">
-          <div>
-            <p className="text-[9px] text-white font-bold leading-none">Radio Bienvenida</p>
-            <p className="text-[6px] text-white/30 mt-0.5">Tu radio · 93.3 FM</p>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <p className="text-[7px] text-red-400 font-bold">EN VIVO</p>
-          </div>
-        </div>
-
-        {/* Player card */}
-        <div className="mx-3 rounded-xl p-2.5 mb-2"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <p className="text-[7px] text-white/40">Ahora suena</p>
-              <p className="text-[9px] text-white font-bold">Sabor A Mí</p>
-              <p className="text-[6px] text-white/30">Los Panchos</p>
-            </div>
-            <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: '#db8918' }}>
-              <div className="w-0 h-0 ml-0.5"
-                style={{ borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '6px solid #07070E' }} />
-            </div>
-          </div>
-          <div className="flex items-end gap-px h-3">
-            {[2,4,3,6,4,7,3,5,4,6,3,4].map((h, i) => (
-              <motion.div key={i} className="flex-1 rounded-full"
-                style={{ background: '#db8918', opacity: 0.6 + (h / 14) }}
-                animate={{ scaleY: [1, h / 4, 1] }}
-                transition={{ duration: 0.8 + i * 0.1, repeat: Infinity, delay: i * 0.06 }}
-                initial={{ height: h * 1.5, transformOrigin: 'bottom' }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Saludo */}
-        <div className="mx-3 rounded-xl p-2 mb-2"
-          style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.25)' }}>
-          <p className="text-[7px] font-black" style={{ color: '#db8918' }}>👋 SALUDO AL AIRE</p>
-          <p className="text-[8px] text-white mt-0.5 leading-tight">Para Rosa, de Juan 🎂</p>
-          <p className="text-[6px] text-white/30 mt-0.5">hace 2 min</p>
-        </div>
-
-        {/* Banner */}
-        <div className="mx-3 rounded-xl p-2"
-          style={{ background: 'rgba(64,185,191,0.08)', border: '1px solid rgba(64,185,191,0.2)' }}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[6px] font-black uppercase tracking-wider" style={{ color: '#40B9BF' }}>PUBLICIDAD</p>
-              <p className="text-[7px] text-white font-bold mt-0.5">AutoMundo Rancagua</p>
-            </div>
-            <div className="text-[7px] px-1.5 py-0.5 rounded font-bold flex-shrink-0"
-              style={{ background: '#40B9BF', color: '#07070E' }}>Ver →</div>
-          </div>
-        </div>
-
-        {/* Bottom nav */}
-        <div className="absolute bottom-0 left-0 right-0 flex justify-around py-1.5 px-1"
-          style={{ background: 'rgba(5,5,13,0.96)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          {[
-            { icon: '📻', label: 'En Vivo', active: true },
-            { icon: '👋', label: 'Saludos' },
-            { icon: '📺', label: 'TV' },
-            { icon: '📢', label: 'Anunciate' },
-          ].map(tab => (
-            <div key={tab.label} className="flex flex-col items-center gap-0.5 relative">
-              {tab.active && <div className="absolute -top-1.5 w-5 h-0.5 rounded-full" style={{ background: '#db8918' }} />}
-              <span className="text-[9px]">{tab.icon}</span>
-              <p className="text-[5px] font-medium" style={{ color: tab.active ? '#db8918' : 'rgba(255,255,255,0.3)' }}>{tab.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ── Mini player BBX ───────────────────────────────────────────────────────────
 function MiniRadioPlayer() {
   const { isPlaying, toggle } = useRadioPlayerContext()
@@ -151,19 +52,14 @@ export default function BbxPage() {
           </div>
         </div>
 
-        {/* Hero con mockup */}
-        <div className="grid grid-cols-2 gap-6 items-center mb-12">
-          <div>
-            <h1 className="font-display text-4xl text-white leading-tight mb-3">
-              Tu radio.<br />Tu audiencia.<br />Tu negocio.
-            </h1>
-            <p className="text-white/40 text-sm leading-relaxed">
-              Una app instalable para tu radio. En 48 horas tu logo, tu música, tu programación.
-            </p>
-          </div>
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <AppMockup />
-          </motion.div>
+        {/* Hero */}
+        <div className="text-center mb-12">
+          <h1 className="font-display text-5xl text-white leading-tight mb-4">
+            Tu radio.<br />Tu audiencia.<br />Tu negocio.
+          </h1>
+          <p className="text-white/40 text-sm leading-relaxed max-w-sm mx-auto">
+            Una app instalable para tu radio. En 48 horas tu logo, tu música, tu programación.
+          </p>
         </div>
 
         {/* 3 números */}
