@@ -1,7 +1,7 @@
 'use strict'
 
-const STATIC_CACHE = 'radio-bienvenida-static-v10'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v10'
+const STATIC_CACHE  = 'radio-bienvenida-static-v11'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v11'
 
 const STATIC_FILES = [
   '/manifest.json',
@@ -31,13 +31,14 @@ const MAX_DYNAMIC_ENTRIES = 60
 
 async function trimCache(cacheName, maxItems) {
   const cache = await caches.open(cacheName)
-  const keys = await cache.keys()
+  const keys  = await cache.keys()
   if (keys.length > maxItems) {
     await cache.delete(keys[0])
     await trimCache(cacheName, maxItems)
   }
 }
 
+// ── Install ───────────────────────────────────────────────────────────────────
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(STATIC_CACHE).then(function(cache) {
@@ -47,6 +48,7 @@ self.addEventListener('install', function(event) {
   self.skipWaiting()
 })
 
+// ── Activate ──────────────────────────────────────────────────────────────────
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -64,8 +66,44 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim()
 })
 
+// ── Push notifications ────────────────────────────────────────────────────────
+self.addEventListener('push', function(event) {
+  var data = {}
+  try { data = event.data ? event.data.json() : {} } catch(e) {}
+  var title   = data.title || 'Radio Bienvenida'
+  var body    = data.body  || ''
+  var url     = data.url   || '/'
+  var options = {
+    body:    body,
+    icon:    '/icons/icon-192.png',
+    badge:   '/icons/icon-72.png',
+    vibrate: [100, 50, 100],
+    data:    { url: url },
+    actions: [{ action: 'open', title: 'Ver ahora' }],
+  }
+  event.waitUntil(self.registration.showNotification(title, options))
+})
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close()
+  var url = (event.notification.data && event.notification.data.url) ? event.notification.data.url : '/'
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i]
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(url)
+          return client.focus()
+        }
+      }
+      return clients.openWindow(url)
+    })
+  )
+})
+
+// ── Fetch cache ───────────────────────────────────────────────────────────────
 self.addEventListener('fetch', function(event) {
-  var url = event.request.url
+  var url    = event.request.url
   var method = event.request.method
 
   if (method !== 'GET') return
@@ -84,42 +122,6 @@ self.addEventListener('fetch', function(event) {
     return
   }
 
-// ── Push notifications ────────────────────────────────────────────────────────
-self.addEventListener('push', function(event) {
-  var data = {}
-  try { data = event.data ? event.data.json() : {} } catch(e) {}
-  var title   = data.title   || 'Radio Bienvenida'
-  var body    = data.body    || ''
-  var url     = data.url     || '/'
-  var options = {
-    body:    body,
-    icon:    '/icons/icon-192.png',
-    badge:   '/icons/icon-72.png',
-    vibrate: [100, 50, 100],
-    data:    { url: url },
-    actions: [{ action: 'open', title: 'Ver ahora' }],
-  }
-  event.waitUntil(self.registration.showNotification(title, options))
-})
-
-self.addEventListener('notificationclick', function(event) {
-  event.notification.close()
-  var url = event.notification.data && event.notification.data.url ? event.notification.data.url : '/'
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i]
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          client.navigate(url)
-          return client.focus()
-        }
-      }
-      return clients.openWindow(url)
-    })
-  )
-})
-
-// ── Fetch cache ───────────────────────────────────────────────────────────────
   event.respondWith(
     fetch(event.request)
       .then(function(response) {
