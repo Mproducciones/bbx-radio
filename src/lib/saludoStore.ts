@@ -33,9 +33,11 @@ export async function addSaludo(
 }
 
 export async function getSaludos(): Promise<Saludo[]> {
+  const cutoff = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString()
   const { data } = await supabaseAdmin
     .from('saludos')
     .select('*')
+    .gte('submitted_at', cutoff)
     .order('submitted_at', { ascending: false })
     .limit(60)
   return (data ?? []) as Saludo[]
