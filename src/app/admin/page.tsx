@@ -15,12 +15,61 @@ import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
 type PageState = 'login' | 'dashboard'
 
 const STUDIO_LINKS = [
-  { icon: '📰', label: 'Noticias',      desc: 'Publicar o editar noticias',   href: '/studio' },
-  { icon: '📅', label: 'Eventos',       desc: 'Agregar eventos locales',       href: '/studio' },
-  { icon: '📢', label: 'Publicidad',    desc: 'Gestionar campañas activas',    href: '/studio' },
-  { icon: '🎙️', label: 'Programación', desc: 'Actualizar la parrilla',        href: '/studio' },
-  { icon: '▶️', label: 'Replay',        desc: 'Subir episodios pasados',       href: '/studio' },
-  { icon: '🎵', label: 'Lanzamientos',  desc: 'Publicar música nueva',         href: '/studio' },
+  {
+    label: 'Noticias', desc: 'Publicar y editar', color: '#40B9BF', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+        <line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Eventos', desc: 'Agenda local', color: '#7D59B5', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+        <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Publicidad', desc: 'Campañas activas', color: '#db8918', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Programación', desc: 'Parrilla semanal', color: '#FF006E', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="8" y1="22" x2="16" y2="22"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Replay', desc: 'Episodios anteriores', color: '#00D9A0', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'Lanzamientos', desc: 'Música nueva', color: '#FFB300', href: '/studio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+      </svg>
+    ),
+  },
 ]
 
 export default function AdminPage() {
@@ -159,18 +208,28 @@ export default function AdminPage() {
             {/* Accesos rápidos al CMS */}
             <div>
               <p className="text-[#666690] text-[10px] font-bold uppercase tracking-widest mb-3">Gestionar contenido</p>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-3 gap-2">
                 {STUDIO_LINKS.map(link => (
                   <a key={link.label} href={link.href}
-                    className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0F0F1A] border border-[#1A1A2E] hover:border-[#db8918]/30 hover:bg-[#0F0F1A] transition-all group">
-                    <span className="text-xl flex-shrink-0">{link.icon}</span>
-                    <div className="min-w-0">
-                      <p className="text-white text-xs font-semibold leading-none">{link.label}</p>
-                      <p className="text-[#444468] text-[10px] mt-0.5 leading-tight truncate">{link.desc}</p>
+                    className="group relative flex flex-col items-center gap-2.5 p-4 rounded-2xl transition-all overflow-hidden"
+                    style={{ background: '#0C0C1A', border: `1px solid ${link.color}18` }}
+                    onMouseEnter={e => (e.currentTarget.style.border = `1px solid ${link.color}45`)}
+                    onMouseLeave={e => (e.currentTarget.style.border = `1px solid ${link.color}18`)}
+                  >
+                    {/* Glow background */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: `radial-gradient(circle at 50% 0%, ${link.color}12, transparent 70%)` }} />
+
+                    {/* Icon circle */}
+                    <div className="relative w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                      style={{ background: `${link.color}15`, color: link.color }}>
+                      <div className="w-5 h-5">{link.icon}</div>
                     </div>
-                    <svg className="w-3 h-3 text-[#333355] group-hover:text-[#db8918] transition-colors flex-shrink-0 ml-auto" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                    </svg>
+
+                    <div className="text-center relative">
+                      <p className="text-white text-[11px] font-bold leading-none">{link.label}</p>
+                      <p className="text-[#444468] text-[9px] mt-0.5 leading-tight">{link.desc}</p>
+                    </div>
                   </a>
                 ))}
               </div>
