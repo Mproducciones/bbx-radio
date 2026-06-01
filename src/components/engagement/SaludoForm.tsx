@@ -7,15 +7,12 @@ import { MOTIVOS, type MotivoId } from '@/lib/saludoTypes'
 type Phase = 'form' | 'sending' | 'done' | 'error'
 
 export function SaludoForm() {
-  const [phase, setPhase] = useState<Phase>('form')
-  const [motivo, setMotivo] = useState<MotivoId>('cumpleanos')
-  const [para, setPara]     = useState('')
-  const [de, setDe]         = useState('')
+  const [phase, setPhase]     = useState<Phase>('form')
+  const [motivo, setMotivo]   = useState<MotivoId>('cumpleanos')
+  const [para, setPara]       = useState('')
+  const [de, setDe]           = useState('')
   const [mensaje, setMensaje] = useState('')
-  const [cancion, setCancion] = useState('')
-  const [artista, setArtista] = useState('')
   const [errMsg, setErrMsg]   = useState('')
-  const [showCancion, setShowCancion] = useState(false)
 
   const selectedMotivo = MOTIVOS.find(m => m.id === motivo)!
 
@@ -23,12 +20,11 @@ export function SaludoForm() {
     e.preventDefault()
     if (!para.trim() || !de.trim()) return
     setPhase('sending')
-
     try {
       const res = await fetch('/api/saludos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ para, de, motivo, mensaje: mensaje || undefined, cancion: cancion || undefined, artista: artista || undefined }),
+        body: JSON.stringify({ para, de, motivo, mensaje: mensaje || undefined }),
       })
       const data = await res.json()
       if (!res.ok) { setErrMsg(data.error ?? 'Error al enviar'); setPhase('error'); return }
@@ -38,8 +34,8 @@ export function SaludoForm() {
   }
 
   function reset() {
-    setPara(''); setDe(''); setMensaje(''); setCancion(''); setArtista('')
-    setMotivo('cumpleanos'); setShowCancion(false); setPhase('form')
+    setPara(''); setDe(''); setMensaje('')
+    setMotivo('cumpleanos'); setPhase('form')
   }
 
   return (
@@ -53,7 +49,6 @@ export function SaludoForm() {
           onSubmit={submit}
           className="flex flex-col gap-4"
         >
-          {/* Motivo */}
           <div>
             <p className="text-white/40 text-xs mb-2">¿Por qué escribís?</p>
             <div className="grid grid-cols-3 gap-2">
@@ -76,7 +71,6 @@ export function SaludoForm() {
             </div>
           </div>
 
-          {/* Para */}
           <label className="flex flex-col gap-1.5">
             <span className="text-white/40 text-xs">¿Para quién va el saludo?</span>
             <input
@@ -88,7 +82,6 @@ export function SaludoForm() {
             />
           </label>
 
-          {/* Mensaje */}
           <label className="flex flex-col gap-1.5">
             <span className="text-white/40 text-xs">Tu mensaje <span className="text-white/20">(opcional · {120 - mensaje.length} caracteres)</span></span>
             <input
@@ -100,7 +93,6 @@ export function SaludoForm() {
             />
           </label>
 
-          {/* De parte de */}
           <label className="flex flex-col gap-1.5">
             <span className="text-white/40 text-xs">De parte de</span>
             <input
@@ -111,46 +103,6 @@ export function SaludoForm() {
               className="bg-white/[0.04] border border-white/[0.08] focus:border-[#db8918] rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors placeholder-white/20"
             />
           </label>
-
-          {/* Canción opcional */}
-          <div>
-            <button
-              type="button"
-              onClick={() => setShowCancion(v => !v)}
-              className="text-xs text-white/30 hover:text-white/60 transition-colors flex items-center gap-1.5"
-            >
-              <span>{showCancion ? '▾' : '▸'}</span>
-              {showCancion ? 'Sin canción' : '+ Agregar canción'}
-            </button>
-
-            <AnimatePresence>
-              {showCancion && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ overflow: 'hidden' }}
-                  className="mt-3 flex flex-col gap-2"
-                >
-                  <input
-                    value={cancion}
-                    onChange={e => setCancion(e.target.value)}
-                    placeholder="Nombre de la canción"
-                    maxLength={100}
-                    className="bg-white/[0.04] border border-white/[0.08] focus:border-[#db8918] rounded-xl px-4 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/20"
-                  />
-                  <input
-                    value={artista}
-                    onChange={e => setArtista(e.target.value)}
-                    placeholder="Artista"
-                    maxLength={80}
-                    className="bg-white/[0.04] border border-white/[0.08] focus:border-[#db8918] rounded-xl px-4 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/20"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           <motion.button
             whileTap={{ scale: 0.97 }}
@@ -184,9 +136,7 @@ export function SaludoForm() {
             {selectedMotivo.emoji}
           </motion.div>
           <div>
-            <p className="text-white font-bold text-lg leading-tight">
-              ¡Saludo enviado!
-            </p>
+            <p className="text-white font-bold text-lg leading-tight">¡Saludo enviado!</p>
             <p className="text-white/50 text-sm mt-1.5 leading-relaxed">
               Para <span className="text-white font-medium">{para}</span>
               <br />de parte de <span className="text-white font-medium">{de}</span>

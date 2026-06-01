@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { FEATURES } from '@/lib/plan'
 import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
 import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
+import { SaludosPanel } from '@/components/admin/SaludosPanel'
 import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 import { PollManager } from '@/components/admin/PollManager'
 import { ListenerChart } from '@/components/admin/ListenerChart'
@@ -295,8 +296,9 @@ export default function AdminPage() {
 
           </div>
 
-          {/* Columna central: solicitudes + votación */}
-          <div className="lg:col-span-1">
+          {/* Columna central: saludos + solicitudes + votación */}
+          <div className="lg:col-span-1 flex flex-col gap-5">
+            <SaludosPanel />
             <SolicitudesPanel />
             <PollManager />
           </div>
