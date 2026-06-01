@@ -48,3 +48,5 @@ android/local.properties
 android/.idea/
 android/captures/
 android/app/release/
+
+.vercel

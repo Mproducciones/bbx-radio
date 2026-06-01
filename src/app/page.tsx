@@ -2,7 +2,6 @@
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { ProgramSchedule } from '@/components/schedule/ProgramSchedule'
-import { HlsPlayer } from '@/components/player/HlsPlayer'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
 import {
   SocialLinks,
@@ -14,6 +13,7 @@ import {
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO, NOW_PLAYING, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
+import { LiveTVCard } from '@/components/player/LiveTVCard'
 
 const SOCIAL_LINKS = [
   { label: 'Facebook', href: 'https://www.facebook.com/RadioBienvenida', icon: FacebookIcon, color: '#1877F2' },
@@ -75,22 +75,12 @@ export default function HomePage() {
 
         <RotatingBanner interval={5} position="middle" />
 
-        {/* Bienvenida TV Section */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="pulso-badge-live">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-mag-400)]" style={{ animation: 'var(--animate-live-dot)' }} />
-              Bienvenida TV
-            </span>
-            <button
-              onClick={() => { isTvOpen ? closeTv() : openTv() }}
-              className="pulso-btn pulso-btn-ghost text-xs px-3 py-1.5 h-auto"
-            >
-              {isTvOpen ? 'Cerrar ✕' : 'Ver transmisión ▶'}
-            </button>
-          </div>
-          {isTvOpen && <HlsPlayer src={RADIO_TV_HLS} title="Bienvenida TV en vivo" shouldPlay />}
-        </div>
+        {/* Bienvenida TV */}
+        <LiveTVCard
+          src={RADIO_TV_HLS}
+          isOpen={isTvOpen}
+          onToggle={() => { isTvOpen ? closeTv() : openTv() }}
+        />
 
         <ProgramSchedule programs={PROGRAMS} />
 
