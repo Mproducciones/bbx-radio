@@ -64,7 +64,7 @@ export function SolicitudesPanel() {
           Solicitudes de canciones
         </p>
         {pending.length > 0 && (
-          <span className="text-[10px] font-bold text-[#FF006E] bg-[#FF006E]/10 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-bold text-[#db8918] bg-[#db8918]/10 px-2 py-0.5 rounded-full">
             {pending.length} pendiente{pending.length !== 1 ? 's' : ''}
           </span>
         )}
@@ -72,7 +72,7 @@ export function SolicitudesPanel() {
 
       {loading && (
         <div className="flex justify-center py-8">
-          <div className="w-5 h-5 border-2 border-[#FF006E] border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 

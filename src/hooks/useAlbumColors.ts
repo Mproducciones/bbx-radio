@@ -8,13 +8,14 @@ export interface AlbumColors {
   glow: string
 }
 
-// Time-of-day palettes — warm morning → energetic midday → deep night
+// Paletas basadas en los colores corporativos de Radio Bienvenida
+// Primary: #db8918 amber · Secondary: #40B9BF teal · Tertiary: #7D59B5 purple
 const TIME_PALETTES: AlbumColors[] = [
-  { primary: '#FF6B35', secondary: '#FFB300', glow: 'rgba(255,107,53,0.35)' },  // 6-11 mañana
-  { primary: '#00D4FF', secondary: '#0099CC', glow: 'rgba(0,212,255,0.30)' },  // 11-14 mediodía
-  { primary: '#FF006E', secondary: '#7B2FFF', glow: 'rgba(255,0,110,0.35)' },  // 14-18 tarde
-  { primary: '#7B2FFF', secondary: '#FF006E', glow: 'rgba(123,47,255,0.35)' }, // 18-21 noche temprana
-  { primary: '#4A00E0', secondary: '#2D0080', glow: 'rgba(74,0,224,0.30)' },   // 21-6 noche
+  { primary: '#FF8C42', secondary: '#db8918', glow: 'rgba(255,140,66,0.35)' },   // 6-11 mañana — naranja cálido
+  { primary: '#40B9BF', secondary: '#db8918', glow: 'rgba(64,185,191,0.30)' },   // 11-14 mediodía — teal corporativo
+  { primary: '#db8918', secondary: '#7D59B5', glow: 'rgba(219,137,24,0.35)' },   // 14-18 tarde — amber corporativo
+  { primary: '#7D59B5', secondary: '#40B9BF', glow: 'rgba(125,89,181,0.35)' },   // 18-21 noche temprana — purple corporativo
+  { primary: '#2E3A6E', secondary: '#40B9BF', glow: 'rgba(46,58,110,0.28)' },    // 21-6 noche — azul profundo
 ]
 
 function paletteForHour(h: number): AlbumColors {
@@ -43,14 +44,12 @@ async function extractFromImage(url: string): Promise<AlbumColors> {
           r += data[i]; g += data[i + 1]; b += data[i + 2]
         }
         r = Math.round(r / n); g = Math.round(g / n); b = Math.round(b / n)
-        // Boost saturation: push away from grey
         const max = Math.max(r, g, b)
         const factor = max > 0 ? 255 / max : 1
         r = Math.min(255, Math.round(r * factor * 0.9))
         g = Math.min(255, Math.round(g * factor * 0.9))
         b = Math.min(255, Math.round(b * factor))
         const primary = `rgb(${r},${g},${b})`
-        // Complementary shift
         const secondary = `rgb(${b},${r},${g})`
         const glow = `rgba(${r},${g},${b},0.35)`
         resolve({ primary, secondary, glow })
@@ -64,9 +63,7 @@ async function extractFromImage(url: string): Promise<AlbumColors> {
 }
 
 export function useAlbumColors(albumArtUrl?: string): AlbumColors {
-  const [colors, setColors] = useState<AlbumColors>(() =>
-    paletteForHour(new Date().getHours())
-  )
+  const [colors, setColors] = useState<AlbumColors>(() => paletteForHour(new Date().getHours()))
 
   useEffect(() => {
     if (albumArtUrl) {
@@ -78,12 +75,9 @@ export function useAlbumColors(albumArtUrl?: string): AlbumColors {
     }
   }, [albumArtUrl])
 
-  // Cycle palette every 30 min when no album art (creates living feel)
   useEffect(() => {
     if (albumArtUrl) return
-    const interval = setInterval(() => {
-      setColors(paletteForHour(new Date().getHours()))
-    }, 1_800_000)
+    const interval = setInterval(() => setColors(paletteForHour(new Date().getHours())), 1_800_000)
     return () => clearInterval(interval)
   }, [albumArtUrl])
 

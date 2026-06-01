@@ -68,12 +68,12 @@ export function SongRequestForm() {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: '#0F0F1A', border: '1px solid rgba(255,0,110,0.15)' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.15)' }}>
       {/* Header */}
       <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF006E33, #7B2FFF33)' }}>
-            <MicIcon className="w-5 h-5 text-[#FF006E]" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}>
+            <MicIcon className="w-5 h-5 text-[#db8918]" />
           </div>
           <div>
             <p className="text-white font-semibold text-sm">Pide tu canción</p>
@@ -101,7 +101,7 @@ export function SongRequestForm() {
                 placeholder="ej: Amor Secreto"
                 required
                 maxLength={120}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#FF006E] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
               />
             </label>
 
@@ -113,7 +113,7 @@ export function SongRequestForm() {
                 placeholder="ej: Camilo"
                 required
                 maxLength={80}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#FF006E] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
               />
             </label>
 
@@ -124,7 +124,7 @@ export function SongRequestForm() {
                 onChange={e => setDedication(e.target.value)}
                 placeholder="ej: Para María con todo mi amor"
                 maxLength={200}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#FF006E] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
               />
             </label>
 
@@ -133,7 +133,7 @@ export function SongRequestForm() {
               type="submit"
               disabled={!song.trim() || !artist.trim()}
               className="w-full py-3 rounded-xl font-bold text-sm text-white mt-1 disabled:opacity-40 transition-opacity"
-              style={{ background: 'linear-gradient(135deg, #FF006E, #7B2FFF)' }}
+              style={{ background: 'linear-gradient(135deg, #db8918, #7B2FFF)' }}
             >
               Enviar solicitud
             </motion.button>
@@ -147,7 +147,7 @@ export function SongRequestForm() {
             animate={{ opacity: 1 }}
             className="px-5 py-10 flex flex-col items-center gap-3"
           >
-            <div className="w-8 h-8 border-2 border-[#FF006E] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
             <p className="text-[#8888AA] text-sm">Enviando tu solicitud...</p>
           </motion.div>
         )}
@@ -164,9 +164,9 @@ export function SongRequestForm() {
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 500, damping: 20, delay: 0.1 }}
               className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #FF006E33, #7B2FFF33)' }}
+              style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}
             >
-              <CheckIcon className="w-8 h-8 text-[#FF006E]" />
+              <CheckIcon className="w-8 h-8 text-[#db8918]" />
             </motion.div>
 
             <div>
@@ -178,8 +178,8 @@ export function SongRequestForm() {
             </div>
 
             {success.position > 0 && (
-              <div className="rounded-xl px-4 py-3 w-full" style={{ background: 'rgba(255,0,110,0.08)', border: '1px solid rgba(255,0,110,0.2)' }}>
-                <p className="text-[#FF006E] text-xs font-semibold uppercase tracking-wide">Tu posición en la cola</p>
+              <div className="rounded-xl px-4 py-3 w-full" style={{ background: 'rgba(219,137,24,0.08)', border: '1px solid rgba(219,137,24,0.2)' }}>
+                <p className="text-[#db8918] text-xs font-semibold uppercase tracking-wide">Tu posición en la cola</p>
                 <p className="text-white text-3xl font-display leading-none mt-1">#{success.position}</p>
                 {success.position === 1 && (
                   <p className="text-[#8888AA] text-xs mt-1">¡Eres el primero!</p>

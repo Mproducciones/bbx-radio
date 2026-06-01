@@ -7,6 +7,7 @@ import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
 import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
+import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
@@ -119,6 +120,7 @@ export default function RootLayout({
             </div>
           </div>
           <ThreeFingerGesture />
+          <PremiumAdBanner />
           <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />

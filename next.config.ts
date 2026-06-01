@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://vercel.live",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
             "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
-            "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co",
+            "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co https://picsum.photos https://fastly.picsum.photos",
             "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
             "connect-src 'self' https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com",
             "frame-src https://vercel.live",

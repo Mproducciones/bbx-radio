@@ -29,10 +29,10 @@ export function LiveListenerCounter() {
   return (
     <div
       className="relative overflow-hidden rounded-2xl p-5 mb-6"
-      style={{ background: 'linear-gradient(135deg, #0F0F1A 0%, #1A0A2E 100%)', border: '1px solid rgba(255,0,110,0.2)' }}
+      style={{ background: 'linear-gradient(135deg, #0F0F1A 0%, #1A0A2E 100%)', border: '1px solid rgba(219,137,24,0.2)' }}
     >
       {/* Glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,0,110,0.12) 0%, transparent 70%)' }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(219,137,24,0.12) 0%, transparent 70%)' }} />
 
       <div className="relative flex items-center justify-between">
         <div>
@@ -67,11 +67,11 @@ export function LiveListenerCounter() {
         <div className="flex flex-col items-center gap-2">
           {/* Pulsing live dot */}
           <div className="relative w-12 h-12 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-[#FF006E]/20 animate-ping" />
-            <div className="absolute inset-1 rounded-full bg-[#FF006E]/10" />
-            <div className="w-5 h-5 rounded-full bg-[#FF006E] shadow-lg shadow-[#FF006E]/50" />
+            <div className="absolute inset-0 rounded-full bg-[#db8918]/20 animate-ping" />
+            <div className="absolute inset-1 rounded-full bg-[#db8918]/10" />
+            <div className="w-5 h-5 rounded-full bg-[#db8918] shadow-lg shadow-[#db8918]/50" />
           </div>
-          <span className="text-[#FF006E] text-[10px] font-bold uppercase tracking-widest">EN VIVO</span>
+          <span className="text-[#db8918] text-[10px] font-bold uppercase tracking-widest">EN VIVO</span>
         </div>
       </div>
 

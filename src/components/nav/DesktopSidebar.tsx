@@ -14,6 +14,7 @@ import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO, NOW_PLAYING } from '@/lib/radioConfig'
 import { cn } from '@/lib/utils'
 import { FEATURES } from '@/lib/plan'
+import { PremiumAdSidebar } from '@/components/ads/PremiumAdBanner'
 
 const ALL_NAV_ITEMS = [
   { href: '/',             label: 'En Vivo',      icon: LiveIcon,     show: true },
@@ -97,6 +98,9 @@ export function DesktopSidebar() {
           )
         })}
       </nav>
+
+      {/* Premium ad */}
+      <PremiumAdSidebar />
 
       {/* Footer */}
       <div className="px-6 py-5 border-t border-[var(--color-ink-700)]">
