@@ -11,10 +11,11 @@ import {
   WhatsAppIcon,
 } from '@/components/nav/SocialLinks'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
-import { RADIO, NOW_PLAYING, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
+import { RADIO, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { LiveTVCard } from '@/components/player/LiveTVCard'
 import { SongHistory } from '@/components/player/SongHistory'
+import { useNowPlaying } from '@/hooks/useNowPlaying'
 
 const SOCIAL_LINKS = [
   { label: 'Facebook', href: 'https://www.facebook.com/RadioBienvenida', icon: FacebookIcon, color: '#1877F2' },
@@ -25,6 +26,7 @@ const SOCIAL_LINKS = [
 
 export default function HomePage() {
   const { isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, toggle, setVolume, play, openConcert } = useRadioPlayerContext()
+  const { current: nowPlaying } = useNowPlaying()
 
   const handleRadioToggle = () => {
     if (isTvOpen) { closeTv(); play(); return }
@@ -63,7 +65,12 @@ export default function HomePage() {
         <div className="md:hidden">
           <NowPlayingCard
             radio={RADIO}
-            nowPlaying={NOW_PLAYING}
+            nowPlaying={{
+              title: nowPlaying?.title ?? 'En Vivo',
+              artist: nowPlaying?.artist ?? 'Radio Bienvenida 93.3 FM',
+              isLive: true,
+              startedAt: new Date(0),
+            }}
             isPlaying={isPlaying}
             isLoading={isLoading}
             hasError={hasError}

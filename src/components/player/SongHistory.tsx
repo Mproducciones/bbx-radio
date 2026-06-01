@@ -2,47 +2,28 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNowPlaying, type Track } from '@/hooks/useNowPlaying'
 
-interface Track {
-  title: string
-  artist: string
-  minutesAgo: number
-}
-
-// Canciones típicas de radio regional chilena — mix cueca, cumbia, pop latino
-const PLAYLIST: Track[] = [
-  { title: 'Hawái',                  artist: 'Maluma',              minutesAgo: 4  },
-  { title: 'Tusa',                   artist: 'KAROL G & Nicki Minaj', minutesAgo: 8  },
-  { title: 'Bichota',                artist: 'KAROL G',             minutesAgo: 12 },
-  { title: 'Con Calma',              artist: 'Daddy Yankee & Snow', minutesAgo: 16 },
-  { title: 'Mi Gente',               artist: 'J Balvin',            minutesAgo: 20 },
-  { title: 'Gasolina',               artist: 'Daddy Yankee',        minutesAgo: 25 },
-  { title: 'La Bicicleta',           artist: 'Carlos Vives & Shakira', minutesAgo: 29 },
-  { title: 'Despacito',              artist: 'Luis Fonsi ft. Daddy Yankee', minutesAgo: 33 },
-  { title: 'Chantaje',               artist: 'Shakira ft. Maluma',  minutesAgo: 37 },
-  { title: 'El Perdón',              artist: 'Nicky Jam & Enrique Iglesias', minutesAgo: 41 },
-  { title: 'Danza Kuduro',           artist: 'Don Omar',            minutesAgo: 46 },
-  { title: 'Reggaeton Lento',        artist: 'CNCO',                minutesAgo: 50 },
-  { title: 'Me Rehúso',              artist: 'Danny Ocean',         minutesAgo: 54 },
-  { title: 'Loco Contigo',           artist: 'DJ Snake, J. Balvin', minutesAgo: 58 },
-  { title: 'Si Tu Novio Te Deja Sola', artist: 'J Balvin, Bad Bunny', minutesAgo: 63 },
-]
-
-function formatTime(minutesAgo: number): string {
-  const now = new Date()
-  const then = new Date(now.getTime() - minutesAgo * 60_000)
-  return then.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
-}
+const COLORS = ['#FF006E', '#00D4FF', '#7B2FFF', '#FFB300', '#00D9A0', '#FF6B35']
 
 function spotifySearch(title: string, artist: string) {
   return `https://open.spotify.com/search/${encodeURIComponent(`${title} ${artist}`)}`
 }
 
-const COLORS = ['#FF006E', '#00D4FF', '#7B2FFF', '#FFB300', '#00D9A0', '#FF6B35']
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
+}
 
 export function SongHistory() {
+  const { current, history } = useNowPlaying()
   const [expanded, setExpanded] = useState(false)
-  const visible = expanded ? PLAYLIST : PLAYLIST.slice(0, 5)
+
+  const all: Track[] = [
+    ...(current && current.title !== 'En Vivo' ? [current] : []),
+    ...history,
+  ]
+
+  const visible = expanded ? all : all.slice(0, 5)
 
   return (
     <div className="rounded-2xl overflow-hidden" style={{ background: '#0A0A16', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -50,64 +31,92 @@ export function SongHistory() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#00D9A0] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#00D9A0] animate-pulse" />
           <p className="text-white text-sm font-semibold">Qué sonó hoy</p>
         </div>
-        <span className="text-[#444468] text-xs">{PLAYLIST.length} canciones</span>
+        <span className="text-[#444468] text-xs">
+          {all.length > 0 ? `${all.length} canciones` : 'Cargando…'}
+        </span>
       </div>
 
-      {/* Lista */}
-      <div className="divide-y divide-white/[0.03]">
-        <AnimatePresence initial={false}>
-          {visible.map((track, i) => {
-            const accent = COLORS[i % COLORS.length]
-            return (
-              <motion.a
-                key={track.title}
-                href={spotifySearch(track.title, track.artist)}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 8 }}
-                transition={{ delay: i * 0.03, duration: 0.2 }}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors group"
-              >
-                {/* Número / color dot */}
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all group-hover:scale-105"
-                  style={{ background: `${accent}20`, color: accent, border: `1px solid ${accent}30` }}
+      {/* Canción actual destacada */}
+      {current && current.title !== 'En Vivo' && (
+        <motion.a
+          href={spotifySearch(current.title, current.artist)}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex items-center gap-3 px-4 py-3 group"
+          style={{ background: 'rgba(255,0,110,0.06)', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+        >
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+            style={{ background: 'rgba(255,0,110,0.2)', color: '#FF006E', border: '1px solid rgba(255,0,110,0.3)' }}>
+            ♪
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-white text-sm font-semibold truncate">{current.title}</p>
+            <p className="text-[#666690] text-xs truncate">{current.artist}</p>
+          </div>
+          <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full flex-shrink-0"
+            style={{ color: '#FF006E', background: 'rgba(255,0,110,0.12)', border: '1px solid rgba(255,0,110,0.2)' }}>
+            Ahora
+          </span>
+        </motion.a>
+      )}
+
+      {/* Historial */}
+      {visible.length === 0 ? (
+        <div className="px-4 py-8 text-center text-[#444468] text-xs">
+          El historial se irá llenando mientras suena la radio
+        </div>
+      ) : (
+        <div className="divide-y divide-white/[0.03]">
+          <AnimatePresence initial={false}>
+            {visible.slice(current && current.title !== 'En Vivo' ? 1 : 0).map((track, i) => {
+              const accent = COLORS[(i + 1) % COLORS.length]
+              return (
+                <motion.a
+                  key={track.playedAt}
+                  href={spotifySearch(track.title, track.artist)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors group"
                 >
-                  {i === 0 ? '♪' : i + 1}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium truncate leading-tight">{track.title}</p>
-                  <p className="text-[#666690] text-xs truncate">{track.artist}</p>
-                </div>
-
-                {/* Tiempo + Spotify */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[#444468] text-xs tabular-nums">{formatTime(track.minutesAgo)}</span>
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: '#1DB954' }}>
-                    <SpotifyIcon className="w-3 h-3 text-white" />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: `${accent}20`, color: accent, border: `1px solid ${accent}30` }}>
+                    {i + 2}
                   </div>
-                </div>
-              </motion.a>
-            )
-          })}
-        </AnimatePresence>
-      </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white text-sm font-medium truncate">{track.title}</p>
+                    <p className="text-[#666690] text-xs truncate">{track.artist}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-[#444468] text-xs tabular-nums">{formatTime(track.playedAt)}</span>
+                    <div className="w-6 h-6 rounded-full items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden sm:flex"
+                      style={{ background: '#1DB954' }}>
+                      <SpotifyIcon className="w-3 h-3 text-white" />
+                    </div>
+                  </div>
+                </motion.a>
+              )
+            })}
+          </AnimatePresence>
+        </div>
+      )}
 
-      {/* Ver más */}
-      <button
-        onClick={() => setExpanded(e => !e)}
-        className="w-full py-3 text-xs font-medium transition-colors text-[#666690] hover:text-white"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
-      >
-        {expanded ? 'Ver menos ↑' : `Ver las ${PLAYLIST.length - 5} anteriores ↓`}
-      </button>
+      {all.length > 5 && (
+        <button
+          onClick={() => setExpanded(e => !e)}
+          className="w-full py-3 text-xs font-medium transition-colors text-[#666690] hover:text-white"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
+        >
+          {expanded ? 'Ver menos ↑' : `Ver ${all.length - 5} más ↓`}
+        </button>
+      )}
     </div>
   )
 }

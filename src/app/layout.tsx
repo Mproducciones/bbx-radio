@@ -119,7 +119,6 @@ export default function RootLayout({
             </div>
           </div>
           <ThreeFingerGesture />
-          <MiniPlayer />
           <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />
