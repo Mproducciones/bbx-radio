@@ -9,9 +9,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const authorized = await isAdminRequestAuthorized(req)
-  if (!authorized) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!authorized) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params
   const body = await req.json().catch(() => null)
@@ -19,8 +17,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'status inválido' }, { status: 400 })
   }
 
-  const ok = updateStatus(id, body.status)
-  if (!ok) return NextResponse.json({ error: 'not found' }, { status: 404 })
-
+  const ok = await updateStatus(id, body.status)
+  if (!ok) return NextResponse.json({ error: 'not found or db error' }, { status: 404 })
   return NextResponse.json({ ok: true })
 }

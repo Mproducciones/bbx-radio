@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'name y phone requeridos' }, { status: 400 })
   }
 
-  const result = register(
+  const result = await register(
     { name: body.name, phone: body.phone, contest: body.contest ?? 'general' },
     ip,
   )
@@ -22,5 +22,6 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const ok = await isAdminRequestAuthorized(req)
   if (!ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  return NextResponse.json({ listeners: getAll(), stats: getStats() })
+  const [listeners, stats] = await Promise.all([getAll(), getStats()])
+  return NextResponse.json({ listeners, stats })
 }

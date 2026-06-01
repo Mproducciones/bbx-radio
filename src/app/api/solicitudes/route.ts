@@ -1,38 +1,24 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { addRequest, getQueue } from '@/lib/songRequestStore'
 
-// Restrict: max 3 requests from same IP per 10 min
-const ipLog = new Map<string, number[]>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const window = 10 * 60_000
-  const hits = (ipLog.get(ip) ?? []).filter(t => now - t < window)
-  if (hits.length >= 3) return true
-  ipLog.set(ip, [...hits, now])
-  return false
-}
-
 export async function GET() {
-  return NextResponse.json(getQueue())
+  const queue = await getQueue()
+  return NextResponse.json(queue)
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  if (isRateLimited(ip)) {
-    return NextResponse.json({ error: 'Demasiadas solicitudes. Espera unos minutos.' }, { status: 429 })
-  }
-
   const body = await req.json().catch(() => null)
+
   if (!body || typeof body.song !== 'string' || typeof body.artist !== 'string') {
     return NextResponse.json({ error: 'song y artist son requeridos' }, { status: 400 })
   }
 
-  const req2 = addRequest({
-    song: body.song,
-    artist: body.artist,
-    dedication: typeof body.dedication === 'string' ? body.dedication : undefined,
-  })
+  const result = await addRequest(
+    { song: body.song, artist: body.artist, dedication: body.dedication },
+    ip,
+  )
 
-  return NextResponse.json(req2, { status: 201 })
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.error?.includes('Demasiadas') ? 429 : 400 })
+  return NextResponse.json(result.request, { status: 201 })
 }
