@@ -78,6 +78,224 @@ const HOW_IT_WORKS = [
   { step: '04', title: 'Crecés', desc: 'Activás sorteos, votaciones y empezás a capturar leads.', color: '#00D9A0' },
 ]
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Sección: Cómo ganar plata con tu radio (explicación para el dueño)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SORTEO_STEPS = [
+  {
+    num: '1',
+    title: 'Tú activás un sorteo',
+    desc: 'Desde tu panel, en 30 segundos: le ponés nombre al sorteo y qué se gana. Por ejemplo: "2 entradas al Festival de Verano".',
+    color: '#db8918',
+  },
+  {
+    num: '2',
+    title: 'Tus oyentes se inscriben',
+    desc: 'Desde la app, ponen su nombre y WhatsApp. Ven su número de participante. El locutor lo menciona al aire: "¡Ya van 47 inscritos!".',
+    color: '#40B9BF',
+  },
+  {
+    num: '3',
+    title: 'El anunciante paga por el sorteo',
+    desc: 'El supermercado, la automotora o la clínica ponen el premio y te pagan por aparecer como patrocinador. Tú guardás todos los números.',
+    color: '#7D59B5',
+  },
+  {
+    num: '4',
+    title: 'Tenés una base de datos real',
+    desc: '200 personas de Rancagua que escuchan tu radio y te dieron su WhatsApp. Eso vale plata para cualquier negocio local.',
+    color: '#00D9A0',
+  },
+]
+
+const CASOS_USO = [
+  {
+    negocio: 'Supermercado',
+    ejemplo: 'Patrocina un sorteo de canastas navideñas',
+    paga: '$80.000',
+    tiObtenes: '150 leads + exposición en la app',
+    icon: '🛒',
+    color: '#7D59B5',
+  },
+  {
+    negocio: 'Automotora',
+    ejemplo: 'Paga por un broadcast a tu base de contactos',
+    paga: '$60.000',
+    tiObtenes: '300 WhatsApps con su oferta del mes',
+    icon: '🚗',
+    color: '#40B9BF',
+  },
+  {
+    negocio: 'Pizzería / Restorán',
+    ejemplo: 'Cupón de descuento a tu lista de oyentes',
+    paga: '$40.000',
+    tiObtenes: 'Clientes reales que van a comer',
+    icon: '🍕',
+    color: '#db8918',
+  },
+  {
+    negocio: 'Clínica / Farmacia',
+    ejemplo: 'Campaña de prevención patrocinada',
+    paga: '$90.000',
+    tiObtenes: 'Imagen de marca + leads para su base',
+    icon: '🏥',
+    color: '#FF8C42',
+  },
+]
+
+const FRASE_PITCH = `"Tengo 200 personas de Rancagua que me dieron su WhatsApp voluntariamente porque escuchan mi radio. Son tus clientes. ¿Cuánto vale llegar directo al celular de 200 personas de tu ciudad?"`
+
+function MonetizacionSection() {
+  return (
+    <div className="mb-12">
+
+      {/* Título */}
+      <div className="text-center mb-8">
+        <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-2">Para el dueño de la radio</p>
+        <h2 className="font-display text-3xl text-white leading-tight mb-2">
+          ¿Cómo gano más plata<br />con esto?
+        </h2>
+        <p className="text-white/40 text-sm max-w-md mx-auto">
+          La app no es un gasto. Es una herramienta para venderle más a tus anunciantes y conseguir anunciantes nuevos.
+        </p>
+      </div>
+
+      {/* Flujo del sorteo */}
+      <div
+        className="rounded-2xl p-5 mb-6"
+        style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <p className="text-white font-bold text-sm mb-1">El ciclo que genera plata</p>
+        <p className="text-white/40 text-xs mb-5">Así funciona un sorteo patrocinado, paso a paso</p>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {SORTEO_STEPS.map((s, i) => (
+            <motion.div
+              key={s.num}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="relative rounded-xl p-3"
+              style={{ background: `${s.color}08`, border: `1px solid ${s.color}20` }}
+            >
+              {i < SORTEO_STEPS.length - 1 && (
+                <div className="hidden md:block absolute -right-1.5 top-1/2 -translate-y-1/2 z-10">
+                  <svg className="w-3 h-3 text-white/20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                  </svg>
+                </div>
+              )}
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center font-display text-lg mb-2"
+                style={{ background: `${s.color}20`, color: s.color }}
+              >
+                {s.num}
+              </div>
+              <p className="text-white font-semibold text-xs leading-snug mb-1">{s.title}</p>
+              <p className="text-white/40 text-[11px] leading-relaxed">{s.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Qué le decís al anunciante */}
+      <div
+        className="rounded-2xl p-5 mb-6"
+        style={{ background: 'rgba(219,137,24,0.06)', border: '1px solid rgba(219,137,24,0.2)' }}
+      >
+        <p className="text-[#db8918] text-[10px] font-black uppercase tracking-widest mb-3">Qué le decís al anunciante</p>
+        <blockquote
+          className="text-white text-base font-medium leading-relaxed italic mb-3"
+          style={{ borderLeft: '3px solid #db8918', paddingLeft: '16px' }}
+        >
+          {FRASE_PITCH}
+        </blockquote>
+        <p className="text-white/40 text-xs">
+          Ningún negocio local puede comprar eso en Facebook o Google. Vos sí lo tenés.
+        </p>
+      </div>
+
+      {/* Ejemplos reales con números */}
+      <div className="mb-4">
+        <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-3">Ejemplos con números reales</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {CASOS_USO.map((c, i) => (
+            <motion.div
+              key={c.negocio}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="rounded-xl p-4 flex gap-3"
+              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${c.color}18` }}
+            >
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                style={{ background: `${c.color}12` }}
+              >
+                {c.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white font-bold text-sm">{c.negocio}</p>
+                <p className="text-white/40 text-xs mt-0.5 leading-snug">{c.ejemplo}</p>
+                <div className="flex items-center gap-3 mt-2 flex-wrap">
+                  <div>
+                    <p className="text-[10px] text-white/25 uppercase tracking-wide">Te paga</p>
+                    <p className="font-display text-lg leading-none" style={{ color: c.color }}>{c.paga}</p>
+                  </div>
+                  <div className="h-6 w-px bg-white/10" />
+                  <div>
+                    <p className="text-[10px] text-white/25 uppercase tracking-wide">Tú obtenés</p>
+                    <p className="text-white/60 text-xs leading-snug">{c.tiObtenes}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Cuánto podés ganar extra */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: 'rgba(0,217,160,0.05)', border: '1px solid rgba(0,217,160,0.15)' }}
+      >
+        <p className="text-[#00D9A0] text-[10px] font-black uppercase tracking-widest mb-3">Cuánto podés ganar de más por mes</p>
+
+        <div className="space-y-3">
+          {[
+            { item: '2 sorteos patrocinados / mes',        valor: '+ $160.000', color: '#db8918' },
+            { item: '1 broadcast de WhatsApp / mes',        valor: '+  $50.000', color: '#40B9BF' },
+            { item: 'Banner premium en app (1 anunciante)', valor: '+  $80.000', color: '#7D59B5' },
+          ].map(r => (
+            <div key={r.item} className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: r.color }} />
+                <p className="text-white/60 text-sm">{r.item}</p>
+              </div>
+              <p className="font-display text-xl flex-shrink-0" style={{ color: r.color }}>{r.valor}</p>
+            </div>
+          ))}
+
+          <div
+            className="flex items-center justify-between pt-3 mt-1"
+            style={{ borderTop: '1px solid rgba(0,217,160,0.2)' }}
+          >
+            <p className="text-white font-bold text-sm">Ingreso extra potencial / mes</p>
+            <p className="font-display text-2xl text-[#00D9A0]">+ $290.000</p>
+          </div>
+        </div>
+
+        <p className="text-white/25 text-[11px] mt-3 leading-relaxed">
+          Sin contar la suscripción base. Solo de los servicios adicionales que la plataforma te permite ofrecer.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function BbxPage() {
   const router = useRouter()
 
@@ -136,6 +354,9 @@ export default function BbxPage() {
             ))}
           </div>
         </div>
+
+        {/* Cómo ganar plata con tu radio */}
+        <MonetizacionSection />
 
         {/* Planes */}
         <p className="text-white/30 text-xs font-semibold uppercase tracking-wider text-center mb-5">Planes y precios</p>
