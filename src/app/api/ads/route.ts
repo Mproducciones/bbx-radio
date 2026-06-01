@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 
-const ALLOWED_TIPOS = ['banner_superior', 'banner_intermedio', 'banner_inferior']
+const ALLOWED_TIPOS = ['banner_superior', 'banner_intermedio', 'banner_inferior', 'banner_premium']
 
 export async function GET(req: Request) {
   try {
@@ -12,11 +12,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Invalid tipo parameter' }, { status: 400 })
     }
 
+    const now = new Date().toISOString()
+
     const ads = await sanityClient.fetch(
-      `*[_type == "publicidad" && activo == true && tipo == $tipo] | order(prioridad desc) {
-        _id, nombre, tipo, imagen, imagenUrl, enlace, activo, prioridad
+      `*[_type == "publicidad" && activo == true && tipo == $tipo
+        && fechaInicio <= $now && fechaFin >= $now
+      ] | order(prioridad desc) {
+        _id, nombre, tipo, imagen, imagenUrl, enlace, activo, prioridad,
+        tagline, cta, colorAccent, cliente
       }`,
-      { tipo }
+      { tipo, now }
     )
 
     return NextResponse.json(ads)

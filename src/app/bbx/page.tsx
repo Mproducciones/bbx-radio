@@ -13,9 +13,9 @@ const PLANES = [
     incluye: [
       'App PWA instalable en Android e iOS',
       'Reproductor en vivo con visualizador',
-      'Programación semanal con "EN VIVO" automático',
+      'Saludos al aire — oyentes mandan mensajes en vivo',
       'TV streaming integrado',
-      'Qué sonó hoy (historial en vivo)',
+      'Programación semanal con "EN VIVO" automático',
       'Hosting incluido · Actualizaciones automáticas',
     ],
     noIncluye: ['Votación de canciones', 'Sorteos y registro de oyentes', 'Solicitudes de canciones', 'Panel de analytics', 'Publicidad digital'],
@@ -63,12 +63,12 @@ const PLANES = [
 ]
 
 const DIFERENCIADORES = [
-  { icon: '🗳️', label: 'Votación en vivo',     desc: 'El oyente decide qué suena. Crea engagement inmediato con jóvenes.' },
+  { icon: '👋', label: 'Saludos al aire',       desc: 'El oyente manda su saludo desde la app y el locutor lo lee en vivo. El feature que más fideliza.' },
+  { icon: '📺', label: 'TV + Radio unificados', desc: 'Radio y canal de TV en la misma app. Dos audiencias, un solo lugar.' },
+  { icon: '🗳️', label: 'Votación en vivo',     desc: 'El oyente decide qué suena. Crea engagement inmediato.' },
   { icon: '🎁', label: 'Sorteos digitales',    desc: 'Registra oyentes con nombre y WhatsApp. Tu base de datos crece sola.' },
   { icon: '📊', label: 'Analytics reales',     desc: 'Muéstrale a tus anunciantes cuántos oyentes tenés ahora mismo.' },
-  { icon: '🎵', label: 'Solicitudes en cola',  desc: 'Los oyentes piden canciones y ven su posición. Nunca se pierden.' },
-  { icon: '📺', label: 'TV + Radio unificados', desc: 'Radio y canal de TV en la misma app. Dos audiencias, un solo lugar.' },
-  { icon: '🌐', label: 'PWA + APK nativa',    desc: 'Funciona en todos los celulares. Sin depender del App Store.' },
+  { icon: '🌐', label: 'PWA instalable',       desc: 'Se instala como app nativa en Android e iOS. Sin App Store, sin costos.' },
 ]
 
 const HOW_IT_WORKS = [

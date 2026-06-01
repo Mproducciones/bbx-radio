@@ -10,8 +10,7 @@ const ROUTES = [
   '/',
   '/saludos',
   '/tv',
-  FEATURES.noticias   && '/noticias',
-  FEATURES.eventos    && '/eventos',
+  FEATURES.publicidad && '/anunciate',
 ].filter(Boolean) as string[]
 
 function routeIndex(path: string): number {

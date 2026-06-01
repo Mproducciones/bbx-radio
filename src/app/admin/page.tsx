@@ -7,6 +7,7 @@ import { FEATURES } from '@/lib/plan'
 import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
 import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
 import { SaludosPanel } from '@/components/admin/SaludosPanel'
+import { AdsPanel } from '@/components/admin/AdsPanel'
 import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 import { PollManager } from '@/components/admin/PollManager'
 import { ListenerChart } from '@/components/admin/ListenerChart'
@@ -288,9 +289,10 @@ export default function AdminPage() {
 
           </div>
 
-          {/* Columna central: saludos + solicitudes + votación */}
+          {/* Columna central: saludos + campañas + solicitudes */}
           <div className="lg:col-span-1 flex flex-col gap-5">
             <SaludosPanel />
+            <AdsPanel />
             <SolicitudesPanel />
             <PollManager />
           </div>
