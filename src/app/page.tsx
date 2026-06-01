@@ -15,6 +15,8 @@ import { RADIO, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { LiveTVCard } from '@/components/player/LiveTVCard'
 import { SongHistory } from '@/components/player/SongHistory'
+import { SongPoll } from '@/components/engagement/SongPoll'
+import { ListenerSignup } from '@/components/engagement/ListenerSignup'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 
 const SOCIAL_LINKS = [
@@ -94,6 +96,12 @@ export default function HomePage() {
         <ProgramSchedule programs={PROGRAMS} />
 
         <RotatingBanner interval={5} position="bottom" />
+
+        {/* Votación en vivo */}
+        <SongPoll />
+
+        {/* Sorteo / registro de oyentes */}
+        <ListenerSignup />
 
         <SongHistory />
 

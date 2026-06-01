@@ -1,0 +1,40 @@
+import { NextResponse, type NextRequest } from 'next/server'
+import { getPoll, vote, setPoll, closePoll, getVote } from '@/lib/pollStore'
+import { isAdminRequestAuthorized } from '@/lib/adminAuth'
+
+function getSession(req: NextRequest): string {
+  return req.cookies.get('pulso_session')?.value
+    ?? req.headers.get('x-session-id')
+    ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    ?? 'anon'
+}
+
+export async function GET(req: NextRequest) {
+  const poll = getPoll()
+  if (!poll) return NextResponse.json(null)
+  const session = getSession(req)
+  return NextResponse.json({ ...poll, myVote: getVote(session) })
+}
+
+export async function POST(req: NextRequest) {
+  const session = getSession(req)
+  const { optionId } = await req.json().catch(() => ({}))
+  if (!optionId) return NextResponse.json({ error: 'optionId required' }, { status: 400 })
+  const result = vote(session, optionId)
+  return NextResponse.json({ ...result, poll: getPoll() })
+}
+
+// Admin: crear poll nuevo o cerrarlo
+export async function PUT(req: NextRequest) {
+  const ok = await isAdminRequestAuthorized(req)
+  if (!ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await req.json().catch(() => null)
+  if (body?.action === 'close') { closePoll(); return NextResponse.json({ ok: true }) }
+
+  if (!body?.question || !body?.optionA || !body?.optionB) {
+    return NextResponse.json({ error: 'question, optionA y optionB requeridos' }, { status: 400 })
+  }
+  setPoll(body.question, body.optionA, body.optionB)
+  return NextResponse.json({ ok: true, poll: getPoll() })
+}

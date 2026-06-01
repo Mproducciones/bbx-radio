@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { FEATURES } from '@/lib/plan'
 import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
 import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
+import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
+import { PollManager } from '@/components/admin/PollManager'
 
 type PageState = 'checking' | 'login' | 'dashboard'
 
@@ -225,6 +227,9 @@ export default function AdminPage() {
             {/* Contador de oyentes */}
             <LiveListenerCounter />
 
+            {/* Analytics KPIs */}
+            <AnalyticsPanel />
+
             {/* Botón principal — Studio */}
             <a
               href="/studio"
@@ -286,9 +291,10 @@ export default function AdminPage() {
 
           </div>
 
-          {/* Columna central: solicitudes */}
+          {/* Columna central: solicitudes + votación */}
           <div className="lg:col-span-1">
             <SolicitudesPanel />
+            <PollManager />
           </div>
 
           {/* Columna derecha: manual de uso */}
