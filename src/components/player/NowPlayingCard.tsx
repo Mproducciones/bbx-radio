@@ -19,6 +19,7 @@ interface NowPlayingCardProps {
   analyser: AnalyserNode | null
   onToggle: () => void
   onVolumeChange: (v: number) => void
+  onOpenConcert?: () => void
 }
 
 export function NowPlayingCard({
@@ -31,6 +32,7 @@ export function NowPlayingCard({
   analyser,
   onToggle,
   onVolumeChange,
+  onOpenConcert,
 }: NowPlayingCardProps) {
   const showZenoFallback = hasError && !!radio.zenoSlug
   const colors = useAlbumColors(nowPlaying.albumArt)
@@ -155,8 +157,19 @@ export function NowPlayingCard({
               </motion.div>
             </AnimatePresence>
 
-            {/* Story share */}
-            <div className="flex justify-end">
+            {/* Story share + Concert Mode */}
+            <div className="flex items-center justify-between">
+              {onOpenConcert && (
+                <motion.button
+                  whileTap={{ scale: 0.93 }}
+                  onClick={onOpenConcert}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                  style={{ background: `${colors.primary}18`, color: colors.primary, border: `1px solid ${colors.primary}30` }}
+                >
+                  <ExpandIcon className="w-3.5 h-3.5" />
+                  Concert Mode
+                </motion.button>
+              )}
               <StoryGenerator radio={radio} nowPlaying={nowPlaying} colors={colors} />
             </div>
 
@@ -295,6 +308,10 @@ function MusicNoteIcon({ className }: { className?: string }) {
       <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
     </svg>
   )
+}
+
+function ExpandIcon({ className }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
 }
 
 function LoadingSpinner() {

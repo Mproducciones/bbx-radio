@@ -14,6 +14,7 @@ import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO, NOW_PLAYING, PROGRAMS, RADIO_TV_HLS } from '@/lib/radioConfig'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { LiveTVCard } from '@/components/player/LiveTVCard'
+import { SongHistory } from '@/components/player/SongHistory'
 
 const SOCIAL_LINKS = [
   { label: 'Facebook', href: 'https://www.facebook.com/RadioBienvenida', icon: FacebookIcon, color: '#1877F2' },
@@ -23,7 +24,7 @@ const SOCIAL_LINKS = [
 ]
 
 export default function HomePage() {
-  const { isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, toggle, setVolume, play } = useRadioPlayerContext()
+  const { isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, toggle, setVolume, play, openConcert } = useRadioPlayerContext()
 
   const handleRadioToggle = () => {
     if (isTvOpen) { closeTv(); play(); return }
@@ -70,6 +71,7 @@ export default function HomePage() {
             analyser={analyser}
             onToggle={handleRadioToggle}
             onVolumeChange={setVolume}
+            onOpenConcert={openConcert}
           />
         </div>
 
@@ -85,6 +87,8 @@ export default function HomePage() {
         <ProgramSchedule programs={PROGRAMS} />
 
         <RotatingBanner interval={5} position="bottom" />
+
+        <SongHistory />
 
         <SongRequestForm />
 

@@ -5,6 +5,7 @@ import { AdminAccessButton } from '@/components/admin/AdminAccessButton'
 import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
+import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
@@ -115,6 +116,7 @@ export default function RootLayout({
             </div>
           </div>
           <ThreeFingerGesture />
+          <MiniPlayer />
           <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />

@@ -12,12 +12,15 @@ interface RadioPlayerContextValue {
   volume: number
   analyser: AnalyserNode | null
   isTvOpen: boolean
+  isConcertMode: boolean
   openTv: () => void
   closeTv: () => void
   play: () => void
   pause: () => void
   toggle: () => void
   setVolume: (v: number) => void
+  openConcert: () => void
+  closeConcert: () => void
 }
 
 const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null)
@@ -52,6 +55,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [volume, setVolumeState] = useState(0.8)
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const [isTvOpen, setIsTvOpen] = useState(false)
+  const [isConcertMode, setIsConcertMode] = useState(false)
 
   const pathname = usePathname()
   const prevPathRef = useRef(pathname)
@@ -162,6 +166,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   const setVolume = useCallback((v: number) => setVolumeState(v), [])
 
+  const openConcert = useCallback(() => setIsConcertMode(true), [])
+  const closeConcert = useCallback(() => setIsConcertMode(false), [])
+
   const openTv = useCallback(() => {
     audioRef.current?.pause()
     setIsPlaying(false)
@@ -182,7 +189,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [startHeartbeat])
 
   return (
-    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, play, pause, toggle, setVolume }}>
+    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, volume, analyser, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, setVolume, openConcert, closeConcert }}>
       {children}
       <MilestoneBadge milestone={milestone} />
     </RadioPlayerContext.Provider>
