@@ -110,6 +110,47 @@ export function SponsorLanding() {
         </div>
       </div>
 
+      {/* Formatos de publicidad */}
+      <div className="mt-2">
+        <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-4">Formatos disponibles</p>
+        <div className="flex flex-col gap-3">
+          {[
+            { tipo: '⭐ Banner Premium', desc: 'Flota sobre toda la app · exclusivo · 1 anunciante', color: '#db8918', badge: 'MÁS VISIBLE', ejemplo: 'AutoMundo · "Tu próximo auto te espera"' },
+            { tipo: '↑ Banner Superior', desc: 'Primero que ve el oyente al abrir la app', color: '#7D59B5', badge: 'ALTA VISIBILIDAD', ejemplo: 'Clínica Bienvenida · "Agenda tu hora hoy"' },
+            { tipo: '↔ Banner Intermedio', desc: 'Dentro del contenido · lectura natural', color: '#40B9BF', badge: 'EFECTIVO', ejemplo: 'Pizza Italiana · "Delivery en 30 min"' },
+            { tipo: '↓ Banner Inferior', desc: 'Final del feed · precio de entrada', color: '#00D9A0', badge: 'ECONÓMICO', ejemplo: 'BancoEstado · "Crédito sin papeleos"' },
+          ].map((f, i) => (
+            <motion.div key={f.tipo} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.06 }}
+              className="relative rounded-xl p-4 overflow-hidden"
+              style={{ background: `${f.color}08`, border: `1px solid ${f.color}25` }}>
+              <div className="absolute top-0 left-0 bottom-0 w-0.5" style={{ background: f.color }} />
+              <div className="pl-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-white font-bold text-sm">{f.tipo}</p>
+                  <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full flex-shrink-0"
+                    style={{ color: f.color, background: `${f.color}20` }}>{f.badge}</span>
+                </div>
+                <p className="text-white/40 text-xs">{f.desc}</p>
+                <p className="text-white/20 text-[10px] mt-1 italic">Ej: {f.ejemplo}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Google Ads */}
+        <div className="mt-4 rounded-xl p-4"
+          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-base">🌐</span>
+            <p className="text-white font-semibold text-sm">Google AdSense</p>
+            <span className="text-[8px] bg-white/10 text-white/40 px-2 py-0.5 rounded-full uppercase tracking-wider">Próximamente</span>
+          </div>
+          <p className="text-white/40 text-xs leading-relaxed">
+            Además de la publicidad directa, la app puede integrar Google AdSense — anuncios automáticos de Google que generan ingresos pasivos cada vez que un oyente los ve. Sin gestionar clientes, sin contratos. El sistema funciona solo.
+          </p>
+        </div>
+      </div>
+
       {/* Planes */}
       <div>
         <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-4">Elige tu plan</p>
