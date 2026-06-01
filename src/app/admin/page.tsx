@@ -8,6 +8,7 @@ import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
 import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
 import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 import { PollManager } from '@/components/admin/PollManager'
+import { ListenerChart } from '@/components/admin/ListenerChart'
 
 type PageState = 'checking' | 'login' | 'dashboard'
 
@@ -229,6 +230,9 @@ export default function AdminPage() {
 
             {/* Analytics KPIs */}
             <AnalyticsPanel />
+
+            {/* Gráfico de tendencia */}
+            <ListenerChart />
 
             {/* Botón principal — Studio */}
             <a

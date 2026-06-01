@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { getPoll, vote, setPoll, closePoll, getVote } from '@/lib/pollStore'
 import { isAdminRequestAuthorized } from '@/lib/adminAuth'
+import { savePollResult } from '@/lib/analyticsStore'
 
 function getSession(req: NextRequest): string {
   return req.cookies.get('pulso_session')?.value
@@ -12,8 +13,7 @@ function getSession(req: NextRequest): string {
 export async function GET(req: NextRequest) {
   const poll = getPoll()
   if (!poll) return NextResponse.json(null)
-  const session = getSession(req)
-  return NextResponse.json({ ...poll, myVote: getVote(session) })
+  return NextResponse.json({ ...poll, myVote: getVote(getSession(req)) })
 }
 
 export async function POST(req: NextRequest) {
@@ -24,13 +24,26 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ...result, poll: getPoll() })
 }
 
-// Admin: crear poll nuevo o cerrarlo
 export async function PUT(req: NextRequest) {
   const ok = await isAdminRequestAuthorized(req)
   if (!ok) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json().catch(() => null)
-  if (body?.action === 'close') { closePoll(); return NextResponse.json({ ok: true }) }
+
+  if (body?.action === 'close') {
+    const current = getPoll()
+    if (current && current.totalVotes > 0) {
+      // Persistir resultado antes de cerrar
+      savePollResult({
+        id: current.id,
+        question: current.question,
+        options: current.options,
+        totalVotes: current.totalVotes,
+      }).catch(() => {})
+    }
+    closePoll()
+    return NextResponse.json({ ok: true })
+  }
 
   if (!body?.question || !body?.optionA || !body?.optionB) {
     return NextResponse.json({ error: 'question, optionA y optionB requeridos' }, { status: 400 })
