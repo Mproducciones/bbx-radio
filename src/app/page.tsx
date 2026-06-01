@@ -18,27 +18,32 @@ export default function HomePage() {
   const [showRequest, setShowRequest] = useState(false)
 
   return (
-    <main className="relative min-h-screen px-4 py-6 max-w-md mx-auto flex flex-col gap-5" style={{ zIndex: 1 }}>
+    <main className="relative min-h-screen max-w-md mx-auto flex flex-col" style={{ zIndex: 1 }}>
 
-      {/* Header — solo mobile */}
-      <div className="md:hidden flex items-center justify-between">
+      {/* Header — nombre de la radio */}
+      <div className="md:hidden flex items-center justify-between px-5 pt-5 pb-2">
         <div>
-          <h1 className="font-display text-2xl text-white leading-none">{RADIO.name}</h1>
-          <p className="text-[var(--color-ink-400)] text-xs mt-0.5">{RADIO.slogan}</p>
+          <h1 className="font-display text-2xl text-white leading-none tracking-wide">{RADIO.name}</h1>
+          <p className="text-white/30 text-xs mt-0.5 font-medium">{RADIO.slogan}</p>
         </div>
         <button
           onClick={() => { window.location.href = '/bbx' }}
           onContextMenu={e => e.preventDefault()}
-          className="font-display text-[var(--color-mag-400)] text-2xl bg-transparent border-0 outline-none cursor-pointer leading-none"
-          style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' }}
+          className="font-display text-lg leading-none px-3 py-1.5 rounded-xl transition-colors"
+          style={{
+            color: 'var(--color-mag-400)',
+            background: 'rgba(219,137,24,0.08)',
+            border: '1px solid rgba(219,137,24,0.2)',
+            userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation',
+          }}
           tabIndex={-1} aria-hidden="true"
         >
           {RADIO.frequency}
         </button>
       </div>
 
-      {/* Player — solo mobile */}
-      <div className="md:hidden">
+      {/* Player — hero de la app */}
+      <div className="md:hidden px-4 pt-3">
         <NowPlayingCard
           radio={RADIO}
           nowPlaying={{
@@ -57,64 +62,76 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Banner top */}
-      <RotatingBanner position="top" />
+      {/* Resto del contenido */}
+      <div className="flex flex-col gap-5 px-4 pt-5 pb-28">
 
-      {/* Programación */}
-      <ProgramSchedule programs={PROGRAMS} />
+        {/* Banner top */}
+        <RotatingBanner position="top" />
 
-      {/* Votación */}
-      <SongPoll />
+        {/* Separador visual */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06))' }} />
+          <span className="text-white/15 text-[10px] font-bold uppercase tracking-widest">Programación</span>
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.06), transparent)' }} />
+        </div>
 
-      {/* Banner middle */}
-      <RotatingBanner position="middle" />
+        {/* Programación */}
+        <ProgramSchedule programs={PROGRAMS} />
 
-      {/* Pedir una canción — card de acción */}
-      <div>
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowRequest(v => !v)}
-          className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative overflow-hidden"
-          style={{
-            background: showRequest
-              ? 'linear-gradient(135deg, rgba(219,137,24,0.12), rgba(168,102,17,0.08))'
-              : 'rgba(255,255,255,0.04)',
-            border: `1px solid ${showRequest ? 'rgba(219,137,24,0.35)' : 'rgba(255,255,255,0.07)'}`,
-          }}
-        >
-          {/* Icon */}
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors"
-            style={{ background: showRequest ? 'rgba(219,137,24,0.2)' : 'rgba(255,255,255,0.06)' }}>
-            <Music2 className="w-5 h-5" style={{ color: showRequest ? '#db8918' : 'rgba(255,255,255,0.4)' }} />
-          </div>
+        {/* Votación */}
+        <SongPoll />
 
-          <div className="flex-1 text-left">
-            <p className="text-white font-bold text-sm leading-none">Pedir una canción</p>
-            <p className="text-white/35 text-xs mt-0.5">El locutor la pone al aire</p>
-          </div>
+        {/* Banner middle */}
+        <RotatingBanner position="middle" />
 
-          <motion.div animate={{ rotate: showRequest ? 180 : 0 }} transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}>
-            <ChevronDown className="w-4 h-4 text-white/30" />
-          </motion.div>
-        </motion.button>
-
-        <AnimatePresence>
-          {showRequest && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              style={{ overflow: 'hidden' }}
-            >
-              <div className="pt-2 pb-1">
-                <SongRequestForm />
-              </div>
+        {/* Pedir una canción */}
+        <div>
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowRequest(v => !v)}
+            className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative overflow-hidden"
+            style={{
+              background: showRequest
+                ? 'linear-gradient(135deg, rgba(219,137,24,0.1), rgba(168,102,17,0.06))'
+                : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${showRequest ? 'rgba(219,137,24,0.3)' : 'rgba(255,255,255,0.06)'}`,
+            }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors"
+              style={{ background: showRequest ? 'rgba(219,137,24,0.18)' : 'rgba(255,255,255,0.05)' }}>
+              <Music2 className="w-5 h-5 transition-colors"
+                style={{ color: showRequest ? '#db8918' : 'rgba(255,255,255,0.35)' }} />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-white font-bold text-sm leading-none">Pedir una canción</p>
+              <p className="text-white/30 text-xs mt-0.5">El locutor la pone al aire</p>
+            </div>
+            <motion.div animate={{ rotate: showRequest ? 180 : 0 }} transition={{ duration: 0.25 }}>
+              <ChevronDown className="w-4 h-4 text-white/20" />
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </motion.button>
 
+          <AnimatePresence>
+            {showRequest && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div className="pt-2">
+                  <SongRequestForm />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Banner bottom */}
+        <RotatingBanner position="bottom" />
+
+      </div>
     </main>
   )
 }
