@@ -16,6 +16,8 @@ import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { LiveTVCard } from '@/components/player/LiveTVCard'
 import { SongHistory } from '@/components/player/SongHistory'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
+import { AtmosphereCanvas } from '@/components/player/AtmosphereCanvas'
+import { useAlbumColors } from '@/hooks/useAlbumColors'
 
 const SOCIAL_LINKS = [
   { label: 'Facebook', href: 'https://www.facebook.com/RadioBienvenida', icon: FacebookIcon, color: '#1877F2' },
@@ -27,6 +29,7 @@ const SOCIAL_LINKS = [
 export default function HomePage() {
   const { isPlaying, isLoading, hasError, volume, analyser, isTvOpen, openTv, closeTv, toggle, setVolume, play, openConcert } = useRadioPlayerContext()
   const { current: nowPlaying } = useNowPlaying()
+  const colors = useAlbumColors(undefined)
 
   const handleRadioToggle = () => {
     if (isTvOpen) { closeTv(); play(); return }
@@ -35,7 +38,15 @@ export default function HomePage() {
 
   return (
     <>
-<main className="min-h-screen bg-[var(--color-ink-900)] px-4 py-4 max-w-md md:max-w-3xl mx-auto flex flex-col gap-4">
+      {/* Canvas de atmósfera — detrás de todo el contenido */}
+      <AtmosphereCanvas
+        analyser={analyser}
+        isPlaying={isPlaying}
+        primaryColor={colors.primary}
+        secondaryColor={colors.secondary}
+      />
+
+<main className="relative min-h-screen px-4 py-4 max-w-md md:max-w-3xl mx-auto flex flex-col gap-4" style={{ zIndex: 1 }}>
         {/* Header + player only on mobile — desktop shows them in the sidebar */}
         <header className="md:hidden flex items-center justify-between">
           <div>

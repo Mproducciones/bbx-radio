@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { AudioVisualizer } from './AudioVisualizer'
+import { VisualizerCircular } from './VisualizerCircular'
 import { ZenoEmbed } from './ZenoEmbed'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
@@ -115,47 +116,53 @@ export function NowPlayingCard({
           </motion.div>
         ) : (
           <motion.div key="native" className="relative flex flex-col gap-4">
-            {/* Visualizer with dynamic color */}
-            <div className="h-[80px] w-full bg-[var(--color-ink-800)] rounded-lg overflow-hidden">
-              <AudioVisualizer
-                analyser={analyser}
-                isPlaying={isPlaying}
-                barColor={colors.primary}
-                barCount={48}
-              />
-            </div>
+            {/* Visualizador circular + info — layout horizontal */}
+            <div className="flex items-center gap-4">
+              {/* Circular visualizer */}
+              <div className="flex-shrink-0">
+                <VisualizerCircular
+                  analyser={analyser}
+                  isPlaying={isPlaying}
+                  primaryColor={colors.primary}
+                  secondaryColor={colors.secondary}
+                  size={120}
+                />
+              </div>
 
-            {/* Now Playing info */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={nowPlaying.title}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="flex items-center gap-4"
-              >
-                {/* Album art or dynamic gradient placeholder */}
+              {/* Now Playing info */}
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  className="w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden flex items-center justify-center"
-                  animate={{
-                    background: `linear-gradient(135deg, ${colors.primary}55, ${colors.secondary}55)`,
-                    boxShadow: isPlaying ? `0 4px 16px ${colors.glow}` : 'none',
-                  }}
-                  transition={{ duration: 1.5, ease: 'easeInOut' }}
+                  key={nowPlaying.title}
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1 min-w-0 flex flex-col gap-1"
                 >
-                  {nowPlaying.albumArt ? (
-                    <Image src={nowPlaying.albumArt} alt="Album art" width={56} height={56} className="object-cover w-full h-full" />
-                  ) : (
-                    <MusicNoteIcon className="w-6 h-6 text-white/70" />
+                  {nowPlaying.albumArt && (
+                    <motion.div
+                      className="w-10 h-10 rounded-lg overflow-hidden mb-1"
+                      animate={{ boxShadow: isPlaying ? `0 4px 16px ${colors.glow}` : 'none' }}
+                    >
+                      <Image src={nowPlaying.albumArt} alt="Album art" width={40} height={40} className="object-cover w-full h-full" />
+                    </motion.div>
+                  )}
+                  <p className="text-white font-bold text-base truncate leading-tight">{nowPlaying.title}</p>
+                  <p className="text-[var(--color-ink-300)] text-sm truncate">{nowPlaying.artist}</p>
+                  {isPlaying && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-xs font-medium flex items-center gap-1"
+                      style={{ color: colors.primary }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full animate-pulse inline-block" style={{ background: colors.primary }} />
+                      EN VIVO
+                    </motion.p>
                   )}
                 </motion.div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-semibold text-md truncate">{nowPlaying.title}</p>
-                  <p className="text-[var(--color-ink-300)] text-sm truncate">{nowPlaying.artist}</p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
 
             {/* Story share + Concert Mode */}
             <div className="flex items-center justify-between">
