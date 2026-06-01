@@ -5,38 +5,37 @@ import { useRouter } from 'next/navigation'
 
 export function AdminAccessButton() {
   const router = useRouter()
-  const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const touchCountRef = useRef(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length >= 2) {
-        touchCountRef.current = e.touches.length
-        touchTimerRef.current = setTimeout(() => {
-          if (touchCountRef.current >= 2) {
-            router.push('/admin')
-          }
-        }, 1500)
+    function onStart(e: TouchEvent) {
+      if (e.touches.length < 2) return
+      // 2+ dedos — iniciar timer si no hay uno corriendo
+      if (timerRef.current) return
+      timerRef.current = setTimeout(() => {
+        timerRef.current = null
+        router.push('/admin')
+      }, 1200)
+    }
+
+    function onEnd(e: TouchEvent) {
+      // Solo cancelar si ya no quedan 2 dedos en pantalla
+      if (e.touches.length >= 2) return
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        timerRef.current = null
       }
     }
 
-    const handleTouchEnd = () => {
-      if (touchTimerRef.current) {
-        clearTimeout(touchTimerRef.current)
-        touchTimerRef.current = null
-      }
-      touchCountRef.current = 0
-    }
-
-    document.addEventListener('touchstart', handleTouchStart, { passive: true })
-    document.addEventListener('touchend', handleTouchEnd, { passive: true })
-    document.addEventListener('touchcancel', handleTouchEnd, { passive: true })
+    document.addEventListener('touchstart', onStart, { passive: true })
+    document.addEventListener('touchend',   onEnd,   { passive: true })
+    document.addEventListener('touchcancel', onEnd,  { passive: true })
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart)
-      document.removeEventListener('touchend', handleTouchEnd)
-      document.removeEventListener('touchcancel', handleTouchEnd)
-      if (touchTimerRef.current) clearTimeout(touchTimerRef.current)
+      document.removeEventListener('touchstart', onStart)
+      document.removeEventListener('touchend',   onEnd)
+      document.removeEventListener('touchcancel', onEnd)
+      if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [router])
 

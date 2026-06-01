@@ -98,8 +98,13 @@ export function SponsorLanding() {
             { label: 'Años en el aire', value: '20+', color: '#7D59B5' },
           ].map(s => (
             <div key={s.label} className="rounded-xl py-3 px-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
-              <p className="font-display text-2xl" style={{ color: s.color }}>{s.value}</p>
-              <p className="text-white/40 text-[10px] mt-0.5">{s.label}</p>
+              <p
+                className="font-display leading-none"
+                style={{ color: s.color, fontSize: s.value.length > 6 ? '1rem' : '1.5rem' }}
+              >
+                {s.value}
+              </p>
+              <p className="text-white/40 text-[10px] mt-1">{s.label}</p>
             </div>
           ))}
         </div>
