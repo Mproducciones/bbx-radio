@@ -3,16 +3,20 @@ import { isAdminRequestAuthorized } from '@/lib/adminAuth'
 import { supabaseAdmin } from '@/lib/supabase'
 import webpush from 'web-push'
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-)
-
 export async function POST(req: NextRequest) {
   if (!await isAdminRequestAuthorized(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const email  = process.env.VAPID_EMAIL
+  const pubKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  const privKey = process.env.VAPID_PRIVATE_KEY
+
+  if (!email || !pubKey || !privKey) {
+    return NextResponse.json({ error: 'VAPID env vars no configuradas' }, { status: 500 })
+  }
+
+  webpush.setVapidDetails(email, pubKey, privKey)
 
   const { title, body, url } = await req.json().catch(() => ({}))
   if (!title || !body) {
@@ -39,7 +43,6 @@ export async function POST(req: NextRequest) {
         )
         sent++
       } catch (err: unknown) {
-        // Subscription expirada — limpiar
         if ((err as { statusCode?: number }).statusCode === 410) {
           await supabaseAdmin.from('push_subscriptions').delete().eq('endpoint', sub.endpoint)
         }

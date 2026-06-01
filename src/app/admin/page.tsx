@@ -196,14 +196,19 @@ export default function AdminPage() {
               <p className="text-[#666690] text-[10px] font-bold uppercase tracking-widest mb-3">Operación en vivo</p>
               <SaludosPanel />
             </div>
-            <NotificacionPanel />
             <AdsPanel />
             <SolicitudesPanel />
             <PollManager />
           </div>
 
-          {/* Columna derecha — Contenido + Análisis */}
+          {/* Columna derecha — Comunicaciones + Contenido + Análisis */}
           <div className="flex flex-col gap-5">
+
+            {/* Notificaciones push — primero y visible */}
+            <div>
+              <p className="text-[#666690] text-[10px] font-bold uppercase tracking-widest mb-3">Comunicaciones</p>
+              <NotificacionPanel />
+            </div>
 
             {/* Accesos rápidos al CMS */}
             <div>
