@@ -11,7 +11,7 @@ import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 import { PollManager } from '@/components/admin/PollManager'
 import { ListenerChart } from '@/components/admin/ListenerChart'
 
-type PageState = 'checking' | 'login' | 'dashboard'
+type PageState = 'login' | 'dashboard'
 
 const ALL_MANUAL_SECTIONS = [
   {
@@ -82,17 +82,18 @@ const ALL_MANUAL_SECTIONS = [
 
 export default function AdminPage() {
   const router = useRouter()
-  const [pageState, setPageState] = useState<PageState>('checking')
+  const [pageState, setPageState] = useState<PageState>('login')
   const [username, setUsername]   = useState('')
   const [password, setPassword]   = useState('')
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [loginError, setLoginError] = useState<string | null>(null)
 
+  // Si ya tiene sesión, saltar directo al dashboard
   useEffect(() => {
     fetch('/api/admin/me', { credentials: 'include' })
       .then(r => r.json())
-      .then(d => setPageState(d.authorized ? 'dashboard' : 'login'))
-      .catch(() => setPageState('login'))
+      .then(d => { if (d.authorized) setPageState('dashboard') })
+      .catch(() => {})
   }, [])
 
   async function onLogin(e: React.FormEvent) {
@@ -118,15 +119,6 @@ export default function AdminPage() {
   async function onLogout() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' })
     router.push('/')
-  }
-
-  // ── Cargando ──────────────────────────────────────────────
-  if (pageState === 'checking') {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-[#07070E]">
-        <div className="w-6 h-6 rounded-full border-2 border-[#db8918] border-t-transparent animate-spin" />
-      </main>
-    )
   }
 
   // ── Login ─────────────────────────────────────────────────
