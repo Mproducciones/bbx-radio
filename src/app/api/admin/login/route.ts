@@ -67,8 +67,8 @@ export async function POST(req: Request) {
 
   try {
     const body = (await req.json()) as { username?: string; password?: string }
-    const username = body?.username?.toString() ?? ''
-    const password = body?.password?.toString() ?? ''
+    const username = (body?.username?.toString() ?? '').slice(0, 256)
+    const password = (body?.password?.toString() ?? '').slice(0, 256)
 
     const allowedUsername = process.env.ADMIN_USERNAME
     const allowedPassword = process.env.ADMIN_PASSWORD
