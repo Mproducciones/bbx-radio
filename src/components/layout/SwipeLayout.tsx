@@ -8,11 +8,10 @@ import { FEATURES } from '@/lib/plan'
 // Orden de las secciones — igual que el bottom nav
 const ROUTES = [
   '/',
+  '/saludos',
+  '/tv',
   FEATURES.noticias   && '/noticias',
   FEATURES.eventos    && '/eventos',
-  FEATURES.replay     && '/replay',
-  FEATURES.publicidad && '/anunciate',
-  FEATURES.lanzamientos && '/lanzamientos',
 ].filter(Boolean) as string[]
 
 function routeIndex(path: string): number {

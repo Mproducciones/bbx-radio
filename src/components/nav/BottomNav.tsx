@@ -1,14 +1,3 @@
-/**
- * Barra de navegación inferior
- * 
- * Muestra los tabs principales de la aplicación:
- * - En Vivo: Página principal con reproductor
- * - Noticias: Sección de noticias
- * - Publicidad: Sección para anunciantes
- * 
- * Se oculta en rutas de /studio para no interferir con el panel de administración
- */
-
 'use client'
 
 import Link from 'next/link'
@@ -17,12 +6,11 @@ import { cn } from '@/lib/utils'
 import { FEATURES } from '@/lib/plan'
 
 const ALL_TABS = [
-  { href: '/',              label: 'En Vivo',       icon: LiveIcon,     show: true },
-  { href: '/noticias',      label: 'Noticias',      icon: NewsIcon,     show: FEATURES.noticias },
-  { href: '/eventos',       label: 'Eventos',       icon: EventsIcon,   show: FEATURES.eventos },
-  { href: '/replay',        label: 'Replay',        icon: ReplayIcon,   show: FEATURES.replay },
-  { href: '/anunciate',     label: 'Publicidad',    icon: BusinessIcon, show: FEATURES.publicidad },
-  { href: '/lanzamientos',  label: 'Lanzamientos',  icon: ReleasesIcon, show: FEATURES.lanzamientos },
+  { href: '/',          label: 'En Vivo',   icon: LiveIcon,    show: true },
+  { href: '/saludos',   label: 'Saludos',   icon: SaludosIcon, show: true },
+  { href: '/tv',        label: 'TV',        icon: TvIcon,      show: true },
+  { href: '/noticias',  label: 'Noticias',  icon: NewsIcon,    show: FEATURES.noticias },
+  { href: '/eventos',   label: 'Eventos',   icon: EventsIcon,  show: FEATURES.eventos },
 ]
 
 const TABS = ALL_TABS.filter(t => t.show)
@@ -30,13 +18,13 @@ const TABS = ALL_TABS.filter(t => t.show)
 export function BottomNav() {
   const pathname = usePathname()
 
-  if (pathname.startsWith('/studio')) return null
+  if (pathname.startsWith('/studio') || pathname.startsWith('/admin')) return null
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-[1000] md:hidden"
       style={{
-        background: 'rgba(7, 7, 14, 0.88)',
+        background: 'rgba(7, 7, 14, 0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderTop: '1px solid rgba(255, 255, 255, 0.07)',
@@ -68,10 +56,7 @@ export function BottomNav() {
           )
         })}
       </div>
-      <div
-        className="bg-transparent"
-        style={{ height: 'env(safe-area-inset-bottom, 0px)' }}
-      />
+      <div className="bg-transparent" style={{ height: 'env(safe-area-inset-bottom, 0px)' }} />
     </nav>
   )
 }
@@ -84,6 +69,22 @@ function LiveIcon({ className }: { className?: string }) {
   )
 }
 
+function SaludosIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+    </svg>
+  )
+}
+
+function TvIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7l7 4z"/>
+    </svg>
+  )
+}
+
 function NewsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -92,34 +93,10 @@ function NewsIcon({ className }: { className?: string }) {
   )
 }
 
-function BusinessIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.47 0 12.36 0c-1.73 0-3.24.87-4.36 2.18L6 5H4c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9.97 4.29C10.58 3.49 11.42 3 12.36 3c1.67 0 3 1.33 3 3 0 .47-.1.92-.26 1.32-.04.1-.12.36-.1.68H9.39c.01-.29-.08-.57-.16-.71C9 6.9 9 6.45 9 6c0-.66.31-1.26.79-1.71C9.87 4.22 9.92 4.25 9.97 4.29zM20 20H4V8h16v12z" />
-    </svg>
-  )
-}
-
 function EventsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
-    </svg>
-  )
-}
-
-function ReplayIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-    </svg>
-  )
-}
-
-function ReleasesIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
     </svg>
   )
 }
