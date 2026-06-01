@@ -10,6 +10,7 @@ import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
 import { ListenerChart } from '@/components/admin/ListenerChart'
 import { PollManager } from '@/components/admin/PollManager'
+import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
 
 type PageState = 'login' | 'dashboard'
 
@@ -146,6 +147,7 @@ export default function AdminPage() {
               <p className="text-[#666690] text-[10px] font-bold uppercase tracking-widest mb-3">Operación en vivo</p>
               <SaludosPanel />
             </div>
+            <NotificacionPanel />
             <AdsPanel />
             <SolicitudesPanel />
             <PollManager />

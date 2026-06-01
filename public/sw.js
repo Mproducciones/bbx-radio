@@ -1,7 +1,7 @@
 'use strict'
 
-const STATIC_CACHE = 'radio-bienvenida-static-v9'
-const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v9'
+const STATIC_CACHE = 'radio-bienvenida-static-v10'
+const DYNAMIC_CACHE = 'radio-bienvenida-dynamic-v10'
 
 const STATIC_FILES = [
   '/manifest.json',
@@ -84,6 +84,42 @@ self.addEventListener('fetch', function(event) {
     return
   }
 
+// ── Push notifications ────────────────────────────────────────────────────────
+self.addEventListener('push', function(event) {
+  var data = {}
+  try { data = event.data ? event.data.json() : {} } catch(e) {}
+  var title   = data.title   || 'Radio Bienvenida'
+  var body    = data.body    || ''
+  var url     = data.url     || '/'
+  var options = {
+    body:    body,
+    icon:    '/icons/icon-192.png',
+    badge:   '/icons/icon-72.png',
+    vibrate: [100, 50, 100],
+    data:    { url: url },
+    actions: [{ action: 'open', title: 'Ver ahora' }],
+  }
+  event.waitUntil(self.registration.showNotification(title, options))
+})
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close()
+  var url = event.notification.data && event.notification.data.url ? event.notification.data.url : '/'
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i]
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(url)
+          return client.focus()
+        }
+      }
+      return clients.openWindow(url)
+    })
+  )
+})
+
+// ── Fetch cache ───────────────────────────────────────────────────────────────
   event.respondWith(
     fetch(event.request)
       .then(function(response) {

@@ -10,6 +10,7 @@ import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
+import { PushPermission } from '@/components/pwa/PushPermission'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -122,6 +123,7 @@ export default function RootLayout({
             </div>
           </div>
           <ThreeFingerGesture />
+          <PushPermission />
           <PremiumAdBanner />
           <ClientBottomNav />
           <InstallBanner />
