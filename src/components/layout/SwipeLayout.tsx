@@ -47,12 +47,15 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
     let x0 = 0, y0 = 0, target: EventTarget | null = null
 
     function onStart(e: TouchEvent) {
+      // Ignorar multi-touch (gestos de 2+ dedos van al AdminAccessButton)
+      if (e.touches.length > 1) { x0 = 0; return }
       x0 = e.touches[0].clientX
       y0 = e.touches[0].clientY
       target = e.target
     }
 
     function onEnd(e: TouchEvent) {
+      if (!x0) return  // fue multi-touch, ignorar
       const dx = e.changedTouches[0].clientX - x0
       const dy = e.changedTouches[0].clientY - y0
 
