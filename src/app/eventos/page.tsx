@@ -11,7 +11,7 @@ export default async function EventosPage() {
   const events = await fetchEventos()
 
   return (
-    <main className="min-h-screen bg-[var(--color-ink-900)] px-4 py-6 max-w-md md:max-w-3xl mx-auto flex flex-col gap-5">
+    <main className="min-h-screen px-4 py-6 max-w-md md:max-w-3xl mx-auto flex flex-col gap-5">
       <header>
         <h1 className="font-display text-3xl text-white leading-none">Eventos</h1>
         <p className="text-[var(--color-ink-400)] text-xs mt-1">Conciertos y shows en tu región</p>

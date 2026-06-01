@@ -8,6 +8,7 @@ import { InstallBanner } from '@/components/pwa/InstallBanner'
 import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
+import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import './globals.css'
 
@@ -108,6 +109,7 @@ export default function RootLayout({
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <WelcomeAnimation />
         <RadioPlayerProvider>
+          <AtmosphereWrapper />
           {/* Desktop: 2-column layout. Mobile: single column. */}
           <div className="md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
