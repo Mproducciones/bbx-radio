@@ -6,6 +6,7 @@ import type { SponsorPlan } from '@/lib/sponsorPlans'
 import { PlanMockup } from './PlanMockup'
 import { sponsorWaLink } from '@/lib/sponsorContent'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
+import { SheetPortal } from '@/components/shared/SheetPortal'
 
 interface PlanDetailSheetProps {
   plan: SponsorPlan | null
@@ -35,25 +36,26 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
   const activeImage = plan?.imagenes[activeIdx]
 
   return (
-    <AnimatePresence>
-      {plan && (
-        <>
-          <motion.button
-            type="button"
-            aria-label="Cerrar"
-            className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
+    <SheetPortal>
+      <AnimatePresence>
+        {plan && (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Cerrar"
+              className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+            />
 
-          <motion.div
-            key={plan.id}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="plan-detail-title"
-            className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-[1.35rem] overflow-hidden max-h-[min(94dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))]"
+            <motion.div
+              key={plan.id}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="plan-detail-title"
+              className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-[1.35rem] overflow-hidden max-md:h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
             style={{
               background: '#0c0c14',
               border: `1px solid ${plan.color}50`,
@@ -173,6 +175,7 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </SheetPortal>
   )
 }

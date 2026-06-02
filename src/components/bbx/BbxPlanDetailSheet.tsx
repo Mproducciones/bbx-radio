@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { BBX_CONTACT, type BbxPlan, bbxWhatsApp } from '@/lib/bbxContent'
 import { BbxPlanMockup } from './BbxPlanMockup'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
+import { SheetPortal } from '@/components/shared/SheetPortal'
 
 export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; onClose: () => void }) {
   const [activeIdx, setActiveIdx] = useState(0)
@@ -22,17 +23,18 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
   const activeImage = plan?.imagenes[activeIdx]
 
   return (
-    <AnimatePresence>
-      {plan && (
-        <>
-          <motion.button type="button" aria-label="Cerrar" className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+    <SheetPortal>
+      <AnimatePresence>
+        {plan && (
+          <>
+            <motion.button type="button" aria-label="Cerrar" className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
 
-          <motion.div
-            key={plan.id}
-            role="dialog"
-            aria-modal
-            className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-2xl overflow-hidden max-h-[min(92dvh,720px)]"
+            <motion.div
+              key={plan.id}
+              role="dialog"
+              aria-modal
+              className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-2xl overflow-hidden max-md:h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
             style={{ background: '#0c0c14', borderTop: `2px solid ${plan.color}`, boxShadow: `0 -12px 48px ${plan.color}20` }}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
@@ -122,6 +124,7 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+    </SheetPortal>
   )
 }
