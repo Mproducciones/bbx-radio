@@ -151,7 +151,7 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
       ctx.beginPath()
       ctx.arc(cx, cy, BASE_R - 4, 0, Math.PI * 2)
       ctx.clip()
-      ctx.globalAlpha = 0.9
+      ctx.globalAlpha = 0.5
       ctx.drawImage(logoRef.current, cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize)
       ctx.restore()
     }
