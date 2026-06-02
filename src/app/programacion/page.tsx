@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { ProgramSchedule } from '@/components/schedule/ProgramSchedule'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
-import { SectionHeader } from '@/components/layout/SectionHeader'
+import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { getPrograms } from '@/lib/programs'
 import { getTodayInTimezone } from '@/lib/programSchedule'
 
@@ -17,18 +17,12 @@ export default async function ProgramacionPage() {
   const initialDay = getTodayInTimezone('America/Santiago')
 
   return (
-    <main className="min-h-screen px-4 pt-6 pb-24 max-w-md md:max-w-2xl mx-auto relative z-[1]">
-      <SectionHeader
-        kicker="Grilla semanal"
-        title="Programación"
-        subtitle="Horarios y espacios al aire · actualizado desde el panel"
-      />
-
-      <div className="flex flex-col gap-5">
-        <RotatingBanner position="top" />
-        <ProgramSchedule programs={programs} initialDay={initialDay} />
-        <RotatingBanner position="bottom" />
+    <AppMenuScreen>
+      <div className="flex flex-col flex-1 min-h-0 max-md:gap-0 md:gap-5">
+        <RotatingBanner position="top" className="hidden md:block shrink-0" />
+        <ProgramSchedule programs={programs} initialDay={initialDay} fill />
+        <RotatingBanner position="bottom" className="hidden md:block shrink-0" />
       </div>
-    </main>
+    </AppMenuScreen>
   )
 }

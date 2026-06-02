@@ -99,7 +99,7 @@ function RadioWaves() {
 }
 
 // ── Componente principal ─────────────────────────────────────────────────────
-export function SaludoForm() {
+export function SaludoForm({ compact }: { compact?: boolean } = {}) {
   const [step, setStep]       = useState<Step>('motivo')
   const [motivo, setMotivo]   = useState<MotivoId>('cumpleanos')
   const [para, setPara]       = useState('')
@@ -142,11 +142,11 @@ export function SaludoForm() {
   }
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-130px)]">
+    <div className={`flex flex-col flex-1 min-h-0 ${compact ? '' : 'min-h-[calc(100vh-130px)]'}`}>
 
       {/* Barra de progreso */}
       {!['sending', 'done', 'error'].includes(step) && (
-        <div className="flex gap-1 mb-6 px-1">
+        <div className={`flex gap-1 px-1 ${compact ? 'mb-3' : 'mb-6'}`}>
           {(['motivo', 'para', 'de'] as Step[]).map((s, i) => (
             <motion.div
               key={s}
@@ -165,15 +165,15 @@ export function SaludoForm() {
           <motion.div key="motivo" custom={1} variants={slideVariants}
             initial="enter" animate="center" exit="exit"
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-            className="flex flex-col gap-5 flex-1"
+            className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
             <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest mb-1">Paso 1 de 3</p>
-              <h2 className="font-display text-3xl text-white leading-tight">¿Qué ocasión es?</h2>
-              <p className="text-white/30 text-sm mt-1">El locutor lo anunciará al aire</p>
+              <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">Paso 1 de 3</p>
+              <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿Qué ocasión es?</h2>
+              {!compact && <p className="text-white/30 text-sm mt-1">El locutor lo anunciará al aire</p>}
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className={`grid grid-cols-3 ${compact ? 'gap-2' : 'gap-2.5'}`}>
               {MOTIVOS.map(m => {
                 const active = motivo === m.id
                 return (
@@ -182,7 +182,7 @@ export function SaludoForm() {
                     whileTap={{ scale: 0.92 }}
                     whileHover={{ scale: 1.03 }}
                     onClick={() => pickMotivo(m.id)}
-                    className="relative flex flex-col items-center justify-center gap-2 py-4 rounded-2xl overflow-hidden"
+                    className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl overflow-hidden ${compact ? 'py-3' : 'py-4 gap-2'}`}
                     style={active
                       ? { background: m.glow, border: `1.5px solid ${m.color}50`, boxShadow: `0 8px 24px ${m.glow}` }
                       : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }
@@ -220,17 +220,17 @@ export function SaludoForm() {
           <motion.div key="para" custom={1} variants={slideVariants}
             initial="enter" animate="center" exit="exit"
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-            className="flex flex-col gap-5 flex-1"
+            className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-0.5">
                 <button onClick={() => setStep('motivo')} className="text-white/30 hover:text-white transition-colors text-sm">← </button>
-                <p className="text-white/40 text-xs uppercase tracking-widest">Paso 2 de 3</p>
+                <p className="text-white/40 text-[10px] uppercase tracking-widest">Paso 2 de 3</p>
               </div>
-              <h2 className="font-display text-3xl text-white leading-tight">
+              <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
                 {selected.emoji} {selected.label}
               </h2>
-              <p className="text-white/30 text-sm mt-1">¿Para quién es el saludo?</p>
+              {!compact && <p className="text-white/30 text-sm mt-1">¿Para quién es el saludo?</p>}
             </div>
 
             <label className="flex flex-col gap-2">
@@ -266,7 +266,7 @@ export function SaludoForm() {
               whileTap={{ scale: 0.97 }}
               onClick={() => { if (para.trim()) setStep('de') }}
               disabled={!para.trim()}
-              className="mt-auto w-full py-4 rounded-2xl font-bold text-base disabled:opacity-30 transition-all"
+              className={`mt-auto w-full rounded-2xl font-bold disabled:opacity-30 transition-all ${compact ? 'py-3 text-sm' : 'py-4 text-base'}`}
               style={{ background: para.trim() ? 'linear-gradient(135deg, #db8918, #a86611)' : 'rgba(255,255,255,0.06)', color: para.trim() ? '#07070E' : 'rgba(255,255,255,0.3)' }}
             >
               Continuar →
@@ -279,14 +279,14 @@ export function SaludoForm() {
           <motion.div key="de" custom={1} variants={slideVariants}
             initial="enter" animate="center" exit="exit"
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-            className="flex flex-col gap-5 flex-1"
+            className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-0.5">
                 <button onClick={() => setStep('para')} className="text-white/30 hover:text-white transition-colors text-sm">← </button>
-                <p className="text-white/40 text-xs uppercase tracking-widest">Paso 3 de 3</p>
+                <p className="text-white/40 text-[10px] uppercase tracking-widest">Paso 3 de 3</p>
               </div>
-              <h2 className="font-display text-3xl text-white leading-tight">¿De parte de quién?</h2>
+              <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿De parte de quién?</h2>
             </div>
 
             <label className="flex flex-col gap-2">

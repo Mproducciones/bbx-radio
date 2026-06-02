@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/lib/sanity'
+import { cn } from '@/lib/utils'
 
 interface Ad {
   _id: string
@@ -19,6 +20,7 @@ interface RotatingBannerProps {
   interval?: number
   position?: 'top' | 'middle' | 'bottom'
   refreshInterval?: number
+  className?: string
 }
 
 // Anuncios simulados con imágenes reales (picsum.photos — seed consistente)
@@ -112,7 +114,7 @@ const MOCK_ADS = {
   ],
 } as const
 
-export function RotatingBanner({ interval = 6, position = 'top', refreshInterval = 30 }: RotatingBannerProps) {
+export function RotatingBanner({ interval = 6, position = 'top', refreshInterval = 30, className }: RotatingBannerProps) {
   const [ads, setAds]     = useState<Ad[]>([])
   const [index, setIndex] = useState(0)
   const [ready, setReady] = useState(false)
@@ -150,7 +152,7 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
     const ad = ads[index % ads.length]
     const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : '')
     return (
-      <div className="w-full">
+      <div className={cn('w-full', className)}>
         <AnimatePresence mode="wait">
           <motion.a
             key={ad._id}

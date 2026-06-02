@@ -59,7 +59,7 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
           if (Math.abs(f.cur - f.tgt) < 0.8) f.tgt = 8 + Math.random() * 22
           target = f.cur
         } else {
-          target = 8
+          target = 8 + Math.sin((Date.now() / 500) + i * 0.45) * 4
         }
 
         smooth.current[i] += (target - smooth.current[i]) * 0.25
@@ -243,26 +243,29 @@ export function NowPlayingCard({
             {/* ── HERO: barras circulares + logo libre ────────────────────── */}
             <div style={{
               width: '100%',
-              height: 240,
+              height: 'clamp(188px, 30dvh, 240px)',
               position: 'relative',
               overflow: 'hidden',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              {/* fondo.png — CSS directo (evita 400 de /_next/image en Vercel) */}
-              <div
+              {/* fondo.png — <img> object-cover (Safari iOS falla con background-image + opacity) */}
+              <img
+                src="/icons/fondo.png"
+                alt=""
                 aria-hidden
-                className="absolute inset-0 bg-cover bg-center pointer-events-none"
+                decoding="async"
+                className="player-hero-fondo absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
                 style={{
-                  backgroundImage: 'url(/icons/fondo.png)',
-                  opacity: secrets.logoDigital ? 0.08 : 0.18,
+                  opacity: secrets.logoDigital ? 0.08 : undefined,
+                  transform: 'translateZ(0)',
                 }}
               />
               {/* Overlay oscuro encima del fondo */}
               <div style={{
                 position: 'absolute', inset: 0,
-                background: `radial-gradient(ellipse at 50% 50%, ${primary}18 0%, rgba(7,7,14,0.6) 70%)`,
+                background: `radial-gradient(ellipse at 50% 50%, ${primary}22 0%, rgba(7,7,14,0.45) 70%)`,
               }} />
               {/* Frecuencia decorativa */}
               <div style={{
@@ -295,7 +298,7 @@ export function NowPlayingCard({
               </button>
 
               {/* Contenedor del visualizador — flex child, centrado por el padre */}
-              <div style={{ position: 'relative', width: CV, height: CV, flexShrink: 0 }}>
+              <div className="max-md:scale-[0.88] md:scale-100" style={{ position: 'relative', width: CV, height: CV, flexShrink: 0, transformOrigin: 'center' }}>
 
                 {/* Canvas barras circulares */}
                 <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />

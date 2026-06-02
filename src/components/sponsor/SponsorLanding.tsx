@@ -44,7 +44,7 @@ const PLANES_DEFAULT = [
   },
 ]
 
-export function SponsorLanding() {
+export function SponsorLanding({ compact }: { compact?: boolean } = {}) {
   const [data, setData]   = useState<PackagesData | null>(null)
   const [listeners, setListeners] = useState<number | null>(null)
   const phone = data?.whatsapp ?? '56950291592'
@@ -55,11 +55,11 @@ export function SponsorLanding() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className={`flex flex-col ${compact ? 'gap-5' : 'gap-8'}`}>
 
       {/* Hero */}
       <div
-        className="relative overflow-hidden rounded-2xl p-6 text-center"
+        className={`relative overflow-hidden rounded-2xl text-center ${compact ? 'p-4' : 'p-6'}`}
         style={{
           background: 'rgba(219,137,24,0.06)',
           backdropFilter: 'blur(16px)',
@@ -69,7 +69,7 @@ export function SponsorLanding() {
       >
         <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, transparent, #db8918, transparent)' }} />
         <p className="text-[#db8918] text-xs font-black uppercase tracking-widest mb-3">Radio Bienvenida 93.3 FM</p>
-        <h1 className="font-display text-4xl text-white leading-none mb-3">
+        <h1 className={`font-display text-white leading-none mb-2 ${compact ? 'text-2xl md:text-4xl' : 'text-4xl mb-3'}`}>
           {data?.titulo ?? 'Llega a tu cliente en Rancagua'}
         </h1>
         <p className="text-white/50 text-sm max-w-sm mx-auto">

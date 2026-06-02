@@ -26,10 +26,13 @@ export function ProgramSchedule({
   programs,
   className,
   initialDay,
+  fill,
 }: {
   programs: Program[]
   className?: string
   initialDay?: DayKey
+  /** Ocupa el alto disponible; la lista hace scroll interno si hace falta */
+  fill?: boolean
 }) {
   const [today, setToday] = useState<DayKey>(initialDay ?? 'mon')
   const [selectedDay, setSelectedDay] = useState<DayKey>(initialDay ?? 'mon')
@@ -49,7 +52,11 @@ export function ProgramSchedule({
   return (
     <section
       aria-labelledby="programacion-heading"
-      className={cn('relative flex flex-col gap-4 rounded-3xl p-4', className)}
+      className={cn(
+        'relative flex flex-col gap-3 max-md:gap-2 rounded-3xl p-3 max-md:p-3 md:p-4',
+        fill && 'flex-1 min-h-0',
+        className,
+      )}
       style={{
         background: 'rgba(7,7,14,0.92)',
         backdropFilter: 'blur(20px)',
@@ -66,7 +73,7 @@ export function ProgramSchedule({
           >
             <Radio className="w-4 h-4" style={{ color: LIVE_ACCENT }} aria-hidden />
           </div>
-          <h2 id="programacion-heading" className="font-display text-2xl text-white leading-none">
+          <h2 id="programacion-heading" className="font-display text-xl max-md:text-lg md:text-2xl text-white leading-none">
             Programación
           </h2>
         </div>
@@ -103,7 +110,7 @@ export function ProgramSchedule({
               aria-label={`${d.full}${isToday ? ', hoy' : ''}`}
               onClick={() => setSelectedDay(d.key)}
               whileTap={{ scale: 0.92 }}
-              className="relative flex-1 flex flex-col items-center py-2 rounded-xl text-xs font-bold transition-colors"
+              className="relative flex-1 flex flex-col items-center py-1.5 max-md:py-1 rounded-xl text-xs font-bold transition-colors"
               style={
                 isActive
                   ? { background: LIVE_ACCENT, color: '#fff' }
@@ -142,7 +149,7 @@ export function ProgramSchedule({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -10 }}
           transition={{ duration: 0.18 }}
-          className="flex flex-col gap-2"
+          className={cn('flex flex-col gap-1.5 max-md:gap-1', fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain')}
         >
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center py-10 gap-3">
@@ -182,7 +189,7 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.2 }}
-      className="relative flex items-center gap-3 p-3.5 rounded-2xl overflow-hidden"
+      className="relative flex items-center gap-2.5 max-md:gap-2 p-3 max-md:p-2.5 rounded-2xl overflow-hidden"
       style={
         isLive
           ? { background: LIVE_BG, border: `1px solid ${LIVE_BORDER}` }

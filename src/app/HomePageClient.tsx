@@ -13,15 +13,15 @@ export function HomePageClient() {
 
   return (
     <main
-      className="relative min-h-[calc(100dvh-64px)] max-w-md md:max-w-none mx-auto flex flex-col"
+      className="relative max-w-md md:max-w-none mx-auto flex flex-col max-md:h-[var(--app-screen-h)] md:min-h-[calc(100dvh-64px)]"
       style={{ zIndex: 1 }}
     >
       {/* Mobile: solo reproductor */}
-      <div className="md:hidden flex flex-col flex-1 px-4 pt-5 pb-28">
-        <div className="flex items-center justify-between mb-3">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 px-4 pt-2 pb-1">
+        <div className="flex items-center justify-between mb-2 shrink-0">
           <div>
-            <h1 className="font-display text-2xl text-white leading-none tracking-wide">{RADIO.name}</h1>
-            <p className="text-white/30 text-xs mt-0.5 font-medium">{RADIO.slogan}</p>
+            <h1 className="font-display text-xl text-white leading-none tracking-wide">{RADIO.name}</h1>
+            <p className="text-white/30 text-[10px] mt-0.5 font-medium line-clamp-1">{RADIO.slogan}</p>
           </div>
           <span
             className="font-display text-lg leading-none px-3 py-1.5 rounded-xl"
@@ -35,11 +35,11 @@ export function HomePageClient() {
           </span>
         </div>
 
-        <ClientOnly fallback={<div className="h-11 mb-4 rounded-xl bg-white/5 animate-pulse" />}>
-          <RadioLocaleBar radio={RADIO} className="mb-4" />
+        <ClientOnly fallback={<div className="h-9 mb-2 rounded-xl bg-white/5 animate-pulse shrink-0" />}>
+          <RadioLocaleBar radio={RADIO} className="mb-2 shrink-0" />
         </ClientOnly>
 
-        <div className="flex-1 flex flex-col justify-center min-h-0">
+            <div className="flex-1 flex flex-col justify-center min-h-0">
           <ClientOnly
             fallback={
               <div
@@ -67,7 +67,7 @@ export function HomePageClient() {
           </ClientOnly>
         </div>
 
-        <p className="text-center text-white/15 text-[10px] font-medium uppercase tracking-widest mt-6 leading-relaxed px-4">
+        <p className="hidden sm:block text-center text-white/15 text-[9px] font-medium uppercase tracking-widest mt-2 shrink-0 leading-relaxed px-4">
           Toca ✨ Jugar en el reproductor
         </p>
       </div>

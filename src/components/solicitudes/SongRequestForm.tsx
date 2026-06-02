@@ -11,7 +11,7 @@ interface SuccessState {
   position: number
 }
 
-export function SongRequestForm() {
+export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
   const [phase, setPhase] = useState<Phase>('form')
   const [song, setSong] = useState('')
   const [artist, setArtist] = useState('')
@@ -68,16 +68,16 @@ export function SongRequestForm() {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.15)' }}>
+    <div className="rounded-2xl overflow-hidden h-full flex flex-col" style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.15)' }}>
       {/* Header */}
-      <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}>
-            <MicIcon className="w-5 h-5 text-[#db8918]" />
+      <div className={compact ? 'px-4 pt-3 pb-2' : 'px-5 pt-5 pb-4'} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="flex items-center gap-2.5">
+          <div className={`rounded-xl flex items-center justify-center ${compact ? 'w-8 h-8' : 'w-10 h-10'}`} style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}>
+            <MicIcon className={compact ? 'w-4 h-4 text-[#db8918]' : 'w-5 h-5 text-[#db8918]'} />
           </div>
           <div>
-            <p className="text-white font-semibold text-sm">Pide tu canción</p>
-            <p className="text-[#666690] text-xs">Al locutor en directo</p>
+            <p className={`text-white font-semibold ${compact ? 'text-xs' : 'text-sm'}`}>Pide tu canción</p>
+            <p className="text-[#666690] text-[10px] md:text-xs">Al locutor en directo</p>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ export function SongRequestForm() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
             onSubmit={handleSubmit}
-            className="px-5 py-4 flex flex-col gap-3"
+            className={compact ? 'px-4 py-3 flex flex-col gap-2 flex-1' : 'px-5 py-4 flex flex-col gap-3'}
           >
             <label className="flex flex-col gap-1">
               <span className="text-[#8888AA] text-xs font-medium">Canción *</span>
@@ -101,7 +101,7 @@ export function SongRequestForm() {
                 placeholder="ej: Amor Secreto"
                 required
                 maxLength={120}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
               />
             </label>
 
@@ -113,7 +113,7 @@ export function SongRequestForm() {
                 placeholder="ej: Camilo"
                 required
                 maxLength={80}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
               />
             </label>
 
@@ -124,7 +124,7 @@ export function SongRequestForm() {
                 onChange={e => setDedication(e.target.value)}
                 placeholder="ej: Para María con todo mi amor"
                 maxLength={200}
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-[#444468]"
+                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
               />
             </label>
 

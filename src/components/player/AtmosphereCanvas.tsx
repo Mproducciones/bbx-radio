@@ -55,8 +55,9 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     mid  /= Math.floor(total * 0.25) * 255
 
     const e = energyRef.current
-    e.bass = lerp(e.bass, isPlaying ? bass : 0, isPlaying ? 0.2 : 0.05)
-    e.mid  = lerp(e.mid,  isPlaying ? mid  : 0, isPlaying ? 0.15 : 0.05)
+    const idlePulse = 0.12 + Math.sin(performance.now() / 2200) * 0.08
+    e.bass = lerp(e.bass, isPlaying ? bass : idlePulse, isPlaying ? 0.2 : 0.04)
+    e.mid  = lerp(e.mid,  isPlaying ? mid  : idlePulse * 0.6, isPlaying ? 0.15 : 0.04)
 
     // Beat detection
     const now = performance.now()
@@ -72,15 +73,15 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     const [r1, g1, b1] = hexToRgb(primaryColor)
     const [r2, g2, b2] = hexToRgb(secondaryColor)
 
-    // ── Fondo — fade suave ─────────────────────────────────────────────────
-    ctx.fillStyle = `rgba(7,7,14,${isPlaying ? 0.18 : 0.35})`
+    // ── Fondo — capa suave (no tapar la aurora) ───────────────────────────
+    ctx.fillStyle = `rgba(7,7,14,${isPlaying ? 0.04 : 0.08})`
     ctx.fillRect(0, 0, W, H)
 
     // ── Glow central ───────────────────────────────────────────────────────
-    const glowR = 80 + e.bass * 180 + e.beat * 80
+    const glowR = 90 + e.bass * 200 + e.beat * 90
     const grd   = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR)
-    grd.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.06 + e.bass * 0.14})`)
-    grd.addColorStop(0.5, `rgba(${r2},${g2},${b2},${0.02 + e.mid  * 0.06})`)
+    grd.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.14 + e.bass * 0.22})`)
+    grd.addColorStop(0.5, `rgba(${r2},${g2},${b2},${0.06 + e.mid  * 0.12})`)
     grd.addColorStop(1,   'rgba(7,7,14,0)')
     ctx.fillStyle = grd
     ctx.fillRect(0, 0, W, H)
@@ -106,7 +107,7 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     const MAX_H      = Math.min(W, H) * 0.18
     const angleStep  = (Math.PI * 2) / BAR_COUNT
 
-    if (isPlaying || e.bass > 0.01) {
+    if (isPlaying || e.bass > 0.02) {
       for (let i = 0; i < BAR_COUNT; i++) {
         const freqIdx  = Math.floor((i / BAR_COUNT) * (buf.length * 0.75))
         const rawFreq  = (buf[freqIdx] ?? 0) / 255
@@ -157,11 +158,13 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
       ctx.restore()
     }
 
-    // Vignette inferior: deja la programación y el contenido scroll legibles
-    const vignette = ctx.createLinearGradient(0, H * 0.28, 0, H)
+    // Vignette inferior — suave; en móvil más abajo para no oscurecer el player
+    const isMobile = W < 768
+    const vignetteTop = isMobile ? H * 0.58 : H * 0.35
+    const vignette = ctx.createLinearGradient(0, vignetteTop, 0, H)
     vignette.addColorStop(0, 'rgba(7,7,14,0)')
-    vignette.addColorStop(0.45, 'rgba(7,7,14,0.5)')
-    vignette.addColorStop(1, 'rgba(7,7,14,0.92)')
+    vignette.addColorStop(0.5, `rgba(7,7,14,${isMobile ? 0.18 : 0.28})`)
+    vignette.addColorStop(1, `rgba(7,7,14,${isMobile ? 0.65 : 0.78})`)
     ctx.fillStyle = vignette
     ctx.fillRect(0, 0, W, H)
 
@@ -171,11 +174,20 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+    const resize = () => {
+      const vv = window.visualViewport
+      canvas.width = vv?.width ?? window.innerWidth
+      canvas.height = vv?.height ?? window.innerHeight
+    }
     resize()
     window.addEventListener('resize', resize)
+    window.visualViewport?.addEventListener('resize', resize)
     rafRef.current = requestAnimationFrame(draw)
-    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(rafRef.current) }
+    return () => {
+      window.removeEventListener('resize', resize)
+      window.visualViewport?.removeEventListener('resize', resize)
+      cancelAnimationFrame(rafRef.current)
+    }
   }, [draw])
 
   return (

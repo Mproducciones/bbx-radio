@@ -56,10 +56,10 @@ export function BienvenidaTV() {
   }, [])
 
   return (
-    <div className="flex flex-col min-h-screen bg-black">
+    <div className="flex flex-col h-[var(--app-screen-h)] md:min-h-screen bg-black max-md:overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3"
+      <div className="flex items-center justify-between px-4 py-2.5 shrink-0 md:py-3"
         style={{ background: 'rgba(0,0,0,0.6)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-2.5">
           <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -85,8 +85,7 @@ export function BienvenidaTV() {
       </div>
 
       {/* Video */}
-      <div className="relative flex-1 flex items-center justify-center bg-black"
-        style={{ minHeight: '56vw', maxHeight: '60vh' }}>
+      <div className="relative flex-1 flex items-center justify-center bg-black min-h-0">
 
         {state === 'loading' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
@@ -122,14 +121,14 @@ export function BienvenidaTV() {
         />
       </div>
 
-      {/* Info */}
-      <div className="px-4 py-5 flex flex-col gap-4">
+      {/* Info — compacto en móvil */}
+      <div className="px-4 py-3 md:py-5 flex flex-col gap-2 md:gap-4 shrink-0">
         <div>
-          <p className="text-white font-bold text-base">Radio Bienvenida 93.3 FM</p>
-          <p className="text-white/40 text-sm mt-0.5">Señal de televisión · Rancagua, O'Higgins</p>
+          <p className="text-white font-bold text-sm md:text-base">Radio Bienvenida 93.3 FM</p>
+          <p className="text-white/40 text-xs mt-0.5">Señal de televisión · Rancagua</p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="hidden md:flex gap-3">
           <div className="flex-1 rounded-xl p-4 text-center"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-white font-bold text-sm">Radio</p>

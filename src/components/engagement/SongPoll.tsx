@@ -31,7 +31,7 @@ function getSession(): string {
   return id
 }
 
-export function SongPoll() {
+export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: () => void } = {}) {
   const [poll, setPoll]   = useState<Poll | null>(null)
   const [voting, setVoting] = useState(false)
   const [justVoted, setJustVoted] = useState(false)
@@ -65,7 +65,27 @@ export function SongPoll() {
     } catch {} finally { setVoting(false) }
   }
 
-  if (!poll || !poll.active) return null
+  if (!poll || !poll.active) {
+    if (!compact) return null
+    return (
+      <div
+        className="flex flex-1 flex-col items-center justify-center rounded-2xl p-5 text-center gap-3"
+        style={{ background: 'rgba(15,15,26,0.72)', border: '1px solid rgba(255,255,255,0.08)' }}
+      >
+        <p className="text-white/50 text-sm">No hay votación activa en este momento</p>
+        {onEmpty && (
+          <button
+            type="button"
+            onClick={onEmpty}
+            className="text-xs font-bold px-4 py-2 rounded-xl"
+            style={{ background: 'var(--color-mag-400)', color: '#fff' }}
+          >
+            Pedir una canción
+          </button>
+        )}
+      </div>
+    )
+  }
 
   const voted = !!poll.myVote
   const [a, b] = poll.options
@@ -77,7 +97,7 @@ export function SongPoll() {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl"
+      className="relative overflow-hidden rounded-2xl h-full flex flex-col"
       style={{
         background: 'rgba(15,15,26,0.72)',
         backdropFilter: 'blur(16px)',
@@ -88,9 +108,9 @@ export function SongPoll() {
       {/* Accent top */}
       <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, #db8918, #40B9BF, transparent)' }} />
 
-      <div className="p-4">
+      <div className={compact ? 'p-3 flex-1 flex flex-col justify-center' : 'p-4'}>
         {/* Header */}
-        <div className="flex items-center gap-2 mb-4">
+        <div className={`flex items-center gap-2 ${compact ? 'mb-2' : 'mb-4'}`}>
           <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
           <p className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Vota ahora</p>
           {poll.totalVotes > 0 && (
@@ -98,10 +118,10 @@ export function SongPoll() {
           )}
         </div>
 
-        <p className="text-white font-bold text-sm mb-4 leading-snug">{poll.question}</p>
+        <p className={`text-white font-bold leading-snug ${compact ? 'text-xs mb-2' : 'text-sm mb-4'}`}>{poll.question}</p>
 
         {/* Opciones */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={`grid grid-cols-2 ${compact ? 'gap-2' : 'gap-3'}`}>
           {[a, b].map(opt => {
             const pv  = opt.id === a.id ? pA : pB
             const isWinner = winner === opt.id
@@ -115,7 +135,7 @@ export function SongPoll() {
                 whileTap={voted ? {} : { scale: 0.96 }}
                 onClick={() => castVote(opt.id)}
                 disabled={voted || voting}
-                className="relative overflow-hidden rounded-xl p-4 text-left transition-all"
+                className={`relative overflow-hidden rounded-xl text-left transition-all ${compact ? 'p-3' : 'p-4'}`}
                 style={{
                   background: isMine ? `${accent}18` : 'rgba(255,255,255,0.04)',
                   border: `1px solid ${isMine ? accent + '50' : 'rgba(255,255,255,0.06)'}`,

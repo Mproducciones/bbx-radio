@@ -1,5 +1,6 @@
 import { SponsorLanding } from '@/components/sponsor/SponsorLanding'
 import type { Metadata } from 'next'
+import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 
 export const metadata: Metadata = {
   title: '¿Eres empresa? — Radio Bienvenida 93.3 FM',
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function AnunciatePage() {
   return (
-    <main className="min-h-screen px-4 py-6 max-w-md md:max-w-3xl mx-auto">
-      <SponsorLanding />
-    </main>
+    <AppMenuScreen scroll className="md:max-w-3xl">
+      <SponsorLanding compact />
+    </AppMenuScreen>
   )
 }

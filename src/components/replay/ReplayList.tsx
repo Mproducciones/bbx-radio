@@ -92,12 +92,12 @@ function Waveform({ seed, color }: { seed: string; color: string }) {
   )
 }
 
-export function ReplayList({ episodes }: { episodes: Episode[] }) {
+export function ReplayList({ episodes, compact }: { episodes: Episode[]; compact?: boolean }) {
   const display = episodes?.length > 0 ? episodes : DEMO_EPISODES
   const [activeId, setActiveId] = useState<string | null>(null)
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className={`flex flex-col ${compact ? 'gap-2' : 'gap-3'}`}>
       {display.map((ep, i) => {
         const color = PROGRAM_COLORS[ep.program ?? ''] ?? '#db8918'
         const isActive = activeId === ep._id
@@ -122,7 +122,7 @@ export function ReplayList({ episodes }: { episodes: Episode[] }) {
 
             {/* Header — siempre visible */}
             <button
-              className="w-full text-left p-4 flex flex-col gap-3"
+              className={`w-full text-left flex flex-col gap-2 ${compact ? 'p-3' : 'p-4 gap-3'}`}
               onClick={() => setActiveId(isActive ? null : ep._id)}
             >
               <div className="flex items-start gap-3">

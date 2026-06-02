@@ -81,12 +81,10 @@ export default function RootLayout({
           {/* Desktop: 2-column layout. Mobile: single column. */}
           <div className="md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
-            <div className="flex-1 md:overflow-y-auto">
+            <div className="flex-1 md:overflow-y-auto max-md:h-[var(--app-screen-h)]">
               <SwipeLayout>
                 {children}
               </SwipeLayout>
-              {/* Mobile-only bottom spacer so content clears the fixed BottomNav */}
-              <div className="md:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 16px))' }} />
             </div>
           </div>
           <ThreeFingerGesture />
