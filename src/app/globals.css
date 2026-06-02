@@ -194,6 +194,37 @@ body {
 
 /* El grano se maneja via NoiseOverlay.tsx para excluir /admin y /studio */
 
+/* ── AURORA ANIMATIONS ───────────────────────────────────────────────────── */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(5vw, 8vw) scale(1.1); }
+  66%       { transform: translate(-4vw, 3vw) scale(0.95); }
+}
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-8vw, 5vw) scale(1.15); }
+  70%       { transform: translate(4vw, -3vw) scale(0.9); }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30%       { transform: translate(6vw, -5vw) scale(1.08); }
+  60%       { transform: translate(-5vw, 4vw) scale(1.12); }
+}
+
+/* ── GRADIENT TEXT ANIMADO ───────────────────────────────────────────────── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+.text-gradient-animated {
+  background: linear-gradient(135deg, #db8918, #FFB300, #db8918, #a86611);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease infinite;
+}
+
 /* ── GRADIENT BORDER — técnica premium ───────────────────────────────────── */
 /* Uso: <div class="grad-border"> con bg definido en el elemento */
 .grad-border {

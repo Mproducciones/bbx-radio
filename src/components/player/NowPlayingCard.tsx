@@ -109,9 +109,9 @@ function StationView({ radio, isPlaying, isLoading, volume, colors, onToggle, on
 
         {/* Frecuencia display */}
         <div>
-          <p className="font-display leading-none" style={{ fontSize: 72, color: colors.primary, letterSpacing: '-2px' }}>
+          <p className="font-display leading-none text-gradient-animated" style={{ fontSize: 72, letterSpacing: '-2px' }}>
             {freq}
-            <span className="text-3xl ml-1" style={{ color: `${colors.primary}80` }}>{band || 'FM'}</span>
+            <span className="text-3xl ml-1 opacity-60">{band || 'FM'}</span>
           </p>
           <div className="flex items-center gap-2 mt-2">
             <Radio className="w-3.5 h-3.5" style={{ color: colors.primary, opacity: 0.6 }} />

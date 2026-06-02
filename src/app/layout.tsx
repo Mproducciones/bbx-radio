@@ -9,6 +9,7 @@ import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
+import { AuroraBackground } from '@/components/layout/AuroraBackground'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import { PushPermission } from '@/components/pwa/PushPermission'
 import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
@@ -111,6 +112,7 @@ export default function RootLayout({
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <WelcomeAnimation />
         <RadioPlayerProvider>
+          <AuroraBackground />
           <AtmosphereWrapper />
           {/* Desktop: 2-column layout. Mobile: single column. */}
           <div className="md:flex md:h-screen md:overflow-hidden">

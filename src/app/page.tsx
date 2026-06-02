@@ -62,29 +62,44 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Resto del contenido */}
-      <div className="flex flex-col gap-5 px-4 pt-5 pb-28">
+      {/* Resto del contenido — stagger entrance */}
+      <motion.div
+        className="flex flex-col gap-5 px-4 pt-5 pb-28"
+        initial="hidden"
+        animate="visible"
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+      >
 
         {/* Banner top */}
-        <RotatingBanner position="top" />
+        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
+          <RotatingBanner position="top" />
+        </motion.div>
 
         {/* Separador visual */}
-        <div className="flex items-center gap-3">
+        <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+          className="flex items-center gap-3">
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.06))' }} />
           <span className="text-white/15 text-[10px] font-bold uppercase tracking-widest">Programación</span>
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.06), transparent)' }} />
-        </div>
+        </motion.div>
 
         {/* Programación */}
-        <ProgramSchedule programs={PROGRAMS} />
+        <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}>
+          <ProgramSchedule programs={PROGRAMS} />
+        </motion.div>
 
         {/* Votación */}
-        <SongPoll />
+        <motion.div variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}>
+          <SongPoll />
+        </motion.div>
 
         {/* Banner middle */}
-        <RotatingBanner position="middle" />
+        <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
+          <RotatingBanner position="middle" />
+        </motion.div>
 
         {/* Pedir una canción */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }}>
         <div>
           <motion.button
             whileTap={{ scale: 0.98 }}
@@ -127,11 +142,14 @@ export default function HomePage() {
             )}
           </AnimatePresence>
         </div>
+        </motion.div>
 
         {/* Banner bottom */}
-        <RotatingBanner position="bottom" />
+        <motion.div variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
+          <RotatingBanner position="bottom" />
+        </motion.div>
 
-      </div>
+      </motion.div>
     </main>
   )
 }
