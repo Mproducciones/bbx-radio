@@ -1,10 +1,67 @@
 'use client'
 
+import { useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { ZenoEmbed } from './ZenoEmbed'
+
+// ── Canvas circular bars ──────────────────────────────────────────────────────
+const CV = 220   // canvas size
+const LR = 65    // logo radius (130px / 2)
+const NB = 52    // number of bars
+
+function CircularBars({ isPlaying, primary, secondary }: {
+  isPlaying: boolean; primary: string; secondary: string
+}) {
+  const ref = useRef<HTMLCanvasElement>(null)
+  const bars = useMemo(() => Array.from({ length: NB }, () => ({
+    cur: 8, tgt: 8 + Math.random() * 22,
+    spd: 0.06 + Math.random() * 0.10,
+    alt: Math.random() > 0.8,
+  })), [])
+
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const cx = CV / 2, cy = CV / 2
+    let raf: number
+
+    function draw() {
+      ctx!.clearRect(0, 0, CV, CV)
+      for (let i = 0; i < NB; i++) {
+        const b = bars[i]
+        if (isPlaying) {
+          b.cur += (b.tgt - b.cur) * b.spd
+          if (Math.abs(b.cur - b.tgt) < 0.8) b.tgt = 3 + Math.random() * 22
+        } else {
+          b.cur += (8 - b.cur) * 0.08
+        }
+        const angle = (i / NB) * 2 * Math.PI - Math.PI / 2
+        const r0 = LR + 5
+        ctx!.beginPath()
+        ctx!.moveTo(cx + Math.cos(angle) * r0, cy + Math.sin(angle) * r0)
+        ctx!.lineTo(cx + Math.cos(angle) * (r0 + b.cur), cy + Math.sin(angle) * (r0 + b.cur))
+        ctx!.strokeStyle = b.alt ? secondary : primary
+        ctx!.lineWidth = 2.5
+        ctx!.lineCap = 'round'
+        ctx!.globalAlpha = 0.9
+        ctx!.stroke()
+      }
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => cancelAnimationFrame(raf)
+  }, [isPlaying, primary, secondary, bars])
+
+  return (
+    <canvas ref={ref} width={CV} height={CV}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
+  )
+}
 
 const AMBER  = '#db8918'
 const CYAN   = '#40B9BF'
@@ -84,67 +141,83 @@ export function NowPlayingCard({
           <div style={{ padding: 20 }}><ZenoEmbed slug={radio.zenoSlug!} /></div>
         ) : (
           <>
-            {/* ── HERO: logo libre sin marco ──────────────────────────────── */}
+            {/* ── HERO: barras circulares + logo libre ────────────────────── */}
             <div style={{
               width: '100%',
-              height: 180,
+              height: 240,
               position: 'relative',
               overflow: 'hidden',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: `radial-gradient(ellipse at 50% 40%, ${primary}18 0%, transparent 65%)`,
+              background: `radial-gradient(ellipse at 50% 50%, ${primary}14 0%, transparent 70%)`,
             }}>
-              {/* Glow radial detrás del logo */}
-              {isPlaying && (
-                <motion.div style={{
-                  position: 'absolute',
-                  width: 220, height: 220,
-                  borderRadius: '50%',
-                  background: `radial-gradient(circle, ${primary}28 0%, ${secondary}10 50%, transparent 70%)`,
-                  filter: 'blur(24px)',
-                }}
-                  animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                />
-              )}
-
               {/* Frecuencia decorativa */}
               <div style={{
-                position: 'absolute', bottom: 0, right: 12,
+                position: 'absolute', bottom: 4, right: 14,
                 fontFamily: 'var(--font-display, sans-serif)',
-                fontSize: 80, lineHeight: 1, letterSpacing: -2,
-                color: `${primary}08`, fontWeight: 700,
+                fontSize: 72, lineHeight: 1, letterSpacing: -2,
+                color: `${primary}07`, fontWeight: 700,
                 pointerEvents: 'none', userSelect: 'none',
               }}>
                 {freq}
               </div>
 
-              {/* Logo LIBRE — drop-shadow sigue la forma del PNG, sin marco */}
-              <motion.div
-                animate={{ rotate: isPlaying ? 360 : 0 }}
-                transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-                style={{ position: 'relative', zIndex: 2, flexShrink: 0 }}
-              >
-                <Image
-                  src={artSrc}
-                  alt={title ?? radio.name}
-                  width={130}
-                  height={130}
-                  style={{
-                    objectFit: 'contain',
-                    display: 'block',
-                    filter: isPlaying
-                      ? `drop-shadow(0 0 18px ${primary}) drop-shadow(0 0 36px ${primary}70)`
-                      : `drop-shadow(0 4px 16px rgba(0,0,0,0.6))`,
-                    transition: 'filter 1s',
-                  }}
-                />
-              </motion.div>
+              {/* Contenedor del visualizador — flex child, centrado por el padre */}
+              <div style={{ position: 'relative', width: CV, height: CV, flexShrink: 0 }}>
 
-              {/* Gradient bottom fade al card */}
+                {/* Canvas barras circulares */}
+                <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} />
+
+                {/* Glow radial detrás del logo */}
+                {isPlaying && (
+                  <motion.div style={{
+                    position: 'absolute',
+                    width: LR * 2 + 20, height: LR * 2 + 20,
+                    borderRadius: '50%',
+                    top: '50%', left: '50%',
+                    marginTop: -(LR + 10), marginLeft: -(LR + 10),
+                    background: `radial-gradient(circle, ${primary}35 0%, transparent 70%)`,
+                    filter: 'blur(16px)',
+                  }}
+                    animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                )}
+
+                {/* Logo — centrado con margin (no transform, no conflicto) */}
+                <div style={{
+                  position: 'absolute',
+                  width: LR * 2, height: LR * 2,
+                  top: '50%', left: '50%',
+                  marginTop: -LR, marginLeft: -LR,
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                }}>
+                  <motion.div style={{ width: '100%', height: '100%' }}
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+                  >
+                    <Image
+                      src={artSrc}
+                      alt={title ?? radio.name}
+                      width={LR * 2} height={LR * 2}
+                      style={{
+                        width: '100%', height: '100%',
+                        objectFit: 'contain',
+                        filter: isPlaying
+                          ? `drop-shadow(0 0 14px ${primary}) drop-shadow(0 0 28px ${primary}60)`
+                          : `drop-shadow(0 4px 12px rgba(0,0,0,0.5))`,
+                        transition: 'filter 1s',
+                      }}
+                    />
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Gradient bottom */}
               <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0, height: 64,
+                position: 'absolute', bottom: 0, left: 0, right: 0, height: 56,
                 background: 'linear-gradient(to bottom, transparent, #07070e)',
                 pointerEvents: 'none',
               }} />
