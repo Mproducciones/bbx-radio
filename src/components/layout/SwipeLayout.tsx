@@ -8,7 +8,10 @@ import { FEATURES } from '@/lib/plan'
 // Orden de las secciones — igual que el bottom nav
 const ROUTES = [
   '/',
+  '/programacion',
+  '/participa',
   '/saludos',
+  FEATURES.replay && '/replay',
   '/tv',
   FEATURES.publicidad && '/anunciate',
 ].filter(Boolean) as string[]

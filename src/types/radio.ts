@@ -1,3 +1,12 @@
+export interface RadioLocation {
+  /** Texto visible, ej. "Rancagua" o "San Fernando · Colchagua" */
+  label?: string
+  lat: number
+  lon: number
+  /** IANA, ej. America/Santiago — hora local de la radio */
+  timezone?: string
+}
+
 export interface RadioConfig {
   id: string
   name: string
@@ -9,6 +18,8 @@ export interface RadioConfig {
   primaryColor?: string
   city: string
   country: string
+  /** Coordenadas para clima; si falta, se intenta geocodificar city + country */
+  location?: RadioLocation
 }
 
 export interface NowPlaying {

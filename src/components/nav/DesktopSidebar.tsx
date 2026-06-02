@@ -15,14 +15,19 @@ import { RADIO, NOW_PLAYING } from '@/lib/radioConfig'
 import { cn } from '@/lib/utils'
 import { FEATURES } from '@/lib/plan'
 import { PremiumAdSidebar } from '@/components/ads/PremiumAdBanner'
+import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
 
 const ALL_NAV_ITEMS = [
-  { href: '/',             label: 'En Vivo',      icon: LiveIcon,     show: true },
-  { href: '/noticias',     label: 'Noticias',     icon: NewsIcon,     show: FEATURES.noticias },
-  { href: '/eventos',      label: 'Eventos',      icon: EventsIcon,   show: FEATURES.eventos },
-  { href: '/replay',       label: 'Replay',       icon: ReplayIcon,   show: FEATURES.replay },
-  { href: '/anunciate',    label: 'Publicidad',   icon: BusinessIcon, show: FEATURES.publicidad },
-  { href: '/lanzamientos', label: 'Lanzamientos', icon: ReleasesIcon, show: FEATURES.lanzamientos },
+  { href: '/',              label: 'En Vivo',       icon: LiveIcon,      show: true },
+  { href: '/programacion',  label: 'Programación',  icon: ScheduleIcon,  show: true },
+  { href: '/participa',     label: 'Participá',       icon: ParticipaIcon, show: true },
+  { href: '/saludos',       label: 'Saludos',         icon: SaludosIcon,   show: true },
+  { href: '/tv',            label: 'TV',              icon: TvIcon,        show: true },
+  { href: '/noticias',      label: 'Noticias',        icon: NewsIcon,      show: FEATURES.noticias },
+  { href: '/eventos',       label: 'Eventos',         icon: EventsIcon,    show: FEATURES.eventos },
+  { href: '/replay',        label: 'Replay',          icon: ReplayIcon,    show: FEATURES.replay },
+  { href: '/anunciate',     label: 'Publicidad',      icon: BusinessIcon,  show: FEATURES.publicidad },
+  { href: '/lanzamientos',  label: 'Lanzamientos',    icon: ReleasesIcon,  show: FEATURES.lanzamientos },
 ]
 
 const NAV_ITEMS = ALL_NAV_ITEMS.filter(t => t.show)
@@ -54,9 +59,13 @@ export function DesktopSidebar() {
       style={{ background: 'rgba(7, 7, 14, 0.98)' }}
     >
       {/* Brand header */}
-      <div className="px-6 pt-6 pb-4">
+      <div className="px-6 pt-6 pb-3">
         <h1 className="font-display text-xl text-white leading-none">{RADIO.name}</h1>
         <p className="text-[var(--color-ink-400)] text-xs mt-0.5">{RADIO.slogan}</p>
+      </div>
+
+      <div className="px-4 pb-3">
+        <RadioLocaleBar radio={RADIO} />
       </div>
 
       {/* Player */}
@@ -117,6 +126,38 @@ function LiveIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18zm-2.5-5.5L16 12l-6.5-3.5v7z" />
+    </svg>
+  )
+}
+
+function ScheduleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+    </svg>
+  )
+}
+
+function ParticipaIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
+    </svg>
+  )
+}
+
+function SaludosIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+    </svg>
+  )
+}
+
+function TvIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7l7 4z" />
     </svg>
   )
 }

@@ -6,6 +6,10 @@ import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { ZenoEmbed } from './ZenoEmbed'
+import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
+import { InteractiveLogo } from './easterEggs/InteractiveLogo'
+import { WaveSnake } from './easterEggs/WaveSnake'
+import { SecretHintToast } from './easterEggs/SecretHintToast'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -186,8 +190,10 @@ export function NowPlayingCard({
   const glow     = hasRealSong ? ac.glow      : 'rgba(219,137,24,0.4)'
   const [freq, band] = radio.frequency.split(' ')
   const title    = hasRealSong ? nowPlaying.title  : radio.name
-  const artist   = hasRealSong ? nowPlaying.artist : `${radio.city} · ${radio.country}`
+  const artist   = hasRealSong ? nowPlaying.artist : radio.slogan
   const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
+
+  const secrets = usePlayerSecrets()
 
   return (
     <>
@@ -199,13 +205,15 @@ export function NowPlayingCard({
       <div style={{
         borderRadius: 24,
         overflow: 'hidden',
+        position: 'relative',
         background: `linear-gradient(170deg, #12091e 0%, #07070e 55%)`,
-        border: `1px solid ${primary}20`,
+        border: `1px solid ${secrets.logoDigital || secrets.snakeActive ? `${primary}50` : `${primary}20`}`,
         boxShadow: isPlaying
           ? `0 0 0 1px ${primary}15, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
           : `0 12px 48px rgba(0,0,0,0.7)`,
         transition: 'box-shadow 1.5s, border-color 1.5s',
       }}>
+        <SecretHintToast message={secrets.hintFlash} />
 
         {/* Accent top */}
         <div style={{ height: 3, position: 'relative', overflow: 'hidden' }}>
@@ -245,7 +253,8 @@ export function NowPlayingCard({
                 src="/icons/fondo.png"
                 alt=""
                 fill
-                style={{ objectFit: 'cover', opacity: 0.18 }}
+                unoptimized
+                style={{ objectFit: 'cover', opacity: secrets.logoDigital ? 0.08 : 0.18 }}
               />
               {/* Overlay oscuro encima del fondo */}
               <div style={{
@@ -285,34 +294,17 @@ export function NowPlayingCard({
                   />
                 )}
 
-                {/* Logo — centrado con margin (no transform, no conflicto) */}
-                <div style={{
-                  position: 'absolute',
-                  width: LR * 2, height: LR * 2,
-                  top: '50%', left: '50%',
-                  marginTop: -LR, marginLeft: -LR,
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                }}>
-                  <motion.div style={{ width: '100%', height: '100%' }}
-                    animate={{ rotate: isPlaying ? 360 : 0 }}
-                    transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-                  >
-                    <Image
-                      src={artSrc}
-                      alt={title ?? radio.name}
-                      width={LR * 2} height={LR * 2}
-                      style={{
-                        width: '100%', height: '100%',
-                        objectFit: 'contain',
-                        filter: isPlaying
-                          ? `drop-shadow(0 0 14px ${primary}) drop-shadow(0 0 28px ${primary}60)`
-                          : `drop-shadow(0 4px 12px rgba(0,0,0,0.5))`,
-                        transition: 'filter 1s',
-                      }}
-                    />
-                  </motion.div>
-                </div>
+                <InteractiveLogo
+                  artSrc={artSrc}
+                  title={title ?? radio.name}
+                  isPlaying={isPlaying}
+                  primary={primary}
+                  logoDigital={secrets.logoDigital}
+                  logoHold={secrets.logoHold}
+                  onHoldStart={secrets.startLogoHold}
+                  onHoldEnd={secrets.clearLogoHold}
+                  onTap={secrets.onLogoTap}
+                />
               </div>
 
               {/* Gradient bottom */}
@@ -351,24 +343,61 @@ export function NowPlayingCard({
                 </span>
               </div>
 
-              {/* Título + artista */}
+              {/* Título + artista / slogan */}
               <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={title}
+                <motion.div key={hasRealSong ? `${title}-${artist}` : title}
                   initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.25 }}
                   style={{ marginBottom: 16 }}>
                   <p className="font-display" style={{ fontSize: 30, color: '#fff', lineHeight: 1.05, letterSpacing: 0.5 }}>
                     {title}
                   </p>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', marginTop: 4, fontWeight: 500 }}>
-                    {artist}
-                  </p>
+                  {artist && (
+                    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', marginTop: 4, fontWeight: 500 }}>
+                      {artist}
+                    </p>
+                  )}
                 </motion.div>
               </AnimatePresence>
 
-              {/* Waveform osciloscópico */}
-              <div style={{ marginBottom: 20 }}>
-                <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
+              {/* Onda / Snake FM (easter egg) */}
+              <div
+                style={{ marginBottom: 20, position: 'relative' }}
+                onPointerDown={() => secrets.startWaveHold()}
+                onPointerUp={secrets.clearWaveHold}
+                onPointerLeave={secrets.clearWaveHold}
+                onClick={() => secrets.onWaveTap()}
+              >
+                {secrets.waveHold > 0 && !secrets.snakeActive && (
+                  <div
+                    className="absolute inset-0 rounded-xl pointer-events-none z-10"
+                    style={{
+                      background: `linear-gradient(90deg, transparent, ${secondary}25, transparent)`,
+                      opacity: secrets.waveHold,
+                    }}
+                  />
+                )}
+                {secrets.snakeActive ? (
+                  <WaveSnake
+                    active
+                    isPlaying={isPlaying}
+                    analyser={analyser}
+                    primary={primary}
+                    secondary={secondary}
+                    onScore={secrets.setSnakeScore}
+                    onExit={secrets.exitSnake}
+                  />
+                ) : (
+                  <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
+                )}
+                {secrets.snakeActive && secrets.snakeScore > 0 && (
+                  <span
+                    className="absolute top-2 left-2 text-[10px] font-black tabular-nums z-10"
+                    style={{ color: primary }}
+                  >
+                    ♪ {secrets.snakeScore}
+                  </span>
+                )}
               </div>
 
               {/* Divisor */}

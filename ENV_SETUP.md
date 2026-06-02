@@ -33,6 +33,19 @@ NEXT_PUBLIC_SANITY_DATASET=production
 3. En Settings > API > Tokens, crea un token con permisos de escritura
 4. Agrega el token a tu archivo `.env.local` como `SANITY_API_TOKEN=tu-token-aqui`
 
+## Programación (Sanity Studio)
+
+1. Entra a `/studio` → **Programa**
+2. Crea cada bloque con nombre, conductor, `HH:MM` inicio/fin y días de emisión
+3. La home usa Sanity si hay al menos un programa; si no, usa `PROGRAMS` en `src/lib/radioConfig.ts`
+4. Se revalida cada 5 minutos (`revalidate = 300`)
+
+## Clima en el reproductor (opcional)
+
+El widget de ciudad / hora / clima usa [Open-Meteo](https://open-meteo.com) (gratis, sin API key).
+Configura coordenadas en `src/lib/radioConfig.ts` → `location: { label, lat, lon, timezone }`.
+Si no hay `location`, se geocodifica `city` + `country`.
+
 ## Variables de Radio Bienvenida
 
 ```bash

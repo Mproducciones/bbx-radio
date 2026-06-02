@@ -39,7 +39,8 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     const W  = canvas.width
     const H  = canvas.height
     const cx = W / 2
-    const cy = H * 0.4
+    // Anclado arriba (zona del player), no al centro del viewport — evita tapar la grilla al scroll
+    const cy = W < 768 ? Math.min(210, H * 0.24) : H * 0.32
 
     // ── Frecuencias ────────────────────────────────────────────────────────
     const N   = 128
@@ -151,10 +152,18 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
       ctx.beginPath()
       ctx.arc(cx, cy, BASE_R - 4, 0, Math.PI * 2)
       ctx.clip()
-      ctx.globalAlpha = 0.5
+      ctx.globalAlpha = 0.38
       ctx.drawImage(logoRef.current, cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize)
       ctx.restore()
     }
+
+    // Vignette inferior: deja la programación y el contenido scroll legibles
+    const vignette = ctx.createLinearGradient(0, H * 0.28, 0, H)
+    vignette.addColorStop(0, 'rgba(7,7,14,0)')
+    vignette.addColorStop(0.45, 'rgba(7,7,14,0.5)')
+    vignette.addColorStop(1, 'rgba(7,7,14,0.92)')
+    ctx.fillStyle = vignette
+    ctx.fillRect(0, 0, W, H)
 
     rafRef.current = requestAnimationFrame(draw)
   }, [analyser, isPlaying, primaryColor, secondaryColor])

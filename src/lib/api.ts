@@ -44,6 +44,21 @@ export async function fetchEventos() {
   return sanityClient.fetch(query)
 }
 
+export async function fetchProgramas() {
+  const query = `*[_type == "programa"] | order(startTime asc) {
+    "id": _id,
+    name,
+    host,
+    startTime,
+    endTime,
+    days,
+    description,
+    "imageUrl": image.asset->url
+  }`
+
+  return sanityClient.fetch(query)
+}
+
 export async function fetchReplay() {
   const query = `*[_type == "replay"] | order(broadcastDate desc) {
     _id,

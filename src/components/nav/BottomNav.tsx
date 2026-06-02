@@ -6,11 +6,13 @@ import { motion } from 'framer-motion'
 import { FEATURES } from '@/lib/plan'
 
 const ALL_TABS = [
-  { href: '/',          label: 'En Vivo',   icon: LiveIcon,     show: true },
-  { href: '/saludos',   label: 'Saludos',   icon: SaludosIcon,  show: true },
-  { href: '/replay',    label: 'Replay',    icon: ReplayIcon,   show: true },
-  { href: '/tv',        label: 'TV',        icon: TvIcon,       show: true },
-  { href: '/anunciate', label: 'Anunciate', icon: BusinessIcon, show: FEATURES.publicidad },
+  { href: '/',              label: 'En Vivo',    icon: LiveIcon,        show: true },
+  { href: '/programacion',  label: 'Grilla',     icon: ScheduleIcon,  show: true },
+  { href: '/participa',     label: 'Participá',  icon: ParticipaIcon, show: true },
+  { href: '/saludos',       label: 'Saludos',    icon: SaludosIcon,   show: true },
+  { href: '/replay',        label: 'Replay',     icon: ReplayIcon,    show: FEATURES.replay },
+  { href: '/tv',            label: 'TV',         icon: TvIcon,        show: true },
+  { href: '/anunciate',     label: 'Anuncia',    icon: BusinessIcon,  show: FEATURES.publicidad },
 ]
 
 const TABS = ALL_TABS.filter(t => t.show)
@@ -22,7 +24,6 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[1000] md:hidden">
-      {/* Blur backdrop */}
       <div className="absolute inset-0"
         style={{
           background: 'rgba(7,7,14,0.85)',
@@ -31,16 +32,15 @@ export function BottomNav() {
           borderTop: '1px solid rgba(255,255,255,0.06)',
         }} />
 
-      <div className="relative max-w-md mx-auto px-2 flex items-center h-[62px] gap-1">
+      <div className="relative max-w-md mx-auto px-1 flex items-center h-[62px]">
         {TABS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 
           return (
             <Link key={href} href={href}
-              className="flex-1 flex flex-col items-center justify-center relative py-2 rounded-2xl transition-colors"
+              className="flex-1 flex flex-col items-center justify-center relative py-2 rounded-2xl transition-colors min-w-0"
               style={{ color: isActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
             >
-              {/* Pill background del item activo */}
               {isActive && (
                 <motion.div
                   layoutId="nav-pill"
@@ -50,9 +50,11 @@ export function BottomNav() {
                 />
               )}
 
-              <div className="relative flex flex-col items-center gap-1">
-                <Icon className="w-[18px] h-[18px]" />
-                <span className="text-[9px] font-semibold leading-none tracking-wide">{label}</span>
+              <div className="relative flex flex-col items-center gap-0.5 px-0.5">
+                <Icon className="w-[17px] h-[17px] flex-shrink-0" />
+                <span className="text-[8px] font-semibold leading-none tracking-wide truncate max-w-full">
+                  {label}
+                </span>
               </div>
             </Link>
           )
@@ -68,6 +70,22 @@ function LiveIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18zm-2.5-5.5L16 12l-6.5-3.5v7z" />
+    </svg>
+  )
+}
+
+function ScheduleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+    </svg>
+  )
+}
+
+function ParticipaIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
     </svg>
   )
 }

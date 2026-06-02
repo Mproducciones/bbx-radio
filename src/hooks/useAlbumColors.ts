@@ -62,8 +62,10 @@ async function extractFromImage(url: string): Promise<AlbumColors> {
   })
 }
 
+const DEFAULT_PALETTE = TIME_PALETTES[4]
+
 export function useAlbumColors(albumArtUrl?: string): AlbumColors {
-  const [colors, setColors] = useState<AlbumColors>(() => paletteForHour(new Date().getHours()))
+  const [colors, setColors] = useState<AlbumColors>(DEFAULT_PALETTE)
 
   useEffect(() => {
     if (albumArtUrl) {
