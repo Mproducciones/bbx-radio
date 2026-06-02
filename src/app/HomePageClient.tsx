@@ -6,6 +6,7 @@ import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
+import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 
 export function HomePageClient() {
   const { isPlaying, isLoading, hasError, volume, analyser, toggle, setVolume } = useRadioPlayerContext()
@@ -20,7 +21,7 @@ export function HomePageClient() {
       <div className="md:hidden flex flex-col flex-1 min-h-0 px-4 pt-2 pb-1">
         <div className="flex items-center justify-between mb-2 shrink-0">
           <h1 className="font-display text-xl text-white leading-none tracking-wide">{RADIO.name}</h1>
-          <span
+          <BbxFrequencyGate
             className="font-display text-lg leading-none px-3 py-1.5 rounded-xl"
             style={{
               color: 'var(--color-mag-400)',
@@ -29,7 +30,7 @@ export function HomePageClient() {
             }}
           >
             {RADIO.frequency}
-          </span>
+          </BbxFrequencyGate>
         </div>
 
         <ClientOnly fallback={<div className="h-9 mb-2 rounded-xl bg-white/5 animate-pulse shrink-0" />}>

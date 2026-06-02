@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-const EXCLUDED = ['/admin', '/studio']
+const EXCLUDED = ['/admin', '/studio', '/anunciate']
 
 /** Blur en wrapper + animación en hijo — Safari iOS congela transform si blur está en el mismo nodo */
 function AuroraBlob({

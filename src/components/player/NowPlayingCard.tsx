@@ -9,6 +9,7 @@ import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
 import { BeatCatchGame } from './easterEggs/BeatCatchGame'
+import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -338,14 +339,16 @@ export function NowPlayingCard({
                   />
                   {isPlaying ? 'Transmitiendo en vivo' : 'Radio en vivo'}
                 </span>
-                <span style={{
-                  padding: '4px 10px', borderRadius: 8,
-                  background: 'rgba(255,255,255,0.05)',
-                  fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)',
-                  letterSpacing: 0.5,
-                }}>
+                <BbxFrequencyGate
+                  style={{
+                    padding: '4px 10px', borderRadius: 8,
+                    background: 'rgba(255,255,255,0.05)',
+                    fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.55)',
+                    letterSpacing: 0.5,
+                  }}
+                >
                   {freq} {band || 'FM'}
-                </span>
+                </BbxFrequencyGate>
               </div>
 
               {/* Título + artista / slogan */}

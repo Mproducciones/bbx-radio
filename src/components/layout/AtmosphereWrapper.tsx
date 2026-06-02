@@ -5,7 +5,7 @@ import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { AtmosphereCanvas } from '@/components/player/AtmosphereCanvas'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 
-const EXCLUDED = ['/admin', '/studio', '/bbx']
+const EXCLUDED = ['/admin', '/studio', '/bbx', '/anunciate']
 
 export function AtmosphereWrapper() {
   const pathname = usePathname()
