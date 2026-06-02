@@ -82,20 +82,23 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
             </div>
 
             <div className="shrink-0 px-4 pb-2">
-              <div className="flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x touch-pan-x">
+              <div className="grid grid-cols-1 gap-1.5">
                 {plan.imagenes.map((img, i) => (
                   <button
                     key={`${plan.id}-${img.id}-${i}`}
                     type="button"
                     onClick={() => setActiveIdx(i)}
-                    className="shrink-0 snap-start min-h-[40px] px-2.5 py-2 rounded-lg text-[10px] font-semibold max-w-[min(68vw,130px)]"
+                    className="w-full flex items-center justify-between gap-2 min-h-[44px] px-3 py-2.5 rounded-xl text-left text-xs font-semibold"
                     style={{
                       background: activeIdx === i ? `${plan.color}22` : 'rgba(255,255,255,0.04)',
                       border: activeIdx === i ? `1.5px solid ${plan.color}` : '1px solid rgba(255,255,255,0.07)',
-                      color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.4)',
+                      color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.55)',
                     }}
                   >
-                    {img.caption}
+                    <span>{img.caption}</span>
+                    <span className="text-[10px] shrink-0" style={{ color: activeIdx === i ? plan.color : 'rgba(255,255,255,0.25)' }}>
+                      {activeIdx === i ? '●' : '○'}
+                    </span>
                   </button>
                 ))}
               </div>

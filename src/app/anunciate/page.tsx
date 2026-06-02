@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AnunciatePage() {
   return (
-    <AppMenuScreen scroll="snap" className="md:max-w-4xl lg:max-w-6xl">
+    <AppMenuScreen scroll className="md:max-w-4xl lg:max-w-6xl">
       <SponsorLanding />
     </AppMenuScreen>
   )

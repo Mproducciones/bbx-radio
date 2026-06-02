@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BBX_CONTACT, BBX_PLAN_COMPARE, BBX_PLANS, bbxWhatsApp, type BbxPlan } from '@/lib/bbxContent'
 import { BbxPlanPreviewThumb } from './BbxPlanMockup'
@@ -17,8 +17,7 @@ function Check({ on, color }: { on: boolean; color?: string }) {
 function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void }) {
   return (
     <article
-      data-popular={plan.popular ? '' : undefined}
-      className="relative flex flex-col rounded-xl overflow-hidden h-full snap-center shrink-0 w-[min(86vw,300px)] md:w-auto md:shrink md:snap-align-none"
+      className="relative flex flex-col rounded-xl overflow-hidden h-full w-full"
       style={{
         background: '#0e0e16',
         border: plan.popular ? `2px solid ${plan.color}` : '1px solid rgba(255,255,255,0.07)',
@@ -67,14 +66,7 @@ function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void 
 export function BbxPlansSection() {
   const [planOpen, setPlanOpen] = useState<BbxPlan | null>(null)
   const [showCompare, setShowCompare] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>(null)
   const ordered = [BBX_PLANS[0], BBX_PLANS[1], BBX_PLANS[2]]
-
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el || window.matchMedia('(min-width: 768px)').matches) return
-    el.querySelector('[data-popular]')?.scrollIntoView({ inline: 'center', block: 'nearest' })
-  }, [])
 
   return (
     <section id="planes" className="max-w-6xl mx-auto px-4 py-8 md:py-12">
@@ -86,17 +78,9 @@ export function BbxPlansSection() {
           Estos precios son Capa 1 (tu radio paga a BBX). Lo que cobrás a anunciantes por banners es aparte —{' '}
           <a href="#precios-capas" className="text-[#40B9BF] hover:underline">ver las dos capas</a>.
         </p>
-        <p className="md:hidden text-white/25 text-[9px] mt-1.5 uppercase tracking-wider font-semibold">Desliza · botón abre esquemas visuales</p>
       </div>
 
-      <div ref={scrollRef}
-        className="md:hidden flex gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-1 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x">
-        {ordered.map(plan => (
-          <PlanCard key={plan.id} plan={plan} onExamples={() => setPlanOpen(plan)} />
-        ))}
-      </div>
-
-      <div className="hidden md:grid md:grid-cols-3 gap-3 items-stretch">
+      <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-3 md:items-stretch">
         {ordered.map(plan => (
           <PlanCard key={plan.id} plan={plan} onExamples={() => setPlanOpen(plan)} />
         ))}

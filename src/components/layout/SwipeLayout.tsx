@@ -42,8 +42,8 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
 
   // Swipe horizontal — ignora inputs, sliders y scroll horizontal
   useEffect(() => {
-    // No activar swipe en admin/studio
-    if (pathname.startsWith('/admin') || pathname.startsWith('/studio') || pathname.startsWith('/bbx')) return
+    // No activar swipe en landings largas ni admin
+    if (pathname.startsWith('/admin') || pathname.startsWith('/studio') || pathname.startsWith('/bbx') || pathname.startsWith('/anunciate')) return
 
     let x0 = 0, y0 = 0, target: EventTarget | null = null
 
@@ -89,7 +89,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
   }, [pathname, router])
 
   // No animar rutas de admin/studio
-  const isApp = !pathname.startsWith('/admin') && !pathname.startsWith('/studio') && !pathname.startsWith('/bbx')
+  const isApp = !pathname.startsWith('/admin') && !pathname.startsWith('/studio') && !pathname.startsWith('/bbx') && !pathname.startsWith('/anunciate')
 
   if (!isApp) return <>{children}</>
 

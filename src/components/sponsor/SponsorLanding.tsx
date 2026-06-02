@@ -23,16 +23,16 @@ export function SponsorLanding() {
   }, [])
 
   return (
-    <div className="relative max-md:pb-0 md:pb-10">
+    <div className="relative max-md:pb-[calc(var(--app-nav-total)+1.25rem)] md:pb-10">
       <header
-        className="rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8 relative max-md:app-screen-section max-md:mb-0 max-md:justify-center"
+        className="rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8 relative"
         style={{
           background: 'linear-gradient(165deg, #14101f 0%, #0e0e16 50%, #07070e 100%)',
           border: '1px solid rgba(219,137,24,0.2)',
         }}
       >
         <div className="h-1 w-full shrink-0" style={{ background: 'linear-gradient(90deg, #40B9BF, #db8918, #7D59B5)' }} />
-        <div className="p-4 md:p-8 flex flex-col max-md:flex-1 max-md:justify-center">
+        <div className="p-4 md:p-8 flex flex-col">
           <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5">{SPONSOR_HERO.eyebrow}</p>
 
           <div className="md:grid md:grid-cols-[1fr,200px] md:gap-8 items-start">
@@ -58,7 +58,7 @@ export function SponsorLanding() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 md:mt-6 max-md:mt-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 md:mt-6">
             {SPONSOR_STATS.map(s => {
               const isLive = 'live' in s && s.live
               const value = isLive && listeners != null ? String(listeners) : s.value
@@ -86,14 +86,10 @@ export function SponsorLanding() {
         </div>
       </header>
 
-      <div className="max-md:app-screen-section max-md:py-4">
-        <SponsorValueSection />
-      </div>
-      <div className="max-md:app-screen-section max-md:py-2">
-        <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
-      </div>
+      <SponsorValueSection />
+      <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
 
-      <section className="mb-8 md:mb-10 rounded-2xl p-4 md:p-6 max-md:app-screen-section max-md:mb-0 max-md:justify-center" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <section className="mb-8 md:mb-10 rounded-2xl p-4 md:p-6" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-display text-lg md:text-xl text-white mb-3 md:mb-4">Cómo empezar</h2>
         <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:space-y-0">
           {SPONSOR_STEPS.map(s => (
@@ -108,7 +104,7 @@ export function SponsorLanding() {
         </div>
       </section>
 
-      <section className="mb-6 md:mb-8 md:max-w-2xl md:mx-auto max-md:app-screen-section--peek max-md:mb-0">
+      <section className="mb-6 md:mb-8 md:max-w-2xl md:mx-auto">
         <h2 className="font-display text-lg md:text-xl text-white mb-3 md:mb-4 md:text-center">Preguntas frecuentes</h2>
         <div className="space-y-2">
           {SPONSOR_FAQ.map((item, i) => (
@@ -138,6 +134,18 @@ export function SponsorLanding() {
         </div>
       </section>
 
+      <section className="md:hidden mb-2">
+        <a
+          href={sponsorWaLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex justify-center w-full min-h-[48px] items-center py-3.5 rounded-xl font-bold text-white active:scale-[0.98] transition-transform"
+          style={{ background: '#128C7E' }}
+        >
+          Cotizar por WhatsApp
+        </a>
+      </section>
+
       <section className="hidden md:block rounded-2xl p-6 text-center mb-4" style={{ background: 'rgba(18,140,126,0.08)', border: '1px solid rgba(18,140,126,0.2)' }}>
         <p className="text-white font-bold mb-1">¿Listo para salir al aire?</p>
         <a href={sponsorWaLink()} target="_blank" rel="noopener noreferrer"
@@ -147,29 +155,6 @@ export function SponsorLanding() {
       </section>
 
       <PlanDetailSheet plan={selectedPlan} onClose={() => setSelectedId(null)} />
-
-      {/* Barra fija móvil — sobre bottom nav, oculta cuando hay sheet abierto */}
-      {!selectedPlan && (
-        <div
-          className="fixed left-0 right-0 z-[50] px-3 md:hidden border-t border-white/10 backdrop-blur-lg"
-          style={{
-            bottom: 'calc(var(--app-nav-total) + var(--app-ad-banner-h))',
-            background: 'rgba(7,7,14,0.96)',
-            paddingTop: '0.5rem',
-            paddingBottom: '0.5rem',
-          }}
-        >
-          <a
-            href={sponsorWaLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex justify-center w-full min-h-[48px] items-center py-3 rounded-xl font-bold text-white active:scale-[0.98] transition-transform"
-            style={{ background: '#128C7E' }}
-          >
-            Cotizar por WhatsApp
-          </a>
-        </div>
-      )}
     </div>
   )
 }

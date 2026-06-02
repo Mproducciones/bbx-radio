@@ -60,20 +60,16 @@ function RevenueCard({
   line,
   open,
   onToggle,
-  compact,
 }: {
   line: BbxRevenueLine
   open: boolean
   onToggle: () => void
-  compact?: boolean
 }) {
   return (
     <button
       type="button"
       onClick={onToggle}
-      className={`group relative text-left overflow-hidden rounded-2xl transition-all duration-200 active:scale-[0.98] ${
-        compact ? 'w-[min(76vw,272px)] shrink-0 snap-center' : 'w-full'
-      }`}
+      className="group relative w-full text-left overflow-hidden rounded-2xl transition-all duration-200 active:scale-[0.98]"
       style={{
         background: open
           ? `linear-gradient(145deg, ${line.color}18 0%, rgba(14,14,22,0.98) 45%)`
@@ -232,21 +228,7 @@ export function BbxRevenueSection() {
             </div>
           </div>
 
-          {/* Móvil: carrusel horizontal */}
-          <div className="md:hidden flex gap-2.5 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-1 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x">
-            {BBX_REVENUE.lines.map(line => (
-              <RevenueCard
-                key={line.id}
-                line={line}
-                open={openId === line.id}
-                onToggle={() => toggle(line.id)}
-                compact
-              />
-            ))}
-          </div>
-
-          {/* Desktop: lista vertical */}
-          <div className="hidden md:grid md:grid-cols-3 gap-3">
+          <div className="space-y-2.5">
             {BBX_REVENUE.lines.map(line => (
               <RevenueCard
                 key={line.id}

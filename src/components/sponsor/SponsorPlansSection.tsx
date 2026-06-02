@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { SPONSOR_PLANS, type SponsorPlan } from '@/lib/sponsorPlans'
 import { sponsorWaLink } from '@/lib/sponsorContent'
 import { PlanPreviewThumb } from './PlanMockup'
@@ -8,18 +7,14 @@ import { PlanPreviewThumb } from './PlanMockup'
 function PlanCard({
   plan,
   onSelect,
-  carousel,
 }: {
   plan: SponsorPlan
   onSelect: (plan: SponsorPlan) => void
-  carousel?: boolean
 }) {
   return (
     <article
-      data-popular={plan.popular ? '' : undefined}
       className={[
         'relative flex flex-col rounded-2xl overflow-hidden h-full',
-        carousel ? 'snap-center shrink-0 w-[min(88vw,320px)]' : '',
         plan.popular ? 'md:-mt-2 md:scale-[1.02]' : '',
       ].join(' ')}
       style={{
@@ -44,10 +39,10 @@ function PlanCard({
           <span className="text-white/35 text-sm">/mes</span>
         </div>
 
-        <PlanPreviewThumb planId={plan.id} color={plan.color} compact={carousel} />
+        <PlanPreviewThumb planId={plan.id} color={plan.color} compact />
 
         <p className="text-white/35 text-[10px] mb-3 leading-snug">
-          Toca abajo para ver esquemas de cómo se implementa en la app y en FM.
+          Tocá el botón para abrir los esquemas de implementación en app y FM.
         </p>
 
         <div className="flex flex-col gap-2 mt-auto">
@@ -79,14 +74,6 @@ function PlanCard({
 
 export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan) => void }) {
   const ordered = [SPONSOR_PLANS[0], SPONSOR_PLANS[1], SPONSOR_PLANS[2]]
-  const scrollRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el || window.matchMedia('(min-width: 768px)').matches) return
-    const popular = el.querySelector('[data-popular]')
-    popular?.scrollIntoView({ inline: 'center', block: 'nearest' })
-  }, [])
 
   return (
     <section id="planes" className="mb-8 md:mb-10">
@@ -94,23 +81,9 @@ export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan
         <p className="text-[#db8918] text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Inversión mensual</p>
         <h2 className="font-display text-2xl md:text-4xl text-white leading-none">Planes de publicidad</h2>
         <p className="text-white/40 text-sm mt-1.5">Precios en CLP · cotización sin compromiso</p>
-        <p className="md:hidden text-white/25 text-[10px] mt-2 font-semibold uppercase tracking-wider">
-          Desliza · botón abre esquemas visuales
-        </p>
       </div>
 
-      {/* Móvil: carrusel horizontal con snap */}
-      <div
-        ref={scrollRef}
-        className="md:hidden flex gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory pb-2 -mx-4 px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden touch-pan-x"
-      >
-        {ordered.map(plan => (
-          <PlanCard key={plan.id} plan={plan} onSelect={onSelect} carousel />
-        ))}
-      </div>
-
-      {/* Desktop: grilla */}
-      <div className="hidden md:grid md:grid-cols-3 gap-4 items-stretch">
+      <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-4 md:items-stretch">
         {ordered.map(plan => (
           <PlanCard key={plan.id} plan={plan} onSelect={onSelect} />
         ))}
