@@ -69,8 +69,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const ctxRef = useRef<AudioContext | null>(null)
   const graphReadyRef = useRef(false)
+  /** Web Audio solo tras gesto del usuario — evita warnings en consola */
+  const gestureUnlockedRef = useRef(false)
 
-  /** Usuario quiere radio al aire (default: sí). Solo false si pausa manual. */
   const wantsPlayRef = useRef(true)
   const userPausedRef = useRef(false)
   const pausedForTvRef = useRef(false)
@@ -94,6 +95,25 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     node.connect(ctx.destination)
     setAnalyser(node)
   }, [])
+
+  const resumeContextIfNeeded = useCallback(async () => {
+    if (!gestureUnlockedRef.current) return
+    initAudioGraph()
+    const ctx = ctxRef.current
+    if (ctx?.state === 'suspended') {
+      try {
+        await ctx.resume()
+      } catch {
+        /* autoplay policy */
+      }
+    }
+  }, [initAudioGraph])
+
+  const unlockFromGesture = useCallback(() => {
+    if (gestureUnlockedRef.current) return
+    gestureUnlockedRef.current = true
+    void resumeContextIfNeeded()
+  }, [resumeContextIfNeeded])
 
   const startHeartbeat = useCallback(() => {
     if (heartbeatRef.current) return
@@ -125,12 +145,12 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     setHasError(false)
 
     try {
-      initAudioGraph()
-      if (ctxRef.current?.state === 'suspended') await ctxRef.current.resume()
+      if (gestureUnlockedRef.current) {
+        await resumeContextIfNeeded()
+      }
       setIsLoading(true)
       if (audio.readyState < 2) audio.load()
       await audio.play()
-      if (ctxRef.current?.state === 'suspended') await ctxRef.current.resume()
       setIsPlaying(true)
       startHeartbeat()
     } catch {
@@ -139,7 +159,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }, [startHeartbeat, initAudioGraph, shouldAutoPlay])
+  }, [startHeartbeat, resumeContextIfNeeded, shouldAutoPlay])
 
   const playRef = useRef(play)
   playRef.current = play
@@ -167,15 +187,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     if (shouldAutoPlay()) void playRef.current()
   }, [shouldAutoPlay])
 
-  const resumeCtx = useCallback(() => {
-    initAudioGraph()
-    const ctx = ctxRef.current
-    if (ctx?.state === 'suspended') void ctx.resume()
-    if (shouldAutoPlay() && audioRef.current?.paused) {
-      void playRef.current()
-    }
-  }, [initAudioGraph, shouldAutoPlay])
-
   const milestone = useListeningMilestone(isPlaying)
 
   useEffect(() => {
@@ -188,7 +199,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     audioRef.current = audio
 
     const onPlaying = () => {
-      resumeCtx()
       setIsPlaying(true)
       startHeartbeat()
     }
@@ -208,12 +218,15 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       stopHeartbeat()
     })
 
-    const onGesture = () => resumeCtx()
+    const onGesture = () => unlockFromGesture()
     document.addEventListener('touchstart', onGesture, { passive: true })
-    document.addEventListener('click', onGesture)
+    document.addEventListener('pointerdown', onGesture)
+    document.addEventListener('keydown', onGesture)
 
     const onVisible = () => {
-      if (document.visibilityState === 'visible') resumeCtx()
+      if (document.visibilityState !== 'visible') return
+      if (!gestureUnlockedRef.current) return
+      if (shouldAutoPlay() && audio.paused) void playRef.current()
     }
     document.addEventListener('visibilitychange', onVisible)
 
@@ -227,13 +240,15 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('canplay', onCanPlay)
       document.removeEventListener('touchstart', onGesture)
-      document.removeEventListener('click', onGesture)
+      document.removeEventListener('pointerdown', onGesture)
+      document.removeEventListener('keydown', onGesture)
       document.removeEventListener('visibilitychange', onVisible)
       audio.pause()
       audio.src = ''
       void ctxRef.current?.close()
       ctxRef.current = null
       graphReadyRef.current = false
+      gestureUnlockedRef.current = false
       stopHeartbeat()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,7 +258,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     if (audioRef.current) audioRef.current.volume = volume
   }, [volume])
 
-  /** Pausa al entrar a /tv; reanuda al salir */
   useEffect(() => {
     const onTv = isTvPath(pathname)
     if (onTv) {
@@ -254,6 +268,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [pathname, pauseForTv, resumeAfterTv])
 
   const toggle = useCallback(() => {
+    gestureUnlockedRef.current = true
     if (isPlaying) pause()
     else {
       userPausedRef.current = false

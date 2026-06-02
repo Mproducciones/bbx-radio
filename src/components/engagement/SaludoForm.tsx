@@ -7,9 +7,10 @@ import { MOTIVOS, type MotivoId } from '@/lib/saludoTypes'
 type Step = 'motivo' | 'para' | 'de' | 'sending' | 'done' | 'error'
 
 // ── Sonido "al aire" con Web Audio API ───────────────────────────────────────
-function playOnAirSound() {
+async function playOnAirSound() {
   try {
     const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+    if (ctx.state === 'suspended') await ctx.resume()
     const notes: [number, number][] = [[523, 0], [659, 0.1], [784, 0.2], [1047, 0.32]]
     notes.forEach(([freq, delay]) => {
       const osc  = ctx.createOscillator()
