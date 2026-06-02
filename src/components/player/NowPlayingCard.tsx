@@ -12,15 +12,15 @@ const CV = 220   // canvas size
 const LR = 65    // logo radius (130px / 2)
 const NB = 52    // number of bars
 
-function CircularBars({ isPlaying, primary, secondary }: {
-  isPlaying: boolean; primary: string; secondary: string
+function CircularBars({ isPlaying, primary, secondary, analyser }: {
+  isPlaying: boolean; primary: string; secondary: string; analyser: AnalyserNode | null
 }) {
-  const ref = useRef<HTMLCanvasElement>(null)
-  const bars = useMemo(() => Array.from({ length: NB }, () => ({
-    cur: 8, tgt: 8 + Math.random() * 22,
-    spd: 0.06 + Math.random() * 0.10,
-    alt: Math.random() > 0.8,
-  })), [])
+  const ref    = useRef<HTMLCanvasElement>(null)
+  const smooth = useRef(Array(NB).fill(8))
+  const altBar = useMemo(() => Array.from({ length: NB }, () => Math.random() > 0.8), [])
+  const fake   = useRef(Array.from({ length: NB }, () => ({
+    cur: 8, tgt: 8 + Math.random() * 22, spd: 0.06 + Math.random() * 0.10,
+  })))
 
   useEffect(() => {
     const canvas = ref.current
@@ -29,23 +29,41 @@ function CircularBars({ isPlaying, primary, secondary }: {
     if (!ctx) return
     const cx = CV / 2, cy = CV / 2
     let raf: number
+    let freqData: Uint8Array | null = null
+
+    if (analyser) {
+      analyser.fftSize = 128
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      freqData = new Uint8Array(analyser.frequencyBinCount) as any
+    }
 
     function draw() {
       ctx!.clearRect(0, 0, CV, CV)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (analyser && freqData && isPlaying) analyser.getByteFrequencyData(freqData as any)
+
       for (let i = 0; i < NB; i++) {
-        const b = bars[i]
-        if (isPlaying) {
-          b.cur += (b.tgt - b.cur) * b.spd
-          if (Math.abs(b.cur - b.tgt) < 0.8) b.tgt = 3 + Math.random() * 22
+        let target: number
+        if (analyser && freqData && isPlaying) {
+          const bin = Math.floor((i / NB) * freqData.length)
+          target = 6 + (freqData[bin] / 255) * 42
+        } else if (isPlaying) {
+          const f = fake.current[i]
+          f.cur += (f.tgt - f.cur) * f.spd
+          if (Math.abs(f.cur - f.tgt) < 0.8) f.tgt = 8 + Math.random() * 22
+          target = f.cur
         } else {
-          b.cur += (8 - b.cur) * 0.08
+          target = 8
         }
+
+        smooth.current[i] += (target - smooth.current[i]) * 0.25
+        const len = smooth.current[i]
         const angle = (i / NB) * 2 * Math.PI - Math.PI / 2
         const r0 = LR + 5
         ctx!.beginPath()
         ctx!.moveTo(cx + Math.cos(angle) * r0, cy + Math.sin(angle) * r0)
-        ctx!.lineTo(cx + Math.cos(angle) * (r0 + b.cur), cy + Math.sin(angle) * (r0 + b.cur))
-        ctx!.strokeStyle = b.alt ? secondary : primary
+        ctx!.lineTo(cx + Math.cos(angle) * (r0 + len), cy + Math.sin(angle) * (r0 + len))
+        ctx!.strokeStyle = altBar[i] ? secondary : primary
         ctx!.lineWidth = 2.5
         ctx!.lineCap = 'round'
         ctx!.globalAlpha = 0.9
@@ -55,7 +73,7 @@ function CircularBars({ isPlaying, primary, secondary }: {
     }
     draw()
     return () => cancelAnimationFrame(raf)
-  }, [isPlaying, primary, secondary, bars])
+  }, [isPlaying, primary, secondary, analyser, altBar])
 
   return (
     <canvas ref={ref} width={CV} height={CV}
@@ -83,7 +101,7 @@ const EQ_H = [14,22,32,18,28,36,24,16,30,20,34,14,26,36,18,32,22,28,16,36,24,18,
 
 export function NowPlayingCard({
   radio, nowPlaying, isPlaying, isLoading, hasError,
-  volume, onToggle, onVolumeChange,
+  volume, analyser, onToggle, onVolumeChange,
 }: Props) {
   const showZeno    = hasError && !!radio.zenoSlug
   const hasRealSong = !!(
@@ -98,7 +116,7 @@ export function NowPlayingCard({
   const [freq, band] = radio.frequency.split(' ')
   const title    = hasRealSong ? nowPlaying.title  : radio.name
   const artist   = hasRealSong ? nowPlaying.artist : `${radio.city} · ${radio.country}`
-  const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
+  const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/fondo.png'
 
   return (
     <>
@@ -167,7 +185,7 @@ export function NowPlayingCard({
               <div style={{ position: 'relative', width: CV, height: CV, flexShrink: 0 }}>
 
                 {/* Canvas barras circulares */}
-                <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} />
+                <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
 
                 {/* Glow radial detrás del logo */}
                 {isPlaying && (
