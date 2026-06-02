@@ -202,13 +202,15 @@ export function GlowText({
   children,
   color = '#db8918',
   className = '',
+  style,
 }: {
   children: ReactNode
   color?: string
   className?: string
+  style?: React.CSSProperties
 }) {
   return (
-    <span className={className} style={{ textShadow: `0 0 20px ${color}60, 0 0 40px ${color}30` }}>
+    <span className={className} style={{ textShadow: `0 0 20px ${color}60, 0 0 40px ${color}30`, ...style }}>
       {children}
     </span>
   )
