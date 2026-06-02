@@ -29,7 +29,7 @@ export function NowPlayingCard({
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-3xl"
+      className="relative overflow-hidden rounded-3xl grad-border"
       animate={{ boxShadow: isPlaying ? `0 20px 60px ${colors.glow}, 0 4px 24px rgba(0,0,0,0.6)` : '0 8px 32px rgba(0,0,0,0.4)' }}
       transition={{ duration: 1.5 }}
     >
