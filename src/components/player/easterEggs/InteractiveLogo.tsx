@@ -6,12 +6,14 @@ import Image from 'next/image'
 import { MatrixLogo } from './MatrixLogo'
 
 const LR = 65
+const DRIP_COUNT = 5
 
 interface InteractiveLogoProps {
   artSrc: string
   title: string
   isPlaying: boolean
   primary: string
+  secondary: string
   logoDigital: boolean
   logoHold: number
   onHoldStart: () => void
@@ -25,6 +27,7 @@ export function InteractiveLogo({
   title,
   isPlaying,
   primary,
+  secondary,
   logoDigital,
   logoHold,
   onHoldStart,
@@ -34,17 +37,21 @@ export function InteractiveLogo({
 }: InteractiveLogoProps) {
   const [glitch, setGlitch] = useState(false)
   const touchDevice = useRef(false)
+  const melting = logoHold > 0 && !logoDigital
 
   useEffect(() => {
     if (!isPlaying || logoDigital) return
     const id = window.setInterval(() => {
-      if (Math.random() > 0.65) {
+      if (Math.random() > 0.72) {
         setGlitch(true)
-        window.setTimeout(() => setGlitch(false), 90)
+        window.setTimeout(() => setGlitch(false), 80)
       }
-    }, 18_000)
+    }, 22_000)
     return () => window.clearInterval(id)
   }, [isPlaying, logoDigital])
+
+  const melt = logoHold
+  const pulsoVisible = logoDigital || melt > 0.12
 
   return (
     <div
@@ -96,49 +103,89 @@ export function InteractiveLogo({
       }}
       role="button"
       tabIndex={0}
-      aria-label="Logo. Doble toque o mantén para modo PULSO."
+      aria-label={title}
     >
-      {logoHold > 0 && !logoDigital && (
-        <svg
-          className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none z-10"
-          viewBox="0 0 100 100"
-          aria-hidden
-        >
-          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
-          <circle
-            cx="50"
-            cy="50"
-            r="46"
-            fill="none"
-            stroke={primary}
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray={`${logoHold * 289} 289`}
-          />
-        </svg>
-      )}
+      {/* PULSO — revelado al derretir el logo */}
+      <AnimatePresence>
+        {pulsoVisible && (
+          <motion.div
+            key="pulso"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{
+              opacity: logoDigital ? 1 : Math.min(1, melt * 1.4),
+              scale: logoDigital ? 1 : 0.88 + melt * 0.14,
+            }}
+            exit={{ opacity: 0, scale: 1.08 }}
+            className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[5]"
+          >
+            <span
+              className="font-display leading-none tracking-[0.18em]"
+              style={{
+                fontSize: logoDigital ? 28 : 22 + melt * 8,
+                color: primary,
+                textShadow: `0 0 ${20 + melt * 30}px ${primary}, 0 0 60px ${primary}80`,
+                filter: logoDigital ? 'none' : `blur(${(1 - melt) * 3}px)`,
+              }}
+            >
+              PULSO
+            </span>
+            {logoDigital && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0.4, 0.9, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="font-mono text-[8px] tracking-widest mt-0.5"
+                style={{ color: secondary }}
+              >
+                FM · 93.3
+              </motion.span>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {logoHold > 0.15 && !logoDigital && (
-        <span
-          className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[8px] font-black uppercase tracking-widest pointer-events-none z-20 whitespace-nowrap"
-          style={{ color: primary }}
-        >
-          Mantén…
-        </span>
+      {/* Gotas de derretimiento */}
+      {melting && (
+        <div className="absolute inset-0 pointer-events-none z-[15]" aria-hidden>
+          {Array.from({ length: DRIP_COUNT }, (_, i) => {
+            const x = 18 + i * 14
+            const h = 6 + melt * (22 + i * 6)
+            return (
+              <motion.div
+                key={i}
+                className="absolute rounded-b-full"
+                style={{
+                  left: `${x}%`,
+                  top: `${58 + melt * 18}%`,
+                  width: 7 + (i % 2) * 3,
+                  height: h,
+                  background: `linear-gradient(180deg, ${primary}cc, ${primary}40)`,
+                  boxShadow: `0 0 8px ${primary}60`,
+                  transformOrigin: 'top center',
+                }}
+                animate={{
+                  scaleY: [1, 1.15, 1],
+                  opacity: [0.7, 1, 0.7],
+                }}
+                transition={{ duration: 0.45 + i * 0.08, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            )
+          })}
+        </div>
       )}
 
       <AnimatePresence mode="wait">
         {logoDigital ? (
           <motion.div
             key="matrix"
-            initial={{ opacity: 0, scale: 0.92, filter: 'blur(8px)' }}
+            initial={{ opacity: 0, scale: 0.5, filter: 'blur(16px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 1.05, filter: 'blur(12px)' }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 rounded-full overflow-hidden"
+            exit={{ opacity: 0, scale: 1.2, filter: 'blur(20px)' }}
+            transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+            className="absolute inset-0 rounded-full overflow-hidden z-[20]"
             style={{
-              boxShadow: `0 0 40px ${primary}50, inset 0 0 30px rgba(219,137,24,0.15)`,
-              border: `1px solid ${primary}60`,
+              boxShadow: `0 0 48px ${primary}60, inset 0 0 36px rgba(219,137,24,0.2)`,
+              border: `1px solid ${primary}70`,
             }}
           >
             <MatrixLogo size={LR * 2} primary={primary} active />
@@ -146,24 +193,30 @@ export function InteractiveLogo({
         ) : (
           <motion.div
             key="img"
+            className="absolute inset-0 rounded-full overflow-visible pointer-events-none z-[10]"
             animate={{
-              opacity: logoHold > 0.3 ? 1 - logoHold * 0.85 : 1,
-              filter: logoHold > 0.2
-                ? `blur(${logoHold * 6}px) brightness(${1 + logoHold * 0.3})`
+              y: melt * 28,
+              scale: 1 - melt * 0.12,
+              opacity: 1 - melt * 0.92,
+              filter: melt > 0
+                ? `blur(${melt * 10}px) brightness(${1 + melt * 0.4}) saturate(${1 + melt * 0.3})`
                 : glitch
                   ? 'hue-rotate(90deg) contrast(1.35)'
                   : 'none',
+              clipPath: melt > 0.05
+                ? `ellipse(${88 - melt * 30}% ${92 - melt * 75}% at 50% ${42 + melt * 35}%)`
+                : 'circle(50% at 50% 50%)',
             }}
-            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+            transition={{ duration: 0.08, ease: 'linear' }}
           >
             <motion.div
-              className="w-full h-full pointer-events-none"
+              className="w-full h-full rounded-full overflow-hidden pointer-events-none"
               animate={{ rotate: isPlaying ? 360 : 0 }}
               transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
             >
               <Image
                 src={artSrc}
-                alt={title}
+                alt=""
                 width={LR * 2}
                 height={LR * 2}
                 draggable={false}

@@ -9,9 +9,6 @@ import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
 import { BeatCatchGame } from './easterEggs/BeatCatchGame'
-import { PlayerInteractSheet } from './easterEggs/PlayerInteractSheet'
-import { SecretHintToast } from './easterEggs/SecretHintToast'
-import { Sparkles } from 'lucide-react'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -195,7 +192,7 @@ export function NowPlayingCard({
   const artist   = hasRealSong ? nowPlaying.artist : radio.slogan
   const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
 
-  const secrets = usePlayerSecrets()
+  const secrets = usePlayerSecrets(isPlaying)
 
   return (
     <>
@@ -215,8 +212,6 @@ export function NowPlayingCard({
           : `0 12px 48px rgba(0,0,0,0.7)`,
         transition: 'box-shadow 1.5s, border-color 1.5s',
       }}>
-        <SecretHintToast message={secrets.hintFlash} />
-
         {/* Accent top */}
         <div style={{ height: 3, position: 'relative', overflow: 'hidden' }}>
           <div style={{
@@ -258,14 +253,16 @@ export function NowPlayingCard({
                 decoding="async"
                 className="player-hero-fondo absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
                 style={{
-                  opacity: secrets.logoDigital ? 0.08 : undefined,
+                  opacity: secrets.logoDigital
+                    ? 0.42
+                    : 0.28 + secrets.logoHold * 0.35,
                   transform: 'translateZ(0)',
                 }}
               />
-              {/* Overlay oscuro encima del fondo */}
+              {/* Overlay — se aclara al derretir el logo */}
               <div style={{
                 position: 'absolute', inset: 0,
-                background: `radial-gradient(ellipse at 50% 50%, ${primary}22 0%, rgba(7,7,14,0.45) 70%)`,
+                background: `radial-gradient(ellipse at 50% 45%, ${primary}28 0%, rgba(7,7,14,${0.45 - secrets.logoHold * 0.28}) 70%)`,
               }} />
               {/* Frecuencia decorativa */}
               <div style={{
@@ -277,25 +274,6 @@ export function NowPlayingCard({
               }}>
                 {freq}
               </div>
-
-              {/* Botón visible — abre menú de interacción (móvil) */}
-              <button
-                type="button"
-                onClick={e => { e.stopPropagation(); secrets.setSheetOpen(true) }}
-                className="absolute top-3 right-3 z-30 flex items-center gap-1.5 px-2.5 py-1.5 rounded-full"
-                style={{
-                  background: 'rgba(7,7,14,0.75)',
-                  border: '1px solid rgba(219,137,24,0.35)',
-                  color: '#db8918',
-                  fontSize: 9,
-                  fontWeight: 800,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                Jugar
-              </button>
 
               {/* Contenedor del visualizador — flex child, centrado por el padre */}
               <div className="max-md:scale-[0.88] md:scale-100" style={{ position: 'relative', width: CV, height: CV, flexShrink: 0, transformOrigin: 'center' }}>
@@ -324,6 +302,7 @@ export function NowPlayingCard({
                   title={title ?? radio.name}
                   isPlaying={isPlaying}
                   primary={primary}
+                  secondary={secondary}
                   logoDigital={secrets.logoDigital}
                   logoHold={secrets.logoHold}
                   onHoldStart={secrets.startLogoHold}
@@ -489,12 +468,6 @@ export function NowPlayingCard({
         )}
       </div>
 
-      <PlayerInteractSheet
-        open={secrets.sheetOpen}
-        onClose={() => secrets.setSheetOpen(false)}
-        onDigital={secrets.activateDigital}
-        onCatch={secrets.activateCatch}
-      />
     </>
   )
 }
