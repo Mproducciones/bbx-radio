@@ -15,7 +15,8 @@ interface PremiumAd {
   enlace?: string
 }
 
-const EXCLUDED = ['/admin', '/studio', '/bbx', '/tv']
+/** En Vivo el play queda abajo — el banner fijo lo tapaba */
+const EXCLUDED = ['/', '/admin', '/studio', '/bbx', '/tv']
 const DISMISS_KEY = 'premium_ad_dismissed'
 const DISMISS_MINUTES = 30
 
@@ -25,7 +26,10 @@ export function PremiumAdBanner() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (EXCLUDED.some(p => pathname.startsWith(p))) { setVisible(false); return }
+    if (EXCLUDED.some(p => (p === '/' ? pathname === '/' : pathname.startsWith(p)))) {
+      setVisible(false)
+      return
+    }
 
     const dismissed = sessionStorage.getItem(DISMISS_KEY)
     if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_MINUTES * 60_000) return

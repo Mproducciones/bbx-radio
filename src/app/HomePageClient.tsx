@@ -37,7 +37,7 @@ export function HomePageClient() {
           <RadioLocaleBar radio={RADIO} className="mb-2 shrink-0" />
         </ClientOnly>
 
-        <div className="flex-1 flex flex-col justify-center min-h-0">
+        <div className="flex-1 flex flex-col justify-center min-h-0 pb-2">
           <ClientOnly
             fallback={
               <div
