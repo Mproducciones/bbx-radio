@@ -1,4 +1,5 @@
 import { SponsorLanding } from '@/components/sponsor/SponsorLanding'
+import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function AnunciatePage() {
   return (
-    <main className="relative z-[2] mx-auto w-full max-w-6xl px-4 pt-3 pb-2 md:pt-8 md:pb-24 max-md:min-h-[var(--app-screen-h)] max-md:overflow-y-auto">
+    <AppMenuScreen scroll="snap" className="md:max-w-4xl lg:max-w-6xl">
       <SponsorLanding />
-    </main>
+    </AppMenuScreen>
   )
 }

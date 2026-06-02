@@ -48,6 +48,10 @@ function pingListener(action: 'join' | 'leave') {
   }
 }
 
+function isTvPath(path: string) {
+  return path.startsWith('/tv')
+}
+
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -58,50 +62,23 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isConcertMode, setIsConcertMode] = useState(false)
 
   const pathname = usePathname()
-  const prevPathRef = useRef(pathname)
-  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pathnameRef = useRef(pathname)
+  pathnameRef.current = pathname
 
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const ctxRef = useRef<AudioContext | null>(null)
+  const graphReadyRef = useRef(false)
 
-  const milestone = useListeningMilestone(isPlaying)
+  /** Usuario quiere radio al aire (default: sí). Solo false si pausa manual. */
+  const wantsPlayRef = useRef(true)
+  const userPausedRef = useRef(false)
+  const pausedForTvRef = useRef(false)
 
-  const startHeartbeat = useCallback(() => {
-    pingListener('join')
-    heartbeatRef.current = setInterval(() => pingListener('join'), 30_000)
-  }, [])
-
-  const stopHeartbeat = useCallback(() => {
-    if (heartbeatRef.current) {
-      clearInterval(heartbeatRef.current)
-      heartbeatRef.current = null
-    }
-    pingListener('leave')
-  }, [])
-
-  // Cerrar TV al navegar fuera de "/"
-  useEffect(() => {
-    if (prevPathRef.current === '/' && pathname !== '/') {
-      if (isTvOpen) {
-        setIsTvOpen(false)
-        const audio = audioRef.current
-        if (audio) {
-          audio.play().catch(() => {})
-          setIsPlaying(true)
-        }
-      }
-    }
-    prevPathRef.current = pathname
-  }, [pathname, isTvOpen])
-
-  useEffect(() => {
-    const audio = new Audio(STREAM_URL)
-    audio.crossOrigin = 'anonymous'
-    audio.preload = 'none'
-    audio.volume = volume
-    audio.setAttribute('playsinline', 'true')
-    audio.setAttribute('webkit-playsinline', 'true')
-    audioRef.current = audio
+  const initAudioGraph = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio || graphReadyRef.current) return
+    graphReadyRef.current = true
 
     const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     const ctx = new AudioCtx({ latencyHint: 'interactive' })
@@ -116,15 +93,114 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     source.connect(node)
     node.connect(ctx.destination)
     setAnalyser(node)
+  }, [])
 
-    const resumeCtx = () => {
-      if (ctx.state === 'suspended') void ctx.resume()
+  const startHeartbeat = useCallback(() => {
+    if (heartbeatRef.current) return
+    pingListener('join')
+    heartbeatRef.current = setInterval(() => pingListener('join'), 30_000)
+  }, [])
+
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatRef.current) {
+      clearInterval(heartbeatRef.current)
+      heartbeatRef.current = null
     }
-    audio.addEventListener('playing', resumeCtx)
-    audio.addEventListener('canplay', () => {
+    pingListener('leave')
+  }, [])
+
+  const shouldAutoPlay = useCallback(() => {
+    return wantsPlayRef.current
+      && !userPausedRef.current
+      && !isTvPath(pathnameRef.current)
+      && !pausedForTvRef.current
+  }, [])
+
+  const play = useCallback(async () => {
+    const audio = audioRef.current
+    if (!audio || !shouldAutoPlay()) return
+
+    userPausedRef.current = false
+    wantsPlayRef.current = true
+    setHasError(false)
+
+    try {
+      initAudioGraph()
+      if (ctxRef.current?.state === 'suspended') await ctxRef.current.resume()
+      setIsLoading(true)
+      if (audio.readyState < 2) audio.load()
+      await audio.play()
+      if (ctxRef.current?.state === 'suspended') await ctxRef.current.resume()
+      setIsPlaying(true)
+      startHeartbeat()
+    } catch {
+      setHasError(false)
+      setIsPlaying(false)
+    } finally {
       setIsLoading(false)
+    }
+  }, [startHeartbeat, initAudioGraph, shouldAutoPlay])
+
+  const playRef = useRef(play)
+  playRef.current = play
+
+  const pauseStream = useCallback(() => {
+    audioRef.current?.pause()
+    setIsPlaying(false)
+    stopHeartbeat()
+  }, [stopHeartbeat])
+
+  const pause = useCallback(() => {
+    userPausedRef.current = true
+    wantsPlayRef.current = false
+    pauseStream()
+  }, [pauseStream])
+
+  const pauseForTv = useCallback(() => {
+    pausedForTvRef.current = true
+    pauseStream()
+  }, [pauseStream])
+
+  const resumeAfterTv = useCallback(() => {
+    pausedForTvRef.current = false
+    setIsTvOpen(false)
+    if (shouldAutoPlay()) void playRef.current()
+  }, [shouldAutoPlay])
+
+  const resumeCtx = useCallback(() => {
+    initAudioGraph()
+    const ctx = ctxRef.current
+    if (ctx?.state === 'suspended') void ctx.resume()
+    if (shouldAutoPlay() && audioRef.current?.paused) {
+      void playRef.current()
+    }
+  }, [initAudioGraph, shouldAutoPlay])
+
+  const milestone = useListeningMilestone(isPlaying)
+
+  useEffect(() => {
+    const audio = new Audio(STREAM_URL)
+    audio.crossOrigin = 'anonymous'
+    audio.preload = 'none'
+    audio.volume = volume
+    audio.setAttribute('playsinline', 'true')
+    audio.setAttribute('webkit-playsinline', 'true')
+    audioRef.current = audio
+
+    const onPlaying = () => {
       resumeCtx()
-    })
+      setIsPlaying(true)
+      startHeartbeat()
+    }
+    const onPause = () => setIsPlaying(false)
+    const onCanPlay = () => {
+      setIsLoading(false)
+      if (shouldAutoPlay()) void playRef.current()
+    }
+
+    audio.addEventListener('playing', onPlaying)
+    audio.addEventListener('pause', onPause)
+    audio.addEventListener('canplay', onCanPlay)
     audio.addEventListener('error', () => {
       setIsPlaying(false)
       setIsLoading(false)
@@ -132,16 +208,32 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       stopHeartbeat()
     })
 
-    document.addEventListener('touchstart', resumeCtx, { passive: true })
-    document.addEventListener('click', resumeCtx)
+    const onGesture = () => resumeCtx()
+    document.addEventListener('touchstart', onGesture, { passive: true })
+    document.addEventListener('click', onGesture)
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') resumeCtx()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
+    const autoplayTimer = window.setTimeout(() => {
+      if (shouldAutoPlay()) void playRef.current()
+    }, 1400)
 
     return () => {
-      audio.removeEventListener('playing', resumeCtx)
-      document.removeEventListener('touchstart', resumeCtx)
-      document.removeEventListener('click', resumeCtx)
+      window.clearTimeout(autoplayTimer)
+      audio.removeEventListener('playing', onPlaying)
+      audio.removeEventListener('pause', onPause)
+      audio.removeEventListener('canplay', onCanPlay)
+      document.removeEventListener('touchstart', onGesture)
+      document.removeEventListener('click', onGesture)
+      document.removeEventListener('visibilitychange', onVisible)
       audio.pause()
       audio.src = ''
-      void ctx.close()
+      void ctxRef.current?.close()
+      ctxRef.current = null
+      graphReadyRef.current = false
       stopHeartbeat()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,37 +243,24 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     if (audioRef.current) audioRef.current.volume = volume
   }, [volume])
 
-  const play = useCallback(async () => {
-    const audio = audioRef.current
-    const ctx = ctxRef.current
-    if (!audio) return
-    setHasError(false)
-    try {
-      if (ctx?.state === 'suspended') await ctx.resume()
-      setIsLoading(true)
-      if (audio.readyState < 2) audio.load()
-      await audio.play()
-      if (ctx?.state === 'suspended') await ctx.resume()
-      setIsPlaying(true)
-      startHeartbeat()
-    } catch {
-      setHasError(true)
-      setIsPlaying(false)
-    } finally {
-      setIsLoading(false)
+  /** Pausa al entrar a /tv; reanuda al salir */
+  useEffect(() => {
+    const onTv = isTvPath(pathname)
+    if (onTv) {
+      pauseForTv()
+    } else if (pausedForTvRef.current) {
+      resumeAfterTv()
     }
-  }, [startHeartbeat])
-
-  const pause = useCallback(() => {
-    audioRef.current?.pause()
-    setIsPlaying(false)
-    stopHeartbeat()
-  }, [stopHeartbeat])
+  }, [pathname, pauseForTv, resumeAfterTv])
 
   const toggle = useCallback(() => {
     if (isPlaying) pause()
-    else play()
-  }, [isPlaying, play, pause])
+    else {
+      userPausedRef.current = false
+      wantsPlayRef.current = true
+      void play()
+    }
+  }, [isPlaying, pause, play])
 
   const setVolume = useCallback((v: number) => setVolumeState(v), [])
 
@@ -189,23 +268,13 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const closeConcert = useCallback(() => setIsConcertMode(false), [])
 
   const openTv = useCallback(() => {
-    audioRef.current?.pause()
-    setIsPlaying(false)
-    stopHeartbeat()
     setIsTvOpen(true)
-  }, [stopHeartbeat])
+    pauseForTv()
+  }, [pauseForTv])
 
   const closeTv = useCallback(() => {
-    setIsTvOpen(false)
-    const audio = audioRef.current
-    const ctx = ctxRef.current
-    if (audio) {
-      if (ctx?.state === 'suspended') ctx.resume()
-      audio.play().catch(() => {})
-      setIsPlaying(true)
-      startHeartbeat()
-    }
-  }, [startHeartbeat])
+    resumeAfterTv()
+  }, [resumeAfterTv])
 
   return (
     <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, volume, analyser, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, setVolume, openConcert, closeConcert }}>

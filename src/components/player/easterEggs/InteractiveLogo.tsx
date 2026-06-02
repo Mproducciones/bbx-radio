@@ -225,15 +225,16 @@ export function InteractiveLogo({
               opacity: 1 - melt * 0.92,
               filter: melt > 0
                 ? `blur(${melt * 10}px) brightness(${1 + melt * 0.4}) saturate(${1 + melt * 0.3})`
-                : burstActive
-                  ? [
-                      `drop-shadow(0 0 20px ${primary}) saturate(1.35)`,
-                      `drop-shadow(0 0 36px ${secondary}) hue-rotate(8deg) saturate(1.5)`,
-                      `drop-shadow(0 0 22px ${primary}) saturate(1.2)`,
-                    ]
-                  : glitch
-                    ? 'hue-rotate(90deg) contrast(1.35)'
-                    : 'none',
+                : glitch
+                  ? 'hue-rotate(90deg) contrast(1.35)'
+                  : 'none',
+              boxShadow: burstActive && melt <= 0
+                ? [
+                    `0 0 22px ${primary}`,
+                    `0 0 38px ${secondary}`,
+                    `0 0 26px ${primary}`,
+                  ]
+                : 'none',
               clipPath: melt > 0.05
                 ? `ellipse(${88 - melt * 30}% ${92 - melt * 75}% at 50% ${42 + melt * 35}%)`
                 : 'circle(50% at 50% 50%)',

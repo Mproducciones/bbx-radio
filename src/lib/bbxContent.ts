@@ -90,26 +90,27 @@ export const BBX_REVENUE = {
   subtitle: 'Ejemplo realista para una radio regional que activa ventas digitales',
   ownerIntro:
     'La FM sigue siendo tu core. BBX agrega productos que puedes vender todos los meses: banners con impresiones, sorteos patrocinados y datos para cerrar anunciantes. Esto es lo que un dueño puede facturar extra sin duplicar equipo.',
-  totalLabel: '$590.000',
-  totalNote: 'Referencial · no incluye pauta tradicional al aire ni eventos especiales',
-  roiNote: 'Con plan Pro ($120.000/mes), un escenario así deja margen positivo desde el primer mes con 3–4 banners vendidos.',
+  totalLabel: '$390.000',
+  totalNote: 'Referencial · no incluye pauta FM tradicional ni planes Anunciate integrados (radio + app)',
+  roiNote:
+    'Plan Pro cuesta $120.000/mes. Con 3 posiciones vendidas a $50.000 ($150.000) ya cubrís la plataforma; la cuarta posición es margen puro.',
   lines: [
     {
       id: 'banners',
       title: 'Banners digitales',
-      amountLabel: '$400.000',
+      amountLabel: '$200.000',
       color: '#db8918',
-      hook: 'Espacios en la app mientras escuchan en vivo.',
+      hook: '4 espacios en la app — vendés por posición, no por pantalla infinita.',
       ownerBenefit:
-        'Cobrás lo mismo que un spot, pero el anunciante ve la app y vos tenés número de impresiones. Es ingreso recurrente: renueva mes a mes.',
+        'La app tiene hasta 4 posiciones (superior, intermedio, inferior y En Vivo). Cada una se vende aparte: exclusiva ~$50.000/mes o compartida ~$30.000/mes (2 marcas rotando). No son 8 productos distintos: son 4 slots que llenás bien.',
       breakdown: [
-        { label: 'Precio referencia por banner', value: '$50.000/mes' },
-        { label: 'Banners vendidos (ejemplo)', value: '8' },
-        { label: 'Posiciones en app', value: 'Hasta 4 rotativas' },
-        { label: 'Subtotal estimado', value: '$400.000' },
+        { label: 'Posiciones en app (máx.)', value: '4' },
+        { label: 'Precio posición exclusiva', value: '$50.000/mes' },
+        { label: 'Precio posición compartida', value: '$30.000/mes c/u' },
+        { label: 'Ejemplo: 4 slots exclusivos', value: '$200.000/mes' },
       ],
       howToSell:
-        'Mostrá la app en reunión: “Tu logo acá mientras suena la radio”. Ideal para comercios de barrio, clínicas y delivery.',
+        'Mostrá la app: “Acá arriba, acá en En Vivo, acá abajo”. Un comercio compra UNA posición. Si el slot está lleno, ofrecé rotación más barata o lista de espera — no vendas 8 banners como si fueran 8 pantallas.',
     },
     {
       id: 'sorteos',
@@ -148,7 +149,68 @@ export const BBX_REVENUE = {
   ] satisfies BbxRevenueLine[],
 }
 
+export type BbxPricingLayer = {
+  id: string
+  title: string
+  flow: string
+  accent: string
+  examples: RevenueBreakdownLine[]
+  note: string
+}
+
+export const BBX_PRICING_LAYERS = {
+  title: 'Dos precios, dos conversaciones',
+  intro:
+    'No confundas lo que la radio paga a BBX con lo que la radio cobra a un comercio del barrio. Son capas distintas del mismo ecosistema.',
+  layers: [
+    {
+      id: 'bbx-radio',
+      title: 'Capa 1 · Plataforma BBX',
+      flow: 'Tu radio → paga a BBX',
+      accent: '#db8918',
+      examples: [
+        { label: 'Plan Esencial', value: '$80.000/mes + setup' },
+        { label: 'Plan Pro', value: '$120.000/mes + setup' },
+        { label: 'Plan Premium', value: '$160.000/mes + setup' },
+      ],
+      note: 'Costo SaaS: app, panel, módulos y soporte. No incluye venderle nada a un anunciante — eso lo hacés vos.',
+    },
+    {
+      id: 'radio-anunciante',
+      title: 'Capa 2 · Venta a comercios locales',
+      flow: 'Comercio / marca → paga a tu radio',
+      accent: '#40B9BF',
+      examples: [
+        { label: '1 posición banner (exclusiva)', value: '$30.000–$50.000/mes' },
+        { label: 'Máximo simultáneo en app', value: '4 slots' },
+        { label: 'Paquete FM + app integrado', value: '$80.000–$250.000/mes' },
+      ],
+      note: 'El slot de app es un producto chico (solo digital). El paquete integrado suma spots en FM + banner — precio mayor, como en la demo Anunciate de Bienvenida. No son lo mismo.',
+    },
+  ] satisfies BbxPricingLayer[],
+  footnote:
+    'Los $390.000 del ejemplo de ingresos extra son plata que entra a la radio por vender Capa 2, después de pagar Capa 1.',
+} as const
+
 export type BbxPlanId = 'esencial' | 'pro' | 'premium'
+
+export type BbxMockupKind =
+  | 'pwa'
+  | 'player'
+  | 'saludos'
+  | 'banners'
+  | 'sorteos'
+  | 'analytics'
+  | 'dominio'
+  | 'playstore'
+  | 'marca'
+
+export type BbxPlanImage = {
+  id: BbxMockupKind
+  caption: string
+  visualNote: string
+  callouts: string[]
+}
 
 export type BbxPlan = {
   id: BbxPlanId
@@ -160,6 +222,8 @@ export type BbxPlan = {
   tagline: string
   features: string[]
   ideal: string
+  detalle: string
+  imagenes: BbxPlanImage[]
 }
 
 export const BBX_PLANS: BbxPlan[] = [
@@ -169,14 +233,38 @@ export const BBX_PLANS: BbxPlan[] = [
     precio: '80.000',
     setup: '100.000',
     color: '#40B9BF',
-    tagline: 'Presencia digital profesional desde el día uno.',
-    ideal: 'Radios que quieren app propia sin complejidad comercial.',
+    tagline: 'App propia en 48 h, sin complejidad.',
+    ideal: 'Radios que quieren presencia digital profesional ya.',
+    detalle: 'Tu emisora con PWA instalable, reproductor al ritmo de la música y módulos de engagement básicos. Ideal para arrancar sin panel comercial.',
     features: [
       'PWA instalable · Android e iOS',
       'Reproductor en vivo con visualizador',
       'Programación con bloque EN VIVO',
       'Saludos al aire',
       'Señal de TV integrada',
+    ],
+    imagenes: [
+      {
+        id: 'pwa',
+        caption: 'Instalar en celular',
+        callouts: ['Sin tienda', 'Icono en home', 'iOS + Android'],
+        visualNote:
+          'El oyente entra a tu URL, toca “Añadir a inicio” y queda un icono como app nativa. No pasás por App Store ni Play Store — listo en minutos tras el setup.',
+      },
+      {
+        id: 'player',
+        caption: 'Pantalla En Vivo',
+        callouts: ['Visualizador al ritmo', 'Metadatos', 'Play / pause'],
+        visualNote:
+          'Pantalla principal de la PWA: stream en vivo, carátula del tema, visualizador que reacciona al audio y controles grandes. Es lo primero que ve quien abre tu radio.',
+      },
+      {
+        id: 'saludos',
+        caption: 'Módulo saludos',
+        callouts: ['Formulario oyente', 'Llega a cabina', 'Tiempo real'],
+        visualNote:
+          'Desde el menú Participá el oyente escribe un saludo; en cabina aparece al instante para que el locutor lo lea en vivo. Fideliza sin WhatsApp caótico.',
+      },
     ],
   },
   {
@@ -186,15 +274,39 @@ export const BBX_PLANS: BbxPlan[] = [
     setup: '150.000',
     color: '#db8918',
     popular: true,
-    tagline: 'Monetizá con publicidad digital y datos de oyentes.',
-    ideal: 'La opción que más rentabiliza: ventas + app + panel.',
+    tagline: 'Monetizá con banners, sorteos y datos.',
+    ideal: 'La opción que más rentabiliza ventas + app.',
+    detalle: 'Todo Esencial más publicidad digital medible, captura de leads y panel admin. Con 3 posiciones vendidas a $50.000/mes ($150.000) cubrís el plan Pro ($120.000).',
     features: [
       'Todo Esencial',
-      'Banners (hasta 4 posiciones)',
+      'Banners (4 posiciones: superior, intermedio, inferior, En Vivo)',
       'Sorteos con captura de leads',
       'Votación y pedidos de tema',
       'Analytics en tiempo real',
       'Panel admin + CMS',
+    ],
+    imagenes: [
+      {
+        id: 'banners',
+        caption: 'Venta de banners',
+        callouts: ['Hasta 4 slots', 'Impresiones', 'Rotación'],
+        visualNote:
+          'Cuatro slots reales en la app (coinciden con el panel de publicidad). Vendés cada posición por separado; dentro de un slot pueden rotar 2 marcas si es plan compartido.',
+      },
+      {
+        id: 'sorteos',
+        caption: 'Sorteo patrocinado',
+        callouts: ['Captura WhatsApp', 'Marca auspicia', 'Leads exportables'],
+        visualNote:
+          'La marca paga el sorteo; el oyente deja contacto en la app. Vos entregás registros al auspiciador y facturás el espacio digital + activación en vivo.',
+      },
+      {
+        id: 'analytics',
+        caption: 'Panel oyentes',
+        callouts: ['En vivo ahora', 'Histórico', 'Para ventas'],
+        visualNote:
+          'Dashboard con oyentes conectados, sesiones y picos. Ventas lo usa en reuniones: “Así de gente nos escucha en la app” — cierra banners con datos.',
+      },
     ],
   },
   {
@@ -203,14 +315,38 @@ export const BBX_PLANS: BbxPlan[] = [
     precio: '160.000',
     setup: '200.000',
     color: '#7D59B5',
-    tagline: 'Marca propia, dominio y presencia en tiendas.',
-    ideal: 'Grupos radiales y emisoras con visión de largo plazo.',
+    tagline: 'Dominio propio y presencia en tiendas.',
+    ideal: 'Grupos radiales y visión de largo plazo.',
+    detalle: 'Marca 100% tuya: dominio personalizado, APK en Play Store y soporte prioritario. Para emisoras que quieren verse como producto propio, no “una app más”.',
     features: [
       'Todo Pro',
       'APK para Google Play',
       'Dominio personalizado',
       'Módulo de lanzamientos',
       'Soporte prioritario',
+    ],
+    imagenes: [
+      {
+        id: 'dominio',
+        caption: 'Dominio propio',
+        callouts: ['radio.tumarca.cl', 'SSL incluido', 'Marca 100%'],
+        visualNote:
+          'La app vive en tu dominio, no en un subdominio genérico. El oyente ve tu marca en la barra del navegador y comparte links con tu nombre.',
+      },
+      {
+        id: 'playstore',
+        caption: 'Google Play',
+        callouts: ['APK publicada', 'Tu icono', 'Instalar clásico'],
+        visualNote:
+          'Generamos y publicamos el APK con tu logo y nombre en Play Store. Para oyentes que prefieren buscar “Tu Radio” en la tienda en lugar de PWA.',
+      },
+      {
+        id: 'marca',
+        caption: 'White-label',
+        callouts: ['Colores', 'Logo', 'Sin BBX visible'],
+        visualNote:
+          'Paleta, tipografía e iconografía 100% de tu emisora. El producto no muestra BBX al oyente — parece app hecha a medida para tu radio.',
+      },
     ],
   },
 ]
@@ -227,6 +363,10 @@ export const BBX_PLAN_COMPARE = [
 ] as const
 
 export const BBX_FAQ = [
+  {
+    q: '¿Es lo mismo el precio BBX y lo que cobro por un banner?',
+    a: 'No. BBX (Capa 1) es lo que tu radio paga por la plataforma — desde $80.000/mes según plan. Lo que cobrás a un comercio por un slot en la app (Capa 2) lo defines vos: referencia $30.000–$50.000/mes por posición. Un paquete FM + app al anunciante final ($80.000–$250.000) es otro producto, no un banner suelto.',
+  },
   {
     q: '¿Necesito publicar en App Store o Google Play?',
     a: 'No para empezar. La PWA se instala desde el navegador. En Premium podemos generar APK para Play Store.',

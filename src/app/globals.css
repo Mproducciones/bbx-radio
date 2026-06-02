@@ -185,6 +185,28 @@
   --app-nav-h: 62px;
   --app-nav-total: calc(var(--app-nav-h) + env(safe-area-inset-bottom, 0px));
   --app-screen-h: calc(100dvh - var(--app-nav-total));
+  --app-ad-banner-h: 88px;
+  --app-content-h: calc(var(--app-screen-h) - var(--app-ad-banner-h));
+}
+
+/* Pantalla completa móvil + scroll snap (menús / anunciate) */
+@media (max-width: 767px) {
+  .app-screen-section {
+    min-height: var(--app-content-h);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .app-screen-section--peek {
+    min-height: calc(var(--app-content-h) + 3.5rem);
+    padding-bottom: 5rem;
+  }
+  .app-scroll-snap {
+    scroll-snap-type: y proximity;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 html {

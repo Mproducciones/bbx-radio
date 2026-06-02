@@ -31,7 +31,7 @@ function getSession(): string {
   return id
 }
 
-export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: () => void } = {}) {
+export function SongPoll({ compact, onEmpty, className }: { compact?: boolean; onEmpty?: () => void; className?: string } = {}) {
   const [poll, setPoll]   = useState<Poll | null>(null)
   const [voting, setVoting] = useState(false)
   const [justVoted, setJustVoted] = useState(false)
@@ -97,7 +97,7 @@ export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: ()
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl h-full flex flex-col"
+      className={`relative overflow-hidden rounded-2xl h-full flex flex-col min-h-0 ${className ?? ''}`}
       style={{
         background: 'rgba(15,15,26,0.72)',
         backdropFilter: 'blur(16px)',
@@ -108,7 +108,7 @@ export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: ()
       {/* Accent top */}
       <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, #db8918, #40B9BF, transparent)' }} />
 
-      <div className={compact ? 'p-3 flex-1 flex flex-col justify-center' : 'p-4'}>
+      <div className={compact ? 'p-3 flex-1 flex flex-col justify-center min-h-0' : 'p-4 flex-1 flex flex-col'}>
         {/* Header */}
         <div className={`flex items-center gap-2 ${compact ? 'mb-2' : 'mb-4'}`}>
           <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
@@ -121,7 +121,7 @@ export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: ()
         <p className={`text-white font-bold leading-snug ${compact ? 'text-xs mb-2' : 'text-sm mb-4'}`}>{poll.question}</p>
 
         {/* Opciones */}
-        <div className={`grid grid-cols-2 ${compact ? 'gap-2' : 'gap-3'}`}>
+        <div className={`grid grid-cols-2 flex-1 min-h-0 ${compact ? 'gap-2 items-stretch' : 'gap-3'}`}>
           {[a, b].map(opt => {
             const pv  = opt.id === a.id ? pA : pB
             const isWinner = winner === opt.id
@@ -135,7 +135,7 @@ export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: ()
                 whileTap={voted ? {} : { scale: 0.96 }}
                 onClick={() => castVote(opt.id)}
                 disabled={voted || voting}
-                className={`relative overflow-hidden rounded-xl text-left transition-all ${compact ? 'p-3' : 'p-4'}`}
+                className={`relative overflow-hidden rounded-xl text-left transition-all flex flex-col justify-center ${compact ? 'p-3 min-h-[5.5rem]' : 'p-4'}`}
                 style={{
                   background: isMine ? `${accent}18` : 'rgba(255,255,255,0.04)',
                   border: `1px solid ${isMine ? accent + '50' : 'rgba(255,255,255,0.06)'}`,

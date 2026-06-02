@@ -1,0 +1,127 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { BBX_CONTACT, type BbxPlan, bbxWhatsApp } from '@/lib/bbxContent'
+import { BbxPlanMockup } from './BbxPlanMockup'
+import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
+
+export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; onClose: () => void }) {
+  const [activeIdx, setActiveIdx] = useState(0)
+  const [showList, setShowList] = useState(false)
+
+  useEffect(() => {
+    if (!plan) return
+    setActiveIdx(0)
+    setShowList(false)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [plan])
+
+  const activeImage = plan?.imagenes[activeIdx]
+
+  return (
+    <AnimatePresence>
+      {plan && (
+        <>
+          <motion.button type="button" aria-label="Cerrar" className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+
+          <motion.div
+            key={plan.id}
+            role="dialog"
+            aria-modal
+            className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-2xl overflow-hidden max-h-[min(92dvh,720px)]"
+            style={{ background: '#0c0c14', borderTop: `2px solid ${plan.color}`, boxShadow: `0 -12px 48px ${plan.color}20` }}
+            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+          >
+            <div className="shrink-0 flex justify-center pt-2 pb-0.5"><div className="w-9 h-1 rounded-full bg-white/20" /></div>
+
+            <div className="shrink-0 px-4 pb-1.5 flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <h3 className="font-display text-lg text-white leading-none">
+                  {plan.nombre} · <span className="text-white/50">${plan.precio}/mes</span>
+                </h3>
+                <p className="text-[10px] text-white/40 mt-0.5">Esquema de producto · setup ${plan.setup}</p>
+              </div>
+              <button type="button" onClick={onClose} className="shrink-0 text-white/35 text-xs px-2 py-1">✕</button>
+            </div>
+
+            <div className="shrink-0 px-4 pb-2">
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x touch-pan-x">
+                {plan.imagenes.map((img, i) => (
+                  <button
+                    key={`${plan.id}-${img.id}`}
+                    type="button"
+                    onClick={() => setActiveIdx(i)}
+                    className="shrink-0 snap-start min-h-[40px] px-2.5 py-2 rounded-lg text-[10px] font-semibold max-w-[min(68vw,130px)]"
+                    style={{
+                      background: activeIdx === i ? `${plan.color}20` : 'rgba(255,255,255,0.04)',
+                      border: activeIdx === i ? `1.5px solid ${plan.color}` : '1px solid rgba(255,255,255,0.07)',
+                      color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.4)',
+                    }}
+                  >
+                    {img.caption}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-3 [-webkit-overflow-scrolling:touch]">
+              <AnimatePresence mode="wait">
+                {activeImage && (
+                  <motion.div key={`${plan.id}-${activeIdx}`}
+                    initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}>
+                    <VisualSchemaFrame
+                      callouts={activeImage.callouts}
+                      visualNote={activeImage.visualNote}
+                      accent={plan.color}
+                    >
+                      <BbxPlanMockup kind={activeImage.id} color={plan.color} planId={plan.id} large />
+                    </VisualSchemaFrame>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                type="button"
+                onClick={() => setShowList(v => !v)}
+                className="mt-3 w-full text-left text-[10px] font-semibold text-white/35 py-2 border-t border-white/6"
+              >
+                {showList ? '▾ Ocultar lista del plan' : '▸ Ver lista completa del plan (texto)'}
+              </button>
+              <AnimatePresence>
+                {showList && (
+                  <motion.ul
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden space-y-1.5 pt-2 pb-2"
+                  >
+                    {plan.features.map(f => (
+                      <li key={f} className="flex gap-2 text-xs text-white/65">
+                        <span className="shrink-0 font-bold" style={{ color: plan.color }}>✓</span>{f}
+                      </li>
+                    ))}
+                  </motion.ul>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="shrink-0 px-4 pt-2 border-t border-white/8"
+              style={{ background: '#0a0a12', paddingBottom: 'max(0.65rem, env(safe-area-inset-bottom, 0px))' }}>
+              <a href={bbxWhatsApp(`Hola ${BBX_CONTACT.name}, quiero el plan ${plan.nombre} de BBX.`)}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center w-full min-h-[44px] py-3 rounded-xl text-sm font-bold mb-1"
+                style={{ background: plan.color, color: '#07070e' }}>
+                Consultar plan {plan.nombre}
+              </a>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  )
+}

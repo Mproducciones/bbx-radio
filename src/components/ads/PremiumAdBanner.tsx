@@ -73,7 +73,7 @@ export function PremiumAdBanner() {
           exit={{ y: 60, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 1.5 }}
           className="fixed z-[90] md:hidden"
-          style={{ bottom: 'calc(64px + env(safe-area-inset-bottom, 0px) + 4px)', left: 8, right: 8 }}
+          style={{ bottom: 'calc(var(--app-nav-total) + 4px)', left: 8, right: 8 }}
         >
           <a
             href={ad.enlace ?? '#'}

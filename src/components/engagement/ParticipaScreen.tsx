@@ -48,9 +48,9 @@ export function ParticipaScreen() {
           })}
         </div>
 
-        <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+        <div className="flex-1 min-h-0 overflow-hidden flex flex-col pb-1">
           {tab === 'votar' ? (
-            <SongPoll compact onEmpty={() => setTab('pedir')} />
+            <SongPoll compact className="flex-1 min-h-0" onEmpty={() => setTab('pedir')} />
           ) : (
             <SongRequestForm compact />
           )}

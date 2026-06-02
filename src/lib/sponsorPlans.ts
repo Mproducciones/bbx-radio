@@ -13,6 +13,8 @@ export type PlanMockupKind =
 export type SponsorPlanImage = {
   id: PlanMockupKind
   caption: string
+  visualNote: string
+  callouts: string[]
 }
 
 export type SponsorPlan = {
@@ -48,8 +50,20 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
       'Arte del banner: te ayudamos con plantilla si no tienes diseño',
     ],
     imagenes: [
-      { id: 'banner', caption: 'Banner en la app mientras escuchan' },
-      { id: 'spot', caption: 'Spot de 30 s en la programación' },
+      {
+        id: 'banner',
+        caption: 'Banner en En Vivo',
+        callouts: ['Debajo del play', 'Rota con otros', 'Logo + texto tuyo'],
+        visualNote:
+          'Cuando el oyente abre la app, tu banner aparece fijo bajo el reproductor. Comparte espacio con otros anuncios — cada ~30 s cambia. Subimos tu arte o te damos plantilla.',
+      },
+      {
+        id: 'spot',
+        caption: 'Spot en FM 93.3',
+        callouts: ['4× al día', '30 segundos', 'Locutor en cabina'],
+        visualNote:
+          'No es pantalla: es audio al aire en estos horarios. El locutor lee tu guión mientras miles escuchan en auto, trabajo o celular. Ideal para promos con dirección y teléfono.',
+      },
     ],
   },
   {
@@ -72,9 +86,27 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
       'Prioridad en renovación de campaña',
     ],
     imagenes: [
-      { id: 'banner-hero', caption: 'Banner destacado en En Vivo' },
-      { id: 'peak', caption: 'Spots en horarios de mayor audiencia' },
-      { id: 'stats', caption: 'Alcance regional + oyentes en vivo' },
+      {
+        id: 'banner-hero',
+        caption: 'Banner destacado',
+        callouts: ['Borde dorado', 'Sin competir igual', 'Siempre visible'],
+        visualNote:
+          'Mismo lugar que el Básico, pero tu banner lleva borde, badge “Destacado” y no se ve como los demás. El oyente lo identifica al instante al abrir En Vivo.',
+      },
+      {
+        id: 'peak',
+        caption: 'Grilla horario peak',
+        callouts: ['07–10 h', '13–15 h', '18–21 h', '8 spots/día'],
+        visualNote:
+          'Concentramos tus 8 menciones cuando hay más sintonía: entrada al trabajo, almuerzo y vuelta a casa. El esquema muestra en qué franjas suena tu marca en FM.',
+      },
+      {
+        id: 'stats',
+        caption: 'Reporte mensual',
+        callouts: ['Oyentes en vivo', 'Impresiones banner', 'Alcance regional'],
+        visualNote:
+          'Cada mes recibes números reales de la app: cuántos vieron tu banner, oyentes conectados y alcance estimado. Lo usás para renovar campañas con datos, no suposiciones.',
+      },
     ],
   },
   {
@@ -97,9 +129,27 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
       'Reunión mensual de resultados con ventas',
     ],
     imagenes: [
-      { id: 'programa', caption: '“Presenta: tu marca” en un programa' },
-      { id: 'parrilla', caption: 'Visible en la grilla de la app' },
-      { id: 'integral', caption: 'Cobertura en radio + digital' },
+      {
+        id: 'programa',
+        caption: 'Patrocinio de bloque',
+        callouts: ['“Presenta: tu marca”', 'Cortina al inicio', 'Locutor menciona'],
+        visualNote:
+          'Tu empresa aparece como auspicio del Matinal (u otro bloque fijo): cabecera visual, mención del conductor al arrancar y spots repartidos en ese programa. Asociación de marca fuerte.',
+      },
+      {
+        id: 'parrilla',
+        caption: 'Badge en programación',
+        callouts: ['Grilla de la app', 'Badge Patrocinio', 'Todo el día visible'],
+        visualNote:
+          'En la sección Programación de la PWA, tu bloque patrocinado lleva badge y color de marca. El oyente ve tu nombre antes de sintonizar ese horario.',
+      },
+      {
+        id: 'integral',
+        caption: 'Mapa de cobertura',
+        callouts: ['FM 12 spots', 'App exclusiva', 'Redes + locutor'],
+        visualNote:
+          'Vista esquemática de los 3 canales activos a la vez: radio con cobertura total del día, banner sin rotación en semanas acordadas, y piezas en redes que arma la radio con tu logo.',
+      },
     ],
   },
 ]

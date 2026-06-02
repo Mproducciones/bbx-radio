@@ -169,7 +169,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
           >
             <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿Qué ocasión es?</h2>
 
-            <div className={`grid grid-cols-3 ${compact ? 'gap-2' : 'gap-2.5'}`}>
+            <div className={`grid grid-cols-3 flex-1 min-h-0 auto-rows-fr ${compact ? 'gap-2' : 'gap-2.5'}`}>
               {MOTIVOS.map(m => {
                 const active = motivo === m.id
                 return (
@@ -178,7 +178,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
                     whileTap={{ scale: 0.92 }}
                     whileHover={{ scale: 1.03 }}
                     onClick={() => pickMotivo(m.id)}
-                    className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl overflow-hidden ${compact ? 'py-3' : 'py-4 gap-2'}`}
+                    className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl overflow-hidden h-full min-h-[4.5rem] ${compact ? 'py-2' : 'py-4 gap-2'}`}
                     style={active
                       ? { background: m.glow, border: `1.5px solid ${m.color}50`, boxShadow: `0 8px 24px ${m.glow}` }
                       : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }

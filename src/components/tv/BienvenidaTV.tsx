@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { RADIO_TV_HLS } from '@/lib/radioConfig'
-import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 type State = 'loading' | 'playing' | 'error'
 
@@ -10,17 +9,8 @@ export function BienvenidaTV() {
   const videoRef  = useRef<HTMLVideoElement>(null)
   const [state, setState] = useState<State>('loading')
   const [muted, setMuted]   = useState(false)
-  const { isPlaying, pause, play } = useRadioPlayerContext()
-  const wasPlayingRef = useRef(false)
 
-  // Pausa la radio al entrar a TV, la reanuda al salir
-  useEffect(() => {
-    wasPlayingRef.current = isPlaying
-    if (isPlaying) pause()
-    return () => { if (wasPlayingRef.current) play() }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  // La radio se pausa/reanuda en RadioPlayerContext al entrar/salir de /tv
   useEffect(() => {
     const video = videoRef.current
     if (!video) return

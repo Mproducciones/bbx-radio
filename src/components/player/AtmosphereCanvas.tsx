@@ -51,12 +51,14 @@ export function AtmosphereCanvas({
     const H  = canvas.height
     const cx = W / 2
     const isMobile = W < 768
+    const ambient = anchor === 'center' && isMobile
     const cy =
       anchor === 'center'
-        ? H * (isMobile ? 0.46 : 0.5)
+        ? H * (ambient ? 0.82 : 0.5)
         : isMobile
           ? Math.min(210, H * 0.24)
           : H * 0.32
+    const scale = ambient ? 0.5 : 1
 
     // ── Frecuencias ────────────────────────────────────────────────────────
     const N   = 128
@@ -90,7 +92,7 @@ export function AtmosphereCanvas({
     ctx.fillRect(0, 0, W, H)
 
     // ── Glow central ───────────────────────────────────────────────────────
-    const glowR = 90 + e.bass * 200 + e.beat * 90
+    const glowR = (90 + e.bass * 200 + e.beat * 90) * scale
     const grd   = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR)
     grd.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.14 + e.bass * 0.22})`)
     grd.addColorStop(0.5, `rgba(${r2},${g2},${b2},${0.06 + e.mid  * 0.12})`)
@@ -115,8 +117,8 @@ export function AtmosphereCanvas({
 
     // ── Barras de frecuencia radiales ──────────────────────────────────────
     const BAR_COUNT  = N
-    const BASE_R     = 52
-    const MAX_H      = Math.min(W, H) * 0.18
+    const BASE_R     = 52 * scale
+    const MAX_H      = Math.min(W, H) * 0.18 * scale
     const angleStep  = (Math.PI * 2) / BAR_COUNT
 
     if (isPlaying || e.bass > 0.02) {
@@ -165,14 +167,14 @@ export function AtmosphereCanvas({
       ctx.beginPath()
       ctx.arc(cx, cy, BASE_R - 4, 0, Math.PI * 2)
       ctx.clip()
-      ctx.globalAlpha = 0.38
+      ctx.globalAlpha = ambient ? 0.12 : 0.38
       ctx.drawImage(logoRef.current, cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize)
       ctx.restore()
     }
 
     // Vignette inferior — en modo center más suave para no tapar el contenido
-    const vignetteTop = anchor === 'center' ? H * 0.72 : isMobile ? H * 0.58 : H * 0.35
-    const vignetteEnd = anchor === 'center' ? (isMobile ? 0.45 : 0.55) : isMobile ? 0.65 : 0.78
+    const vignetteTop = anchor === 'center' ? H * (ambient ? 0.55 : 0.72) : isMobile ? H * 0.58 : H * 0.35
+    const vignetteEnd = anchor === 'center' ? (ambient ? 0.72 : isMobile ? 0.45 : 0.55) : isMobile ? 0.65 : 0.78
     const vignette = ctx.createLinearGradient(0, vignetteTop, 0, H)
     vignette.addColorStop(0, 'rgba(7,7,14,0)')
     vignette.addColorStop(0.5, `rgba(7,7,14,${anchor === 'center' ? 0.12 : isMobile ? 0.18 : 0.28})`)
