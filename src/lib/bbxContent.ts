@@ -275,8 +275,9 @@ export const BBX_PLANS: BbxPlan[] = [
     color: '#db8918',
     popular: true,
     tagline: 'Monetizá con banners, sorteos y datos.',
-    ideal: 'La opción que más rentabiliza ventas + app.',
-    detalle: 'Todo Esencial más publicidad digital medible, captura de leads y panel admin. Con 3 posiciones vendidas a $50.000/mes ($150.000) cubrís el plan Pro ($120.000).',
+    ideal: 'La opción que ofreces hoy a tus radios (PWA + panel comercial).',
+    detalle:
+      'Producto listo para vender: PWA instalable, banners medibles, sorteos con leads, reporte mensual y panel admin. Sin Play Store ni dominio propio — eso es upgrade Premium.',
     features: [
       'Todo Esencial',
       'Banners (4 posiciones: superior, intermedio, inferior, En Vivo)',
@@ -315,14 +316,15 @@ export const BBX_PLANS: BbxPlan[] = [
     precio: '160.000',
     setup: '200.000',
     color: '#7D59B5',
-    tagline: 'Dominio propio y presencia en tiendas.',
-    ideal: 'Grupos radiales y visión de largo plazo.',
-    detalle: 'Marca 100% tuya: dominio personalizado, APK en Play Store y soporte prioritario. Para emisoras que quieren verse como producto propio, no “una app más”.',
+    tagline: 'Upgrade: dominio, APK y Play Store.',
+    ideal: 'Cuando el cliente ya tiene Pro y quiere app en la tienda.',
+    detalle:
+      'Parte desde Pro. BBX genera el APK con su marca, configura dominio propio y publica en Google Play. Incluye lanzamientos musicales y soporte prioritario. El setup cubre build, firma y puesta en tienda.',
     features: [
-      'Todo Pro',
-      'APK para Google Play',
-      'Dominio personalizado',
-      'Módulo de lanzamientos',
+      'Todo Pro (PWA + monetización + admin)',
+      'Generación y publicación APK Play Store',
+      'Dominio personalizado (DNS + SSL)',
+      'Módulo lanzamientos musicales',
       'Soporte prioritario',
     ],
     imagenes: [
@@ -369,7 +371,11 @@ export const BBX_FAQ = [
   },
   {
     q: '¿Necesito publicar en App Store o Google Play?',
-    a: 'No para empezar. La PWA se instala desde el navegador. En Premium podemos generar APK para Play Store.',
+    a: 'No con Pro: la PWA se instala desde el navegador y ya incluye monetización. Si el cliente quiere APK en Play Store y dominio propio, vendés el upgrade Premium y BBX hace el build y la publicación.',
+  },
+  {
+    q: '¿Puedo vender Pro y después pasar a Premium?',
+    a: 'Sí. Pro es el producto base. Premium es el mismo sistema más dominio, lanzamientos y APK en tienda — sin rehacer la app desde cero.',
   },
   {
     q: '¿Funciona con mi streaming actual?',
