@@ -3,14 +3,24 @@
 import { useState } from 'react'
 import { SongPoll } from '@/components/engagement/SongPoll'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
+import { ListenerSignup } from '@/components/engagement/ListenerSignup'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
 import { SectionHeader } from '@/components/layout/SectionHeader'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
+import { FEATURES } from '@/lib/plan'
 import { cn } from '@/lib/utils'
 
-type Tab = 'votar' | 'pedir'
+type Tab = 'votar' | 'pedir' | 'sorteo'
+
+const BASE_TABS: { id: Tab; label: string }[] = [
+  { id: 'votar', label: 'Votar' },
+  { id: 'pedir', label: 'Pedir canción' },
+]
 
 export function ParticipaScreen() {
+  const tabs = FEATURES.contests
+    ? [...BASE_TABS, { id: 'sorteo' as const, label: 'Sorteo' }]
+    : BASE_TABS
   const [tab, setTab] = useState<Tab>('votar')
 
   return (
@@ -24,10 +34,7 @@ export function ParticipaScreen() {
           role="tablist"
           aria-label="Participación"
         >
-          {([
-            ['votar', 'Votar'],
-            ['pedir', 'Pedir canción'],
-          ] as const).map(([id, label]) => {
+          {tabs.map(({ id, label }) => {
             const active = tab === id
             return (
               <button
@@ -51,8 +58,10 @@ export function ParticipaScreen() {
         <div className="flex-1 min-h-0 overflow-hidden flex flex-col pb-1">
           {tab === 'votar' ? (
             <SongPoll compact className="flex-1 min-h-0" onEmpty={() => setTab('pedir')} />
-          ) : (
+          ) : tab === 'pedir' ? (
             <SongRequestForm compact />
+          ) : (
+            <ListenerSignup />
           )}
         </div>
 

@@ -7,5 +7,6 @@ export const FEATURES = {
   eventos:      CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
   replay:       CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
   publicidad:   CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
+  contests:     CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
   lanzamientos: CURRENT_PLAN === 'premium',
 }

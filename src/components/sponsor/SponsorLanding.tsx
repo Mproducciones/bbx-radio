@@ -89,6 +89,16 @@ export function SponsorLanding() {
       <SponsorValueSection />
       <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
 
+      <section className="mb-6 md:mb-8 text-center">
+        <a
+          href="/patrocinadores"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[#40B9BF] hover:text-white transition-colors"
+        >
+          Ver marcas que ya anuncian en la app
+          <span aria-hidden>→</span>
+        </a>
+      </section>
+
       <section className="mb-8 md:mb-10 rounded-2xl p-4 md:p-6" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h2 className="font-display text-lg md:text-xl text-white mb-3 md:mb-4">Cómo empezar</h2>
         <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:space-y-0">

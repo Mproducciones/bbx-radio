@@ -11,6 +11,8 @@ import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
 import { ListenerChart } from '@/components/admin/ListenerChart'
 import { PollManager } from '@/components/admin/PollManager'
 import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
+import { ContestsPanel } from '@/components/admin/ContestsPanel'
+import { ReportsPanel } from '@/components/admin/ReportsPanel'
 
 type PageState = 'login' | 'dashboard'
 
@@ -175,6 +177,7 @@ export default function AdminPage() {
               <SaludosPanel />
             </div>
             <AdsPanel />
+            <ContestsPanel />
             <SolicitudesPanel />
             <PollManager />
           </div>
@@ -211,6 +214,8 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+
+            <ReportsPanel />
 
             <div>
               <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Tendencia de oyentes</p>

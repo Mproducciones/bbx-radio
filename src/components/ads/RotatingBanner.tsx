@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/lib/sanity'
 import { cn } from '@/lib/utils'
+import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
 
 interface Ad {
   _id: string
@@ -151,14 +152,16 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
   if (ads.length > 0) {
     const ad = ads[index % ads.length]
     const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : '')
+    const placement = `rotating_${position}`
     return (
-      <div className={cn('w-full', className)}>
+      <AdTrackView adId={ad._id} adTipo={ad.tipo} placement={placement} className={cn('w-full', className)}>
         <AnimatePresence mode="wait">
           <motion.a
             key={ad._id}
             href={ad.enlace || '#'}
             target={ad.enlace ? '_blank' : undefined}
             rel={ad.enlace ? 'noopener noreferrer' : undefined}
+            onClick={() => trackAdClick(ad._id, ad.tipo, placement)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -172,7 +175,7 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
             <div className="absolute bottom-2 right-2 text-[9px] text-white/50 bg-black/60 px-2 py-0.5 rounded-full">Publicidad</div>
           </motion.a>
         </AnimatePresence>
-      </div>
+      </AdTrackView>
     )
   }
 

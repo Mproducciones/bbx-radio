@@ -1,35 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 type Phase = 'form' | 'sending' | 'done' | 'error'
 
-// El locutor o admin configura el sorteo activo — por ahora hardcodeado
-const ACTIVE_CONTEST = {
-  id: 'sorteo-junio-2026',
-  prize: '2 entradas al Festival de Verano 2026',
-  description: 'Regístrate y el locutor anuncia al ganador en vivo esta tarde',
-  deadline: 'Hoy a las 18:00 hrs',
+type ActiveContest = {
+  id: string
+  title: string
+  prize: string
+  description: string | null
+  sponsorName: string | null
+  deadline: string | null
 }
 
 export function ListenerSignup() {
+  const [contest, setContest] = useState<ActiveContest | null>(null)
   const [phase, setPhase] = useState<Phase>('form')
-  const [name, setName]   = useState('')
+  const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [position, setPosition] = useState(0)
-  const [errMsg, setErrMsg]     = useState('')
+  const [errMsg, setErrMsg] = useState('')
+
+  useEffect(() => {
+    fetch('/api/contests/active')
+      .then(r => r.json())
+      .then(data => { if (data?.id) setContest(data) })
+      .catch(() => {})
+  }, [])
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim() || !phone.trim()) return
+    if (!contest || !name.trim() || !phone.trim()) return
     setPhase('sending')
 
     try {
       const res = await fetch('/api/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), phone: phone.trim(), contest: ACTIVE_CONTEST.id }),
+        body: JSON.stringify({ name: name.trim(), phone: phone.trim(), contest: contest.id }),
       })
       const data = await res.json()
 
@@ -41,121 +50,79 @@ export function ListenerSignup() {
     } catch { setErrMsg('Error de conexión'); setPhase('error') }
   }
 
+  if (!contest) {
+    return (
+      <div className="rounded-2xl p-5 text-center" style={{ background: 'rgba(15,15,26,0.72)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <p className="text-white/45 text-sm">No hay sorteo activo en este momento.</p>
+        <p className="text-white/30 text-xs mt-1">Vuelve pronto o escucha en vivo por novedades.</p>
+      </div>
+    )
+  }
+
   return (
     <div
-      className="relative overflow-hidden rounded-2xl"
+      className="relative overflow-hidden rounded-2xl flex flex-col flex-1 min-h-0"
       style={{
         background: 'rgba(15,15,26,0.72)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(64,185,191,0.2)',
+        border: '1px solid rgba(219,137,24,0.2)',
       }}
     >
-      <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, #40B9BF, transparent)' }} />
-
-      {/* Icono sorteo */}
-      <div className="px-4 pt-4 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-          style={{ background: 'rgba(64,185,191,0.15)', border: '1px solid rgba(64,185,191,0.25)' }}>
-          🎁
-        </div>
-        <div>
-          <p className="text-white font-bold text-sm leading-tight">Sorteo en vivo</p>
-          <p className="text-[#40B9BF] text-xs font-semibold">{ACTIVE_CONTEST.prize}</p>
-        </div>
+      <div className="p-4 border-b border-white/5 shrink-0">
+        <p className="text-[#db8918] text-[9px] font-bold uppercase tracking-wider mb-1">Sorteo patrocinado</p>
+        <h3 className="text-white font-bold text-sm leading-tight">{contest.title}</h3>
+        <p className="text-[#40B9BF] text-xs font-semibold mt-1">{contest.prize}</p>
+        {contest.sponsorName && <p className="text-white/35 text-[10px] mt-0.5">Auspicia: {contest.sponsorName}</p>}
       </div>
 
-      <AnimatePresence mode="wait">
-        {phase === 'form' && (
-          <motion.form
-            key="form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onSubmit={submit}
-            className="px-4 py-4 flex flex-col gap-3"
-          >
-            <p className="text-white/50 text-xs leading-relaxed">{ACTIVE_CONTEST.description}</p>
-            <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-wide">{ACTIVE_CONTEST.deadline}</p>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-white/40 text-xs">Tu nombre</span>
+      <div className="p-4 flex-1 min-h-0 overflow-y-auto">
+        <AnimatePresence mode="wait">
+          {phase === 'form' && (
+            <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={submit} className="space-y-3">
+              {contest.description && <p className="text-white/50 text-xs leading-relaxed">{contest.description}</p>}
+              {contest.deadline && <p className="text-white/30 text-[10px]">Cierra: {contest.deadline}</p>}
               <input
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="ej: María González"
-                required maxLength={60}
-                className="bg-white/[0.04] border border-white/[0.08] focus:border-[#40B9BF] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/20"
+                placeholder="Tu nombre"
+                maxLength={60}
+                className="w-full px-3 py-3 rounded-xl bg-black/30 border border-white/10 text-white text-sm"
               />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-white/40 text-xs">Número de WhatsApp</span>
               <input
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                placeholder="ej: 9 1234 5678"
-                type="tel" required maxLength={15}
-                className="bg-white/[0.04] border border-white/[0.08] focus:border-[#40B9BF] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/20"
+                placeholder="WhatsApp / teléfono"
+                inputMode="tel"
+                className="w-full px-3 py-3 rounded-xl bg-black/30 border border-white/10 text-white text-sm"
               />
-            </label>
+              <button type="submit" className="w-full min-h-[44px] py-3 rounded-xl text-sm font-bold text-[#07070e]" style={{ background: '#db8918' }}>
+                Participar en el sorteo
+              </button>
+              <p className="text-white/25 text-[9px] text-center">Tus datos se usan solo para este concurso.</p>
+            </motion.form>
+          )}
 
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              type="submit"
-              disabled={!name.trim() || !phone.trim()}
-              className="w-full py-3 rounded-xl font-bold text-sm text-[#07070E] disabled:opacity-40 transition-opacity"
-              style={{ background: '#40B9BF' }}
-            >
-              Participar en el sorteo →
-            </motion.button>
+          {phase === 'sending' && (
+            <motion.div key="sending" className="py-8 text-center text-white/50 text-sm">Enviando…</motion.div>
+          )}
 
-            <p className="text-white/20 text-[10px] text-center">Sin spam · Solo te contactamos si ganás</p>
-          </motion.form>
-        )}
-
-        {phase === 'sending' && (
-          <motion.div key="sending" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="px-4 py-8 flex flex-col items-center gap-3">
-            <div className="w-7 h-7 border-2 border-[#40B9BF] border-t-transparent rounded-full animate-spin" />
-            <p className="text-white/40 text-sm">Registrando...</p>
-          </motion.div>
-        )}
-
-        {phase === 'done' && (
-          <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            className="px-4 py-6 flex flex-col items-center gap-4 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 20 }}
-              className="text-5xl"
-            >
-              🎉
+          {phase === 'done' && (
+            <motion.div key="done" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-6">
+              <p className="text-[#00D9A0] text-xs font-bold uppercase tracking-wider">¡Registrado!</p>
+              <p className="font-display text-4xl text-white leading-none mt-2">#{position}</p>
+              <p className="text-white/50 text-xs mt-2">El locutor anuncia al ganador en vivo. ¡Suerte!</p>
             </motion.div>
-            <div>
-              <p className="text-white font-bold text-base">¡Estás participando!</p>
-              <p className="text-white/50 text-sm mt-1">El locutor anunciará al ganador en vivo</p>
-            </div>
-            <div className="rounded-xl px-5 py-3 text-center"
-              style={{ background: 'rgba(64,185,191,0.1)', border: '1px solid rgba(64,185,191,0.2)' }}>
-              <p className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide">Tu número</p>
-              <p className="font-display text-4xl text-white leading-none mt-1">#{position}</p>
-              <p className="text-white/30 text-xs mt-1">en la lista de participantes</p>
-            </div>
-            <p className="text-white/30 text-xs">Mantén el radio encendido 🔊</p>
-          </motion.div>
-        )}
+          )}
 
-        {phase === 'error' && (
-          <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="px-4 py-6 flex flex-col items-center gap-3 text-center">
-            <p className="text-red-400 text-sm">{errMsg}</p>
-            <button onClick={() => { setPhase('form'); setErrMsg('') }}
-              className="text-white/50 text-xs underline">Intentar de nuevo</button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {phase === 'error' && (
+            <motion.div key="error" className="text-center py-4">
+              <p className="text-red-400 text-sm mb-3">{errMsg}</p>
+              <button type="button" onClick={() => setPhase('form')} className="text-xs text-white/50 underline">Intentar de nuevo</button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

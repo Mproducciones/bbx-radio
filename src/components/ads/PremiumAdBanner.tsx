@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
+import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
 
 interface PremiumAd {
   _id: string
@@ -75,10 +76,12 @@ export function PremiumAdBanner() {
           className="fixed z-[90] md:hidden"
           style={{ bottom: 'calc(var(--app-nav-total) + 4px)', left: 8, right: 8 }}
         >
+          <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_mobile">
           <a
             href={ad.enlace ?? '#'}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={ad.enlace?.startsWith('http') ? '_blank' : undefined}
+            rel={ad.enlace?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            onClick={() => trackAdClick(ad._id, 'banner_premium', 'premium_mobile')}
             className="relative block rounded-2xl overflow-hidden shadow-2xl"
             style={{ boxShadow: `0 8px 32px ${accent}30, 0 2px 8px rgba(0,0,0,0.5)` }}
           >
@@ -107,6 +110,7 @@ export function PremiumAdBanner() {
               </div>
             </div>
           </a>
+          </AdTrackView>
 
           <button onClick={e => { e.preventDefault(); e.stopPropagation(); dismiss() }}
             className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center z-10 text-white/70"
@@ -135,7 +139,9 @@ export function PremiumAdSidebar() {
   const accent = ad.colorAccent ?? '#db8918'
 
   return (
+    <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_sidebar">
     <a href={ad.enlace ?? '#'} target="_blank" rel="noopener noreferrer"
+      onClick={() => trackAdClick(ad._id, 'banner_premium', 'premium_sidebar')}
       className="block relative rounded-xl overflow-hidden mx-4 mb-4"
       style={{ border: `1px solid ${accent}30` }}>
       <div className="relative h-16">
@@ -151,5 +157,6 @@ export function PremiumAdSidebar() {
         </div>
       </div>
     </a>
+    </AdTrackView>
   )
 }

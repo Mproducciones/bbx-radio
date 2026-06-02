@@ -16,6 +16,8 @@ interface Ad {
   colorAccent?: string
 }
 
+type AdMetric = { adId: string; adTipo: string; impressions: number; clicks: number; ctr: number }
+
 const TIPO_LABEL: Record<string, string> = {
   banner_premium:     '⭐ Premium',
   banner_superior:    '↑ Superior',
@@ -34,14 +36,23 @@ function daysLeft(fechaFin: string) {
 
 export function AdsPanel() {
   const [ads, setAds]       = useState<Ad[]>([])
+  const [metrics, setMetrics] = useState<AdMetric[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/admin/ads', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : [])
-      .then(setAds)
-      .finally(() => setLoading(false))
+    const month = new Date().toISOString().slice(0, 7)
+    Promise.all([
+      fetch('/api/admin/ads', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
+      fetch(`/api/admin/reports?scope=ads&month=${month}`, { credentials: 'include' }).then(r => r.ok ? r.json() : { byAd: [] }),
+    ]).then(([adsData, adsReport]) => {
+      setAds(adsData)
+      setMetrics(adsReport.byAd ?? [])
+    }).finally(() => setLoading(false))
   }, [])
+
+  function metricsFor(adId: string) {
+    return metrics.find(m => m.adId === adId)
+  }
 
   const active   = ads.filter(a => a.activo && !isExpired(a.fechaFin))
   const expiring = ads.filter(a => a.activo && !isExpired(a.fechaFin) && daysLeft(a.fechaFin) <= 7)
@@ -105,6 +116,15 @@ export function AdsPanel() {
                       <span style={{ color: warning ? '#FFB300' : '#666690' }}>
                         {days === 0 ? 'hoy' : `${days} día${days > 1 ? 's' : ''}`}
                       </span>
+                      {(() => {
+                        const m = metricsFor(ad._id)
+                        if (!m) return null
+                        return (
+                          <span className="text-[#666690]">
+                            {' · '}{m.impressions} imp · {m.clicks} clk{m.ctr > 0 ? ` · ${m.ctr}%` : ''}
+                          </span>
+                        )
+                      })()}
                     </p>
                   </div>
                   <a href="/studio" target="_blank"
