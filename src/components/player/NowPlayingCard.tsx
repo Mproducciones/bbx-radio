@@ -133,36 +133,35 @@ export function NowPlayingCard({
         ) : (
           <>
             {/* ── VISUALIZADOR CANVAS + LOGO ───────────────────────────────── */}
-            <div className="relative" style={{ width: SIZE, height: SIZE, maxWidth: '100%' }}>
+            <div className="relative" style={{ width: SIZE, height: SIZE, maxWidth: '100%', margin: '0 auto' }}>
 
-              {/* Canvas barras — perfectamente centrado */}
+              {/* Canvas barras */}
               <CircularViz isPlaying={isPlaying} primary={colors.primary} secondary={colors.secondary} />
 
-              {/* Outer ring giratorio — margin negativo, sin transform conflict */}
+              {/* Outer ring — div regular para centrar, motion.div adentro para rotar */}
               <div className="absolute pointer-events-none rounded-full overflow-hidden"
-                style={{ width: LOGO_R*2+8, height: LOGO_R*2+8, top: '50%', left: '50%', marginTop: -(LOGO_R+4), marginLeft: -(LOGO_R+4) }}>
-                <motion.div className="w-full h-full"
+                style={{ width: LOGO_R*2+8, height: LOGO_R*2+8, top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
+                <motion.div className="w-full h-full rounded-full"
                   style={{ background: `conic-gradient(${colors.primary}60, ${colors.secondary}60, ${colors.primary}60)` }}
                   animate={{ rotate: 360 }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                 />
               </div>
 
-              {/* Logo circular — margin negativo */}
+              {/* Logo — div regular centra, motion.div adentro gira */}
               <div className="absolute rounded-full overflow-hidden"
-                style={{ width: LOGO_R*2, height: LOGO_R*2, top: '50%', left: '50%', marginTop: -LOGO_R, marginLeft: -LOGO_R, background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)' }}>
+                style={{ width: LOGO_R*2, height: LOGO_R*2, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)' }}>
                 <motion.div className="absolute inset-0"
                   animate={{ rotate: isPlaying ? 360 : 0 }}
                   transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}>
                   <Image src={artSrc} alt={title ?? radio.name} fill sizes={`${LOGO_R*2}px`}
                     className={hasRealSong && nowPlaying.albumArt ? 'object-cover' : 'object-contain p-3'} />
                 </motion.div>
-                {/* Vinyl hole */}
                 <div className="absolute rounded-full z-10"
-                  style={{ width: 10, height: 10, top: '50%', left: '50%', marginTop: -5, marginLeft: -5, background: '#0a0a12', border: `2px solid ${colors.primary}40` }} />
+                  style={{ width: 10, height: 10, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: '#0a0a12', border: `2px solid ${colors.primary}40` }} />
               </div>
 
-              {/* Anillos de pulso — margin negativo */}
+              {/* Anillos de pulso */}
               <AnimatePresence>
                 {isPlaying && [0, 1].map(i => {
                   const sz = LOGO_R*2 + 20 + i*30
