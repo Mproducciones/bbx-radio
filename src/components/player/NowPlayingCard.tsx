@@ -32,7 +32,7 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
     let freqData: Uint8Array | null = null
 
     if (analyser) {
-      analyser.fftSize = 128
+      analyser.fftSize = 256
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       freqData = new Uint8Array(analyser.frequencyBinCount) as any
     }
@@ -97,7 +97,78 @@ interface Props {
   onVolumeChange: (v: number) => void
 }
 
-const EQ_H = [14,22,32,18,28,36,24,16,30,20,34,14,26,36,18,32,22,28,16,36,24,18,30,14,28,36,20,24,16,32,18,26]
+// ── Waveform oscilloscope — reemplaza las barras típicas ─────────────────────
+function Waveform({ analyser, isPlaying, primary, secondary }: {
+  analyser: AnalyserNode | null; isPlaying: boolean; primary: string; secondary: string
+}) {
+  const ref = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    let raf: number
+    let timeDomain: Uint8Array | null = null
+    if (analyser) {
+      analyser.fftSize = 1024
+      timeDomain = new Uint8Array(analyser.fftSize)
+    }
+    // fallback sine when no analyser
+    let t = 0
+
+    function draw() {
+      const W = canvas!.offsetWidth * (window.devicePixelRatio || 1)
+      const H = canvas!.offsetHeight * (window.devicePixelRatio || 1)
+      if (canvas!.width !== W) canvas!.width = W
+      if (canvas!.height !== H) canvas!.height = H
+      ctx!.clearRect(0, 0, W, H)
+
+      const cx = W / 2
+      const cy = H / 2
+      const grad = ctx!.createLinearGradient(0, 0, W, 0)
+      grad.addColorStop(0, `${primary}00`)
+      grad.addColorStop(0.2, primary)
+      grad.addColorStop(0.5, secondary)
+      grad.addColorStop(0.8, primary)
+      grad.addColorStop(1, `${primary}00`)
+
+      ctx!.beginPath()
+      ctx!.strokeStyle = grad
+      ctx!.lineWidth = 2
+      ctx!.lineCap = 'round'
+      ctx!.lineJoin = 'round'
+      ctx!.shadowBlur = 8
+      ctx!.shadowColor = primary
+
+      const pts = 120
+      for (let i = 0; i <= pts; i++) {
+        const x = (i / pts) * W
+        let y: number
+        if (analyser && timeDomain && isPlaying) {
+          analyser.getByteTimeDomainData(timeDomain as Uint8Array<ArrayBuffer>)
+          const idx = Math.floor((i / pts) * timeDomain.length)
+          y = cy + ((timeDomain[idx] - 128) / 128) * (H * 0.4)
+        } else {
+          // idle: tiny sine
+          t += 0.002
+          y = cy + Math.sin(i * 0.18 + t * 3 + i * 0.04) * (H * 0.08)
+        }
+        i === 0 ? ctx!.moveTo(x, y) : ctx!.lineTo(x, y)
+      }
+      ctx!.stroke()
+      ctx!.shadowBlur = 0
+      t += 0.012
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => cancelAnimationFrame(raf)
+  }, [analyser, isPlaying, primary, secondary])
+
+  return (
+    <canvas ref={ref} style={{ width: '100%', height: 40, display: 'block' }} />
+  )
+}
 
 export function NowPlayingCard({
   radio, nowPlaying, isPlaying, isLoading, hasError,
@@ -295,23 +366,9 @@ export function NowPlayingCard({
                 </motion.div>
               </AnimatePresence>
 
-              {/* Ecualizador full-width */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 36, marginBottom: 20 }}>
-                {EQ_H.map((h, i) => (
-                  <div key={i} style={{
-                    flex: 1,
-                    height: h,
-                    borderRadius: 3,
-                    background: `linear-gradient(to top, ${primary}, ${i % 3 === 0 ? PURPLE : secondary}80)`,
-                    transformOrigin: 'bottom',
-                    transform: isPlaying ? undefined : 'scaleY(0.12)',
-                    animation: isPlaying
-                      ? `eq-pulse ${0.38 + (i % 7) * 0.09}s ease-in-out infinite alternate`
-                      : 'none',
-                    animationDelay: `${(i * 0.05).toFixed(2)}s`,
-                    opacity: 0.85,
-                  }} />
-                ))}
+              {/* Waveform osciloscópico */}
+              <div style={{ marginBottom: 20 }}>
+                <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
               </div>
 
               {/* Divisor */}

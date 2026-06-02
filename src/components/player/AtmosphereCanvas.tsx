@@ -22,6 +22,13 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
   const energyRef   = useRef({ bass: 0, mid: 0, treble: 0, beat: 0, beatAge: 0 })
   const beatCoolRef = useRef(0)
   const ringsRef    = useRef<{ r: number; alpha: number; color: 0 | 1 }[]>([])
+  const logoRef     = useRef<HTMLImageElement | null>(null)
+
+  useEffect(() => {
+    const img = new window.Image()
+    img.src = '/icons/icon-512.png'
+    img.onload = () => { logoRef.current = img }
+  }, [])
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current
@@ -136,6 +143,18 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     ctx.strokeStyle = `rgba(${r1},${g1},${b1},${0.08 + e.bass * 0.1})`
     ctx.lineWidth   = 1
     ctx.stroke()
+
+    // ── Logo al centro ────────────────────────────────────────────────────
+    if (logoRef.current) {
+      const logoSize = (BASE_R - 4) * 2
+      ctx.save()
+      ctx.beginPath()
+      ctx.arc(cx, cy, BASE_R - 4, 0, Math.PI * 2)
+      ctx.clip()
+      ctx.globalAlpha = 0.9
+      ctx.drawImage(logoRef.current, cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize)
+      ctx.restore()
+    }
 
     rafRef.current = requestAnimationFrame(draw)
   }, [analyser, isPlaying, primaryColor, secondaryColor])
