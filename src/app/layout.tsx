@@ -11,6 +11,7 @@ import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import { PushPermission } from '@/components/pwa/PushPermission'
+import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -124,6 +125,7 @@ export default function RootLayout({
           </div>
           <ThreeFingerGesture />
           <PushPermission />
+          <NoiseOverlay />
           <PremiumAdBanner />
           <ClientBottomNav />
           <InstallBanner />
