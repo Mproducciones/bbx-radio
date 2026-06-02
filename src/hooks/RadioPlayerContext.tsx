@@ -218,10 +218,12 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       stopHeartbeat()
     })
 
-    const onGesture = () => unlockFromGesture()
+    const onGesture = (e: Event) => {
+      if ('isTrusted' in e && !(e as Event & { isTrusted: boolean }).isTrusted) return
+      unlockFromGesture()
+    }
     document.addEventListener('touchstart', onGesture, { passive: true })
     document.addEventListener('pointerdown', onGesture)
-    document.addEventListener('keydown', onGesture)
 
     const onVisible = () => {
       if (document.visibilityState !== 'visible') return
@@ -241,7 +243,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('canplay', onCanPlay)
       document.removeEventListener('touchstart', onGesture)
       document.removeEventListener('pointerdown', onGesture)
-      document.removeEventListener('keydown', onGesture)
       document.removeEventListener('visibilitychange', onVisible)
       audio.pause()
       audio.src = ''
