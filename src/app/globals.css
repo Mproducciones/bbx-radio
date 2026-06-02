@@ -207,6 +207,9 @@
     scroll-snap-type: y proximity;
     -webkit-overflow-scrolling: touch;
   }
+  body[data-sheet-open] .sponsor-sticky-cta {
+    display: none;
+  }
 }
 
 html {

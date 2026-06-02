@@ -24,7 +24,7 @@ export function SponsorLanding() {
   }, [])
 
   return (
-    <div className="relative max-md:pb-[calc(var(--app-nav-total)+1.25rem)] md:pb-10">
+    <div className="relative max-md:pb-[calc(var(--app-nav-total)+5.5rem)] md:pb-10">
       <header
         className="rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8 relative"
         style={{
@@ -146,17 +146,23 @@ export function SponsorLanding() {
         </div>
       </section>
 
-      <section className="md:hidden mb-2">
+      <div
+        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] px-4 py-2 pointer-events-none"
+        style={{
+          bottom: 'var(--app-nav-total)',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(7,7,14,0.92) 35%)',
+        }}
+      >
         <a
           href={sponsorWaLink()}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex justify-center w-full min-h-[48px] items-center py-3.5 rounded-xl font-bold text-white active:scale-[0.98] transition-transform"
-          style={{ background: '#128C7E' }}
+          className="pointer-events-auto flex justify-center w-full max-w-md mx-auto min-h-[48px] items-center py-3.5 rounded-xl font-bold text-white shadow-lg active:scale-[0.98] transition-transform"
+          style={{ background: '#128C7E', boxShadow: '0 4px 24px rgba(18,140,126,0.35)' }}
         >
           Cotizar por WhatsApp
         </a>
-      </section>
+      </div>
 
       <section className="hidden md:block rounded-2xl p-6 text-center mb-4" style={{ background: 'rgba(18,140,126,0.08)', border: '1px solid rgba(18,140,126,0.2)' }}>
         <p className="text-white font-bold mb-1">¿Listo para salir al aire?</p>

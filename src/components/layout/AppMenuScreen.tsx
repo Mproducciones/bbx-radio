@@ -29,6 +29,7 @@ export function AppMenuScreen({ children, className, scroll = false }: AppMenuSc
           isScroll
             ? cn(
                 'max-md:overflow-y-auto max-md:overscroll-contain',
+                'max-md:[scroll-padding-bottom:var(--app-nav-total)]',
                 isSnap && 'app-scroll-snap',
               )
             : 'max-md:overflow-hidden',
