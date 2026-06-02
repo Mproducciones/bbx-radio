@@ -14,6 +14,8 @@ const ROUTES = [
   FEATURES.replay && '/replay',
   '/tv',
   FEATURES.publicidad && '/anunciate',
+  FEATURES.publicidad && '/patrocinadores',
+  FEATURES.lanzamientos && '/lanzamientos',
 ].filter(Boolean) as string[]
 
 function routeIndex(path: string): number {

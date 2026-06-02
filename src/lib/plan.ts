@@ -1,6 +1,9 @@
 export type Plan = 'basico' | 'pro' | 'premium'
 
-export const CURRENT_PLAN: Plan = (process.env.NEXT_PUBLIC_PLAN as Plan) || 'pro'
+/** Bienvenida demo usa premium para mostrar todo el producto vendido. */
+export const CURRENT_PLAN: Plan =
+  (process.env.NEXT_PUBLIC_PLAN as Plan) ||
+  (process.env.NEXT_PUBLIC_RADIO_ID === 'bienvenida-933' ? 'premium' : 'pro')
 
 export const FEATURES = {
   noticias:     CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',

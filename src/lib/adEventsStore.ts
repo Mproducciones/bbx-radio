@@ -19,6 +19,7 @@ let memWarned = false
 
 export async function trackAdEvent(input: AdEventInput): Promise<void> {
   if (!input.adId || input.adId === 'demo') return
+  // demo-* = campañas de demostración; sí se registran para el panel
 
   const row = {
     radio_id: RADIO_ID,

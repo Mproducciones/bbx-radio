@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { reportWhatsAppUrl } from '@/lib/reportShare'
 
 type Report = {
   month: string
@@ -47,6 +48,22 @@ export function ReportsPanel() {
           >
             CSV ↓
           </a>
+          {report && (
+            <a
+              href={reportWhatsAppUrl({
+                month: report.month,
+                listeners: report.listeners,
+                ads: report.ads,
+                engagement: report.engagement,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] font-bold px-2.5 py-1 rounded-lg text-white"
+              style={{ background: '#128C7E' }}
+            >
+              WA anunciante
+            </a>
+          )}
         </div>
       </div>
 

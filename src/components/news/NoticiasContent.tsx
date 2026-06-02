@@ -54,7 +54,7 @@ const FILTERS = ['Todo', 'Música', 'Radio', 'Entretenimiento', 'Entrevistas', '
 export function NoticiasContent({ articles, releases }: { articles: Article[]; releases: Release[] }) {
   const [filter, setFilter] = useState('Todo')
   const displayArticles = articles.length > 0 ? articles : DEMO_ARTICLES
-  const displayReleases = articles.length > 0 ? releases : DEMO_RELEASES
+  const displayReleases = releases.length > 0 ? releases : DEMO_RELEASES
 
   const all = [
     ...displayArticles.map(a => ({ ...a, type: 'article' as const })),

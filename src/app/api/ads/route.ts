@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
+import { getDemoAds } from '@/lib/demoCampaigns'
 
 const ALLOWED_TIPOS = ['banner_superior', 'banner_intermedio', 'banner_inferior', 'banner_premium']
 
 export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const tipo = searchParams.get('tipo')
+
+  if (!tipo || !ALLOWED_TIPOS.includes(tipo)) {
+    return NextResponse.json({ error: 'Invalid tipo parameter' }, { status: 400 })
+  }
+
   try {
-    const { searchParams } = new URL(req.url)
-    const tipo = searchParams.get('tipo')
-
-    if (!tipo || !ALLOWED_TIPOS.includes(tipo)) {
-      return NextResponse.json({ error: 'Invalid tipo parameter' }, { status: 400 })
-    }
-
     const now = new Date().toISOString()
 
     const ads = await sanityClient.fetch(
@@ -21,11 +22,15 @@ export async function GET(req: Request) {
         _id, nombre, tipo, imagen, imagenUrl, enlace, activo, prioridad,
         tagline, cta, colorAccent, cliente
       }`,
-      { tipo, now }
+      { tipo, now },
     )
 
-    return NextResponse.json(ads)
+    if (Array.isArray(ads) && ads.length > 0) {
+      return NextResponse.json(ads)
+    }
+
+    return NextResponse.json(getDemoAds(tipo))
   } catch {
-    return NextResponse.json({ error: 'Failed to fetch ads' }, { status: 500 })
+    return NextResponse.json(getDemoAds(tipo))
   }
 }

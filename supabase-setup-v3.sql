@@ -34,10 +34,13 @@ ALTER TABLE contests DISABLE ROW LEVEL SECURITY;
 INSERT INTO contests (slug, title, prize, description, sponsor_name, deadline, active)
 VALUES (
   'sorteo-bienvenida',
-  'Sorteo en vivo — Radio Bienvenida',
+  'Sorteo en vivo - Radio Bienvenida',
   'Premio sorpresa de un patrocinador',
-  'Regístrate y el locutor anuncia al ganador en la programación.',
+  'Registrate y el locutor anuncia al ganador en la programacion.',
   'Patrocinador Bienvenida',
   'Esta semana',
   true
-) ON CONFLICT (slug) DO NOTHING;
+) ON CONFLICT (slug) DO UPDATE SET
+  title = EXCLUDED.title,
+  description = EXCLUDED.description,
+  prize = EXCLUDED.prize;

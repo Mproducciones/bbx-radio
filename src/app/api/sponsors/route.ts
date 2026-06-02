@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
+import { DEMO_SPONSORS } from '@/lib/demoCampaigns'
 
 export async function GET() {
   try {
@@ -42,8 +43,9 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json([...byClient.values()])
+    const live = [...byClient.values()]
+    return NextResponse.json(live.length > 0 ? live : DEMO_SPONSORS)
   } catch {
-    return NextResponse.json([])
+    return NextResponse.json(DEMO_SPONSORS)
   }
 }

@@ -5,6 +5,7 @@ import { SongPoll } from '@/components/engagement/SongPoll'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { ListenerSignup } from '@/components/engagement/ListenerSignup'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
+import { ProgrammaticAdSlot } from '@/components/ads/ProgrammaticAdSlot'
 import { SectionHeader } from '@/components/layout/SectionHeader'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { FEATURES } from '@/lib/plan'
@@ -66,6 +67,7 @@ export function ParticipaScreen() {
         </div>
 
         <RotatingBanner position="middle" className="hidden md:block mt-5 shrink-0" />
+        <ProgrammaticAdSlot className="mt-3 shrink-0 hidden md:block" />
       </div>
     </AppMenuScreen>
   )
