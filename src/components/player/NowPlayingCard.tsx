@@ -116,7 +116,7 @@ export function NowPlayingCard({
   const [freq, band] = radio.frequency.split(' ')
   const title    = hasRealSong ? nowPlaying.title  : radio.name
   const artist   = hasRealSong ? nowPlaying.artist : `${radio.city} · ${radio.country}`
-  const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/fondo.png'
+  const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
 
   return (
     <>
@@ -168,8 +168,19 @@ export function NowPlayingCard({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: `radial-gradient(ellipse at 50% 50%, ${primary}14 0%, transparent 70%)`,
             }}>
+              {/* Imagen fondo.png de fondo */}
+              <Image
+                src="/icons/fondo.png"
+                alt=""
+                fill
+                style={{ objectFit: 'cover', opacity: 0.18 }}
+              />
+              {/* Overlay oscuro encima del fondo */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: `radial-gradient(ellipse at 50% 50%, ${primary}18 0%, rgba(7,7,14,0.6) 70%)`,
+              }} />
               {/* Frecuencia decorativa */}
               <div style={{
                 position: 'absolute', bottom: 4, right: 14,
