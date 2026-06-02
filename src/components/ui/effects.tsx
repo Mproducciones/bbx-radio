@@ -3,11 +3,11 @@
 import { useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 
-// ── BORDER BEAM — gradiente cónico rotando que ilumina el borde del card ──────
+// ── BORDER BEAM — línea brillante que viaja por el borde del card ────────────
 export function BorderBeam({
   colorFrom = '#db8918',
   colorTo = '#7D59B5',
-  duration = 5,
+  duration = 3,
   size: _size = 80,
 }: {
   colorFrom?: string
@@ -17,17 +17,25 @@ export function BorderBeam({
 }) {
   return (
     <div className="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none">
+      {/* Línea superior: izquierda → derecha */}
       <motion.div
-        className="absolute"
+        className="absolute top-0 h-[2px] w-2/5"
         style={{
-          top: '-100%',
-          left: '-100%',
-          width: '300%',
-          height: '300%',
-          background: `conic-gradient(from 0deg at 33% 33%, transparent 0deg, ${colorFrom}90 25deg, ${colorTo}90 50deg, transparent 75deg)`,
+          background: `linear-gradient(90deg, transparent, ${colorFrom}, ${colorTo}, transparent)`,
+          boxShadow: `0 0 10px ${colorFrom}, 0 0 20px ${colorFrom}60`,
         }}
-        animate={{ rotate: [0, 360] }}
+        animate={{ left: ['-40%', '100%'] }}
         transition={{ duration, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Línea inferior: derecha → izquierda (desfasada) */}
+      <motion.div
+        className="absolute bottom-0 h-[2px] w-2/5"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${colorTo}, ${colorFrom}, transparent)`,
+          boxShadow: `0 0 10px ${colorTo}, 0 0 20px ${colorTo}60`,
+        }}
+        animate={{ left: ['100%', '-40%'] }}
+        transition={{ duration, repeat: Infinity, ease: 'linear', delay: duration / 2 }}
       />
     </div>
   )
