@@ -3,12 +3,12 @@
 import { useEffect, useRef, useCallback, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 
-// ── BORDER BEAM — línea de luz que recorre el borde del card ─────────────────
+// ── BORDER BEAM — gradiente cónico rotando que ilumina el borde del card ──────
 export function BorderBeam({
   colorFrom = '#db8918',
   colorTo = '#7D59B5',
-  duration = 6,
-  size = 80,
+  duration = 5,
+  size: _size = 80,
 }: {
   colorFrom?: string
   colorTo?: string
@@ -20,15 +20,13 @@ export function BorderBeam({
       <motion.div
         className="absolute"
         style={{
-          width: size,
-          height: size,
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${colorFrom} 0%, ${colorTo} 50%, transparent 80%)`,
-          filter: 'blur(8px)',
-          opacity: 0.7,
-          offsetPath: `rect(0 100% 100% 0 round inherit)`,
-        } as React.CSSProperties}
-        animate={{ offsetDistance: ['0%', '100%'] }}
+          top: '-100%',
+          left: '-100%',
+          width: '300%',
+          height: '300%',
+          background: `conic-gradient(from 0deg at 33% 33%, transparent 0deg, ${colorFrom}90 25deg, ${colorTo}90 50deg, transparent 75deg)`,
+        }}
+        animate={{ rotate: [0, 360] }}
         transition={{ duration, repeat: Infinity, ease: 'linear' }}
       />
     </div>
@@ -210,7 +208,7 @@ export function GlowText({
   style?: React.CSSProperties
 }) {
   return (
-    <span className={className} style={{ textShadow: `0 0 20px ${color}60, 0 0 40px ${color}30`, ...style }}>
+    <span className={className} style={{ textShadow: `0 0 12px ${color}, 0 0 30px ${color}90, 0 0 60px ${color}40`, ...style }}>
       {children}
     </span>
   )
