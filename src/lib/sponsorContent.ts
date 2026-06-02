@@ -32,6 +32,7 @@ export type SponsorValueLine = {
   color: string
   hook: string
   benefit: string
+  image: string
   breakdown: { label: string; value: string }[]
   tip: string
 }
@@ -45,6 +46,7 @@ export const SPONSOR_VALUE = {
       title: 'Spots en FM 93.3',
       color: '#db8918',
       hook: 'Tu mensaje en la programación diaria.',
+      image: '/sponsor/fm.png',
       benefit: 'Ideal para ofertas, aperturas y recordar tu marca. El oyente te escucha en contexto local: confianza y cercanía que un banner online solo no da.',
       breakdown: [
         { label: 'Formato', value: 'Spot 30 segundos' },
@@ -59,6 +61,7 @@ export const SPONSOR_VALUE = {
       title: 'Banner en la app',
       color: '#40B9BF',
       hook: 'Visible mientras escuchan en vivo.',
+      image: '/sponsor/app.png',
       benefit: 'Tu logo y oferta junto al reproductor — no en una web que nadie abre. El anunciante ve dónde aparece antes de contratar.',
       breakdown: [
         { label: 'Plan Básico', value: 'Banner estándar rotativo' },
@@ -73,6 +76,7 @@ export const SPONSOR_VALUE = {
       title: 'Audiencia O\'Higgins',
       color: '#7D59B5',
       hook: 'Gente local con intención de compra.',
+      image: '/sponsor/region.png',
       benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegás a quien vive y trabaja en la zona, no a clics genéricos.',
       breakdown: [
         { label: 'Ciudad foco', value: RADIO.city },
@@ -102,4 +106,16 @@ export const SPONSOR_FAQ = [
   { q: '¿Necesito diseño?', a: 'No obligatorio. Usamos plantilla profesional en la primera campaña.' },
   { q: '¿Graban el spot?', a: 'Podemos grabarlo o usar tu audio revisado por nuestro equipo.' },
   { q: '¿Hay permanencia?', a: 'Mes a mes. Recomendamos 2 meses para medir resultados.' },
+  {
+    q: '¿Qué funciones puedo probar ya en la app?',
+    a: 'Banners con impresiones/clics (En Vivo y Participá), sorteos en Participá → Sorteo, reporte mensual en /admin, y patrocinadores en /patrocinadores. Los spots FM los coordina cabina al contratar.',
+  },
+] as const
+
+export const SPONSOR_LIVE = [
+  { label: 'Banner en En Vivo', href: '/', status: 'En app', note: 'Banners rotativos bajo el play' },
+  { label: 'Sorteo patrocinado', href: '/participa', status: 'En app', note: 'Tab Sorteo · registros reales' },
+  { label: 'Reporte mensual', href: '/admin', status: 'Panel admin', note: 'CSV + WhatsApp anunciante' },
+  { label: 'Patrocinadores', href: '/patrocinadores', status: 'En app', note: 'Marcas con campaña activa' },
+  { label: 'Spots FM 93.3', href: null, status: 'Cabina', note: 'Se activa al cerrar venta' },
 ] as const

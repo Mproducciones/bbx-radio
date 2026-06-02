@@ -1,14 +1,24 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { BottomNav } from './BottomNav'
 
 export function ClientBottomNav() {
   const pathname = usePathname()
-  
-  if (pathname === '/admin') {
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  useEffect(() => {
+    const sync = () => setSheetOpen(document.body.dataset.sheetOpen === 'true')
+    sync()
+    const obs = new MutationObserver(sync)
+    obs.observe(document.body, { attributes: true, attributeFilter: ['data-sheet-open'] })
+    return () => obs.disconnect()
+  }, [])
+
+  if (pathname === '/admin' || sheetOpen) {
     return null
   }
-  
+
   return <BottomNav />
 }

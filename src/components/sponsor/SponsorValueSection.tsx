@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SPONSOR_VALUE, type SponsorValueLine } from '@/lib/sponsorContent'
 
@@ -11,8 +12,10 @@ function ValueRow({ line, open, onToggle }: { line: SponsorValueLine; open: bool
       border: `1px solid ${open ? `${line.color}40` : 'rgba(255,255,255,0.07)'}`,
     }}>
       <button type="button" onClick={onToggle} className="w-full flex items-center gap-3 px-4 py-4 min-h-[52px] text-left active:bg-white/[0.02]">
-        <div className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-bold text-sm"
-          style={{ background: `${line.color}20`, color: line.color }}>+</div>
+        <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden relative ring-1 ring-white/10"
+          style={{ boxShadow: `0 4px 12px ${line.color}25` }}>
+          <Image src={line.image} alt="" fill className="object-cover" sizes="44px" />
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-white font-semibold text-sm">{line.title}</p>
           <p className="text-white/40 text-xs mt-0.5">{line.hook}</p>
@@ -23,7 +26,11 @@ function ValueRow({ line, open, onToggle }: { line: SponsorValueLine; open: bool
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <div className="px-4 pb-4 space-y-3 border-t border-white/5">
-              <p className="text-white/75 text-sm leading-relaxed pt-3">{line.benefit}</p>
+              <div className="relative w-full h-32 rounded-xl overflow-hidden mt-3 ring-1 ring-white/8">
+                <Image src={line.image} alt={line.title} fill className="object-cover" sizes="(max-width:768px) 100vw, 400px" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e16] via-transparent to-transparent" />
+              </div>
+              <p className="text-white/75 text-sm leading-relaxed">{line.benefit}</p>
               <div className="rounded-xl overflow-hidden border border-white/6">
                 {line.breakdown.map((r, i) => (
                   <div key={r.label} className="flex justify-between gap-2 px-3 py-2 text-xs"

@@ -155,7 +155,11 @@ export function PlanMockup({
   if (kind === 'spot') {
     return (
       <PhoneFrame badge="Spot 30s al aire" large={large}>
-        <div className="p-3 space-y-2">
+        <div className="relative">
+          <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <img src="/sponsor/fm.png" alt="" className="w-full h-full object-cover" />
+          </div>
+          <div className="relative p-3 space-y-2">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <span className="text-[10px] font-bold text-red-400 uppercase">En vivo · Locutor</span>
@@ -182,6 +186,7 @@ export function PlanMockup({
                 <span className="text-white/40">30s</span>
               </div>
             ))}
+          </div>
           </div>
         </div>
       </PhoneFrame>
@@ -236,28 +241,26 @@ export function PlanMockup({
   if (kind === 'stats') {
     return (
       <PhoneFrame badge="Reporte de alcance" large={large}>
-        <div className="p-3">
-          <p className="text-[10px] text-white/40 mb-2">Panel ventas · ejemplo mensual</p>
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            {[
-              { v: '+15K', l: 'Alcance' },
-              { v: '847', l: 'En vivo' },
-              { v: '12K', l: 'Impresiones banner' },
-            ].map(s => (
-              <div key={s.l} className="rounded-lg py-2 text-center bg-white/[0.04]">
-                <p className="font-display text-lg leading-none" style={{ color: accent }}>{s.v}</p>
-                <p className="text-[7px] text-white/40 mt-0.5">{s.l}</p>
+        <div className="relative">
+          <div className="relative h-44 overflow-hidden">
+            <img src="/sponsor/reporte.png" alt="Ejemplo reporte mensual" className="absolute inset-0 w-full h-full object-cover object-top opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07070e] via-[#07070e]/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  { v: '+15K', l: 'Alcance' },
+                  { v: '847', l: 'En vivo' },
+                  { v: '12K', l: 'Impresiones' },
+                ].map(s => (
+                  <div key={s.l} className="rounded-lg py-1.5 text-center backdrop-blur-sm" style={{ background: 'rgba(7,7,14,0.75)', border: `1px solid ${accent}35` }}>
+                    <p className="font-display text-sm leading-none" style={{ color: accent }}>{s.v}</p>
+                    <p className="text-[6px] text-white/50 mt-0.5">{s.l}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="rounded-lg p-2 bg-white/[0.03]">
-            <p className="text-[8px] text-white/40 mb-2">Impresiones banner / semana</p>
-            <div className="flex items-end gap-1 h-14">
-              {[40, 55, 48, 70, 62, 80, 75].map((h, i) => (
-                <div key={i} className="flex-1 rounded-t-sm" style={{ height: `${h}%`, background: i === 5 ? accent : `${accent}50` }} />
-              ))}
             </div>
           </div>
+          <p className="text-[8px] text-white/35 text-center py-2 px-3">Mismo reporte descargable en panel admin → Reporte mensual</p>
         </div>
       </PhoneFrame>
     )

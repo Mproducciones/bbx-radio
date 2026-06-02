@@ -9,6 +9,7 @@ import { PlanMockup } from './PlanMockup'
 import { PlanDetailSheet } from './PlanDetailSheet'
 import { SponsorValueSection } from './SponsorValueSection'
 import { SponsorPlansSection } from './SponsorPlansSection'
+import { SponsorLiveSection } from './SponsorLiveSection'
 
 export function SponsorLanding() {
   const [listeners, setListeners] = useState<number | null>(null)
@@ -87,6 +88,7 @@ export function SponsorLanding() {
       </header>
 
       <SponsorValueSection />
+      <SponsorLiveSection />
       <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
 
       <section className="mb-6 md:mb-8 text-center">
