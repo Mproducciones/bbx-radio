@@ -6,6 +6,7 @@ import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { ZenoEmbed } from './ZenoEmbed'
+import { BorderBeam, GlowText } from '@/components/ui/effects'
 
 interface NowPlayingCardProps {
   radio: RadioConfig
@@ -45,6 +46,11 @@ export function NowPlayingCard({
 
       {/* Border */}
       <div className="absolute inset-0 rounded-3xl" style={{ border: '1px solid rgba(255,255,255,0.08)', pointerEvents: 'none' }} />
+
+      {/* BorderBeam — luz animada recorriendo el borde cuando suena */}
+      <AnimatePresence>
+        {isPlaying && <BorderBeam colorFrom={colors.primary} colorTo={colors.secondary} duration={5} size={100} />}
+      </AnimatePresence>
 
       <div className="relative">
         {showZenoFallback ? (
@@ -109,10 +115,10 @@ function StationView({ radio, isPlaying, isLoading, volume, colors, onToggle, on
 
         {/* Frecuencia display */}
         <div>
-          <p className="font-display leading-none text-gradient-animated" style={{ fontSize: 72, letterSpacing: '-2px' }}>
+          <GlowText color={colors.primary} className="font-display leading-none text-gradient-animated" style={{ fontSize: 72, letterSpacing: '-2px', display: 'block' } as React.CSSProperties}>
             {freq}
             <span className="text-3xl ml-1 opacity-60">{band || 'FM'}</span>
-          </p>
+          </GlowText>
           <div className="flex items-center gap-2 mt-2">
             <Radio className="w-3.5 h-3.5" style={{ color: colors.primary, opacity: 0.6 }} />
             <p className="text-white/40 text-xs font-medium tracking-wide uppercase">

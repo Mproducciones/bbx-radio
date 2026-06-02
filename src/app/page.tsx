@@ -11,6 +11,7 @@ import { RADIO, PROGRAMS } from '@/lib/radioConfig'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
 import { SongPoll } from '@/components/engagement/SongPoll'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
+import { BorderBeam } from '@/components/ui/effects'
 
 export default function HomePage() {
   const { isPlaying, isLoading, hasError, volume, analyser, toggle, setVolume } = useRadioPlayerContext()
@@ -112,6 +113,7 @@ export default function HomePage() {
               border: `1px solid ${showRequest ? 'rgba(219,137,24,0.3)' : 'rgba(255,255,255,0.06)'}`,
             }}
           >
+            {!showRequest && <BorderBeam colorFrom="#db8918" colorTo="#7D59B5" duration={4} size={60} />}
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors"
               style={{ background: showRequest ? 'rgba(219,137,24,0.18)' : 'rgba(255,255,255,0.05)' }}>
               <Music2 className="w-5 h-5 transition-colors"

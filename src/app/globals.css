@@ -401,3 +401,8 @@ button[title*="Next.js"],
     display: none !important;
   }
 }
+
+/* ── RIPPLE EFFECT — usado por RippleButton en effects.tsx ──────────────── */
+@keyframes ripple-anim {
+  to { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
