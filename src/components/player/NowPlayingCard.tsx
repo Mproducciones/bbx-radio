@@ -134,7 +134,7 @@ export function NowPlayingCard({
         ) : (
           <>
             {/* ── VISUALIZADOR + LOGO ──────────────────────────────────────── */}
-            <div className="relative flex items-center justify-center"
+            <div className="relative mx-auto"
               style={{ width: VIZ, height: VIZ, maxWidth: '100%' }}>
 
               {/* Anillos de pulso cuando suena */}
@@ -259,8 +259,16 @@ export function NowPlayingCard({
               </span>
             </div>
 
-            {/* ── VOLUMEN + PLAY ───────────────────────────────────────────── */}
-            <div className="flex items-center gap-3 w-full">
+            {/* ── PLAY centrado ────────────────────────────────────────────── */}
+            <div className="flex justify-center">
+              <PlayButton
+                isPlaying={isPlaying} isLoading={isLoading}
+                onToggle={onToggle} color={colors.primary} glow={colors.glow}
+              />
+            </div>
+
+            {/* ── VOLUMEN ──────────────────────────────────────────────────── */}
+            <div className="flex items-center gap-2 w-full">
               <Volume1 className="w-3.5 h-3.5 flex-shrink-0 opacity-40" style={{ color: colors.primary }} />
               <div
                 className="flex-1 relative h-1 rounded-full cursor-pointer"
@@ -278,11 +286,6 @@ export function NowPlayingCard({
                 />
               </div>
               <Volume2 className="w-3.5 h-3.5 flex-shrink-0 opacity-40" style={{ color: colors.primary }} />
-
-              <PlayButton
-                isPlaying={isPlaying} isLoading={isLoading}
-                onToggle={onToggle} color={colors.primary} glow={colors.glow}
-              />
             </div>
           </>
         )}
