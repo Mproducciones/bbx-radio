@@ -173,44 +173,44 @@ export function SaludoForm() {
               <p className="text-white/30 text-sm mt-1">El locutor lo anunciará al aire</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {MOTIVOS.map(m => (
-                <motion.button
-                  key={m.id}
-                  whileTap={{ scale: 0.94 }}
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => pickMotivo(m.id)}
-                  className="relative flex flex-col items-center justify-center gap-2 py-5 rounded-2xl overflow-hidden"
-                  style={motivo === m.id
-                    ? { background: 'rgba(219,137,24,0.15)', border: '2px solid rgba(219,137,24,0.5)', boxShadow: '0 0 20px rgba(219,137,24,0.15)' }
-                    : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }
-                  }
-                >
-                  {motivo === m.id && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute top-2 right-2 w-4 h-4 rounded-full flex items-center justify-center"
-                      style={{ background: '#db8918' }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="white" className="w-2.5 h-2.5">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                      </svg>
-                    </motion.div>
-                  )}
-                  <motion.span
-                    className="text-4xl"
-                    animate={motivo === m.id ? { scale: [1, 1.2, 1] } : { scale: 1 }}
-                    transition={{ duration: 0.4 }}
+            <div className="grid grid-cols-3 gap-2.5">
+              {MOTIVOS.map(m => {
+                const active = motivo === m.id
+                return (
+                  <motion.button
+                    key={m.id}
+                    whileTap={{ scale: 0.92 }}
+                    whileHover={{ scale: 1.03 }}
+                    onClick={() => pickMotivo(m.id)}
+                    className="relative flex flex-col items-center justify-center gap-2 py-4 rounded-2xl overflow-hidden"
+                    style={active
+                      ? { background: m.glow, border: `1.5px solid ${m.color}50`, boxShadow: `0 8px 24px ${m.glow}` }
+                      : { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }
+                    }
+                    animate={active ? { y: -2 } : { y: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   >
-                    {m.emoji}
-                  </motion.span>
-                  <span className="text-xs font-semibold text-center leading-tight px-2"
-                    style={{ color: motivo === m.id ? '#db8918' : 'rgba(255,255,255,0.55)' }}>
-                    {m.label}
-                  </span>
-                </motion.button>
-              ))}
+                    {active && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                        className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+                        style={{ background: m.color }}>
+                        <svg viewBox="0 0 24 24" fill="white" className="w-2 h-2">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                      </motion.div>
+                    )}
+                    <motion.span className="text-3xl"
+                      animate={active ? { scale: [1, 1.3, 1.1] } : { scale: 1 }}
+                      transition={{ duration: 0.35 }}>
+                      {m.emoji}
+                    </motion.span>
+                    <span className="text-[10px] font-bold text-center leading-tight px-1"
+                      style={{ color: active ? m.color : 'rgba(255,255,255,0.4)' }}>
+                      {m.label}
+                    </span>
+                  </motion.button>
+                )
+              })}
             </div>
           </motion.div>
         )}
