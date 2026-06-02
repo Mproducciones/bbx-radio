@@ -9,13 +9,13 @@ import type { Program } from '@/types/radio'
 import { getLiveProgram, getToday, programsForDay, type DayKey } from '@/lib/programSchedule'
 
 const DAYS: { key: DayKey; label: string; full: string }[] = [
-  { key: 'mon', label: 'L', full: 'Lunes' },
-  { key: 'tue', label: 'M', full: 'Martes' },
-  { key: 'wed', label: 'X', full: 'Miércoles' },
-  { key: 'thu', label: 'J', full: 'Jueves' },
-  { key: 'fri', label: 'V', full: 'Viernes' },
-  { key: 'sat', label: 'S', full: 'Sábado' },
-  { key: 'sun', label: 'D', full: 'Domingo' },
+  { key: 'mon', label: 'Lun', full: 'Lunes' },
+  { key: 'tue', label: 'Mar', full: 'Martes' },
+  { key: 'wed', label: 'Mié', full: 'Miércoles' },
+  { key: 'thu', label: 'Jue', full: 'Jueves' },
+  { key: 'fri', label: 'Vie', full: 'Viernes' },
+  { key: 'sat', label: 'Sáb', full: 'Sábado' },
+  { key: 'sun', label: 'Dom', full: 'Domingo' },
 ]
 
 const LIVE_BG = 'rgba(219,137,24,0.08)'
@@ -83,8 +83,8 @@ export function ProgramSchedule({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
-            className="text-xs font-medium px-2.5 py-1 rounded-full"
-            style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--color-ink-300)' }}
+            className="text-sm font-semibold px-2.5 py-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.08)', color: '#fff' }}
           >
             {selectedFull}
           </motion.span>
@@ -110,11 +110,11 @@ export function ProgramSchedule({
               aria-label={`${d.full}${isToday ? ', hoy' : ''}`}
               onClick={() => setSelectedDay(d.key)}
               whileTap={{ scale: 0.92 }}
-              className="relative flex-1 flex flex-col items-center py-1.5 max-md:py-1 rounded-xl text-xs font-bold transition-colors"
+              className="relative flex-1 flex flex-col items-center justify-center min-w-0 py-2 rounded-xl text-[11px] sm:text-xs font-extrabold tracking-wide transition-colors"
               style={
                 isActive
-                  ? { background: LIVE_ACCENT, color: '#fff' }
-                  : { color: 'var(--color-ink-400)' }
+                  ? { background: LIVE_ACCENT, color: '#fff', boxShadow: '0 2px 12px rgba(219,137,24,0.35)' }
+                  : { color: 'rgba(255,255,255,0.88)', background: 'rgba(255,255,255,0.04)' }
               }
             >
               {isToday && !isActive && (
@@ -248,17 +248,11 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
             </span>
           )}
         </div>
-        <p
-          className="text-xs mt-0.5 truncate"
-          style={{
-            color:
-              program.host && program.host !== 'Por confirmar'
-                ? 'rgba(255,255,255,0.35)'
-                : 'rgba(255,255,255,0.22)',
-          }}
-        >
-          {hostLabel}
-        </p>
+        {program.host && program.host !== 'Por confirmar' && (
+          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {hostLabel}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col items-end flex-shrink-0 text-right">

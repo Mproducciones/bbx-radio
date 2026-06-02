@@ -16,12 +16,7 @@ export function ParticipaScreen() {
   return (
     <AppMenuScreen>
       <div className="flex flex-col flex-1 min-h-0">
-        <SectionHeader
-          compact
-          kicker="Tu voz en la radio"
-          title="Participá"
-          subtitle="Votá o pedí canciones al locutor"
-        />
+        <SectionHeader compact title="Participá" />
 
         <div
           className="flex shrink-0 gap-1 p-1 rounded-2xl mb-2"

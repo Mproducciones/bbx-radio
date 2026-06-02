@@ -12,12 +12,7 @@ export default function SaludosPage() {
   return (
     <AppMenuScreen>
       <div className="flex flex-col flex-1 min-h-0">
-        <SectionHeader
-          compact
-          kicker="En vivo · Radio Bienvenida"
-          title="Saludos al Aire"
-          subtitle="El locutor lo lee en directo"
-        />
+        <SectionHeader compact title="Saludos al Aire" />
         <SaludoForm compact />
       </div>
     </AppMenuScreen>

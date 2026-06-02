@@ -19,10 +19,7 @@ export function HomePageClient() {
       {/* Mobile: solo reproductor */}
       <div className="md:hidden flex flex-col flex-1 min-h-0 px-4 pt-2 pb-1">
         <div className="flex items-center justify-between mb-2 shrink-0">
-          <div>
-            <h1 className="font-display text-xl text-white leading-none tracking-wide">{RADIO.name}</h1>
-            <p className="text-white/30 text-[10px] mt-0.5 font-medium line-clamp-1">{RADIO.slogan}</p>
-          </div>
+          <h1 className="font-display text-xl text-white leading-none tracking-wide">{RADIO.name}</h1>
           <span
             className="font-display text-lg leading-none px-3 py-1.5 rounded-xl"
             style={{
@@ -39,7 +36,7 @@ export function HomePageClient() {
           <RadioLocaleBar radio={RADIO} className="mb-2 shrink-0" />
         </ClientOnly>
 
-            <div className="flex-1 flex flex-col justify-center min-h-0">
+        <div className="flex-1 flex flex-col justify-center min-h-0">
           <ClientOnly
             fallback={
               <div
@@ -67,20 +64,11 @@ export function HomePageClient() {
           </ClientOnly>
         </div>
 
-        <p className="hidden sm:block text-center text-white/15 text-[9px] font-medium uppercase tracking-widest mt-2 shrink-0 leading-relaxed px-4">
-          Toca ✨ Jugar en el reproductor
-        </p>
       </div>
 
       {/* Desktop: el player vive en la sidebar; acá solo guía */}
       <div className="hidden md:flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
-        <p className="text-[var(--color-mag-400)] text-[10px] font-black uppercase tracking-widest mb-3">
-          Transmitiendo en vivo
-        </p>
-        <h2 className="font-display text-5xl text-white leading-none mb-4">{RADIO.name}</h2>
-        <p className="text-[var(--color-ink-400)] text-sm max-w-sm">
-          Usa el menú lateral para ver la grilla, participar en la votación, mandar saludos y más.
-        </p>
+        <h2 className="font-display text-5xl text-white leading-none">{RADIO.name}</h2>
       </div>
     </main>
   )

@@ -75,10 +75,7 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
           <div className={`rounded-xl flex items-center justify-center ${compact ? 'w-8 h-8' : 'w-10 h-10'}`} style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}>
             <MicIcon className={compact ? 'w-4 h-4 text-[#db8918]' : 'w-5 h-5 text-[#db8918]'} />
           </div>
-          <div>
-            <p className={`text-white font-semibold ${compact ? 'text-xs' : 'text-sm'}`}>Pide tu canción</p>
-            <p className="text-[#666690] text-[10px] md:text-xs">Al locutor en directo</p>
-          </div>
+          <p className={`text-white font-semibold ${compact ? 'text-sm' : 'text-base'}`}>Pide tu canción</p>
         </div>
       </div>
 

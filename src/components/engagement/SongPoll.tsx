@@ -176,13 +176,13 @@ export function SongPoll({ compact, onEmpty }: { compact?: boolean; onEmpty?: ()
         </div>
 
         {/* CTA antes de votar */}
-        {!voted && (
+        {!voted && !compact && (
           <motion.p
             animate={{ opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="text-center text-white/30 text-[10px] mt-3"
+            className="text-center text-white/30 text-xs mt-3"
           >
-            Toca una opción para votar · El resultado es en vivo
+            Toca una opción para votar
           </motion.p>
         )}
 

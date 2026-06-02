@@ -10,11 +10,7 @@ export default async function ReplayPage() {
 
   return (
     <AppMenuScreen scroll>
-      <SectionHeader
-        compact
-        title="Replay"
-        subtitle="Programas que te perdiste · Bienvenida 93.3 FM"
-      />
+      <SectionHeader compact title="Replay" />
       <div className="flex-1 min-h-0 md:flex-none">
         <ReplayList episodes={episodes} compact />
       </div>

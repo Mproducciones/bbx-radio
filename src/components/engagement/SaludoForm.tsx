@@ -167,11 +167,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
             className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
-            <div>
-              <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">Paso 1 de 3</p>
-              <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿Qué ocasión es?</h2>
-              {!compact && <p className="text-white/30 text-sm mt-1">El locutor lo anunciará al aire</p>}
-            </div>
+            <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿Qué ocasión es?</h2>
 
             <div className={`grid grid-cols-3 ${compact ? 'gap-2' : 'gap-2.5'}`}>
               {MOTIVOS.map(m => {
@@ -222,15 +218,11 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
             className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
-            <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                <button onClick={() => setStep('motivo')} className="text-white/30 hover:text-white transition-colors text-sm">← </button>
-                <p className="text-white/40 text-[10px] uppercase tracking-widest">Paso 2 de 3</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setStep('motivo')} className="text-white/50 hover:text-white transition-colors text-sm">←</button>
               <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>
                 {selected.emoji} {selected.label}
               </h2>
-              {!compact && <p className="text-white/30 text-sm mt-1">¿Para quién es el saludo?</p>}
             </div>
 
             <label className="flex flex-col gap-2">
@@ -281,11 +273,8 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
             transition={{ type: 'spring', stiffness: 380, damping: 34 }}
             className={`flex flex-col flex-1 min-h-0 ${compact ? 'gap-3' : 'gap-5'}`}
           >
-            <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                <button onClick={() => setStep('para')} className="text-white/30 hover:text-white transition-colors text-sm">← </button>
-                <p className="text-white/40 text-[10px] uppercase tracking-widest">Paso 3 de 3</p>
-              </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setStep('para')} className="text-white/50 hover:text-white transition-colors text-sm">←</button>
               <h2 className={`font-display text-white leading-tight ${compact ? 'text-2xl' : 'text-3xl'}`}>¿De parte de quién?</h2>
             </div>
 
