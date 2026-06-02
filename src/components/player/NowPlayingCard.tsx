@@ -137,24 +137,20 @@ export function NowPlayingCard({
             <div className="relative mx-auto"
               style={{ width: VIZ, height: VIZ, maxWidth: '100%', aspectRatio: '1/1' }}>
 
-              {/* SVG barras — llena el contenedor */}
-              <CircularViz
-                isPlaying={isPlaying}
-                primary={colors.primary}
-                secondary={colors.secondary}
-              />
+              {/* SVG barras */}
+              <CircularViz isPlaying={isPlaying} primary={colors.primary} secondary={colors.secondary} />
 
-              {/* Todo lo demás centrado con flex — sin transform manual */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-
-                {/* Anillos de pulso */}
-                <AnimatePresence>
-                  {isPlaying && [0, 1, 2].map(i => (
+              {/* Anillos de pulso — centrados con margin negativo */}
+              <AnimatePresence>
+                {isPlaying && [0, 1, 2].map(i => {
+                  const sz = R * 2 + 16 + i * 28
+                  return (
                     <motion.div key={i}
-                      className="absolute rounded-full"
+                      className="absolute rounded-full pointer-events-none"
                       style={{
-                        width:  R * 2 + 16 + i * 28,
-                        height: R * 2 + 16 + i * 28,
+                        width: sz, height: sz,
+                        top: '50%', left: '50%',
+                        marginTop: -sz / 2, marginLeft: -sz / 2,
                         border: `1px solid ${colors.primary}`,
                       }}
                       initial={{ opacity: 0 }}
@@ -162,54 +158,52 @@ export function NowPlayingCard({
                       exit={{ opacity: 0 }}
                       transition={{ duration: 2.2 + i * 0.6, repeat: Infinity, delay: i * 0.75 }}
                     />
-                  ))}
-                </AnimatePresence>
+                  )
+                })}
+              </AnimatePresence>
 
-                {/* Outer ring giratorio */}
+              {/* Outer ring giratorio — wrapper centrado con margin */}
+              <div className="absolute pointer-events-none"
+                style={{
+                  width: R * 2 + 8, height: R * 2 + 8,
+                  top: '50%', left: '50%',
+                  marginTop: -(R + 4), marginLeft: -(R + 4),
+                }}>
                 <motion.div
-                  className="absolute rounded-full pointer-events-none"
-                  style={{
-                    width:  R * 2 + 8,
-                    height: R * 2 + 8,
-                    background: `conic-gradient(${colors.primary}50, ${colors.secondary}50, ${colors.primary}50)`,
-                  }}
+                  className="w-full h-full rounded-full"
+                  style={{ background: `conic-gradient(${colors.primary}50, ${colors.secondary}50, ${colors.primary}50)` }}
                   animate={{ rotate: 360 }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                 />
+              </div>
 
-                {/* Logo circular */}
-                <div
-                  className="relative rounded-full overflow-hidden flex-shrink-0"
-                  style={{
-                    width: R * 2, height: R * 2,
-                    background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)',
-                  }}
+              {/* Logo — wrapper centrado con margin */}
+              <div className="absolute rounded-full overflow-hidden"
+                style={{
+                  width: R * 2, height: R * 2,
+                  top: '50%', left: '50%',
+                  marginTop: -R, marginLeft: -R,
+                  background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)',
+                }}>
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ rotate: isPlaying ? 360 : 0 }}
+                  transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
                 >
-                  <motion.div
-                    className="absolute inset-0"
-                    animate={{ rotate: isPlaying ? 360 : 0 }}
-                    transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
-                  >
-                    <Image
-                      src={artSrc}
-                      alt={title ?? radio.name}
-                      fill
-                      sizes={`${R * 2}px`}
-                      className={hasRealSong && nowPlaying.albumArt ? 'object-cover' : 'object-contain p-4'}
-                    />
-                  </motion.div>
-                  {/* Vinyl hole */}
-                  <div className="absolute rounded-full z-10 pointer-events-none"
-                    style={{
-                      width: 12, height: 12,
-                      top: '50%', left: '50%',
-                      transform: 'translate(-50%,-50%)',
-                      background: '#0a0a12',
-                      border: `2px solid ${colors.primary}30`,
-                    }}
+                  <Image
+                    src={artSrc} alt={title ?? radio.name} fill
+                    sizes={`${R * 2}px`}
+                    className={hasRealSong && nowPlaying.albumArt ? 'object-cover' : 'object-contain p-4'}
                   />
-                </div>
-
+                </motion.div>
+                <div className="absolute rounded-full pointer-events-none z-10"
+                  style={{
+                    width: 12, height: 12,
+                    top: '50%', left: '50%',
+                    marginTop: -6, marginLeft: -6,
+                    background: '#0a0a12',
+                    border: `2px solid ${colors.primary}30`,
+                  }} />
               </div>
             </div>
 
