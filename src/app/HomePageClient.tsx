@@ -68,7 +68,7 @@ export function HomePageClient() {
         </div>
 
         <p className="text-center text-white/15 text-[10px] font-medium uppercase tracking-widest mt-6 leading-relaxed px-4">
-          Mantén el logo · triple toque en la onda
+          Toca ✨ Jugar en el reproductor
         </p>
       </div>
 

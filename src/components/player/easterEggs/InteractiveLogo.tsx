@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { MatrixLogo } from './MatrixLogo'
@@ -16,6 +16,7 @@ interface InteractiveLogoProps {
   logoHold: number
   onHoldStart: () => void
   onHoldEnd: () => void
+  onTouchEnd: () => void
   onTap: () => void
 }
 
@@ -28,9 +29,11 @@ export function InteractiveLogo({
   logoHold,
   onHoldStart,
   onHoldEnd,
+  onTouchEnd,
   onTap,
 }: InteractiveLogoProps) {
   const [glitch, setGlitch] = useState(false)
+  const touchDevice = useRef(false)
 
   useEffect(() => {
     if (!isPlaying || logoDigital) return
@@ -54,38 +57,74 @@ export function InteractiveLogo({
         marginTop: -LR,
         marginLeft: -LR,
         borderRadius: '50%',
-        touchAction: 'manipulation',
+        zIndex: 25,
+        touchAction: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+      }}
+      onTouchStart={e => {
+        touchDevice.current = true
+        e.stopPropagation()
+        onHoldStart()
+      }}
+      onTouchEnd={e => {
+        e.stopPropagation()
+        onTouchEnd()
+        onHoldEnd()
+      }}
+      onTouchCancel={e => {
+        e.stopPropagation()
+        onHoldEnd()
       }}
       onPointerDown={e => {
+        if (touchDevice.current && e.pointerType === 'touch') return
         if (e.button !== 0) return
         onHoldStart()
       }}
-      onPointerUp={onHoldEnd}
-      onPointerLeave={onHoldEnd}
-      onPointerCancel={onHoldEnd}
-      onClick={onTap}
+      onPointerUp={e => {
+        if (touchDevice.current && e.pointerType === 'touch') return
+        onHoldEnd()
+      }}
+      onPointerLeave={e => {
+        if (touchDevice.current) return
+        onHoldEnd()
+      }}
+      onClick={e => {
+        e.stopPropagation()
+        onTap()
+      }}
       role="button"
-      aria-label="Logo de la radio. Mantén pulsado para sorpresa."
+      tabIndex={0}
+      aria-label="Logo. Doble toque o mantén para modo PULSO."
     >
-      {/* Anillo de carga al mantener */}
       {logoHold > 0 && !logoDigital && (
         <svg
-          className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
+          className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none z-10"
           viewBox="0 0 100 100"
           aria-hidden
         >
-          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2" />
+          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2" />
           <circle
             cx="50"
             cy="50"
             r="46"
             fill="none"
             stroke={primary}
-            strokeWidth="2.5"
+            strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={`${logoHold * 289} 289`}
           />
         </svg>
+      )}
+
+      {logoHold > 0.15 && !logoDigital && (
+        <span
+          className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[8px] font-black uppercase tracking-widest pointer-events-none z-20 whitespace-nowrap"
+          style={{ color: primary }}
+        >
+          Mantén…
+        </span>
       )}
 
       <AnimatePresence mode="wait">
@@ -95,7 +134,7 @@ export function InteractiveLogo({
             initial={{ opacity: 0, scale: 0.92, filter: 'blur(8px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 1.05, filter: 'blur(12px)' }}
-            transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.5 }}
             className="absolute inset-0 rounded-full overflow-hidden"
             style={{
               boxShadow: `0 0 40px ${primary}50, inset 0 0 30px rgba(219,137,24,0.15)`,
@@ -107,24 +146,18 @@ export function InteractiveLogo({
         ) : (
           <motion.div
             key="img"
-            initial={{ opacity: 1 }}
             animate={{
               opacity: logoHold > 0.3 ? 1 - logoHold * 0.85 : 1,
-              x: glitch ? [0, -2, 3, -1, 0] : 0,
               filter: logoHold > 0.2
                 ? `blur(${logoHold * 6}px) brightness(${1 + logoHold * 0.3})`
                 : glitch
-                  ? 'hue-rotate(90deg) contrast(1.4) brightness(1.2)'
-                  : isPlaying
-                    ? 'none'
-                    : 'brightness(0.95)',
+                  ? 'hue-rotate(90deg) contrast(1.35)'
+                  : 'none',
             }}
-            exit={{ opacity: 0, filter: 'blur(16px)' }}
-            transition={{ duration: 0.35 }}
-            className="absolute inset-0 rounded-full overflow-hidden"
+            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
           >
             <motion.div
-              className="w-full h-full"
+              className="w-full h-full pointer-events-none"
               animate={{ rotate: isPlaying ? 360 : 0 }}
               transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
             >
@@ -133,11 +166,13 @@ export function InteractiveLogo({
                 alt={title}
                 width={LR * 2}
                 height={LR * 2}
+                draggable={false}
                 unoptimized={artSrc.startsWith('http')}
                 style={{
                   width: '100%',
                   height: '100%',
                   objectFit: 'contain',
+                  pointerEvents: 'none',
                   filter: isPlaying
                     ? `drop-shadow(0 0 14px ${primary}) drop-shadow(0 0 28px ${primary}60)`
                     : 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))',

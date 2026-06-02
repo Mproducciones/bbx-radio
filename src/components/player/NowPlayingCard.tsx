@@ -8,8 +8,10 @@ import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
-import { WaveSnake } from './easterEggs/WaveSnake'
+import { BeatCatchGame } from './easterEggs/BeatCatchGame'
+import { PlayerInteractSheet } from './easterEggs/PlayerInteractSheet'
 import { SecretHintToast } from './easterEggs/SecretHintToast'
+import { Sparkles } from 'lucide-react'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -207,7 +209,7 @@ export function NowPlayingCard({
         overflow: 'hidden',
         position: 'relative',
         background: `linear-gradient(170deg, #12091e 0%, #07070e 55%)`,
-        border: `1px solid ${secrets.logoDigital || secrets.snakeActive ? `${primary}50` : `${primary}20`}`,
+        border: `1px solid ${secrets.logoDigital || secrets.gameMode === 'catch' ? `${primary}50` : `${primary}20`}`,
         boxShadow: isPlaying
           ? `0 0 0 1px ${primary}15, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
           : `0 12px 48px rgba(0,0,0,0.7)`,
@@ -273,6 +275,25 @@ export function NowPlayingCard({
                 {freq}
               </div>
 
+              {/* Botón visible — abre menú de interacción (móvil) */}
+              <button
+                type="button"
+                onClick={e => { e.stopPropagation(); secrets.setSheetOpen(true) }}
+                className="absolute top-3 right-3 z-30 flex items-center gap-1.5 px-2.5 py-1.5 rounded-full"
+                style={{
+                  background: 'rgba(7,7,14,0.75)',
+                  border: '1px solid rgba(219,137,24,0.35)',
+                  color: '#db8918',
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Jugar
+              </button>
+
               {/* Contenedor del visualizador — flex child, centrado por el padre */}
               <div style={{ position: 'relative', width: CV, height: CV, flexShrink: 0 }}>
 
@@ -303,7 +324,8 @@ export function NowPlayingCard({
                   logoDigital={secrets.logoDigital}
                   logoHold={secrets.logoHold}
                   onHoldStart={secrets.startLogoHold}
-                  onHoldEnd={secrets.clearLogoHold}
+                  onHoldEnd={secrets.endLogoHold}
+                  onTouchEnd={secrets.onLogoTouchEnd}
                   onTap={secrets.onLogoTap}
                 />
               </div>
@@ -361,43 +383,19 @@ export function NowPlayingCard({
                 </motion.div>
               </AnimatePresence>
 
-              {/* Onda / Snake FM (easter egg) */}
-              <div
-                style={{ marginBottom: 20, position: 'relative' }}
-                onPointerDown={() => secrets.startWaveHold()}
-                onPointerUp={secrets.clearWaveHold}
-                onPointerLeave={secrets.clearWaveHold}
-                onClick={() => secrets.onWaveTap()}
-              >
-                {secrets.waveHold > 0 && !secrets.snakeActive && (
-                  <div
-                    className="absolute inset-0 rounded-xl pointer-events-none z-10"
-                    style={{
-                      background: `linear-gradient(90deg, transparent, ${secondary}25, transparent)`,
-                      opacity: secrets.waveHold,
-                    }}
-                  />
-                )}
-                {secrets.snakeActive ? (
-                  <WaveSnake
-                    active
+              {/* Onda o minijuego */}
+              <div style={{ marginBottom: 20, position: 'relative' }}>
+                {secrets.gameMode === 'catch' ? (
+                  <BeatCatchGame
                     isPlaying={isPlaying}
                     analyser={analyser}
                     primary={primary}
                     secondary={secondary}
-                    onScore={secrets.setSnakeScore}
-                    onExit={secrets.exitSnake}
+                    onScore={secrets.setCatchScore}
+                    onExit={secrets.exitCatch}
                   />
                 ) : (
                   <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
-                )}
-                {secrets.snakeActive && secrets.snakeScore > 0 && (
-                  <span
-                    className="absolute top-2 left-2 text-[10px] font-black tabular-nums z-10"
-                    style={{ color: primary }}
-                  >
-                    ♪ {secrets.snakeScore}
-                  </span>
                 )}
               </div>
 
@@ -487,6 +485,13 @@ export function NowPlayingCard({
           </>
         )}
       </div>
+
+      <PlayerInteractSheet
+        open={secrets.sheetOpen}
+        onClose={() => secrets.setSheetOpen(false)}
+        onDigital={secrets.activateDigital}
+        onCatch={secrets.activateCatch}
+      />
     </>
   )
 }
