@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
+import { vibrateNow } from '@/lib/haptics'
 
 const TAP_GOAL = 5
 const TAP_WINDOW_MS = 2200
@@ -25,7 +26,7 @@ export function BbxFrequencyGate({
     taps.current.push(now)
     if (taps.current.length >= TAP_GOAL) {
       taps.current = []
-      if (navigator.vibrate) navigator.vibrate([20, 30, 20])
+      vibrateNow([20, 30, 20])
       router.push('/bbx')
     }
   }, [router])

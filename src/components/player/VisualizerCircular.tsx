@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
+import { readFrequencyData } from '@/lib/analyserRead'
 
 interface VisualizerCircularProps {
   analyser: AnalyserNode | null
@@ -42,15 +43,13 @@ export function VisualizerCircular({
     if (!smoothRef.current) smoothRef.current = new Float32Array(NUM_BARS)
     const smooth = smoothRef.current
 
-    // Leer FFT
-    if (analyser) {
-      const buf = new Uint8Array(analyser.frequencyBinCount)
-      analyser.getByteFrequencyData(buf)
-      for (let i = 0; i < NUM_BARS; i++) {
-        const idx    = Math.floor(i * buf.length / NUM_BARS)
-        const target = isPlaying ? (buf[idx] / 255) : 0
-        smooth[i]    = lerp(smooth[i], target, isPlaying ? 0.25 : 0.06)
-      }
+    // Leer FFT (con fallback rítmico en iOS)
+    const buf = new Uint8Array(analyser?.frequencyBinCount ?? 128)
+    readFrequencyData(analyser, isPlaying, buf)
+    for (let i = 0; i < NUM_BARS; i++) {
+      const idx    = Math.floor(i * buf.length / NUM_BARS)
+      const target = isPlaying ? (buf[idx] / 255) : 0
+      smooth[i]    = lerp(smooth[i], target, isPlaying ? 0.25 : 0.06)
     }
 
     // Beat detection

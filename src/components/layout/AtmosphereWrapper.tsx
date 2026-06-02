@@ -14,12 +14,15 @@ export function AtmosphereWrapper() {
 
   if (EXCLUDED.some(p => pathname.startsWith(p))) return null
 
+  const anchor = pathname === '/' ? 'player' : 'center'
+
   return (
     <AtmosphereCanvas
       analyser={analyser}
       isPlaying={isPlaying}
       primaryColor={colors.primary}
       secondaryColor={colors.secondary}
+      anchor={anchor}
     />
   )
 }

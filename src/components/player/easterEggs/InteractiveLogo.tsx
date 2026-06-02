@@ -3,18 +3,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { MatrixLogo } from './MatrixLogo'
+import { FrequencyDial, FrequencyBurst } from './FrequencyDial'
 
 const LR = 65
 const DRIP_COUNT = 5
+const BURST_RINGS = 3
 
 interface InteractiveLogoProps {
   artSrc: string
   title: string
+  frequency: string
   isPlaying: boolean
   primary: string
   secondary: string
   logoDigital: boolean
+  logoBurst: boolean
   logoHold: number
   onHoldStart: () => void
   onHoldEnd: () => void
@@ -25,10 +28,12 @@ interface InteractiveLogoProps {
 export function InteractiveLogo({
   artSrc,
   title,
+  frequency,
   isPlaying,
   primary,
   secondary,
   logoDigital,
+  logoBurst,
   logoHold,
   onHoldStart,
   onHoldEnd,
@@ -51,7 +56,7 @@ export function InteractiveLogo({
   }, [isPlaying, logoDigital])
 
   const melt = logoHold
-  const pulsoVisible = logoDigital || melt > 0.12
+  const burstActive = logoBurst && !logoDigital
 
   return (
     <div
@@ -105,46 +110,60 @@ export function InteractiveLogo({
       tabIndex={0}
       aria-label={title}
     >
-      {/* PULSO — revelado al derretir el logo */}
+      {/* Doble toque: ondas + destello 93.3 FM */}
       <AnimatePresence>
-        {pulsoVisible && (
-          <motion.div
-            key="pulso"
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{
-              opacity: logoDigital ? 1 : Math.min(1, melt * 1.4),
-              scale: logoDigital ? 1 : 0.88 + melt * 0.14,
-            }}
-            exit={{ opacity: 0, scale: 1.08 }}
-            className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-[5]"
-          >
-            <span
-              className="font-display leading-none tracking-[0.18em]"
-              style={{
-                fontSize: logoDigital ? 28 : 22 + melt * 8,
-                color: primary,
-                textShadow: `0 0 ${20 + melt * 30}px ${primary}, 0 0 60px ${primary}80`,
-                filter: logoDigital ? 'none' : `blur(${(1 - melt) * 3}px)`,
-              }}
-            >
-              PULSO
-            </span>
-            {logoDigital && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0.4, 0.9, 0.4] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="font-mono text-[8px] tracking-widest mt-0.5"
-                style={{ color: secondary }}
-              >
-                FM · 93.3
-              </motion.span>
-            )}
-          </motion.div>
+        {burstActive && (
+          <div className="absolute inset-0 pointer-events-none z-[4]" aria-hidden>
+            {Array.from({ length: BURST_RINGS }, (_, i) => (
+              <motion.div
+                key={`ring-${i}`}
+                className="absolute rounded-full"
+                style={{
+                  inset: -8 - i * 6,
+                  border: `2px solid ${i % 2 === 0 ? primary : secondary}`,
+                  boxShadow: `0 0 24px ${primary}50`,
+                }}
+                initial={{ opacity: 0.85, scale: 0.75 }}
+                animate={{ opacity: 0, scale: 1.55 + i * 0.2 }}
+                transition={{ duration: 1.1 + i * 0.15, repeat: Infinity, ease: 'easeOut', delay: i * 0.22 }}
+              />
+            ))}
+            <FrequencyBurst frequency={frequency} primary={primary} secondary={secondary} />
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Gotas de derretimiento */}
+      {/* Al derretir: asoma el dial de frecuencia */}
+      {melting && melt > 0.35 && (
+        <motion.div
+          className="absolute inset-0 z-[8] pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: Math.min(1, (melt - 0.35) * 2.2) }}
+        >
+          <FrequencyDial
+            size={LR * 2}
+            primary={primary}
+            secondary={secondary}
+            frequency={frequency}
+            active
+            compact
+          />
+        </motion.div>
+      )}
+
+      {melting && melt > 0.05 && melt <= 0.35 && (
+        <motion.div
+          className="absolute inset-0 rounded-full pointer-events-none z-[5]"
+          style={{
+            background: `radial-gradient(circle at 50% 42%, ${primary}55 0%, ${secondary}25 35%, transparent 70%)`,
+            opacity: Math.min(1, melt * 2),
+          }}
+          animate={{ scale: [1, 1.06, 1] }}
+          transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden
+        />
+      )}
+
       {melting && (
         <div className="absolute inset-0 pointer-events-none z-[15]" aria-hidden>
           {Array.from({ length: DRIP_COUNT }, (_, i) => {
@@ -177,7 +196,7 @@ export function InteractiveLogo({
       <AnimatePresence mode="wait">
         {logoDigital ? (
           <motion.div
-            key="matrix"
+            key="freq-dial"
             initial={{ opacity: 0, scale: 0.5, filter: 'blur(16px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 1.2, filter: 'blur(20px)' }}
@@ -188,7 +207,13 @@ export function InteractiveLogo({
               border: `1px solid ${primary}70`,
             }}
           >
-            <MatrixLogo size={LR * 2} primary={primary} active />
+            <FrequencyDial
+              size={LR * 2}
+              primary={primary}
+              secondary={secondary}
+              frequency={frequency}
+              active
+            />
           </motion.div>
         ) : (
           <motion.div
@@ -196,29 +221,46 @@ export function InteractiveLogo({
             className="absolute inset-0 rounded-full overflow-visible pointer-events-none z-[10]"
             animate={{
               y: melt * 28,
-              scale: 1 - melt * 0.12,
+              scale: burstActive ? [1, 1.14, 1.06, 1] : 1 - melt * 0.12,
               opacity: 1 - melt * 0.92,
               filter: melt > 0
                 ? `blur(${melt * 10}px) brightness(${1 + melt * 0.4}) saturate(${1 + melt * 0.3})`
-                : glitch
-                  ? 'hue-rotate(90deg) contrast(1.35)'
-                  : 'none',
+                : burstActive
+                  ? [
+                      `drop-shadow(0 0 20px ${primary}) saturate(1.35)`,
+                      `drop-shadow(0 0 36px ${secondary}) hue-rotate(8deg) saturate(1.5)`,
+                      `drop-shadow(0 0 22px ${primary}) saturate(1.2)`,
+                    ]
+                  : glitch
+                    ? 'hue-rotate(90deg) contrast(1.35)'
+                    : 'none',
               clipPath: melt > 0.05
                 ? `ellipse(${88 - melt * 30}% ${92 - melt * 75}% at 50% ${42 + melt * 35}%)`
                 : 'circle(50% at 50% 50%)',
             }}
-            transition={{ duration: 0.08, ease: 'linear' }}
+            transition={
+              burstActive
+                ? { duration: 0.55, repeat: Infinity, ease: 'easeInOut' }
+                : { duration: 0.08, ease: 'linear' }
+            }
           >
             <motion.div
               className="w-full h-full rounded-full overflow-hidden pointer-events-none"
-              animate={{ rotate: isPlaying ? 360 : 0 }}
-              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+              animate={{
+                rotate: isPlaying ? 360 : 0,
+                scale: burstActive ? [1, 1.05, 1] : 1,
+              }}
+              transition={{
+                rotate: { duration: burstActive ? 6 : 24, repeat: Infinity, ease: 'linear' },
+                scale: { duration: 0.45, repeat: burstActive ? Infinity : 0, ease: 'easeInOut' },
+              }}
             >
               <Image
                 src={artSrc}
                 alt=""
                 width={LR * 2}
                 height={LR * 2}
+                priority
                 draggable={false}
                 unoptimized={artSrc.startsWith('http')}
                 style={{

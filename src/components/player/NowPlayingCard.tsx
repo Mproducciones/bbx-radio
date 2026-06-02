@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
+import { readFrequencyData, readTimeDomainData } from '@/lib/analyserRead'
+import { vibrateNow } from '@/lib/haptics'
 import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
@@ -22,9 +24,6 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
   const ref    = useRef<HTMLCanvasElement>(null)
   const smooth = useRef(Array(NB).fill(8))
   const altBar = useMemo(() => Array.from({ length: NB }, () => Math.random() > 0.8), [])
-  const fake   = useRef(Array.from({ length: NB }, () => ({
-    cur: 8, tgt: 8 + Math.random() * 22, spd: 0.06 + Math.random() * 0.10,
-  })))
 
   useEffect(() => {
     const canvas = ref.current
@@ -33,29 +32,17 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
     if (!ctx) return
     const cx = CV / 2, cy = CV / 2
     let raf: number
-    let freqData: Uint8Array | null = null
-
-    if (analyser) {
-      analyser.fftSize = 256
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      freqData = new Uint8Array(analyser.frequencyBinCount) as any
-    }
+    const freqData = new Uint8Array(analyser?.frequencyBinCount ?? 128)
 
     function draw() {
       ctx!.clearRect(0, 0, CV, CV)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (analyser && freqData && isPlaying) analyser.getByteFrequencyData(freqData as any)
+      readFrequencyData(analyser, isPlaying, freqData)
 
       for (let i = 0; i < NB; i++) {
         let target: number
-        if (analyser && freqData && isPlaying) {
+        if (isPlaying) {
           const bin = Math.floor((i / NB) * freqData.length)
           target = 6 + (freqData[bin] / 255) * 42
-        } else if (isPlaying) {
-          const f = fake.current[i]
-          f.cur += (f.tgt - f.cur) * f.spd
-          if (Math.abs(f.cur - f.tgt) < 0.8) f.tgt = 8 + Math.random() * 22
-          target = f.cur
         } else {
           target = 8 + Math.sin((Date.now() / 500) + i * 0.45) * 4
         }
@@ -115,11 +102,10 @@ function Waveform({ analyser, isPlaying, primary, secondary }: {
     let raf: number
     let timeDomain: Uint8Array | null = null
     if (analyser) {
-      analyser.fftSize = 1024
       timeDomain = new Uint8Array(analyser.fftSize)
+    } else {
+      timeDomain = new Uint8Array(256)
     }
-    // fallback sine when no analyser
-    let t = 0
 
     function draw() {
       const W = canvas!.offsetWidth * (window.devicePixelRatio || 1)
@@ -146,23 +132,16 @@ function Waveform({ analyser, isPlaying, primary, secondary }: {
       ctx!.shadowColor = primary
 
       const pts = 120
+      if (timeDomain) readTimeDomainData(analyser, isPlaying, timeDomain)
+
       for (let i = 0; i <= pts; i++) {
         const x = (i / pts) * W
-        let y: number
-        if (analyser && timeDomain && isPlaying) {
-          analyser.getByteTimeDomainData(timeDomain as Uint8Array<ArrayBuffer>)
-          const idx = Math.floor((i / pts) * timeDomain.length)
-          y = cy + ((timeDomain[idx] - 128) / 128) * (H * 0.4)
-        } else {
-          // idle: tiny sine
-          t += 0.002
-          y = cy + Math.sin(i * 0.18 + t * 3 + i * 0.04) * (H * 0.08)
-        }
+        const idx = Math.floor((i / pts) * timeDomain!.length)
+        const y = cy + ((timeDomain![idx] - 128) / 128) * (H * 0.42)
         i === 0 ? ctx!.moveTo(x, y) : ctx!.lineTo(x, y)
       }
       ctx!.stroke()
       ctx!.shadowBlur = 0
-      t += 0.012
       raf = requestAnimationFrame(draw)
     }
     draw()
@@ -207,9 +186,11 @@ export function NowPlayingCard({
         overflow: 'hidden',
         position: 'relative',
         background: `linear-gradient(170deg, #12091e 0%, #07070e 55%)`,
-        border: `1px solid ${secrets.logoDigital || secrets.gameMode === 'catch' ? `${primary}50` : `${primary}20`}`,
+        border: `1px solid ${secrets.logoDigital || secrets.logoBurst || secrets.gameMode === 'catch' ? `${primary}50` : `${primary}20`}`,
         boxShadow: isPlaying
-          ? `0 0 0 1px ${primary}15, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
+          ? secrets.logoBurst
+            ? `0 0 0 1px ${primary}40, 0 0 60px ${primary}55, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
+            : `0 0 0 1px ${primary}15, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
           : `0 12px 48px rgba(0,0,0,0.7)`,
         transition: 'box-shadow 1.5s, border-color 1.5s',
       }}>
@@ -251,6 +232,8 @@ export function NowPlayingCard({
                 src="/icons/fondo.png"
                 alt=""
                 aria-hidden
+                loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 className="player-hero-fondo absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
                 style={{
@@ -301,10 +284,12 @@ export function NowPlayingCard({
                 <InteractiveLogo
                   artSrc={artSrc}
                   title={title ?? radio.name}
+                  frequency={radio.frequency}
                   isPlaying={isPlaying}
                   primary={primary}
                   secondary={secondary}
                   logoDigital={secrets.logoDigital}
+                  logoBurst={secrets.logoBurst}
                   logoHold={secrets.logoHold}
                   onHoldStart={secrets.startLogoHold}
                   onHoldEnd={secrets.endLogoHold}
@@ -429,7 +414,7 @@ export function NowPlayingCard({
                 {/* Play button */}
                 <motion.button
                   whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}
-                  onClick={() => { if (navigator.vibrate) navigator.vibrate(isPlaying ? [8] : [10,30,10]); onToggle() }}
+                  onClick={() => { vibrateNow(isPlaying ? [8] : [10, 30, 10]); onToggle() }}
                   disabled={isLoading}
                   aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
                   style={{

@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { readFrequencyData } from '@/lib/analyserRead'
+import { vibrateNow } from '@/lib/haptics'
 
 const LANES = 3
 
@@ -47,7 +49,7 @@ export function BeatCatchGame({
       s.score++
       s.combo++
       onScore(s.score)
-      if (navigator.vibrate) navigator.vibrate(10)
+      vibrateNow(10)
     } else {
       s.combo = 0
     }
@@ -59,11 +61,7 @@ export function BeatCatchGame({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let freq: Uint8Array | null = null
-    if (analyser) {
-      analyser.fftSize = 256
-      freq = new Uint8Array(analyser.frequencyBinCount)
-    }
+    const freq = new Uint8Array(analyser?.frequencyBinCount ?? 128)
 
     let raf = 0
     const s = state.current
@@ -81,12 +79,12 @@ export function BeatCatchGame({
         ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
       }
 
-      if (analyser && freq && isPlaying) {
-        analyser.getByteFrequencyData(freq as Uint8Array<ArrayBuffer>)
+      readFrequencyData(analyser, isPlaying, freq)
+      if (isPlaying) {
         let bass = 0
         for (let i = 0; i < 10; i++) bass += freq[i]
         s.bass = bass / (10 * 255)
-        if (s.bass > 0.5 && now - s.lastSpawn > 260) {
+        if (s.bass > 0.38 && now - s.lastSpawn > 260) {
           s.lastSpawn = now
           s.notes.push({ lane: Math.floor(Math.random() * LANES), y: 8 })
         }

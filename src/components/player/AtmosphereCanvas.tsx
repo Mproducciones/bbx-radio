@@ -1,12 +1,17 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
+import { readFrequencyData, spectrumEnergy } from '@/lib/analyserRead'
+
+export type AtmosphereAnchor = 'player' | 'center'
 
 interface AtmosphereCanvasProps {
   analyser: AnalyserNode | null
   isPlaying: boolean
   primaryColor: string
   secondaryColor: string
+  /** En Vivo el foco va arriba; en menú (saludos, etc.) centrado en pantalla */
+  anchor?: AtmosphereAnchor
 }
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -16,7 +21,13 @@ function hexToRgb(hex: string): [number, number, number] {
 
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
 
-export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryColor }: AtmosphereCanvasProps) {
+export function AtmosphereCanvas({
+  analyser,
+  isPlaying,
+  primaryColor,
+  secondaryColor,
+  anchor = 'player',
+}: AtmosphereCanvasProps) {
   const canvasRef   = useRef<HTMLCanvasElement>(null)
   const rafRef      = useRef<number>(0)
   const energyRef   = useRef({ bass: 0, mid: 0, treble: 0, beat: 0, beatAge: 0 })
@@ -39,20 +50,21 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
     const W  = canvas.width
     const H  = canvas.height
     const cx = W / 2
-    // Anclado arriba (zona del player), no al centro del viewport — evita tapar la grilla al scroll
-    const cy = W < 768 ? Math.min(210, H * 0.24) : H * 0.32
+    const isMobile = W < 768
+    const cy =
+      anchor === 'center'
+        ? H * (isMobile ? 0.46 : 0.5)
+        : isMobile
+          ? Math.min(210, H * 0.24)
+          : H * 0.32
 
     // ── Frecuencias ────────────────────────────────────────────────────────
     const N   = 128
-    const buf = new Uint8Array(analyser?.frequencyBinCount ?? 0)
-    if (analyser && isPlaying) analyser.getByteFrequencyData(buf)
-
-    let bass = 0, mid = 0
-    const total = buf.length || 1
-    for (let i = 0; i < Math.floor(total * 0.05); i++) bass += buf[i]
-    for (let i = Math.floor(total * 0.05); i < Math.floor(total * 0.3); i++) mid += buf[i]
-    bass /= Math.floor(total * 0.05) * 255
-    mid  /= Math.floor(total * 0.25) * 255
+    const buf = new Uint8Array(analyser?.frequencyBinCount ?? 128)
+    readFrequencyData(analyser, isPlaying, buf)
+    const { bass: bassRaw, mid: midRaw } = spectrumEnergy(buf)
+    let bass = bassRaw
+    let mid = midRaw
 
     const e = energyRef.current
     const idlePulse = 0.12 + Math.sin(performance.now() / 2200) * 0.08
@@ -158,18 +170,18 @@ export function AtmosphereCanvas({ analyser, isPlaying, primaryColor, secondaryC
       ctx.restore()
     }
 
-    // Vignette inferior — suave; en móvil más abajo para no oscurecer el player
-    const isMobile = W < 768
-    const vignetteTop = isMobile ? H * 0.58 : H * 0.35
+    // Vignette inferior — en modo center más suave para no tapar el contenido
+    const vignetteTop = anchor === 'center' ? H * 0.72 : isMobile ? H * 0.58 : H * 0.35
+    const vignetteEnd = anchor === 'center' ? (isMobile ? 0.45 : 0.55) : isMobile ? 0.65 : 0.78
     const vignette = ctx.createLinearGradient(0, vignetteTop, 0, H)
     vignette.addColorStop(0, 'rgba(7,7,14,0)')
-    vignette.addColorStop(0.5, `rgba(7,7,14,${isMobile ? 0.18 : 0.28})`)
-    vignette.addColorStop(1, `rgba(7,7,14,${isMobile ? 0.65 : 0.78})`)
+    vignette.addColorStop(0.5, `rgba(7,7,14,${anchor === 'center' ? 0.12 : isMobile ? 0.18 : 0.28})`)
+    vignette.addColorStop(1, `rgba(7,7,14,${vignetteEnd})`)
     ctx.fillStyle = vignette
     ctx.fillRect(0, 0, W, H)
 
     rafRef.current = requestAnimationFrame(draw)
-  }, [analyser, isPlaying, primaryColor, secondaryColor])
+  }, [analyser, isPlaying, primaryColor, secondaryColor, anchor])
 
   useEffect(() => {
     const canvas = canvasRef.current

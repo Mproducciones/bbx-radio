@@ -99,21 +99,32 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     audio.crossOrigin = 'anonymous'
     audio.preload = 'none'
     audio.volume = volume
+    audio.setAttribute('playsinline', 'true')
+    audio.setAttribute('webkit-playsinline', 'true')
     audioRef.current = audio
 
     const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    const ctx = new AudioCtx()
+    const ctx = new AudioCtx({ latencyHint: 'interactive' })
     ctxRef.current = ctx
 
     const source = ctx.createMediaElementSource(audio)
     const node = ctx.createAnalyser()
     node.fftSize = 256
-    node.smoothingTimeConstant = 0.8
+    node.smoothingTimeConstant = 0.55
+    node.minDecibels = -90
+    node.maxDecibels = -10
     source.connect(node)
     node.connect(ctx.destination)
     setAnalyser(node)
 
-    audio.addEventListener('canplay', () => setIsLoading(false))
+    const resumeCtx = () => {
+      if (ctx.state === 'suspended') void ctx.resume()
+    }
+    audio.addEventListener('playing', resumeCtx)
+    audio.addEventListener('canplay', () => {
+      setIsLoading(false)
+      resumeCtx()
+    })
     audio.addEventListener('error', () => {
       setIsPlaying(false)
       setIsLoading(false)
@@ -121,10 +132,16 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       stopHeartbeat()
     })
 
+    document.addEventListener('touchstart', resumeCtx, { passive: true })
+    document.addEventListener('click', resumeCtx)
+
     return () => {
+      audio.removeEventListener('playing', resumeCtx)
+      document.removeEventListener('touchstart', resumeCtx)
+      document.removeEventListener('click', resumeCtx)
       audio.pause()
       audio.src = ''
-      ctx.close()
+      void ctx.close()
       stopHeartbeat()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,7 +159,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     try {
       if (ctx?.state === 'suspended') await ctx.resume()
       setIsLoading(true)
+      if (audio.readyState < 2) audio.load()
       await audio.play()
+      if (ctx?.state === 'suspended') await ctx.resume()
       setIsPlaying(true)
       startHeartbeat()
     } catch {
