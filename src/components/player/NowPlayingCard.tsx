@@ -1,90 +1,18 @@
 'use client'
 
-import { useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Volume1, Volume2 } from 'lucide-react'
 import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { ZenoEmbed } from './ZenoEmbed'
-import { BorderBeam } from '@/components/ui/effects'
 
-const SIZE   = 260   // canvas px
-const LOGO_R = 60    // radio del logo
-const BAR_N  = 52    // cantidad de barras
+// Colores corporativos Radio Bienvenida
+const AMBER  = '#db8918'
+const CYAN   = '#40B9BF'
+const PURPLE = '#7D59B5'
 
-// ── Canvas visualizador — sin CSS, coordenadas exactas ────────────────────────
-function CircularViz({ isPlaying, primary, secondary }: {
-  isPlaying: boolean; primary: string; secondary: string
-}) {
-  const ref = useRef<HTMLCanvasElement>(null)
-
-  const bars = useMemo(() =>
-    Array.from({ length: BAR_N }, () => ({
-      cur: 3,
-      tgt: 3 + Math.random() * 22,
-      spd: 0.06 + Math.random() * 0.10,
-    })),
-  [])
-
-  useEffect(() => {
-    const canvas = ref.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let raf: number
-    const cx = SIZE / 2
-    const cy = SIZE / 2
-
-    function draw() {
-      ctx!.clearRect(0, 0, SIZE, SIZE)
-
-      for (let i = 0; i < BAR_N; i++) {
-        const b = bars[i]
-        if (isPlaying) {
-          b.cur += (b.tgt - b.cur) * b.spd
-          if (Math.abs(b.cur - b.tgt) < 0.8) b.tgt = 3 + Math.random() * 22
-        } else {
-          b.cur += (3 - b.cur) * 0.08
-        }
-
-        const angle = (i / BAR_N) * 2 * Math.PI - Math.PI / 2
-        const innerR = LOGO_R + 5
-        const outerR = innerR + b.cur
-        const x1 = cx + Math.cos(angle) * innerR
-        const y1 = cy + Math.sin(angle) * innerR
-        const x2 = cx + Math.cos(angle) * outerR
-        const y2 = cy + Math.sin(angle) * outerR
-
-        ctx!.beginPath()
-        ctx!.moveTo(x1, y1)
-        ctx!.lineTo(x2, y2)
-        ctx!.strokeStyle  = i % 5 === 0 ? secondary : primary
-        ctx!.lineWidth    = 2.5
-        ctx!.lineCap      = 'round'
-        ctx!.globalAlpha  = 0.85
-        ctx!.stroke()
-      }
-      raf = requestAnimationFrame(draw)
-    }
-
-    draw()
-    return () => cancelAnimationFrame(raf)
-  }, [isPlaying, primary, secondary, bars])
-
-  return (
-    <canvas
-      ref={ref}
-      width={SIZE} height={SIZE}
-      className="absolute inset-0"
-      style={{ width: '100%', height: '100%' }}
-    />
-  )
-}
-
-// ── Props ─────────────────────────────────────────────────────────────────────
-interface NowPlayingCardProps {
+interface Props {
   radio: RadioConfig
   nowPlaying: NowPlaying
   isPlaying: boolean
@@ -96,166 +24,228 @@ interface NowPlayingCardProps {
   onVolumeChange: (v: number) => void
 }
 
+// ── Ecualizador CSS puro — 0 conflictos con layout ───────────────────────────
+const EQ_BARS = 32
+const EQ_DURATIONS = [0.45,0.6,0.5,0.4,0.7,0.55,0.48,0.65,0.42,0.58,0.5,0.7,0.44,0.6,0.52,0.46,0.68,0.5,0.4,0.62,0.54,0.48,0.7,0.44,0.6,0.5,0.66,0.42,0.58,0.5,0.44,0.62]
+
+function Equalizer({ isPlaying, primary }: { isPlaying: boolean; primary: string }) {
+  return (
+    <>
+      <style>{`
+        @keyframes eq { from { transform: scaleY(0.08); } to { transform: scaleY(1); } }
+      `}</style>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 3, height: 36 }}>
+        {Array.from({ length: EQ_BARS }, (_, i) => (
+          <div key={i} style={{
+            width: 3,
+            height: 36,
+            borderRadius: 2,
+            background: `linear-gradient(to top, ${primary}, ${CYAN}80)`,
+            transformOrigin: 'bottom',
+            transform: isPlaying ? undefined : 'scaleY(0.08)',
+            animation: isPlaying ? `eq ${EQ_DURATIONS[i]}s ease-in-out infinite alternate` : 'none',
+            animationDelay: isPlaying ? `${(i * 0.04).toFixed(2)}s` : '0s',
+            opacity: 0.85,
+          }} />
+        ))}
+      </div>
+    </>
+  )
+}
+
 // ── Card principal ────────────────────────────────────────────────────────────
 export function NowPlayingCard({
   radio, nowPlaying, isPlaying, isLoading, hasError,
   volume, onToggle, onVolumeChange,
-}: NowPlayingCardProps) {
+}: Props) {
   const showZeno    = hasError && !!radio.zenoSlug
-  const hasRealSong = !!(nowPlaying.title
-    && nowPlaying.title  !== 'En Vivo'
-    && nowPlaying.artist && nowPlaying.artist !== radio.name
-    && nowPlaying.artist !== `${radio.name} ${radio.frequency}`)
-
-  const colors = useAlbumColors(nowPlaying.albumArt)
+  const hasRealSong = !!(
+    nowPlaying.title && nowPlaying.title !== 'En Vivo' &&
+    nowPlaying.artist && nowPlaying.artist !== radio.name &&
+    nowPlaying.artist !== `${radio.name} ${radio.frequency}`
+  )
+  const albumColors = useAlbumColors(nowPlaying.albumArt)
   const [freq, band] = radio.frequency.split(' ')
+
+  // Cuando hay metadata de álbum usa esos colores; si no, los corporativos
+  const primary   = hasRealSong ? albumColors.primary   : AMBER
+  const secondary = hasRealSong ? albumColors.secondary : CYAN
+  const glow      = hasRealSong ? albumColors.glow      : 'rgba(219,137,24,0.35)'
+
   const title  = hasRealSong ? nowPlaying.title  : radio.name
   const artist = hasRealSong ? nowPlaying.artist : `${freq} ${band || 'FM'} · ${radio.city}`
   const artSrc = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
 
   return (
-    <motion.div
-      className="relative overflow-hidden rounded-3xl"
-      style={{ background: 'rgba(10,10,18,0.97)', backdropFilter: 'blur(32px)', WebkitBackdropFilter: 'blur(32px)', border: '1px solid rgba(255,255,255,0.06)' }}
-      animate={{ boxShadow: isPlaying ? `0 20px 60px ${colors.glow}, 0 0 100px ${colors.glow.replace('0.35','0.06')}` : '0 8px 32px rgba(0,0,0,0.6)' }}
-      transition={{ duration: 1.5 }}
+    <div className="relative overflow-hidden rounded-3xl"
+      style={{
+        background: 'linear-gradient(160deg,rgba(18,12,28,0.99) 0%,rgba(7,7,14,0.99) 100%)',
+        border: `1px solid ${primary}22`,
+        boxShadow: isPlaying
+          ? `0 0 0 1px ${primary}20, 0 20px 60px ${glow}, 0 0 120px ${glow.replace('0.35','0.06')}`
+          : '0 8px 40px rgba(0,0,0,0.6)',
+        transition: 'box-shadow 1.5s ease, border-color 1.5s ease',
+      }}
     >
-      <AnimatePresence>
-        {isPlaying && <BorderBeam colorFrom={colors.primary} colorTo={colors.secondary} duration={3} />}
-      </AnimatePresence>
+      {/* Grid decorativo de fondo */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: `linear-gradient(${primary}08 1px,transparent 1px),linear-gradient(90deg,${primary}08 1px,transparent 1px)`,
+        backgroundSize: '40px 40px',
+      }} />
 
-      <div className="flex flex-col items-center px-5 pt-6 pb-5 gap-4">
+      {/* Línea top animada */}
+      <div className="relative h-[2px] overflow-hidden">
+        <div className="absolute inset-0" style={{
+          background: `linear-gradient(90deg,transparent,${primary},${secondary},${PURPLE},${primary},transparent)`,
+          opacity: isPlaying ? 1 : 0.25,
+          transition: 'opacity 1s',
+        }} />
+        {isPlaying && (
+          <motion.div className="absolute top-0 h-full w-1/3"
+            style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)' }}
+            animate={{ left: ['-33%', '133%'] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 0.5 }}
+          />
+        )}
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px 24px', gap: 16 }}>
+
         {showZeno ? (
-          <div className="w-full">
-            <p className="text-xs text-center mb-2" style={{ color: colors.primary }}>Reproductor alternativo</p>
-            <ZenoEmbed slug={radio.zenoSlug!} />
-          </div>
+          <ZenoEmbed slug={radio.zenoSlug!} />
         ) : (
           <>
-            {/* ── VISUALIZADOR CANVAS + LOGO ───────────────────────────────── */}
-            <div className="relative" style={{ width: SIZE, height: SIZE, maxWidth: '100%', margin: '0 auto' }}>
-
-              {/* Canvas barras */}
-              <CircularViz isPlaying={isPlaying} primary={colors.primary} secondary={colors.secondary} />
-
-              {/* Outer ring — div regular para centrar, motion.div adentro para rotar */}
-              <div className="absolute pointer-events-none rounded-full overflow-hidden"
-                style={{ width: LOGO_R*2+8, height: LOGO_R*2+8, top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
-                <motion.div className="w-full h-full rounded-full"
-                  style={{ background: `conic-gradient(${colors.primary}60, ${colors.secondary}60, ${colors.primary}60)` }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                />
-              </div>
-
-              {/* Logo — div regular centra, motion.div adentro gira */}
-              <div className="absolute rounded-full overflow-hidden"
-                style={{ width: LOGO_R*2, height: LOGO_R*2, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)' }}>
-                <motion.div className="absolute inset-0"
-                  animate={{ rotate: isPlaying ? 360 : 0 }}
-                  transition={{ duration: 24, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}>
-                  <Image src={artSrc} alt={title ?? radio.name} fill sizes={`${LOGO_R*2}px`}
-                    className={hasRealSong && nowPlaying.albumArt ? 'object-cover' : 'object-contain p-3'} />
-                </motion.div>
-                <div className="absolute rounded-full z-10"
-                  style={{ width: 10, height: 10, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', background: '#0a0a12', border: `2px solid ${colors.primary}40` }} />
-              </div>
-
-              {/* Anillos de pulso */}
-              <AnimatePresence>
-                {isPlaying && [0, 1].map(i => {
-                  const sz = LOGO_R*2 + 20 + i*30
-                  return (
-                    <motion.div key={i}
-                      className="absolute rounded-full pointer-events-none"
-                      style={{ width: sz, height: sz, top: '50%', left: '50%', marginTop: -sz/2, marginLeft: -sz/2, border: `1px solid ${colors.primary}` }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [0, 0.4, 0], scale: [1, 1.2, 1] }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 2 + i*0.7, repeat: Infinity, delay: i*1, ease: 'easeOut' }}
-                    />
-                  )
-                })}
-              </AnimatePresence>
+            {/* Frecuencia decorativa de fondo */}
+            <div style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'center', marginBottom: -24, zIndex: 0, pointerEvents: 'none' }}>
+              <span className="font-display select-none"
+                style={{ fontSize: 128, lineHeight: 1, color: `${primary}07`, letterSpacing: -4 }}>
+                {freq}
+              </span>
             </div>
 
-            {/* ── INFO ─────────────────────────────────────────────────────── */}
+            {/* ── LOGO — en flujo flex, sin absolute para centrar ─────────── */}
+            <div style={{ position: 'relative', zIndex: 1, flexShrink: 0 }}>
+              {/* Ring giratorio con gradiente corporativo */}
+              <div style={{
+                padding: 3,
+                borderRadius: '50%',
+                background: `conic-gradient(${primary}, ${CYAN}, ${PURPLE}, ${primary})`,
+                boxShadow: isPlaying ? `0 0 24px ${glow}, 0 0 48px ${glow.replace('0.35','0.12')}` : 'none',
+                transition: 'box-shadow 1s',
+              }}>
+                {/* Imagen rotando — motion.div contenido en el ring */}
+                <motion.div style={{ width: 120, height: 120, borderRadius: '50%', overflow: 'hidden' }}
+                  animate={{ rotate: isPlaying ? 360 : 0 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}>
+                  <Image src={artSrc} alt={title ?? radio.name} width={120} height={120}
+                    style={{ width: '100%', height: '100%', objectFit: hasRealSong && nowPlaying.albumArt ? 'cover' : 'contain', padding: hasRealSong && nowPlaying.albumArt ? 0 : 12 }} />
+                </motion.div>
+              </div>
+              {/* Vinyl center dot — absolute dentro del div de tamaño conocido */}
+              <div style={{
+                position: 'absolute', width: 12, height: 12, borderRadius: '50%',
+                top: '50%', left: '50%', marginTop: -6, marginLeft: -6,
+                background: '#07070e', border: `2px solid ${primary}50`, zIndex: 10,
+              }} />
+            </div>
+
+            {/* ── TÍTULO ──────────────────────────────────────────────────── */}
             <AnimatePresence mode="wait" initial={false}>
               <motion.div key={title}
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }}
-                className="text-center w-full">
-                <p className="text-white font-bold text-base leading-tight truncate px-4">{title}</p>
-                <p className="text-white/40 text-xs mt-1 truncate px-4">{artist}</p>
+                style={{ textAlign: 'center', width: '100%', zIndex: 1 }}>
+                <p className="font-display text-white truncate"
+                  style={{ fontSize: 26, letterSpacing: 1, lineHeight: 1.1 }}>
+                  {title}
+                </p>
+                <p className="font-medium truncate" style={{ color: 'rgba(255,255,255,0.38)', fontSize: 12, marginTop: 4 }}>
+                  {artist}
+                </p>
               </motion.div>
             </AnimatePresence>
 
-            {/* Badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-              style={{ background: `${colors.primary}12`, border: `1px solid ${colors.primary}28` }}>
-              <motion.span className="w-1.5 h-1.5 rounded-full" style={{ background: colors.primary }}
-                animate={{ opacity: isPlaying ? [1, 0.25, 1] : 0.4 }}
+            {/* ── BADGE EN VIVO ────────────────────────────────────────────── */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 14px', borderRadius: 999,
+              background: `${primary}10`, border: `1px solid ${primary}28`,
+              zIndex: 1,
+            }}>
+              <motion.span style={{ width: 6, height: 6, borderRadius: '50%', background: primary, display: 'block' }}
+                animate={{ opacity: isPlaying ? [1, 0.2, 1] : 0.4 }}
                 transition={{ duration: 1.2, repeat: Infinity }} />
-              <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: colors.primary }}>
+              <span className="font-black uppercase"
+                style={{ fontSize: 10, letterSpacing: 2, color: primary }}>
                 {isPlaying ? 'Transmitiendo en vivo' : 'Radio en vivo'}
               </span>
             </div>
 
-            {/* Play */}
-            <div className="flex justify-center">
-              <PlayButton isPlaying={isPlaying} isLoading={isLoading} onToggle={onToggle} color={colors.primary} glow={colors.glow} />
+            {/* ── ECUALIZADOR ──────────────────────────────────────────────── */}
+            <div style={{ width: '100%', zIndex: 1 }}>
+              <Equalizer isPlaying={isPlaying} primary={primary} />
             </div>
 
-            {/* Volumen */}
-            <div className="flex items-center gap-2 w-full">
-              <Volume1 className="w-3.5 h-3.5 flex-shrink-0 opacity-40" style={{ color: colors.primary }} />
-              <div className="flex-1 relative h-1 rounded-full cursor-pointer" style={{ background: 'rgba(255,255,255,0.1)' }}
-                onClick={e => { const r = e.currentTarget.getBoundingClientRect(); onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width))) }}>
-                <motion.div className="absolute top-0 left-0 h-full rounded-full" style={{ background: colors.primary }}
-                  animate={{ width: `${volume * 100}%` }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} />
+            {/* ── PLAY ─────────────────────────────────────────────────────── */}
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <AnimatePresence>
+                {isPlaying && [0, 1].map(i => (
+                  <motion.div key={i}
+                    style={{
+                      position: 'absolute', inset: 0, borderRadius: '50%',
+                      border: `1.5px solid ${primary}`, pointerEvents: 'none',
+                    }}
+                    initial={{ scale: 1, opacity: 0.5 }}
+                    animate={{ scale: 2 + i * 0.6, opacity: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.8 + i * 0.6, repeat: Infinity, delay: i * 0.9, ease: 'easeOut' }}
+                  />
+                ))}
+              </AnimatePresence>
+              <motion.button
+                whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}
+                onClick={() => { if (navigator.vibrate) navigator.vibrate(isPlaying ? [8] : [10,30,10]); onToggle() }}
+                disabled={isLoading}
+                aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+                style={{
+                  width: 64, height: 64, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: `linear-gradient(135deg, ${primary}, ${primary}99)`,
+                  color: '#07070e', border: 'none', cursor: 'pointer',
+                  boxShadow: isPlaying ? `0 0 32px ${glow}, 0 8px 24px rgba(0,0,0,0.4)` : `0 4px 16px rgba(0,0,0,0.3)`,
+                  transition: 'box-shadow 0.8s',
+                  position: 'relative', zIndex: 10,
+                }}
+              >
+                {isLoading
+                  ? <div style={{ width: 24, height: 24, border: '2px solid rgba(7,7,14,0.3)', borderTopColor: '#07070e', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                  : isPlaying
+                    ? <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    : <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}><path d="M8 5.14v14l11-7-11-7z"/></svg>
+                }
+              </motion.button>
+            </div>
+
+            {/* ── VOLUMEN ──────────────────────────────────────────────────── */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', zIndex: 1 }}>
+              <Volume1 size={14} style={{ color: primary, opacity: 0.5, flexShrink: 0 }} />
+              <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.08)', cursor: 'pointer', position: 'relative' }}
+                onClick={e => {
+                  const r = e.currentTarget.getBoundingClientRect()
+                  onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)))
+                }}>
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, height: '100%', borderRadius: 2,
+                  width: `${volume * 100}%`,
+                  background: `linear-gradient(90deg, ${primary}, ${secondary})`,
+                  transition: 'width 0.1s',
+                }} />
               </div>
-              <Volume2 className="w-3.5 h-3.5 flex-shrink-0 opacity-40" style={{ color: colors.primary }} />
+              <Volume2 size={14} style={{ color: primary, opacity: 0.5, flexShrink: 0 }} />
             </div>
           </>
         )}
       </div>
-    </motion.div>
-  )
-}
-
-// ── Play button ───────────────────────────────────────────────────────────────
-function PlayButton({ isPlaying, isLoading, onToggle, color, glow }: {
-  isPlaying: boolean; isLoading: boolean; onToggle: () => void; color: string; glow: string
-}) {
-  return (
-    <div className="relative flex-shrink-0">
-      <AnimatePresence>
-        {isPlaying && [0, 1].map(i => (
-          <motion.div key={i} className="absolute inset-0 rounded-full pointer-events-none"
-            initial={{ scale: 1, opacity: 0.5 }}
-            animate={{ scale: 1.9 + i*0.5, opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.8 + i*0.6, repeat: Infinity, delay: i*0.9, ease: 'easeOut' }}
-            style={{ border: `1.5px solid ${color}` }} />
-        ))}
-      </AnimatePresence>
-      <motion.button
-        whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}
-        onClick={() => { if (navigator.vibrate) navigator.vibrate(isPlaying ? [8] : [10,30,10]); onToggle() }}
-        disabled={isLoading}
-        className="w-14 h-14 rounded-full flex items-center justify-center relative z-10"
-        style={{ background: `linear-gradient(135deg, ${color}, ${color}BB)`, color: '#07070E' }}
-        animate={{ boxShadow: isPlaying ? `0 8px 40px ${glow}` : `0 4px 20px ${glow.replace('0.35','0.15')}` }}
-        transition={{ duration: 0.8 }}
-        aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
-      >
-        {isLoading
-          ? <div className="w-5 h-5 border-2 border-[#07070E]/30 border-t-[#07070E] rounded-full animate-spin" />
-          : isPlaying
-            ? <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            : <svg className="w-5 h-5 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z"/></svg>
-        }
-      </motion.button>
     </div>
   )
 }
