@@ -38,7 +38,7 @@ function CircularViz({ isPlaying, primary, secondary }: {
     const cy = SIZE / 2
 
     function draw() {
-      ctx.clearRect(0, 0, SIZE, SIZE)
+      ctx!.clearRect(0, 0, SIZE, SIZE)
 
       for (let i = 0; i < BAR_N; i++) {
         const b = bars[i]
@@ -57,14 +57,14 @@ function CircularViz({ isPlaying, primary, secondary }: {
         const x2 = cx + Math.cos(angle) * outerR
         const y2 = cy + Math.sin(angle) * outerR
 
-        ctx.beginPath()
-        ctx.moveTo(x1, y1)
-        ctx.lineTo(x2, y2)
-        ctx.strokeStyle  = i % 5 === 0 ? secondary : primary
-        ctx.lineWidth    = 2.5
-        ctx.lineCap      = 'round'
-        ctx.globalAlpha  = 0.85
-        ctx.stroke()
+        ctx!.beginPath()
+        ctx!.moveTo(x1, y1)
+        ctx!.lineTo(x2, y2)
+        ctx!.strokeStyle  = i % 5 === 0 ? secondary : primary
+        ctx!.lineWidth    = 2.5
+        ctx!.lineCap      = 'round'
+        ctx!.globalAlpha  = 0.85
+        ctx!.stroke()
       }
       raf = requestAnimationFrame(draw)
     }
