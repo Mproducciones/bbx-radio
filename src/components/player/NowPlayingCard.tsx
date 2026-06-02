@@ -135,9 +135,16 @@ export function NowPlayingCard({
           <>
             {/* ── VISUALIZADOR + LOGO ──────────────────────────────────────── */}
             <div className="relative mx-auto"
-              style={{ width: VIZ, height: VIZ, maxWidth: '100%' }}>
+              style={{ width: VIZ, height: VIZ, maxWidth: '100%', aspectRatio: '1/1' }}>
 
-              {/* Anillos de pulso cuando suena */}
+              {/* Barras circulares — SVG escala con el contenedor */}
+              <CircularViz
+                isPlaying={isPlaying}
+                primary={colors.primary}
+                secondary={colors.secondary}
+              />
+
+              {/* Anillos de pulso — centrados con transform */}
               <AnimatePresence>
                 {isPlaying && [0, 1, 2].map(i => (
                   <motion.div key={i}
@@ -145,8 +152,8 @@ export function NowPlayingCard({
                     style={{
                       width:  R * 2 + 16 + i * 28,
                       height: R * 2 + 16 + i * 28,
-                      top:  CY - (R + 8  + i * 14),
-                      left: CX - (R + 8  + i * 14),
+                      top: '50%', left: '50%',
+                      transform: 'translate(-50%, -50%)',
                       border: `1px solid ${colors.primary}`,
                     }}
                     initial={{ opacity: 0 }}
@@ -157,35 +164,28 @@ export function NowPlayingCard({
                 ))}
               </AnimatePresence>
 
-              {/* Barras circulares */}
-              <CircularViz
-                isPlaying={isPlaying}
-                primary={colors.primary}
-                secondary={colors.secondary}
-              />
-
-              {/* Outer ring del logo */}
+              {/* Outer ring giratorio — centrado con transform */}
               <motion.div
                 className="absolute rounded-full pointer-events-none"
                 style={{
                   width:  R * 2 + 8,
                   height: R * 2 + 8,
-                  top:  CY - R - 4,
-                  left: CX - R - 4,
+                  top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
                   background: `conic-gradient(${colors.primary}40, ${colors.secondary}40, ${colors.primary}40)`,
                 }}
                 animate={{ rotate: isPlaying ? 360 : 0 }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
               />
 
-              {/* Logo / Album art circular */}
+              {/* Logo / Album art circular — centrado con transform */}
               <motion.div
                 className="absolute rounded-full overflow-hidden"
                 style={{
                   width:  R * 2,
                   height: R * 2,
-                  top:  CY - R,
-                  left: CX - R,
+                  top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
                   background: 'radial-gradient(circle, #1c1c2e 0%, #0a0a12 100%)',
                 }}
                 animate={{
@@ -195,7 +195,6 @@ export function NowPlayingCard({
                 }}
                 transition={{ duration: 1 }}
               >
-                {/* Spinning wrapper */}
                 <motion.div
                   className="absolute inset-0"
                   animate={{ rotate: isPlaying ? 360 : 0 }}
@@ -209,17 +208,14 @@ export function NowPlayingCard({
                     className={hasRealSong && nowPlaying.albumArt ? 'object-cover' : 'object-contain p-4'}
                   />
                 </motion.div>
-
-                {/* Centro oscuro (efecto vinyl hole) */}
-                <div
-                  className="absolute rounded-full pointer-events-none"
+                {/* Vinyl hole */}
+                <div className="absolute rounded-full pointer-events-none z-10"
                   style={{
                     width: 12, height: 12,
                     top: '50%', left: '50%',
                     transform: 'translate(-50%, -50%)',
                     background: '#0a0a12',
                     border: `2px solid ${colors.primary}30`,
-                    zIndex: 10,
                   }}
                 />
               </motion.div>
