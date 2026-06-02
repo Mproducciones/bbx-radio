@@ -14,60 +14,92 @@ export function sponsorWaLink(plan?: string) {
 }
 
 export const SPONSOR_HERO = {
-  eyebrow: 'Publicidad · Radio + App',
-  title: 'Tu negocio en el dial y en el bolsillo del oyente',
-  subtitle: `Llega a la audiencia de ${RADIO.city} y la región con spots en ${RADIO.frequency} y presencia destacada en nuestra app.`,
+  eyebrow: 'Publicidad · Radio Bienvenida',
+  title: 'Llega a quien escucha y a quien mira el celular',
+  subtitle: `Spots en ${RADIO.frequency} + banner en la app. Una sola campaña, dos pantallas: el auto, el trabajo y el bolsillo del oyente en ${RADIO.city}.`,
 }
 
 export const SPONSOR_STATS = [
   { value: '+15K', label: 'Alcance mensual', accent: '#db8918' },
-  { value: 'live', label: 'Oyentes en vivo', accent: '#40B9BF', live: true },
-  { value: '20+', label: 'Años en el aire', accent: '#7D59B5' },
+  { value: 'live', label: 'Oyentes en vivo', accent: '#40B9BF', live: true as const },
+  { value: '20+', label: 'Años al aire', accent: '#7D59B5' },
   { value: '93.3', label: 'FM · Rancagua', accent: '#00D9A0' },
 ] as const
 
+export type SponsorValueLine = {
+  id: string
+  title: string
+  color: string
+  hook: string
+  benefit: string
+  breakdown: { label: string; value: string }[]
+  tip: string
+}
+
+export const SPONSOR_VALUE = {
+  title: 'Qué obtiene tu negocio',
+  intro: 'No comprás solo “un spot”: comprás presencia en la radio que la gente de la región escucha todos los días, más visibilidad digital mientras usan la app.',
+  lines: [
+    {
+      id: 'fm',
+      title: 'Spots en FM 93.3',
+      color: '#db8918',
+      hook: 'Tu mensaje en la programación diaria.',
+      benefit: 'Ideal para ofertas, aperturas y recordar tu marca. El oyente te escucha en contexto local: confianza y cercanía que un banner online solo no da.',
+      breakdown: [
+        { label: 'Formato', value: 'Spot 30 segundos' },
+        { label: 'Plan Básico', value: '4 pases / día' },
+        { label: 'Plan Premium', value: '8 pases horario peak' },
+        { label: 'Plan Empresarial', value: '12 pases + programa' },
+      ],
+      tip: 'Grabamos o usamos tu audio. Te ayudamos con guión si lo necesitas.',
+    },
+    {
+      id: 'app',
+      title: 'Banner en la app',
+      color: '#40B9BF',
+      hook: 'Visible mientras escuchan en vivo.',
+      benefit: 'Tu logo y oferta junto al reproductor — no en una web que nadie abre. El anunciante ve dónde aparece antes de contratar.',
+      breakdown: [
+        { label: 'Plan Básico', value: 'Banner estándar rotativo' },
+        { label: 'Plan Premium', value: 'Banner destacado En Vivo' },
+        { label: 'Plan Empresarial', value: 'Semanas exclusivas' },
+        { label: 'Arte', value: 'Plantilla incluida si no tienes diseño' },
+      ],
+      tip: 'Pedí ver ejemplos en cada plan: mostramos mockups reales de la app.',
+    },
+    {
+      id: 'region',
+      title: 'Audiencia O\'Higgins',
+      color: '#7D59B5',
+      hook: 'Gente local con intención de compra.',
+      benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegás a quien vive y trabaja en la zona, no a clics genéricos.',
+      breakdown: [
+        { label: 'Ciudad foco', value: RADIO.city },
+        { label: 'Alcance referencial', value: '+15.000 / mes' },
+        { label: 'Medio', value: 'FM + PWA instalable' },
+        { label: 'Reporte', value: 'Impresiones estimadas / mes' },
+      ],
+      tip: 'Combiná radio + app para campañas de apertura o promociones de temporada.',
+    },
+  ] satisfies SponsorValueLine[],
+}
+
 export const SPONSOR_CHANNELS = [
-  {
-    id: 'radio',
-    title: 'Al aire en FM',
-    desc: 'Spots de 30 segundos en la programación que la gente escucha en auto, trabajo y casa.',
-    accent: '#db8918',
-  },
-  {
-    id: 'app',
-    title: 'En la app',
-    desc: 'Banner visible mientras reproducen en vivo. Tu marca junto al reproductor, no en un sitio olvidado.',
-    accent: '#40B9BF',
-  },
-  {
-    id: 'region',
-    title: "Región O'Higgins",
-    desc: "Audiencia local con intención real: comercio, servicios y marcas que venden en la región de O'Higgins.",
-    accent: '#7D59B5',
-  },
+  { id: 'radio', title: 'Al aire', desc: 'FM en auto, trabajo y casa.', accent: '#db8918' },
+  { id: 'app', title: 'En la app', desc: 'Banner junto al play en vivo.', accent: '#40B9BF' },
+  { id: 'region', title: 'Local', desc: 'Audiencia de la región.', accent: '#7D59B5' },
 ] as const
 
 export const SPONSOR_STEPS = [
-  { step: '01', title: 'Elige tu plan', desc: 'Básico, Premium o Empresarial según tu objetivo y presupuesto.' },
-  { step: '02', title: 'Arte y mensaje', desc: 'Te ayudamos con banner y copy del spot si lo necesitas.' },
-  { step: '03', title: 'Salís al aire', desc: 'Activación en radio y app. Reporte de alcance cada mes.' },
+  { step: '01', title: 'Elige plan', desc: 'Básico, Premium o Empresarial.' },
+  { step: '02', title: 'Arte y spot', desc: 'Te ayudamos con banner y guión.' },
+  { step: '03', title: 'Al aire', desc: 'Radio + app + reporte mensual.' },
 ] as const
 
 export const SPONSOR_FAQ = [
-  {
-    q: '¿Puedo empezar con un plan chico?',
-    a: 'Sí. El plan Básico es ideal para probar radio + app con inversión controlada.',
-  },
-  {
-    q: '¿Qué necesito para el banner?',
-    a: 'Logo y texto de oferta. Si no tienes diseño, usamos plantilla profesional sin costo extra en la primera campaña.',
-  },
-  {
-    q: '¿Los spots los graban ustedes?',
-    a: 'Podemos grabar o usar tu audio. Revisamos guión y duración antes de salir al aire.',
-  },
-  {
-    q: '¿Hay compromiso de permanencia?',
-    a: 'Trabajamos por mes renovable. Te recomendamos mínimo 2 meses para medir resultados.',
-  },
+  { q: '¿Puedo empezar pequeño?', a: 'Sí. El plan Básico ($80.000/mes) es ideal para probar.' },
+  { q: '¿Necesito diseño?', a: 'No obligatorio. Usamos plantilla profesional en la primera campaña.' },
+  { q: '¿Graban el spot?', a: 'Podemos grabarlo o usar tu audio revisado por nuestro equipo.' },
+  { q: '¿Hay permanencia?', a: 'Mes a mes. Recomendamos 2 meses para medir resultados.' },
 ] as const

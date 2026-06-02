@@ -69,16 +69,83 @@ export const BBX_PROCESS = [
   { step: '04', title: 'Crecimiento', desc: 'Monetización, métricas y mejoras continuas con tu equipo.' },
 ] as const
 
+export type RevenueBreakdownLine = {
+  label: string
+  value: string
+}
+
+export type BbxRevenueLine = {
+  id: string
+  title: string
+  amountLabel: string
+  color: string
+  hook: string
+  ownerBenefit: string
+  breakdown: RevenueBreakdownLine[]
+  howToSell: string
+}
+
 export const BBX_REVENUE = {
-  title: 'Ingresos adicionales estimados',
-  subtitle: 'Ejemplo mensual para una radio regional con ventas activas',
-  rows: [
-    { item: '8 banners digitales', amount: '$400.000', color: '#db8918' },
-    { item: '2 sorteos patrocinados', amount: '$160.000', color: '#40B9BF' },
-    { item: 'Monetización programática', amount: '$30.000', color: '#7D59B5' },
-  ],
-  total: '$590.000',
-  note: 'Estimación referencial. No incluye spots tradicionales al aire.',
+  title: 'Ingresos adicionales con tu app',
+  subtitle: 'Ejemplo realista para una radio regional que activa ventas digitales',
+  ownerIntro:
+    'La FM sigue siendo tu core. BBX agrega productos que puedes vender todos los meses: banners con impresiones, sorteos patrocinados y datos para cerrar anunciantes. Esto es lo que un dueño puede facturar extra sin duplicar equipo.',
+  totalLabel: '$590.000',
+  totalNote: 'Referencial · no incluye pauta tradicional al aire ni eventos especiales',
+  roiNote: 'Con plan Pro ($120.000/mes), un escenario así deja margen positivo desde el primer mes con 3–4 banners vendidos.',
+  lines: [
+    {
+      id: 'banners',
+      title: 'Banners digitales',
+      amountLabel: '$400.000',
+      color: '#db8918',
+      hook: 'Espacios en la app mientras escuchan en vivo.',
+      ownerBenefit:
+        'Cobrás lo mismo que un spot, pero el anunciante ve la app y vos tenés número de impresiones. Es ingreso recurrente: renueva mes a mes.',
+      breakdown: [
+        { label: 'Precio referencia por banner', value: '$50.000/mes' },
+        { label: 'Banners vendidos (ejemplo)', value: '8' },
+        { label: 'Posiciones en app', value: 'Hasta 4 rotativas' },
+        { label: 'Subtotal estimado', value: '$400.000' },
+      ],
+      howToSell:
+        'Mostrá la app en reunión: “Tu logo acá mientras suena la radio”. Ideal para comercios de barrio, clínicas y delivery.',
+    },
+    {
+      id: 'sorteos',
+      title: 'Sorteos patrocinados',
+      amountLabel: '$160.000',
+      color: '#40B9BF',
+      hook: 'El oyente participa y deja WhatsApp; la marca paga el espacio.',
+      ownerBenefit:
+        'Un sorteo patrocinado vale $80.000. Dos al mes cubren parte del costo de la plataforma y llenan tu base de contactos para remarketing.',
+      breakdown: [
+        { label: 'Precio por sorteo patrocinado', value: '$80.000' },
+        { label: 'Sorteos al mes (ejemplo)', value: '2' },
+        { label: 'Leads capturados c/u', value: '50–200 contactos' },
+        { label: 'Subtotal estimado', value: '$160.000' },
+      ],
+      howToSell:
+        'Vendelo como “activación + datos”: la marca aparece en vivo, en app y se lleva los registros del concurso.',
+    },
+    {
+      id: 'programatico',
+      title: 'Monetización programática',
+      amountLabel: '$30.000',
+      color: '#7D59B5',
+      hook: 'Ingreso pasivo complementario en la app.',
+      ownerBenefit:
+        'No reemplaza ventas directas, pero suma sin esfuerzo comercial. Entra solo con tráfico en la PWA.',
+      breakdown: [
+        { label: 'Modelo', value: 'CPM / redes display' },
+        { label: 'Tráfico mensual estimado', value: '3.000–8.000 sesiones' },
+        { label: 'Gestión requerida', value: 'Mínima' },
+        { label: 'Subtotal estimado', value: '$30.000' },
+      ],
+      howToSell:
+        'No se vende puerta a puerta: se activa en panel y complementa mientras escalás banners propios.',
+    },
+  ] satisfies BbxRevenueLine[],
 }
 
 export type BbxPlanId = 'esencial' | 'pro' | 'premium'
@@ -102,8 +169,8 @@ export const BBX_PLANS: BbxPlan[] = [
     precio: '80.000',
     setup: '100.000',
     color: '#40B9BF',
-    tagline: 'Tu radio en el bolsillo del oyente desde el día uno.',
-    ideal: 'Radios que quieren presencia digital profesional sin complejidad.',
+    tagline: 'Presencia digital profesional desde el día uno.',
+    ideal: 'Radios que quieren app propia sin complejidad comercial.',
     features: [
       'PWA instalable · Android e iOS',
       'Reproductor en vivo con visualizador',
@@ -119,15 +186,15 @@ export const BBX_PLANS: BbxPlan[] = [
     setup: '150.000',
     color: '#db8918',
     popular: true,
-    tagline: 'Monetizá con publicidad digital y participación del oyente.',
-    ideal: 'Emisoras que ya venden pauta y buscan un producto digital rentable.',
+    tagline: 'Monetizá con publicidad digital y datos de oyentes.',
+    ideal: 'La opción que más rentabiliza: ventas + app + panel.',
     features: [
       'Todo Esencial',
-      'Sistema de banners (hasta 4 posiciones)',
+      'Banners (hasta 4 posiciones)',
       'Sorteos con captura de leads',
       'Votación y pedidos de tema',
-      'Analytics de oyentes en tiempo real',
-      'Panel admin + CMS completo',
+      'Analytics en tiempo real',
+      'Panel admin + CMS',
     ],
   },
   {
@@ -136,17 +203,28 @@ export const BBX_PLANS: BbxPlan[] = [
     precio: '160.000',
     setup: '200.000',
     color: '#7D59B5',
-    tagline: 'Máxima identidad de marca y acompañamiento prioritario.',
-    ideal: 'Grupos radiales y marcas que exigen dominio propio y presencia en tiendas.',
+    tagline: 'Marca propia, dominio y presencia en tiendas.',
+    ideal: 'Grupos radiales y emisoras con visión de largo plazo.',
     features: [
       'Todo Pro',
       'APK para Google Play',
       'Dominio personalizado',
       'Módulo de lanzamientos',
-      'Capacitación y soporte prioritario',
+      'Soporte prioritario',
     ],
   },
 ]
+
+export const BBX_PLAN_COMPARE = [
+  { label: 'App PWA instalable', esencial: true, pro: true, premium: true },
+  { label: 'Reproductor + visualizador', esencial: true, pro: true, premium: true },
+  { label: 'Saludos al aire', esencial: true, pro: true, premium: true },
+  { label: 'Banners publicitarios', esencial: false, pro: true, premium: true },
+  { label: 'Sorteos + leads', esencial: false, pro: true, premium: true },
+  { label: 'Analytics oyentes', esencial: false, pro: true, premium: true },
+  { label: 'Dominio propio', esencial: false, pro: false, premium: true },
+  { label: 'APK Play Store', esencial: false, pro: false, premium: true },
+] as const
 
 export const BBX_FAQ = [
   {
