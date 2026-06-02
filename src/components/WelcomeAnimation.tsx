@@ -11,9 +11,14 @@ import { useEffect, useRef, useState } from 'react'
 
 export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isVisible) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -87,7 +92,7 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
     }
 
     animate()
-  }, [onComplete])
+  }, [onComplete, isVisible])
 
   if (!isVisible) return null
 

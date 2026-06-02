@@ -33,12 +33,14 @@ export function ProgramSchedule({
 }) {
   const [today, setToday] = useState<DayKey>(initialDay ?? 'mon')
   const [selectedDay, setSelectedDay] = useState<DayKey>(initialDay ?? 'mon')
+  const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
+    setHydrated(true)
     const d = getToday()
     setToday(d)
-    setSelectedDay(d)
-  }, [])
+    if (!initialDay) setSelectedDay(d)
+  }, [initialDay])
 
   const filtered = programsForDay(programs, selectedDay)
   const liveProgram = selectedDay === today ? getLiveProgram(filtered) : undefined
@@ -87,8 +89,9 @@ export function ProgramSchedule({
         aria-label="Día de la semana"
         className="flex items-center p-1 rounded-2xl gap-0.5"
         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+        suppressHydrationWarning
       >
-        {DAYS.map(d => {
+        {hydrated && DAYS.map(d => {
           const isActive = d.key === selectedDay
           const isToday = d.key === today
           return (
@@ -118,8 +121,18 @@ export function ProgramSchedule({
             </motion.button>
           )
         })}
+        {!hydrated && (
+          <div className="flex-1 py-2 text-center text-[10px] text-white/20">Cargando…</div>
+        )}
       </div>
 
+      {!hydrated ? (
+        <div className="flex flex-col gap-2">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-14 rounded-2xl bg-white/5 animate-pulse" />
+          ))}
+        </div>
+      ) : (
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={selectedDay}
@@ -153,6 +166,7 @@ export function ProgramSchedule({
           )}
         </motion.div>
       </AnimatePresence>
+      )}
     </section>
   )
 }

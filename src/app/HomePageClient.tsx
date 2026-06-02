@@ -2,6 +2,7 @@
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
+import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
@@ -34,9 +35,19 @@ export function HomePageClient() {
           </span>
         </div>
 
-        <RadioLocaleBar radio={RADIO} className="mb-4" />
+        <ClientOnly fallback={<div className="h-11 mb-4 rounded-xl bg-white/5 animate-pulse" />}>
+          <RadioLocaleBar radio={RADIO} className="mb-4" />
+        </ClientOnly>
 
         <div className="flex-1 flex flex-col justify-center min-h-0">
+          <ClientOnly
+            fallback={
+              <div
+                className="w-full rounded-3xl animate-pulse"
+                style={{ height: 420, background: 'rgba(255,255,255,0.04)' }}
+              />
+            }
+          >
           <NowPlayingCard
             radio={RADIO}
             nowPlaying={{
@@ -53,6 +64,7 @@ export function HomePageClient() {
             onToggle={toggle}
             onVolumeChange={setVolume}
           />
+          </ClientOnly>
         </div>
 
         <p className="text-center text-white/15 text-[10px] font-medium uppercase tracking-widest mt-6 leading-relaxed px-4">

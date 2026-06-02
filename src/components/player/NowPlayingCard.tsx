@@ -248,13 +248,14 @@ export function NowPlayingCard({
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              {/* Imagen fondo.png de fondo */}
-              <Image
-                src="/icons/fondo.png"
-                alt=""
-                fill
-                unoptimized
-                style={{ objectFit: 'cover', opacity: secrets.logoDigital ? 0.08 : 0.18 }}
+              {/* fondo.png — CSS directo (evita 400 de /_next/image en Vercel) */}
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-cover bg-center pointer-events-none"
+                style={{
+                  backgroundImage: 'url(/icons/fondo.png)',
+                  opacity: secrets.logoDigital ? 0.08 : 0.18,
+                }}
               />
               {/* Overlay oscuro encima del fondo */}
               <div style={{

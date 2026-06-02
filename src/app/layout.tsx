@@ -13,6 +13,7 @@ import { AuroraBackground } from '@/components/layout/AuroraBackground'
 import { ThreeFingerGesture } from '@/components/pwa/ThreeFingerGesture'
 import { PushPermission } from '@/components/pwa/PushPermission'
 import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -71,45 +72,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" data-theme="dark" suppressHydrationWarning>
-      <head>
-        {/* iOS PWA */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Bienvenida 93.3" />
-        <link rel="apple-touch-icon" href="/icons/icon-512.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-512.png" />
-        
-        {/* Splash Screen for iOS */}
-        <link rel="apple-touch-startup-image" href="/splash-screen.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-        <link rel="apple-touch-startup-image" href="/splash-screen.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
-        <link rel="apple-touch-startup-image" href="/splash-screen.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
-        
-        {/* Service Worker Registration + auto-update */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
-                    // Buscar actualizaciones cada 30 minutos
-                    setInterval(function() { reg.update(); }, 30 * 60 * 1000);
-                  }).catch(function() {});
-
-                  // Recargar la página cuando el nuevo SW toma control
-                  var refreshing = false;
-                  navigator.serviceWorker.addEventListener('controllerchange', function() {
-                    if (!refreshing) {
-                      refreshing = true;
-                      window.location.reload();
-                    }
-                  });
-                });
-              }
-            `,
-          }}
-        />
-      </head>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
+        <ServiceWorkerRegister />
         <WelcomeAnimation />
         <RadioPlayerProvider>
           <AuroraBackground />
