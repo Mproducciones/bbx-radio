@@ -28,11 +28,31 @@ interface SwipeLayoutProps {
   children: ReactNode
 }
 
+/** Slide al 100% desborda el viewport en móvil; fade evita scroll horizontal sin mover el nav */
+function useMobilePageTransition() {
+  const [mobile, setMobile] = useState(true)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  return mobile
+}
+
+const MOBILE_PAGE_VARIANTS = {
+  enter: { opacity: 0 },
+  center: { opacity: 1, x: 0 },
+  exit: { opacity: 0 },
+}
+
 export function SwipeLayout({ children }: SwipeLayoutProps) {
   const router = useRouter()
   const pathname = usePathname()
   const prevRef = useRef(pathname)
   const [dir, setDir] = useState(0)
+  const mobileTransition = useMobilePageTransition()
 
   // Detecta dirección para animar hacia donde corresponde
   useEffect(() => {
@@ -95,27 +115,39 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
 
   if (!isApp) return <>{children}</>
 
+  const slideVariants = {
+    enter: (d: number) => ({ x: d >= 0 ? '100%' : '-100%', opacity: 0.6 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d >= 0 ? '-40%' : '40%', opacity: 0 }),
+  }
+
   return (
     <>
-      <AnimatePresence initial={false} mode="popLayout" custom={dir}>
-        <motion.div
-          key={pathname}
+      <div className="relative flex flex-1 flex-col min-h-0 w-full min-w-0 max-w-full overflow-hidden">
+        <AnimatePresence
+          initial={false}
+          mode={mobileTransition ? 'wait' : 'popLayout'}
           custom={dir}
-          variants={{
-            enter: (d: number) => ({ x: d >= 0 ? '100%' : '-100%', opacity: 0.6 }),
-            center: { x: 0, opacity: 1 },
-            exit:  (d: number) => ({ x: d >= 0 ? '-40%' : '40%', opacity: 0 }),
-          }}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ type: 'spring', stiffness: 380, damping: 36, mass: 0.75 }}
-          className="app-mobile-page md:min-h-0"
-          style={{ willChange: 'transform' }}
         >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+          <motion.div
+            key={pathname}
+            custom={dir}
+            variants={mobileTransition ? MOBILE_PAGE_VARIANTS : slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={
+              mobileTransition
+                ? { duration: 0.2, ease: 'easeOut' }
+                : { type: 'spring', stiffness: 380, damping: 36, mass: 0.75 }
+            }
+            className="app-mobile-page md:min-h-0 w-full max-w-full min-w-0 overflow-x-hidden"
+            style={{ willChange: mobileTransition ? 'opacity' : 'transform' }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       {/* Dots indicador de posición — solo mobile, solo en secciones */}
       <SwipeDots pathname={pathname} />

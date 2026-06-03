@@ -17,7 +17,12 @@ import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister'
 import { SubscriptionGraceBanner } from '@/components/billing/SubscriptionGraceBanner'
 import './globals.css'
 
+const SITE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bbx-radio-9k9y.vercel.app'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'Radio Bienvenida 93.3 FM',
   description: 'Escucha Radio Bienvenida 93.3 FM en vivo desde Rancagua. Tu radio favorita.',
   manifest: '/manifest.json',
