@@ -13,6 +13,7 @@ import { AuroraBackground } from '@/components/layout/AuroraBackground'
 import { PushPermission } from '@/components/pwa/PushPermission'
 import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister'
+import { SubscriptionGraceBanner } from '@/components/billing/SubscriptionGraceBanner'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -73,6 +74,7 @@ export default function RootLayout({
     <html lang="es" data-theme="dark" suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <ServiceWorkerRegister />
+        <SubscriptionGraceBanner />
         <WelcomeAnimation />
         <RadioPlayerProvider>
           <AuroraBackground />

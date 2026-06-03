@@ -77,3 +77,50 @@ NEXT_PUBLIC_GTM_ID=GTM-M8XHWNF
 - Oyentes en vivo: rate limit + tope de sesiones en memoria.
 - Enlaces de anuncios: sanitizados server-side y en UI.
 - Login admin: rate limit + contraseña mínima 12 caracteres.
+
+## Suscripción BBX — corte por impago
+
+Cada deploy de radio es un **tenant**. Si no pagan, la app cae a `/suspended`.
+
+### 1. Supabase — ejecutar SQL
+
+Corre `supabase-subscription.sql` en el SQL Editor y crea la fila del tenant:
+
+```sql
+INSERT INTO tenant_subscriptions (tenant_id, status, plan, current_period_end, billing_email)
+VALUES ('bienvenida-933', 'active', 'pro', now() + interval '30 days', 'admin@radiobienvenida.cl');
+```
+
+(`tenant_id` debe coincidir con `TENANT_ID` o `RADIO.id` del deploy.)
+
+### 2. Variables por deploy (Vercel)
+
+```bash
+TENANT_ID=bienvenida-933
+SUBSCRIPTION_GRACE_DAYS=7          # días de gracia tras vencimiento
+# Emergencia — corta sin Supabase:
+# SUBSCRIPTION_STATUS=suspended
+```
+
+### 3. Pago manual (transferencia / efectivo)
+
+Panel `/admin` → **Suscripción BBX** → **Marcar pagado (+30 d)**.
+
+### 4. Pago automático con Stripe (opcional)
+
+```bash
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_PRICE_ID=price_...          # precio mensual recurrente
+STRIPE_WEBHOOK_SECRET=whsec_...    # webhook → /api/billing/webhook
+```
+
+Eventos webhook: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`.
+
+### Flujo de estados
+
+| Estado | Qué ve el cliente |
+|--------|-------------------|
+| **active** | App normal |
+| **trial** | App normal (días de prueba) |
+| **grace** | App + banner “Pago pendiente” |
+| **suspended** | Solo `/suspended` + admin + pagar |

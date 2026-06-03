@@ -13,6 +13,7 @@ import { PollManager } from '@/components/admin/PollManager'
 import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
 import { ContestsPanel } from '@/components/admin/ContestsPanel'
 import { ReportsPanel } from '@/components/admin/ReportsPanel'
+import { BillingPanel } from '@/components/admin/BillingPanel'
 import { AdminPageBackground } from '@/components/admin/adminUi'
 
 type PageState = 'login' | 'dashboard'
@@ -209,6 +210,10 @@ export default function AdminPage() {
           </div>
 
           <div className="flex flex-col gap-5">
+            <section>
+              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Suscripción</p>
+              <BillingPanel />
+            </section>
             <section>
               <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Comunicaciones</p>
               <NotificacionPanel />
