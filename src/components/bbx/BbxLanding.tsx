@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ChevronLeft } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
@@ -297,11 +299,9 @@ export function BbxLanding() {
   return (
     <div
       ref={mainRef}
-      className="bbx-landing w-full min-w-0 max-w-full text-white overflow-x-hidden overflow-y-auto mesh-bg"
-      style={{ minHeight: '100dvh' }}
+      className="bbx-landing relative flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full text-white overflow-x-hidden mesh-bg"
     >
-      {/* Ambient blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] left-[-5%] w-[65%] h-[55%] rounded-full opacity-30 blur-[90px]"
           style={{ background: 'radial-gradient(circle,#db8918 0%,transparent 65%)' }} />
         <div className="absolute bottom-[-5%] right-[-10%] w-[55%] h-[40%] rounded-full opacity-20 blur-[80px]"
@@ -312,14 +312,26 @@ export function BbxLanding() {
 
       {/* ── Sticky header ──────────────────────────────────────────────────── */}
       <header
-        className="sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-xl"
-        style={{ background: 'rgba(7,7,14,0.9)' }}
+        className="sticky top-0 z-50 shrink-0 border-b border-white/[0.06] backdrop-blur-xl"
+        style={{ background: 'rgba(7,7,14,0.92)' }}
       >
-        <div className="w-full max-w-xl mx-auto h-12 flex items-center justify-between gap-2 px-4 md:max-w-5xl">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="font-display text-2xl tracking-widest leading-none text-gradient-gold shrink-0">BBX</span>
-            <span className="hidden sm:inline text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full glass-amber shrink-0"
-              style={{ color: '#db8918' }}>
+        <div className="w-full max-w-xl mx-auto min-h-12 py-2 flex items-center justify-between gap-2 px-3 md:max-w-5xl md:px-4">
+          <Link
+            href="/"
+            className="shrink-0 inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-semibold text-white/70 hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)' }}
+          >
+            <ChevronLeft className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+            Radio
+          </Link>
+          <div className="flex items-center gap-2 min-w-0 justify-center flex-1 px-1">
+            <span className="font-display text-xl md:text-2xl tracking-widest leading-none text-gradient-gold truncate">
+              BBX
+            </span>
+            <span
+              className="hidden sm:inline text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full glass-amber shrink-0"
+              style={{ color: 'var(--color-mag-400)' }}
+            >
               Radio System
             </span>
           </div>
@@ -329,17 +341,17 @@ export function BbxLanding() {
             rel="noopener noreferrer"
             className="btn-shimmer shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl text-[11px] font-bold px-3 py-1.5 whitespace-nowrap"
             style={{
-              background: 'linear-gradient(135deg, #db8918, #f2c16a)',
-              color: '#07070e',
+              background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
+              color: 'var(--color-ink-900)',
               boxShadow: '0 4px 16px -4px rgba(219,137,24,0.5)',
             }}
           >
-            Demo gratis
+            Demo
           </a>
         </div>
       </header>
 
-      <main className="relative z-[1] w-full max-w-xl mx-auto px-4 pb-32 md:pb-16 md:max-w-5xl">
+      <main className="relative z-[1] flex-1 w-full max-w-xl mx-auto px-4 pb-6 md:pb-16 md:max-w-5xl min-w-0">
 
         {/* ── HERO ──────────────────────────────────────────────────────────── */}
         <section className="pt-6 pb-10 md:pt-16" ref={heroRef}>
@@ -480,19 +492,18 @@ export function BbxLanding() {
         <p className="font-display text-sm tracking-widest text-gradient-gold inline-block">BBX RADIO SYSTEM</p>
       </footer>
 
-      {/* Mobile sticky CTA */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/[0.08] backdrop-blur-xl px-4 pt-3"
+        className="relative z-[1] shrink-0 md:hidden sticky bottom-0 border-t border-white/[0.08] backdrop-blur-xl px-4 pt-3"
         style={{
           background: 'rgba(7,7,14,0.97)',
-          paddingBottom: 'max(14px,env(safe-area-inset-bottom,0px))',
+          paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
         }}
       >
         <a
           href={demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-shimmer glow-amber-pulse flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm"
+          className="btn-shimmer glow-amber-pulse flex items-center justify-center gap-2 w-full max-w-xl mx-auto py-3 rounded-xl font-bold text-sm"
           style={{
             background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
             color: 'var(--color-ink-900)',
