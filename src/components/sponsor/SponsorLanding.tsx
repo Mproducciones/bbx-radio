@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { RADIO } from '@/lib/radioConfig'
 import { SPONSOR_PLANS, type SponsorPlanId } from '@/lib/sponsorPlans'
@@ -9,22 +9,30 @@ import { PlanDetailSheet } from './PlanDetailSheet'
 import { SponsorValueSection } from './SponsorValueSection'
 import { SponsorPlansSection } from './SponsorPlansSection'
 import { SponsorLiveSection } from './SponsorLiveSection'
+import { SponsorSectionNav } from './SponsorSectionNav'
 import { AccentButton } from '@/components/shared/AccentButton'
+import { usePageAnimations } from '@/hooks/usePageAnimations'
 
 export function SponsorLanding({ initialListeners }: { initialListeners?: number }) {
+  const rootRef = useRef<HTMLDivElement>(null)
   const [listeners, setListeners] = useState<number | null>(initialListeners ?? null)
   const [selectedId, setSelectedId] = useState<SponsorPlanId | null>(null)
-  const [faqOpen, setFaqOpen] = useState<number | null>(null)
+  const [faqOpen, setFaqOpen] = useState<number | null>(0)
+
+  usePageAnimations(rootRef)
 
   const selectedPlan = selectedId ? SPONSOR_PLANS.find(p => p.id === selectedId) ?? null : null
 
   useEffect(() => {
-    fetch('/api/listeners/count').then(r => r.json()).then(d => setListeners(d.count)).catch(() => {})
+    fetch('/api/listeners/count')
+      .then(r => r.json())
+      .then(d => setListeners(typeof d.count === 'number' ? d.count : null))
+      .catch(() => {})
   }, [])
 
   return (
-    <div className="relative max-md:pb-[calc(var(--app-nav-total)+4.25rem)] md:pb-8">
-      <header className="border-b border-white/10 pb-5 mb-6">
+    <div ref={rootRef} className="relative max-md:pb-[calc(var(--app-nav-total)+5rem)] md:pb-8">
+      <header className="border-b border-white/10 pb-5 mb-2" data-animate="fade">
         <p className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2">
           {SPONSOR_HERO.eyebrow}
         </p>
@@ -39,16 +47,24 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         <div className="grid grid-cols-2 gap-2 mt-4">
           {SPONSOR_STATS.map(s => {
             const isLive = 'live' in s && s.live
-            const value = isLive && listeners != null ? String(listeners) : s.value
+            const value: string =
+              isLive && listeners != null
+                ? listeners > 0
+                  ? String(listeners)
+                  : 'En vivo'
+                : s.value
             return (
               <div
                 key={s.label}
                 className="rounded-xl px-3 py-2.5 border border-white/10"
                 style={{ background: 'rgba(255,255,255,0.03)' }}
               >
-                <p className="text-lg font-bold tabular-nums leading-none" style={{ color: s.accent }}>
+                <p
+                  className={`font-bold tabular-nums leading-none ${isLive && listeners === 0 ? 'text-sm' : 'text-lg'}`}
+                  style={{ color: s.accent }}
+                >
                   {value}
-                  {isLive && listeners != null && (
+                  {isLive && listeners != null && listeners > 0 && (
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00D9A0] ml-1 align-middle animate-pulse" />
                   )}
                 </p>
@@ -57,32 +73,27 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
             )
           })}
         </div>
-
-        <a
-          href={sponsorWaLink()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:inline-flex mt-4 text-sm font-semibold text-[#db8918] hover:text-[#e8a840]"
-        >
-          Cotizar campaña →
-        </a>
       </header>
+
+      <SponsorSectionNav />
 
       <SponsorValueSection />
       <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
       <SponsorLiveSection />
 
-      <p className="mb-6 text-center">
+      <p className="mb-6 text-center" data-animate="fade">
         <a href="/patrocinadores" className="text-sm font-medium text-[#40B9BF] hover:text-white">
-          Ver marcas en la app →
+          Ver marcas activas en la app →
         </a>
       </p>
 
-      <section className="mb-6 border-t border-white/8 pt-5">
-        <h2 className="text-base font-semibold text-white mb-3">Cómo empezar</h2>
+      <section id="pasos" className="mb-6 border-t border-white/8 pt-5 scroll-mt-14">
+        <h2 className="text-base font-semibold text-white mb-3" data-animate="fade">
+          Cómo empezar
+        </h2>
         <ol className="space-y-3">
           {SPONSOR_STEPS.map(s => (
-            <li key={s.step} className="flex gap-3 text-sm">
+            <li key={s.step} className="flex gap-3 text-sm" data-animate="tile">
               <span className="text-[#db8918] font-mono font-bold shrink-0 w-6">{s.step}</span>
               <span className="leading-relaxed">
                 <span className="text-white font-semibold">{s.title}</span>
@@ -93,18 +104,20 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         </ol>
       </section>
 
-      <section className="mb-2 md:max-w-xl md:mx-auto">
-        <h2 className="text-base font-semibold text-white mb-3 md:text-center">Preguntas frecuentes</h2>
+      <section id="faq" className="mb-4 scroll-mt-14 md:max-w-xl md:mx-auto">
+        <h2 className="text-base font-semibold text-white mb-3 md:text-center" data-animate="fade">
+          Preguntas frecuentes
+        </h2>
         <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-white/8">
           {SPONSOR_FAQ.map((item, i) => (
-            <div key={item.q}>
+            <div key={item.q} data-animate="tile">
               <button
                 type="button"
                 onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                 className="w-full flex justify-between gap-3 px-3.5 py-3.5 text-left text-sm text-white/90 active:bg-white/[0.03]"
               >
                 <span className="font-medium leading-snug">{item.q}</span>
-                <span className="text-white/35 shrink-0 text-base">{faqOpen === i ? '−' : '+'}</span>
+                <span className="text-white/35 shrink-0">{faqOpen === i ? '−' : '+'}</span>
               </button>
               <AnimatePresence initial={false}>
                 {faqOpen === i && (
@@ -128,7 +141,6 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         style={{
           bottom: 'var(--app-nav-total)',
           background: 'rgba(7,7,14,0.97)',
-          boxShadow: '0 -8px 32px rgba(0,0,0,0.5)',
         }}
       >
         <AccentButton
@@ -142,7 +154,7 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         </AccentButton>
       </div>
 
-      <p className="hidden md:block text-center mb-2">
+      <p className="hidden md:block text-center mb-2" data-animate="cta">
         <AccentButton href={sponsorWaLink()} accent="#128C7E" highlight="#25D366">
           Hablar con ventas por WhatsApp
         </AccentButton>

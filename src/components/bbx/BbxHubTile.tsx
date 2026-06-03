@@ -33,7 +33,7 @@ export function BbxHubTile({
     animate ? '' : '',
   ].join(' ')
 
-  const dataAttrs = animate ? { 'data-bbx-animate': 'tile' as const } : {}
+  const dataAttrs = animate ? { 'data-animate': 'tile' as const } : {}
 
   const inner = (
     <>

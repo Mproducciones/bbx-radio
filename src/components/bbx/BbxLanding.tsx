@@ -84,7 +84,7 @@ export function BbxLanding() {
       <header
         className="sticky top-0 z-50 border-b border-white/8 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.94)' }}
-        data-bbx-animate="fade"
+        data-animate="fade"
       >
         <div className="w-full max-w-lg mx-auto px-4 h-12 flex items-center justify-between gap-3">
           <span className="font-display text-xl tracking-wider leading-none">BBX</span>
@@ -95,7 +95,7 @@ export function BbxLanding() {
       </header>
 
       <main className="relative z-[1] w-full max-w-lg mx-auto px-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-10 md:max-w-6xl">
-        <section className="pt-4 pb-5 md:pt-10" data-bbx-animate="fade">
+        <section className="pt-4 pb-5 md:pt-10" data-animate="fade">
           <div className="flex justify-center mb-3 min-h-[28px]">
             <LiveDemoBar />
           </div>
@@ -125,13 +125,13 @@ export function BbxLanding() {
                 </AccentButton>
               </div>
             </div>
-            <div className="order-1 md:order-2 flex justify-center" data-bbx-animate="fade">
+            <div className="order-1 md:order-2 flex justify-center" data-animate="fade">
               <BbxPhoneMockup />
             </div>
           </div>
         </section>
 
-        <section className="pb-5" data-bbx-animate="fade">
+        <section className="pb-5" data-animate="fade">
           <div className="grid grid-cols-2 gap-3">
             {BBX_STATS.map(s => (
               <div
@@ -149,7 +149,7 @@ export function BbxLanding() {
         </section>
 
         <section className="pb-6">
-          <div className="mb-3" data-bbx-animate="fade">
+          <div className="mb-3" data-animate="fade">
             <h2 className="text-base font-semibold text-white">Plataforma completa</h2>
             <p className="text-white/50 text-sm mt-1">Toca una tarjeta para ver el detalle</p>
           </div>
@@ -178,7 +178,7 @@ export function BbxLanding() {
           </div>
         </section>
 
-        <section data-bbx-animate="cta">
+        <section data-animate="cta">
           <div
             className="rounded-2xl p-5 text-center"
             style={{
