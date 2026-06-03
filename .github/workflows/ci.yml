@@ -12,9 +12,16 @@ concurrency:
 
 jobs:
   check:
-    name: TypeScript + ESLint + Validate
+    name: TypeScript + QA + Build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_PLAN: pro
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      SUPABASE_SERVICE_KEY: ci-placeholder-service-key
+      SUBSCRIPTION_STATUS: active
 
     steps:
       - name: Checkout
@@ -37,20 +44,5 @@ jobs:
       - name: TypeScript
         run: npx tsc --noEmit
 
-      - name: ESLint (solo src — no bloquea por android/sw generados)
-        run: pnpm exec eslint src --max-warnings 50
-
-      - name: Validación PWA + Archivos críticos
-        run: node scripts/validate.mjs
-
-      - name: Build de producción
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PLAN: pro
-          NEXT_TELEMETRY_DISABLED: 1
-          NEXTAUTH_SECRET: ci-placeholder
-          # Placeholders — el build evalúa src/lib/supabase.ts al compilar
-          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
-          SUPABASE_SERVICE_KEY: ci-placeholder-service-key
-          SUBSCRIPTION_STATUS: active
+      - name: QA agente (validate + build de producción)
+        run: pnpm run agent:qa
