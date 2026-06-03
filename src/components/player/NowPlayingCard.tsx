@@ -12,6 +12,8 @@ import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
 import { BeatCatchGame } from './easterEggs/BeatCatchGame'
 import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
+import { DotGridVisualizer } from './DotGridVisualizer'
+import { VinylDiscFrame, neumoControlStyle } from './VinylDiscFrame'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -86,11 +88,23 @@ interface Props {
   analyser: AnalyserNode | null
   onToggle: () => void
   onVolumeChange: (v: number) => void
+  /** Pantalla completa tipo app de radio (referencia SALSA / PWA) */
+  immersive?: boolean
 }
 
 // ── Waveform oscilloscope — reemplaza las barras típicas ─────────────────────
-function Waveform({ analyser, isPlaying, primary, secondary }: {
-  analyser: AnalyserNode | null; isPlaying: boolean; primary: string; secondary: string
+function Waveform({
+  analyser,
+  isPlaying,
+  primary,
+  secondary,
+  height = 40,
+}: {
+  analyser: AnalyserNode | null
+  isPlaying: boolean
+  primary: string
+  secondary: string
+  height?: number
 }) {
   const ref = useRef<HTMLCanvasElement>(null)
 
@@ -149,13 +163,58 @@ function Waveform({ analyser, isPlaying, primary, secondary }: {
   }, [analyser, isPlaying, primary, secondary])
 
   return (
-    <canvas ref={ref} style={{ width: '100%', height: 40, display: 'block' }} />
+    <canvas ref={ref} style={{ width: '100%', height, display: 'block' }} />
+  )
+}
+
+function VolumeSlider({
+  volume,
+  primary,
+  secondary,
+  onVolumeChange,
+}: {
+  volume: number
+  primary: string
+  secondary: string
+  onVolumeChange: (v: number) => void
+}) {
+  return (
+    <div
+      className="w-full max-w-[220px] h-9 flex items-center cursor-pointer mx-auto"
+      onClick={e => {
+        const r = e.currentTarget.getBoundingClientRect()
+        onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)))
+      }}
+    >
+      <div className="w-full h-1 rounded-full bg-white/10 relative">
+        <div
+          className="absolute top-0 left-0 h-full rounded-full transition-[width] duration-100"
+          style={{ width: `${volume * 100}%`, background: `linear-gradient(90deg, ${primary}, ${secondary})` }}
+        />
+        <div
+          className="absolute top-1/2 w-3 h-3 rounded-full bg-white -translate-y-1/2 transition-[left] duration-100"
+          style={{
+            left: `${volume * 100}%`,
+            transform: 'translate(-50%, -50%)',
+            boxShadow: `0 0 0 2px ${primary}55`,
+          }}
+        />
+      </div>
+    </div>
   )
 }
 
 export function NowPlayingCard({
-  radio, nowPlaying, isPlaying, isLoading, hasError,
-  volume, analyser, onToggle, onVolumeChange,
+  radio,
+  nowPlaying,
+  isPlaying,
+  isLoading,
+  hasError,
+  volume,
+  analyser,
+  onToggle,
+  onVolumeChange,
+  immersive = false,
 }: Props) {
   const showZeno    = hasError && !!radio.zenoSlug
   const hasRealSong = !!(
@@ -173,6 +232,256 @@ export function NowPlayingCard({
   const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
 
   const secrets = usePlayerSecrets(isPlaying)
+
+  if (immersive && !showZeno) {
+    const trackLine = hasRealSong
+      ? `${nowPlaying.title} · ${nowPlaying.artist}`
+      : null
+
+    return (
+      <>
+        <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
+        <div className="relative flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+          {/* Nebula / profundidad */}
+          <div className="absolute inset-0 pointer-events-none" aria-hidden>
+            <div
+              className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[120%] h-[45%] rounded-full opacity-80 blur-3xl"
+              style={{ background: `radial-gradient(ellipse, ${primary}35 0%, transparent 68%)` }}
+            />
+            <div
+              className="absolute bottom-[18%] right-[-10%] w-[70%] h-[40%] rounded-full opacity-60 blur-3xl"
+              style={{ background: `radial-gradient(ellipse, ${secondary}28 0%, transparent 70%)` }}
+            />
+            <div
+              className="absolute bottom-[10%] left-[-15%] w-[55%] h-[35%] rounded-full opacity-50 blur-3xl"
+              style={{ background: `radial-gradient(ellipse, ${PURPLE}22 0%, transparent 72%)` }}
+            />
+          </div>
+
+          {/* Top bar */}
+          <header className="relative z-[2] flex items-center justify-between px-1 pt-1 pb-2 shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <Image src="/icons/icon-96.png" alt="" width={36} height={36} className="rounded-lg shrink-0" />
+              <span className="font-display text-xl text-[#db8918] leading-none tracking-wide">
+                BIENVENIDA
+              </span>
+            </div>
+            <BbxFrequencyGate
+              className="font-display text-sm leading-none px-2.5 py-1 rounded-lg shrink-0"
+              style={{
+                color: primary,
+                background: `${primary}14`,
+                border: `1px solid ${primary}35`,
+              }}
+            >
+              {radio.frequency}
+            </BbxFrequencyGate>
+          </header>
+
+          {/* Centro: marca + visualizador */}
+          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 px-2 text-center">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={trackLine ?? 'idle'}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.25 }}
+                className="w-full max-w-sm mb-3"
+              >
+                {trackLine && (
+                  <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-white/55 line-clamp-2 mb-2">
+                    {trackLine}
+                  </p>
+                )}
+                <h1
+                  className="font-display leading-[0.9] text-white"
+                  style={{ fontSize: 'clamp(2.5rem, 12vw, 3.5rem)' }}
+                >
+                  <span style={{ color: primary }}>BIENVENIDA</span>
+                  <span className="block text-white/90 text-[0.5em] tracking-[0.28em] mt-1 font-display">
+                    RADIO
+                  </span>
+                </h1>
+                <p className="text-sm text-white/50 mt-2 font-medium">{artist}</p>
+              </motion.div>
+            </AnimatePresence>
+
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-[0.14em] mb-4"
+              style={{ background: `${primary}18`, border: `1px solid ${primary}40`, color: primary }}
+            >
+              <motion.span
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ background: primary }}
+                animate={{ opacity: isPlaying ? [1, 0.2, 1] : 0.4 }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              />
+              En vivo 24/7
+            </span>
+
+            {secrets.gameMode === 'catch' ? (
+              <div className="w-full max-w-sm">
+                <BeatCatchGame
+                  isPlaying={isPlaying}
+                  analyser={analyser}
+                  primary={primary}
+                  secondary={secondary}
+                  onScore={secrets.setCatchScore}
+                  onExit={secrets.exitCatch}
+                />
+              </div>
+            ) : (
+              <div
+                className="relative shrink-0 flex items-center justify-center"
+                style={{ width: CV + 80, height: CV + 80 }}
+              >
+                <div className="absolute inset-0 rounded-2xl overflow-hidden opacity-90">
+                  <DotGridVisualizer
+                    analyser={analyser}
+                    isPlaying={isPlaying}
+                    primary={primary}
+                    secondary={secondary}
+                  />
+                </div>
+                <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
+                  <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
+                  {isPlaying && (
+                    <motion.div
+                      className="absolute rounded-full pointer-events-none"
+                      style={{
+                        width: LR * 2 + 24,
+                        height: LR * 2 + 24,
+                        top: '50%',
+                        left: '50%',
+                        marginTop: -(LR + 12),
+                        marginLeft: -(LR + 12),
+                        background: `radial-gradient(circle, ${primary}40 0%, transparent 70%)`,
+                        filter: 'blur(18px)',
+                      }}
+                      animate={{ scale: [1, 1.12, 1], opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
+                  <InteractiveLogo
+                    artSrc={artSrc}
+                    title={title ?? radio.name}
+                    frequency={radio.frequency}
+                    isPlaying={isPlaying}
+                    primary={primary}
+                    secondary={secondary}
+                    logoDigital={secrets.logoDigital}
+                    logoBurst={secrets.logoBurst}
+                    logoHold={secrets.logoHold}
+                    onHoldStart={secrets.startLogoHold}
+                    onHoldEnd={secrets.endLogoHold}
+                    onTouchEnd={secrets.onLogoTouchEnd}
+                    onTap={secrets.onLogoTap}
+                  />
+                </VinylDiscFrame>
+              </div>
+            )}
+          </div>
+
+          {/* Base: onda + controles */}
+          <div className="relative z-[2] shrink-0 px-1 pb-1 pt-2">
+            <div
+              className="rounded-t-3xl pt-4 px-3 pb-2"
+              style={{
+                background: 'linear-gradient(180deg, transparent 0%, #0a0a12 35%, #07070e 100%)',
+                boxShadow: 'inset 0 12px 28px rgba(0,0,0,0.35), 0 -1px 0 rgba(255,255,255,0.05)',
+              }}
+            >
+              <Waveform
+                analyser={analyser}
+                isPlaying={isPlaying}
+                primary={primary}
+                secondary={secondary}
+                height={52}
+              />
+
+              <div className="flex items-center justify-center gap-6 mt-3 mb-2">
+                <button
+                  type="button"
+                  aria-label="Bajar volumen"
+                  className="w-12 h-12 rounded-full flex items-center justify-center transition-transform active:scale-95"
+                  style={neumoControlStyle(primary)}
+                  onClick={() => onVolumeChange(Math.max(0, volume - 0.08))}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z" />
+                  </svg>
+                </button>
+
+                <motion.button
+                  whileTap={{ scale: 0.92 }}
+                  onClick={() => {
+                    vibrateNow(isPlaying ? [8] : [10, 30, 10])
+                    onToggle()
+                  }}
+                  disabled={isLoading}
+                  aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+                  className="relative w-[4.5rem] h-[4.5rem] rounded-full flex items-center justify-center shrink-0"
+                  style={{
+                    ...neumoControlStyle(primary, false),
+                    background: isPlaying
+                      ? `linear-gradient(145deg, ${primary} 0%, ${primary}cc 100%)`
+                      : neumoControlStyle(primary).background,
+                    color: isPlaying ? '#07070e' : '#fff',
+                    boxShadow: isPlaying
+                      ? `0 0 40px ${glow}, 8px 8px 20px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.25)`
+                      : neumoControlStyle(primary).boxShadow,
+                  }}
+                >
+                  {isLoading ? (
+                    <div
+                      className="w-6 h-6 rounded-full border-2 border-current border-t-transparent animate-spin"
+                      style={{ animationDuration: '0.7s' }}
+                    />
+                  ) : isPlaying ? (
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                  ) : (
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}>
+                      <path d="M8 5.14v14l11-7-11-7z" />
+                    </svg>
+                  )}
+                </motion.button>
+
+                <button
+                  type="button"
+                  aria-label="Subir volumen"
+                  className="w-12 h-12 rounded-full flex items-center justify-center transition-transform active:scale-95"
+                  style={neumoControlStyle(primary)}
+                  onClick={() => onVolumeChange(Math.min(1, volume + 0.08))}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                  </svg>
+                </button>
+              </div>
+
+              <div
+                className="rounded-2xl px-3 py-2 mt-1"
+                style={{
+                  background: '#0a0a10',
+                  boxShadow: 'inset 3px 3px 8px rgba(0,0,0,0.45), inset -2px -2px 6px rgba(255,255,255,0.03)',
+                }}
+              >
+                <VolumeSlider
+                  volume={volume}
+                  primary={primary}
+                  secondary={secondary}
+                  onVolumeChange={onVolumeChange}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>

@@ -1,12 +1,10 @@
 'use client'
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
-import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
 import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
-import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 
 export function HomePageClient() {
   const { isPlaying, isLoading, hasError, volume, analyser, toggle, setVolume } = useRadioPlayerContext()
@@ -14,44 +12,23 @@ export function HomePageClient() {
 
   return (
     <main
-      className="relative max-w-md md:max-w-none mx-auto w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)]"
+      className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)]"
       style={{ zIndex: 1 }}
     >
-      {/* Mobile: solo reproductor */}
-      <div className="md:hidden flex flex-col flex-1 min-h-0 px-4 pt-2 pb-1">
-        <div className="flex items-center justify-between mb-2 shrink-0">
-          <h1 className="font-display text-xl text-white leading-none tracking-wide">{RADIO.name}</h1>
-          <BbxFrequencyGate
-            className="font-display text-lg leading-none px-3 py-1.5 rounded-xl"
-            style={{
-              color: 'var(--color-mag-400)',
-              background: 'rgba(219,137,24,0.08)',
-              border: '1px solid rgba(219,137,24,0.2)',
-            }}
-          >
-            {RADIO.frequency}
-          </BbxFrequencyGate>
-        </div>
-
-        <ClientOnly fallback={<div className="h-9 mb-2 rounded-xl bg-white/5 animate-pulse shrink-0" />}>
-          <RadioLocaleBar radio={RADIO} className="mb-2 shrink-0" />
-        </ClientOnly>
-
-        <div className="flex-1 flex flex-col justify-center min-h-0 pb-2">
-          <ClientOnly
-            fallback={
-              <div
-                className="w-full rounded-3xl animate-pulse"
-                style={{ height: 420, background: 'rgba(255,255,255,0.04)' }}
-              />
-            }
-          >
+      {/* Móvil: reproductor a pantalla completa (referencia app radio PWA) */}
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full px-3">
+        <ClientOnly
+          fallback={
+            <div className="flex-1 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
+          }
+        >
           <NowPlayingCard
+            immersive
             radio={RADIO}
             nowPlaying={{
-              title:     nowPlaying?.title  ?? 'En Vivo',
-              artist:    nowPlaying?.artist ?? 'Radio Bienvenida 93.3 FM',
-              isLive:    true,
+              title: nowPlaying?.title ?? 'En Vivo',
+              artist: nowPlaying?.artist ?? 'Radio Bienvenida 93.3 FM',
+              isLive: true,
               startedAt: new Date(0),
             }}
             isPlaying={isPlaying}
@@ -62,14 +39,13 @@ export function HomePageClient() {
             onToggle={toggle}
             onVolumeChange={setVolume}
           />
-          </ClientOnly>
-        </div>
-
+        </ClientOnly>
       </div>
 
-      {/* Desktop: el player vive en la sidebar; acá solo guía */}
+      {/* Desktop: el player vive en la sidebar */}
       <div className="hidden md:flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
         <h2 className="font-display text-5xl text-white leading-none">{RADIO.name}</h2>
+        <p className="text-white/45 text-sm mt-2">{RADIO.slogan}</p>
       </div>
     </main>
   )
