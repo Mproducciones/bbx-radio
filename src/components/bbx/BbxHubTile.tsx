@@ -1,5 +1,7 @@
 'use client'
 
+import { accentTileStyle } from '@/lib/accentUi'
+
 type BbxHubTileProps = {
   value: string
   label: string
@@ -11,31 +13,38 @@ type BbxHubTileProps = {
 
 export function BbxHubTile({ value, label, subtitle, accent, onClick, href }: BbxHubTileProps) {
   const className =
-    'group relative w-full rounded-xl p-3.5 md:p-4 text-left transition-all active:scale-[0.98] min-h-[84px] flex flex-col justify-center'
-  const style = {
-    background: '#0e0e16',
-    border: `1px solid ${accent}28`,
-    boxShadow: `0 4px 24px ${accent}08`,
-  }
+    'group relative w-full rounded-xl px-3 py-2.5 text-left overflow-hidden transition-all active:scale-[0.98] hover:brightness-110'
 
   const inner = (
     <>
       <div
-        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-        style={{ background: `radial-gradient(circle at 30% 0%, ${accent}14, transparent 65%)` }}
+        className="absolute inset-x-0 top-0 h-[2px] opacity-90"
+        style={{ background: `linear-gradient(90deg, ${accent}, transparent 85%)` }}
       />
-      <p className="relative font-display text-[clamp(1.75rem,6vw,2.25rem)] leading-none" style={{ color: accent }}>
+      <div
+        className="absolute -right-6 -top-6 w-20 h-20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none blur-2xl"
+        style={{ background: accent }}
+      />
+      <p
+        className="relative font-display text-lg leading-none tabular-nums"
+        style={{ color: accent, textShadow: `0 0 24px ${accent}55` }}
+      >
         {value}
       </p>
-      <p className="relative text-white font-semibold text-xs mt-1.5 leading-tight">{label}</p>
-      {subtitle && <p className="relative text-white/38 text-[10px] mt-0.5 leading-snug">{subtitle}</p>}
-      {onClick && (
-        <p className="relative text-[10px] font-bold mt-2 opacity-60 group-hover:opacity-100 transition-opacity" style={{ color: accent }}>
+      <p className="relative text-white text-[11px] font-semibold mt-1 leading-tight">{label}</p>
+      {subtitle && <p className="relative text-white/45 text-[10px] mt-0.5 leading-snug">{subtitle}</p>}
+      {(onClick || href) && (
+        <p
+          className="relative text-[9px] font-bold mt-2 tracking-wide uppercase opacity-70 group-hover:opacity-100 transition-opacity"
+          style={{ color: accent }}
+        >
           Ver detalle →
         </p>
       )}
     </>
   )
+
+  const style = accentTileStyle(accent)
 
   if (href) {
     return (

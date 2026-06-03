@@ -13,6 +13,7 @@ import {
 } from '@/lib/bbxContent'
 import { BbxRevenueSection } from './BbxRevenueSection'
 import { BbxPlansSection } from './BbxPlansSection'
+import { AccentButton } from '@/components/shared/AccentButton'
 
 function BbxIcon({ id, color }: { id: string; color: string }) {
   const icons: Record<string, ReactNode> = {
@@ -126,15 +127,14 @@ function SectionCta() {
         <p className="text-white/45 text-xs mb-4">
           {BBX_CONTACT.name} · demo 24h · setup 48h
         </p>
-        <a
+        <AccentButton
           href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-[42px] items-center px-6 py-2.5 rounded-lg text-sm font-bold text-white"
-          style={{ background: '#128C7E' }}
+          accent="#128C7E"
+          highlight="#25D366"
+          className="text-sm"
         >
           WhatsApp directo
-        </a>
+        </AccentButton>
       </div>
     </section>
   )
@@ -169,15 +169,13 @@ export function BbxSectionPage({
             <p className="font-display text-sm text-white truncate">{hub?.label ?? section}</p>
             <p className="text-[10px] text-white/40 truncate">{hub?.subtitle}</p>
           </div>
-          <a
+          <AccentButton
             href={bbxWhatsApp('Hola, quiero demo BBX.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] font-bold px-2.5 py-1.5 rounded-full shrink-0"
-            style={{ background: accent, color: '#07070e' }}
+            accent={accent}
+            className="shrink-0 !px-3 !py-1.5 !text-[10px]"
           >
             Demo
-          </a>
+          </AccentButton>
         </div>
         <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent 80%)` }} />
       </header>

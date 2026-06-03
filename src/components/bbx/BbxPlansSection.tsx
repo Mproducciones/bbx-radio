@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { BBX_CONTACT, BBX_PLAN_COMPARE, BBX_PLANS, bbxWhatsApp, type BbxPlan } from '@/lib/bbxContent'
 import { BbxPlanPreviewThumb } from './BbxPlanMockup'
 import { BbxPlanDetailSheet } from './BbxPlanDetailSheet'
+import { AccentButton } from '@/components/shared/AccentButton'
 
 function Check({ on, color }: { on: boolean; color?: string }) {
   if (!on) return <span className="text-white/15 text-xs">—</span>
@@ -46,18 +47,16 @@ function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void 
           Esquemas de pantalla · no es la misma lista de la tarjeta.
         </p>
 
-        <button
+        <AccentButton
           type="button"
           onClick={onExamples}
-          className="w-full min-h-[42px] py-2.5 rounded-lg text-xs font-bold active:scale-[0.98] transition-transform mt-auto"
-          style={{
-            background: plan.popular ? plan.color : `${plan.color}14`,
-            color: plan.popular ? '#07070e' : plan.color,
-            border: plan.popular ? 'none' : `1px solid ${plan.color}30`,
-          }}
+          accent={plan.color}
+          variant={plan.popular ? 'primary' : 'secondary'}
+          fullWidth
+          className="mt-auto"
         >
           Ver cómo se vería
-        </button>
+        </AccentButton>
       </div>
     </article>
   )

@@ -9,6 +9,7 @@ import { PlanMockup } from './PlanMockup'
 import { sponsorWaLink } from '@/lib/sponsorContent'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
 import { SheetPortal } from '@/components/shared/SheetPortal'
+import { AccentButton } from '@/components/shared/AccentButton'
 
 interface PlanDetailSheetProps {
   plan: SponsorPlan | null
@@ -188,22 +189,16 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                   paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))',
                 }}
               >
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="w-full min-h-[40px] py-2 rounded-xl text-xs font-semibold text-white/60 border border-white/10 active:bg-white/5"
-                >
-                  Cerrar y volver a planes
-                </button>
-                <a
+                <AccentButton
                   href={sponsorWaLink(plan.nombre)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-full min-h-[44px] py-3 rounded-xl text-sm font-bold"
-                  style={{ background: plan.color, color: '#07070e' }}
+                  accent={plan.color}
+                  fullWidth
                 >
                   Cotizar plan {plan.nombre}
-                </a>
+                </AccentButton>
+                <button type="button" onClick={onClose} className="text-xs text-white/45 hover:text-white py-1">
+                  Cerrar
+                </button>
               </div>
             </motion.div>
           </>
