@@ -81,7 +81,7 @@ export default function RootLayout({
           <AuroraBackground />
           <AtmosphereWrapper />
           {/* Desktop: 2-column layout. Mobile: single column. */}
-          <div className="app-mobile-shell md:flex md:h-screen md:overflow-hidden">
+          <div className="app-mobile-shell w-full max-w-full min-w-0 max-md:overflow-x-clip md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
             <AppMainArea>
               <SwipeLayout>
