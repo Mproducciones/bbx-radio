@@ -64,13 +64,15 @@ export function MiniPlayer() {
             }}
           >
             <div
-              className="relative h-full w-full min-w-0 max-w-full overflow-hidden rounded-xl flex items-center"
+              className="relative h-full w-full min-w-0 max-w-full overflow-hidden rounded-2xl flex items-center"
               style={{
-                background: 'rgba(12,10,20,0.96)',
+                background: 'linear-gradient(180deg, rgba(18,16,28,0.98) 0%, rgba(10,10,16,0.98) 100%)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.primary}28`,
-                boxShadow: slim ? '0 4px 16px rgba(0,0,0,0.45)' : `0 4px 20px ${colors.primary}12`,
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: slim
+                  ? '0 8px 24px -8px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05)'
+                  : `0 8px 28px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)`,
               }}
             >
               {!slim && isPlaying && (
@@ -138,11 +140,16 @@ export function MiniPlayer() {
                   whileTap={{ scale: 0.88 }}
                   onClick={toggle}
                   disabled={isLoading}
-                  className="rounded-full flex items-center justify-center flex-shrink-0"
+                  className="rounded-full flex items-center justify-center flex-shrink-0 border border-white/10"
                   style={{
                     width: playSize,
                     height: playSize,
-                    background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+                    background: isPlaying
+                      ? `linear-gradient(145deg, ${colors.primary}, color-mix(in srgb, ${colors.primary} 75%, var(--color-ink-900)))`
+                      : 'rgba(255,255,255,0.08)',
+                    boxShadow: isPlaying
+                      ? `0 4px 16px -4px color-mix(in srgb, ${colors.primary} 50%, transparent)`
+                      : 'inset 0 1px 0 rgba(255,255,255,0.08)',
                   }}
                   aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
                 >

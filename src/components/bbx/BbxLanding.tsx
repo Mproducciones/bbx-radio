@@ -4,6 +4,17 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
+  BarChart3,
+  Megaphone,
+  MessageCircle,
+  Mic2,
+  Rocket,
+  Settings2,
+  Tv,
+  Vote,
+  type LucideIcon,
+} from 'lucide-react'
+import {
   BBX_FEATURES,
   BBX_HERO,
   BBX_HUB_SECTIONS,
@@ -16,7 +27,7 @@ import { BbxHubTile } from './BbxHubTile'
 import { BbxSectionPage } from './BbxSectionPage'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
-const FEATURE_ICONS = ['🎙️', '💬', '📢', '📺', '🗳️', '⚙️']
+const FEATURE_ICONS: LucideIcon[] = [Mic2, MessageCircle, Megaphone, Tv, Vote, Settings2]
 
 // ── Live bar ─────────────────────────────────────────────────────────────────
 function LiveDemoBar() {
@@ -87,8 +98,8 @@ function StatTile({ value, label, accent, index }: {
 }
 
 // ── Feature card — glass morphism ─────────────────────────────────────────────
-function FeatureCard({ icon, title, desc, accent, index }: {
-  icon: string; title: string; desc: string; accent: string; index: number
+function FeatureCard({ icon: Icon, title, desc, accent, index }: {
+  icon: LucideIcon; title: string; desc: string; accent: string; index: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const animated = useRef(false)
@@ -135,13 +146,14 @@ function FeatureCard({ icon, title, desc, accent, index }: {
       }}
     >
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition-transform duration-300"
+        className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300"
         style={{
           background: `linear-gradient(135deg, ${accent}28, ${accent}12)`,
           boxShadow: `0 4px 16px -4px ${accent}40`,
+          color: accent,
         }}
       >
-        {icon}
+        <Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
       </div>
       <p className="text-white font-bold text-sm leading-tight mb-1.5">{title}</p>
       <p className="text-white/45 text-[11px] leading-relaxed">{desc}</p>
@@ -209,12 +221,13 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
           rel="noopener noreferrer"
           className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm w-full sm:w-auto"
           style={{
-            background: 'linear-gradient(135deg, #db8918, #f2c16a)',
-            color: '#07070e',
+            background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
+            color: 'var(--color-ink-900)',
             boxShadow: '0 8px 32px -6px rgba(219,137,24,0.55)',
           }}
         >
-          🚀 Agendar demo ahora
+          <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+          Agendar demo ahora
         </a>
         <button
           type="button"
@@ -366,12 +379,13 @@ export function BbxLanding() {
                   rel="noopener noreferrer"
                   className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm"
                   style={{
-                    background: 'linear-gradient(135deg, #db8918, #f2c16a)',
-                    color: '#07070e',
+                    background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
+                    color: 'var(--color-ink-900)',
                     boxShadow: '0 6px 28px -6px rgba(219,137,24,0.6)',
                   }}
                 >
-                  🚀 Demo gratuito
+                  <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+                  Demo gratuito
                 </a>
                 <button
                   type="button"
@@ -411,16 +425,19 @@ export function BbxLanding() {
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {BBX_FEATURES.map((f, i) => (
-              <FeatureCard
-                key={f.id}
-                icon={FEATURE_ICONS[i]}
-                title={f.title}
-                desc={f.desc}
-                accent={f.accent}
-                index={i}
-              />
-            ))}
+            {BBX_FEATURES.map((f, i) => {
+              const Icon = FEATURE_ICONS[i] ?? BarChart3
+              return (
+                <FeatureCard
+                  key={f.id}
+                  icon={Icon}
+                  title={f.title}
+                  desc={f.desc}
+                  accent={f.accent}
+                  index={i}
+                />
+              )
+            })}
           </div>
         </section>
 
@@ -477,12 +494,13 @@ export function BbxLanding() {
           rel="noopener noreferrer"
           className="btn-shimmer glow-amber-pulse flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm"
           style={{
-            background: 'linear-gradient(135deg, #db8918, #f2c16a)',
-            color: '#07070e',
+            background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
+            color: 'var(--color-ink-900)',
             boxShadow: '0 6px 28px -6px rgba(219,137,24,0.6)',
           }}
         >
-          🚀 Agendar demo gratis
+          <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+          Agendar demo gratis
         </a>
       </div>
     </div>

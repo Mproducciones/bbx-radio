@@ -12,19 +12,17 @@ export function VisualSchemaFrame({
 }) {
   return (
     <div>
-      <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/35 mb-2 text-center">
-        Esquema · así lo ve el oyente
+      <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/40 mb-2.5 text-center">
+        Vista previa · experiencia del oyente
       </p>
-      <div className="relative flex justify-center">
-        {children}
-      </div>
+      <div className="relative flex justify-center">{children}</div>
       {callouts.length > 0 && (
         <div className="flex flex-wrap gap-1.5 justify-center mt-3 px-1">
           {callouts.map(c => (
             <span
               key={c}
-              className="text-[9px] font-semibold px-2 py-1 rounded-full"
-              style={{ background: `${accent}18`, border: `1px solid ${accent}45`, color: accent }}
+              className="pro-chip"
+              style={{ '--chip-accent': accent } as React.CSSProperties}
             >
               {c}
             </span>
@@ -32,13 +30,13 @@ export function VisualSchemaFrame({
         </div>
       )}
       <div
-        className="mt-3 rounded-xl p-3"
-        style={{ background: 'rgba(255,255,255,0.03)', borderLeft: `3px solid ${accent}` }}
+        className="pro-schema-note mt-3"
+        style={{ '--schema-accent': accent } as React.CSSProperties}
       >
-        <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: accent }}>
+        <p className="text-[9px] font-bold uppercase tracking-[0.16em] mb-1.5" style={{ color: accent }}>
           Cómo se implementa
         </p>
-        <p className="text-xs text-white/75 leading-relaxed">{visualNote}</p>
+        <p className="text-xs text-white/70 leading-relaxed">{visualNote}</p>
       </div>
     </div>
   )

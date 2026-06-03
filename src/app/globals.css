@@ -643,6 +643,167 @@ body {
 }
 .pulso-btn-ghost:hover { background: var(--color-ink-800); }
 
+/* ── Marketing / sponsor — superficies premium ─────────────────────────── */
+.pro-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-cyn-400);
+}
+
+.pro-hero-panel {
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.125rem;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.025) 42%,
+    rgba(7, 7, 14, 0.55) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 24px 56px -28px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.pro-stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.pro-stat-cell {
+  flex: 1 1 5.5rem;
+  padding: 0.75rem 0.875rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+.pro-stat-cell:last-child {
+  border-right: none;
+}
+
+.pro-plan-card {
+  --plan-accent: var(--color-mag-400);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: linear-gradient(
+    158deg,
+    color-mix(in srgb, var(--plan-accent) 16%, transparent) 0%,
+    rgba(255, 255, 255, 0.03) 42%,
+    rgba(7, 7, 14, 0.65) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--plan-accent) 38%, rgba(255, 255, 255, 0.07));
+  box-shadow:
+    0 20px 48px -22px color-mix(in srgb, var(--plan-accent) 42%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s var(--ease-standard), box-shadow 0.25s var(--ease-standard);
+}
+
+.pro-plan-card--featured {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--plan-accent) 22%, transparent),
+    0 24px 56px -18px color-mix(in srgb, var(--plan-accent) 48%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pro-plan-stripe {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--plan-accent),
+    color-mix(in srgb, var(--plan-accent) 55%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+.pro-icon-tile {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--plan-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--plan-accent) 34%, transparent);
+  color: var(--plan-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pro-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pro-faq-item {
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  transition: background 0.2s var(--ease-standard), border-color 0.2s var(--ease-standard);
+}
+
+.pro-faq-item[data-open='true'] {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.11);
+}
+
+.pro-btn-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.95rem 1.25rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #fff;
+  background: linear-gradient(145deg, #178f62 0%, #22c55e 48%, #1aad58 100%);
+  box-shadow:
+    0 14px 36px -12px rgba(34, 197, 94, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: transform 0.15s var(--ease-standard), box-shadow 0.2s var(--ease-standard);
+}
+
+.pro-btn-wa:active {
+  transform: scale(0.985);
+}
+
+.pro-schema-note {
+  --schema-accent: var(--color-cyn-400);
+  border-radius: 1rem;
+  padding: 1rem 1.125rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--schema-accent);
+}
+
+.pro-phone-frame {
+  border-radius: 1.6rem;
+  padding: 0.5rem;
+  background: linear-gradient(155deg, #2e2e3a 0%, #14141e 55%, #0a0a12 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 24px 64px -16px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.pro-chip {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--chip-accent, var(--color-cyn-400)) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--chip-accent, var(--color-cyn-400)) 38%, transparent);
+  color: var(--chip-accent, var(--color-cyn-400));
+}
+
 .pulso-badge-live {
   display: inline-flex;
   align-items: center;
