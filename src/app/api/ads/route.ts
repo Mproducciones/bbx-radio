@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 import { getDemoAds } from '@/lib/demoCampaigns'
+import { sanitizeAdLink } from '@/lib/safeUrl'
 
 const ALLOWED_TIPOS = ['banner_superior', 'banner_intermedio', 'banner_inferior', 'banner_premium']
+
+function sanitizeAds<T extends { enlace?: string }>(ads: T[]): T[] {
+  return ads.map(ad => ({
+    ...ad,
+    enlace: sanitizeAdLink(ad.enlace),
+  }))
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -26,11 +34,11 @@ export async function GET(req: Request) {
     )
 
     if (Array.isArray(ads) && ads.length > 0) {
-      return NextResponse.json(ads)
+      return NextResponse.json(sanitizeAds(ads))
     }
 
-    return NextResponse.json(getDemoAds(tipo))
+    return NextResponse.json(sanitizeAds(getDemoAds(tipo)))
   } catch {
-    return NextResponse.json(getDemoAds(tipo))
+    return NextResponse.json(sanitizeAds(getDemoAds(tipo)))
   }
 }

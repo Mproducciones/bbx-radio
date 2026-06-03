@@ -1,5 +1,6 @@
 import { SponsorLanding } from '@/components/sponsor/SponsorLanding'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
+import { getListenerCount } from '@/lib/listenerStore'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,9 +9,11 @@ export const metadata: Metadata = {
 }
 
 export default function AnunciatePage() {
+  const initialListeners = getListenerCount()
+
   return (
     <AppMenuScreen scroll className="md:max-w-4xl lg:max-w-6xl">
-      <SponsorLanding />
+      <SponsorLanding initialListeners={initialListeners} />
     </AppMenuScreen>
   )
 }

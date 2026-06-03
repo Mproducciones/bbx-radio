@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { urlFor } from '@/lib/sanity'
+import { sanitizeAdLink } from '@/lib/safeUrl'
 
 interface Ad {
   _id: string
@@ -62,6 +63,7 @@ export function InterstitialPopup({ showAfter = 3, refreshInterval = 5 }: Inters
   if (!ad || !isVisible) return null
 
   const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : '')
+  const link = sanitizeAdLink(ad.enlace)
 
   const handleClose = () => {
     setIsVisible(false)
@@ -78,9 +80,9 @@ export function InterstitialPopup({ showAfter = 3, refreshInterval = 5 }: Inters
         </button>
         
         <a
-          href={ad.enlace || '#'}
-          target={ad.enlace ? '_blank' : undefined}
-          rel={ad.enlace ? 'noopener noreferrer' : undefined}
+          href={link ?? '#'}
+          target={link?.startsWith('http') ? '_blank' : undefined}
+          rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
           onClick={handleClose}
           className="block"
         >

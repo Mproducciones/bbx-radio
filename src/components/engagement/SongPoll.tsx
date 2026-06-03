@@ -24,13 +24,6 @@ function pct(votes: number, total: number) {
   return Math.round((votes / total) * 100)
 }
 
-function getSession(): string {
-  if (typeof sessionStorage === 'undefined') return 'anon'
-  let id = sessionStorage.getItem('pulso_session')
-  if (!id) { id = Date.now().toString(36) + Math.random().toString(36).slice(2); sessionStorage.setItem('pulso_session', id) }
-  return id
-}
-
 export function SongPoll({ compact, onEmpty, className }: { compact?: boolean; onEmpty?: () => void; className?: string } = {}) {
   const [poll, setPoll]   = useState<Poll | null>(null)
   const [voting, setVoting] = useState(false)
@@ -38,7 +31,7 @@ export function SongPoll({ compact, onEmpty, className }: { compact?: boolean; o
 
   const fetchPoll = useCallback(async () => {
     try {
-      const res = await fetch('/api/poll', { headers: { 'x-session-id': getSession() } })
+      const res = await fetch('/api/poll', { credentials: 'include' })
       const data = await res.json()
       setPoll(data)
     } catch {}
@@ -56,7 +49,8 @@ export function SongPoll({ compact, onEmpty, className }: { compact?: boolean; o
     try {
       const res = await fetch('/api/poll', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-session-id': getSession() },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ optionId }),
       })
       const data = await res.json()

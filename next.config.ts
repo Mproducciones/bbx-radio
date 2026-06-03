@@ -4,6 +4,32 @@ import type { NextConfig } from "next";
 // Modo web: pnpm build → Next.js normal con API routes y SSR en Vercel
 const isCapacitorExport = process.env.NEXT_BUILD_MODE === 'export'
 
+const APP_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://vercel.live",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+  "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://vercel.live",
+  "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co https://picsum.photos https://fastly.picsum.photos https://vercel.com https://vercel.live",
+  "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
+  "connect-src 'self' https://*.api.sanity.io https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://sonicstream-puntual.grupozgh.cl wss://ws-us3.pusher.com https://vercel.live",
+  "frame-src https://vercel.live",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join("; ")
+
+const STUDIO_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://core.sanity-cdn.com https://www.googletagmanager.com https://vercel.live",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
+  "img-src 'self' data: blob: https://cdn.sanity.io https://images.unsplash.com https://picsum.photos https://fastly.picsum.photos",
+  "connect-src 'self' https://*.api.sanity.io https://*.sanity.io https://sanity-cdn.com https://*.sanity-cdn.com wss://*.api.sanity.io https://nmwhp66x.api.sanity.io https://vercel.live",
+  "worker-src 'self' blob:",
+  "frame-src 'self' https://vercel.live",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join("; ")
+
 const nextConfig: NextConfig = {
   ...(isCapacitorExport && {
     output: 'export',
@@ -32,21 +58,16 @@ const nextConfig: NextConfig = {
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-        {
-          key: "Content-Security-Policy",
-          value: [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://vercel.live",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-            "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://vercel.live",
-            "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co https://picsum.photos https://fastly.picsum.photos https://vercel.com https://vercel.live",
-            "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
-            "connect-src 'self' https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://sonicstream-puntual.grupozgh.cl wss://ws-us3.pusher.com https://vercel.live",
-            "frame-src https://vercel.live",
-            "object-src 'none'",
-            "base-uri 'self'",
-          ].join("; "),
-        },
+        { key: "Content-Security-Policy", value: APP_CSP },
+      ],
+    },
+    {
+      source: "/studio/:path*",
+      headers: [
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Content-Security-Policy", value: STUDIO_CSP },
       ],
     },
   ],

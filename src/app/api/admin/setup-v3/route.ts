@@ -21,7 +21,12 @@ export async function POST(req: NextRequest) {
 
   const sqlPath = path.join(process.cwd(), 'supabase-setup-v3.sql')
   const sql = fs.readFileSync(sqlPath, 'utf8')
-  const client = new pg.Client({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } })
+  const client = new pg.Client({
+    connectionString: dbUrl,
+    ssl: process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: true }
+      : { rejectUnauthorized: false },
+  })
 
   try {
     await client.connect()

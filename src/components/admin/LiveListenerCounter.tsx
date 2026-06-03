@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { AdminCard } from './adminUi'
 
 export function LiveListenerCounter() {
   const [count, setCount] = useState<number | null>(null)
@@ -27,58 +28,61 @@ export function LiveListenerCounter() {
     : 'same'
 
   return (
-    <div
-      className="relative overflow-hidden rounded-2xl p-5 mb-6"
-      style={{ background: 'linear-gradient(135deg, #0F0F1A 0%, #1A0A2E 100%)', border: '1px solid rgba(219,137,24,0.2)' }}
-    >
-      {/* Glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(219,137,24,0.12) 0%, transparent 70%)' }} />
+    <AdminCard accent="#db8918" className="h-full">
+      <div
+        className="relative overflow-hidden p-5 h-full flex flex-col"
+        style={{ background: 'linear-gradient(145deg, rgba(26,10,46,0.6) 0%, rgba(14,14,22,0.4) 100%)' }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 30% 0%, rgba(219,137,24,0.15) 0%, transparent 65%)' }}
+        />
 
-      <div className="relative flex items-center justify-between">
-        <div>
-          <p className="text-[#8888AA] text-xs font-semibold uppercase tracking-wider mb-1">Escuchando ahora</p>
-          <div className="flex items-end gap-2">
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={count}
-                initial={{ opacity: 0, y: -12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="text-white font-display text-5xl leading-none tabular-nums"
-              >
-                {count === null ? '—' : count}
-              </motion.span>
-            </AnimatePresence>
-            <span className="text-[#8888AA] text-sm mb-1.5">oyentes</span>
+        <div className="relative flex items-start justify-between gap-4 flex-1">
+          <div className="min-w-0">
+            <p className="text-white/45 text-[10px] font-bold uppercase tracking-[0.18em] mb-2">Escuchando ahora</p>
+            <div className="flex items-end gap-2">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={count}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  className="text-white font-display text-4xl sm:text-5xl leading-none tabular-nums"
+                >
+                  {count === null ? '—' : count}
+                </motion.span>
+              </AnimatePresence>
+              <span className="text-white/40 text-sm mb-1">oyentes</span>
+            </div>
+            {trend === 'up' && (
+              <p className="text-[#00D9A0] text-xs mt-2 flex items-center gap-1 font-medium">
+                <span aria-hidden>↑</span> Subiendo
+              </p>
+            )}
+            {trend === 'down' && (
+              <p className="text-[#FF6B6B] text-xs mt-2 flex items-center gap-1 font-medium">
+                <span aria-hidden>↓</span> Bajando
+              </p>
+            )}
           </div>
-          {trend === 'up' && (
-            <p className="text-green-400 text-xs mt-1 flex items-center gap-1">
-              <span>↑</span> Subiendo
-            </p>
-          )}
-          {trend === 'down' && (
-            <p className="text-[#FF6B6B] text-xs mt-1 flex items-center gap-1">
-              <span>↓</span> Bajando
-            </p>
-          )}
+
+          <div className="flex flex-col items-center gap-1.5 shrink-0">
+            <div className="relative w-11 h-11 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-[#db8918]/25 animate-ping" />
+              <div className="absolute inset-1 rounded-full bg-[#db8918]/12" />
+              <div className="w-4 h-4 rounded-full bg-[#db8918] shadow-lg shadow-[#db8918]/40" />
+            </div>
+            <span className="text-[#db8918] text-[9px] font-black uppercase tracking-widest">En vivo</span>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center gap-2">
-          {/* Pulsing live dot */}
-          <div className="relative w-12 h-12 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-[#db8918]/20 animate-ping" />
-            <div className="absolute inset-1 rounded-full bg-[#db8918]/10" />
-            <div className="w-5 h-5 rounded-full bg-[#db8918] shadow-lg shadow-[#db8918]/50" />
-          </div>
-          <span className="text-[#db8918] text-[10px] font-bold uppercase tracking-widest">EN VIVO</span>
+        <div className="relative mt-4 pt-3 flex items-center gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="w-1.5 h-1.5 rounded-full bg-[#00D9A0] animate-pulse" />
+          <p className="text-white/30 text-[10px]">Actualiza cada 5 segundos</p>
         </div>
       </div>
-
-      <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-        <p className="text-[#555577] text-[10px]">Actualiza cada 5 segundos</p>
-      </div>
-    </div>
+    </AdminCard>
   )
 }

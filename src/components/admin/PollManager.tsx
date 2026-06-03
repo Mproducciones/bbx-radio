@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { AdminCard, AdminCardHeader, AdminIcons } from './adminUi'
 
 interface Poll {
   id: string
@@ -30,10 +31,10 @@ export function PollManager() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    fetch('/api/poll', { headers: { 'x-session-id': 'admin' } })
+    fetch('/api/poll', { credentials: 'include' })
       .then(r => r.json()).then(setPoll).catch(() => {})
     const t = setInterval(() =>
-      fetch('/api/poll', { headers: { 'x-session-id': 'admin' } })
+      fetch('/api/poll', { credentials: 'include' })
         .then(r => r.json()).then(setPoll).catch(() => {}),
       6_000
     )
@@ -66,18 +67,22 @@ export function PollManager() {
   }
 
   return (
-    <div className="mt-4">
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-[#8888AA] text-xs font-semibold uppercase tracking-wider">Votación de canciones</p>
-        <button
-          onClick={() => setMode(m => m === 'view' ? 'create' : 'view')}
-          className="text-xs font-bold px-3 py-1 rounded-lg"
-          style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}
-        >
-          {mode === 'view' ? '+ Nueva votación' : '← Cancelar'}
-        </button>
-      </div>
+    <AdminCard accent="#40B9BF">
+      <AdminCardHeader
+        title="Votación de canciones"
+        icon={<AdminIcons.poll />}
+        action={
+          <button
+            onClick={() => setMode(m => m === 'view' ? 'create' : 'view')}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+            style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}
+          >
+            {mode === 'view' ? '+ Nueva votación' : '← Cancelar'}
+          </button>
+        }
+      />
 
+      <div className="p-4 pt-2">
       <AnimatePresence mode="wait">
         {mode === 'view' ? (
           <motion.div key="view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -166,6 +171,7 @@ export function PollManager() {
           </motion.form>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </AdminCard>
   )
 }

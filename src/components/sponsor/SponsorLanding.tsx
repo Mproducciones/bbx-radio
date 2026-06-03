@@ -11,8 +11,8 @@ import { SponsorValueSection } from './SponsorValueSection'
 import { SponsorPlansSection } from './SponsorPlansSection'
 import { SponsorLiveSection } from './SponsorLiveSection'
 
-export function SponsorLanding() {
-  const [listeners, setListeners] = useState<number | null>(null)
+export function SponsorLanding({ initialListeners }: { initialListeners?: number }) {
+  const [listeners, setListeners] = useState<number | null>(initialListeners ?? null)
   const [selectedId, setSelectedId] = useState<SponsorPlanId | null>(null)
   const [faqOpen, setFaqOpen] = useState<number | null>(null)
 

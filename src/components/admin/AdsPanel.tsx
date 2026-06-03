@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner } from './adminUi'
 
 interface Ad {
   _id: string
@@ -59,33 +60,22 @@ export function AdsPanel() {
   const inactive = ads.filter(a => !a.activo || isExpired(a.fechaFin))
 
   return (
-    <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-2xl overflow-hidden">
-      <div className="px-4 pt-4 pb-3 border-b border-[#1A1A2E] flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">📢</span>
-          <p className="text-white font-semibold text-sm">Campañas</p>
-          {active.length > 0 && (
-            <span className="bg-[#00D9A0] text-[#07070E] text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-              {active.length} activa{active.length > 1 ? 's' : ''}
-            </span>
-          )}
-          {expiring.length > 0 && (
-            <span className="bg-[#FFB300] text-[#07070E] text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-              {expiring.length} por vencer
-            </span>
-          )}
-        </div>
-        <a href="/studio" target="_blank"
-          className="text-[#444468] hover:text-white transition-colors text-xs border border-[#1A1A2E] rounded-lg px-2.5 py-1">
-          + Nueva campaña
-        </a>
-      </div>
+    <AdminCard accent="#7D59B5">
+      <AdminCardHeader
+        title="Campañas"
+        icon={<AdminIcons.megaphone />}
+        badges={
+          <>
+            {active.length > 0 && <AdminBadge color="#00D9A0">{active.length} activa{active.length > 1 ? 's' : ''}</AdminBadge>}
+            {expiring.length > 0 && <AdminBadge color="#FFB300">{expiring.length} por vencer</AdminBadge>}
+          </>
+        }
+        action={<AdminGhostButton href="/studio">+ Nueva campaña</AdminGhostButton>}
+      />
 
-      <div className="divide-y divide-[#1A1A2E] max-h-80 overflow-y-auto">
+      <div className="divide-y divide-white/[0.05] max-h-80 overflow-y-auto">
         {loading ? (
-          <div className="py-6 flex justify-center">
-            <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-          </div>
+          <AdminSpinner />
         ) : ads.length === 0 ? (
           <div className="py-8 text-center">
             <p className="text-[#444468] text-xs">Sin campañas. Crea una desde Studio.</p>
@@ -151,6 +141,6 @@ export function AdsPanel() {
           </>
         )}
       </div>
-    </div>
+    </AdminCard>
   )
 }

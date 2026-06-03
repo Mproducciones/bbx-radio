@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { AdminCard, AdminSpinner } from './adminUi'
 
 interface DataPoint { recorded_at: string; count: number }
 
@@ -84,12 +85,12 @@ export function ListenerChart() {
   }, [range])
 
   return (
-    <div className="mt-4 rounded-xl p-4" style={{ background: '#0F0F1A', border: '1px solid rgba(255,255,255,0.06)' }}>
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="text-[#8888AA] text-xs font-semibold uppercase tracking-wider">Tendencia de oyentes</p>
+    <AdminCard>
+      <div className="p-4">
+      <div className="flex items-center justify-between mb-3 gap-3">
+        <div className="min-w-0">
           {peak > 0 && (
-            <p className="text-white/40 text-[10px] mt-0.5">
+            <p className="text-white/40 text-[10px]">
               Pico de <span className="text-[#db8918] font-bold">{peak}</span> oyentes en las últimas {range}h
             </p>
           )}
@@ -109,9 +110,7 @@ export function ListenerChart() {
       </div>
 
       {loading ? (
-        <div className="h-20 flex items-center justify-center">
-          <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-        </div>
+        <AdminSpinner />
       ) : (
         <Sparkline data={data} color="#db8918" />
       )}
@@ -123,6 +122,7 @@ export function ListenerChart() {
           <span className="text-white/20 text-[9px]">{formatHour(data[data.length - 1].recorded_at)}</span>
         </div>
       )}
-    </div>
+      </div>
+    </AdminCard>
   )
 }

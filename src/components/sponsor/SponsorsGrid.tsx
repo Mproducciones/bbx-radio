@@ -2,26 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import type { Sponsor } from '@/lib/sponsorsData'
+import { sanitizeAdLink } from '@/lib/safeUrl'
 
-type Sponsor = {
-  id: string
-  name: string
-  cliente: string
-  tagline?: string
-  imagenUrl?: string
-  enlace?: string
-  colorAccent?: string
-  tipos: string[]
-}
-
-export function SponsorsGrid({ compact }: { compact?: boolean }) {
-  const [sponsors, setSponsors] = useState<Sponsor[]>([])
+export function SponsorsGrid({
+  compact,
+  initialSponsors = [],
+}: {
+  compact?: boolean
+  initialSponsors?: Sponsor[]
+}) {
+  const [sponsors, setSponsors] = useState(initialSponsors)
 
   useEffect(() => {
     fetch('/api/sponsors')
       .then(r => r.json())
       .then(setSponsors)
-      .catch(() => setSponsors([]))
+      .catch(() => {})
   }, [])
 
   if (sponsors.length === 0) {
@@ -56,8 +53,9 @@ export function SponsorsGrid({ compact }: { compact?: boolean }) {
             </div>
           </article>
         )
-        return s.enlace ? (
-          <a key={s.id} href={s.enlace} target="_blank" rel="noopener noreferrer">{inner}</a>
+        const link = sanitizeAdLink(s.enlace)
+        return link ? (
+          <a key={s.id} href={link} target="_blank" rel="noopener noreferrer">{inner}</a>
         ) : (
           <div key={s.id}>{inner}</div>
         )

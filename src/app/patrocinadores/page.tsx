@@ -1,5 +1,6 @@
 import { SponsorsGrid } from '@/components/sponsor/SponsorsGrid'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
+import { getSponsors } from '@/lib/sponsorsData'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
   description: 'Marcas que apoyan y anuncian en Radio Bienvenida 93.3 FM y su app.',
 }
 
-export default function PatrocinadoresPage() {
+export default async function PatrocinadoresPage() {
+  const sponsors = await getSponsors()
+
   return (
     <AppMenuScreen scroll className="md:max-w-4xl">
       <div className="py-4 md:py-8">
@@ -17,7 +20,7 @@ export default function PatrocinadoresPage() {
         <p className="text-white/45 text-sm mb-6 max-w-lg">
           Comercios y marcas con campaña activa en la app y en la radio. ¿Quieres aparecer aquí?
         </p>
-        <SponsorsGrid />
+        <SponsorsGrid initialSponsors={sponsors} />
         <div className="mt-6 text-center">
           <Link
             href="/anunciate"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { reportWhatsAppUrl } from '@/lib/reportShare'
+import { AdminCard, AdminCardHeader, AdminIcons, AdminSpinner } from './adminUi'
 
 type Report = {
   month: string
@@ -28,49 +29,47 @@ export function ReportsPanel() {
   }, [month])
 
   return (
-    <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-2xl overflow-hidden">
-      <div className="px-4 pt-4 pb-3 border-b border-[#1A1A2E] flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">📊</span>
-          <p className="text-white font-semibold text-sm">Reporte mensual</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="month"
-            value={month}
-            onChange={e => setMonth(e.target.value)}
-            className="rounded-lg px-2 py-1 text-white text-xs bg-[#0A0A12] border border-[#1A1A2E]"
-          />
-          <a
-            href={`/api/admin/reports?month=${month}&format=csv`}
-            className="text-[10px] font-bold px-2.5 py-1 rounded-lg text-[#07070E]"
-            style={{ background: '#00D9A0' }}
-          >
-            CSV ↓
-          </a>
-          {report && (
+    <AdminCard accent="#00D9A0">
+      <AdminCardHeader
+        title="Reporte mensual"
+        icon={<AdminIcons.chart />}
+        action={
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <input
+              type="month"
+              value={month}
+              onChange={e => setMonth(e.target.value)}
+              className="rounded-lg px-2 py-1 text-white text-xs bg-black/30 border border-white/10"
+            />
             <a
-              href={reportWhatsAppUrl({
-                month: report.month,
-                listeners: report.listeners,
-                ads: report.ads,
-                engagement: report.engagement,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-bold px-2.5 py-1 rounded-lg text-white"
-              style={{ background: '#128C7E' }}
+              href={`/api/admin/reports?month=${month}&format=csv`}
+              className="text-[10px] font-bold px-2.5 py-1 rounded-lg text-[#07070E]"
+              style={{ background: '#00D9A0' }}
             >
-              WA anunciante
+              CSV ↓
             </a>
-          )}
-        </div>
-      </div>
+            {report && (
+              <a
+                href={reportWhatsAppUrl({
+                  month: report.month,
+                  listeners: report.listeners,
+                  ads: report.ads,
+                  engagement: report.engagement,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold px-2.5 py-1 rounded-lg text-white"
+                style={{ background: '#128C7E' }}
+              >
+                WA anunciante
+              </a>
+            )}
+          </div>
+        }
+      />
 
       {loading ? (
-        <div className="py-8 flex justify-center">
-          <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-        </div>
+        <AdminSpinner />
       ) : !report ? (
         <p className="py-8 text-center text-[#444468] text-xs">No se pudo cargar el reporte.</p>
       ) : (
@@ -111,6 +110,6 @@ export function ReportsPanel() {
           </p>
         </div>
       )}
-    </div>
+    </AdminCard>
   )
 }

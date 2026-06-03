@@ -35,6 +35,7 @@ export function PushPermission() {
       })
       await fetch('/api/push/subscribe', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sub),
       })

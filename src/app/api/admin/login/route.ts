@@ -1,30 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createSignedAdminSessionCookie } from '@/lib/adminAuth'
+import { getClientIp, checkRateLimit } from '@/lib/rateLimit'
+import { isValidOrigin } from '@/lib/requestGuard'
 
-// In-memory rate limit: max 10 attempts per IP per 15 minutes
-const attempts = new Map<string, { count: number; resetAt: number }>()
-
-const WINDOW_MS = 15 * 60 * 1000
-const MAX_ATTEMPTS = 10
-
-function getClientIp(req: Request): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
-}
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = attempts.get(ip)
-
-  if (!entry || now > entry.resetAt) {
-    attempts.set(ip, { count: 1, resetAt: now + WINDOW_MS })
-    return false
-  }
-
-  entry.count++
-  if (entry.count > MAX_ATTEMPTS) return true
-
-  return false
-}
+const SESSION_MAX_AGE = 60 * 60 * 24 // 24 horas
 
 async function constantTimeEqual(a: string, b: string): Promise<boolean> {
   const enc = new TextEncoder()
@@ -42,18 +21,6 @@ async function constantTimeEqual(a: string, b: string): Promise<boolean> {
   return diff === 0
 }
 
-function isValidOrigin(req: Request): boolean {
-  const origin = req.headers.get('origin')
-  const host = req.headers.get('host')
-  if (!origin || !host) return true // same-origin requests without Origin header
-  try {
-    const originHost = new URL(origin).host
-    return originHost === host
-  } catch {
-    return false
-  }
-}
-
 export async function POST(req: Request) {
   if (!isValidOrigin(req)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -61,7 +28,7 @@ export async function POST(req: Request) {
 
   const ip = getClientIp(req)
 
-  if (isRateLimited(ip)) {
+  if (!(await checkRateLimit('adminLogin', ip))) {
     return NextResponse.json({ error: 'Too many attempts' }, { status: 429 })
   }
 
@@ -77,6 +44,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
     }
 
+    if (allowedPassword.length < 12) {
+      return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+    }
+
     const [userOk, passOk] = await Promise.all([
       constantTimeEqual(username, allowedUsername),
       constantTimeEqual(password, allowedPassword),
@@ -86,7 +57,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    return await createSignedAdminSessionCookie({ username, maxAgeSeconds: 60 * 60 * 24 * 7 })
+    return await createSignedAdminSessionCookie({ username, maxAgeSeconds: SESSION_MAX_AGE })
   } catch {
     return NextResponse.json({ error: 'Bad request' }, { status: 400 })
   }

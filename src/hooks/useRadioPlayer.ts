@@ -19,22 +19,25 @@ interface UseRadioPlayerReturn {
   setVolume: (v: number) => void
 }
 
-function getSessionId(): string {
-  if (typeof sessionStorage === 'undefined') return Math.random().toString(36).slice(2)
-  let id = sessionStorage.getItem('pulso_session')
-  if (!id) {
-    id = Date.now().toString(36) + Math.random().toString(36).slice(2)
-    sessionStorage.setItem('pulso_session', id)
-  }
-  return id
+const listenerSessionReady = { current: false }
+
+function ensureListenerSessionCookie(): Promise<void> {
+  if (listenerSessionReady.current) return Promise.resolve()
+  return fetch('/api/listeners/session', { credentials: 'include' })
+    .then(() => { listenerSessionReady.current = true })
+    .catch(() => { listenerSessionReady.current = true })
 }
 
 function pingListener(action: 'join' | 'leave') {
-  const sessionId = getSessionId()
   const url = action === 'join' ? '/api/listeners/join' : '/api/listeners/leave'
-  navigator.sendBeacon
-    ? navigator.sendBeacon(url, JSON.stringify({ sessionId }))
-    : fetch(url, { method: 'POST', body: JSON.stringify({ sessionId }), headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})
+  const ping = () => {
+    fetch(url, { method: 'POST', credentials: 'include', keepalive: true }).catch(() => {})
+  }
+  if (action === 'join' && !listenerSessionReady.current) {
+    ensureListenerSessionCookie().then(ping)
+    return
+  }
+  ping()
 }
 
 export function useRadioPlayer({
@@ -73,7 +76,7 @@ export function useRadioPlayer({
     audio.preload = 'none'
     audioRef.current = audio
 
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
     ctxRef.current = ctx
 
     const src = ctx.createMediaElementSource(audio)
@@ -116,7 +119,7 @@ export function useRadioPlayer({
     } finally {
       setIsLoading(false)
     }
-  }, [initAudio, startHeartbeat])
+  }, [initAudio, startHeartbeat, onError])
 
   const pause = useCallback(() => {
     audioRef.current?.pause()
@@ -135,6 +138,7 @@ export function useRadioPlayer({
   }, [])
 
   useEffect(() => {
+    void ensureListenerSessionCookie()
     return () => {
       audioRef.current?.pause()
       ctxRef.current?.close()

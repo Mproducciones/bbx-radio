@@ -1,11 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { isAdminRequestAuthorized } from '@/lib/adminAuth'
+import { isAdminRequestAuthorized, getAdminSessionFromRequest } from '@/lib/adminAuth'
 import { supabaseAdmin } from '@/lib/supabase'
+import { sanitizePushUrl } from '@/lib/safeUrl'
+import { checkRateLimit } from '@/lib/rateLimit'
 import webpush from 'web-push'
 
 export async function POST(req: NextRequest) {
   if (!await isAdminRequestAuthorized(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const session = await getAdminSessionFromRequest(req)
+  if (session && !(await checkRateLimit('pushSend', session.username))) {
+    return NextResponse.json({ error: 'Too many push sends' }, { status: 429 })
   }
 
   const email  = process.env.VAPID_EMAIL
@@ -19,9 +26,12 @@ export async function POST(req: NextRequest) {
   webpush.setVapidDetails(email, pubKey, privKey)
 
   const { title, body, url } = await req.json().catch(() => ({}))
-  if (!title || !body) {
+  if (!title || !body || typeof title !== 'string' || typeof body !== 'string') {
     return NextResponse.json({ error: 'title y body son requeridos' }, { status: 400 })
   }
+
+  const siteOrigin = req.nextUrl.origin
+  const safeUrl = sanitizePushUrl(typeof url === 'string' ? url : undefined, siteOrigin)
 
   const { data: subs } = await supabaseAdmin
     .from('push_subscriptions')
@@ -31,7 +41,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, sent: 0, message: 'Sin suscriptores aún' })
   }
 
-  const payload = JSON.stringify({ title, body, url: url || '/' })
+  const payload = JSON.stringify({
+    title: title.slice(0, 120),
+    body: body.slice(0, 240),
+    url: safeUrl,
+  })
   let sent = 0; let failed = 0
 
   await Promise.allSettled(
@@ -51,5 +65,5 @@ export async function POST(req: NextRequest) {
     })
   )
 
-  return NextResponse.json({ ok: true, sent, failed, total: subs.length })
+  return NextResponse.json({ ok: true, sent, failed, total: subs.length, url: safeUrl })
 }

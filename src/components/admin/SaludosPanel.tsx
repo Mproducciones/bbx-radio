@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Saludo } from '@/lib/saludoTypes'
+import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner } from './adminUi'
 
 const MOTIVO_EMOJI: Record<string, string> = {
   cumpleanos: '🎂', aniversario: '💑', dedicatoria: '🎵',
@@ -58,28 +59,15 @@ export function SaludosPanel() {
   ]
 
   return (
-    <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-2xl overflow-hidden">
-      {/* Header */}
-      <div className="px-4 pt-4 pb-3 border-b border-[#1A1A2E] flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">👋</span>
-          <p className="text-white font-semibold text-sm">Saludos al aire</p>
-          {pendingCount > 0 && (
-            <span className="bg-[#db8918] text-[#07070E] text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-              {pendingCount}
-            </span>
-          )}
-        </div>
-        <button
-          onClick={fetchSaludos}
-          className="text-[#444468] hover:text-white transition-colors text-xs"
-        >
-          ↻ actualizar
-        </button>
-      </div>
+    <AdminCard accent="#db8918">
+      <AdminCardHeader
+        title="Saludos al aire"
+        icon={<AdminIcons.hand />}
+        badges={pendingCount > 0 ? <AdminBadge>{pendingCount} pendientes</AdminBadge> : undefined}
+        action={<AdminGhostButton onClick={fetchSaludos}>↻ Actualizar</AdminGhostButton>}
+      />
 
-      {/* Tabs */}
-      <div className="flex border-b border-[#1A1A2E]">
+      <div className="flex border-b border-white/[0.05]">
         {tabs.map(tab => (
           <button
             key={tab.key}
@@ -95,12 +83,9 @@ export function SaludosPanel() {
         ))}
       </div>
 
-      {/* Lista */}
-      <div className="divide-y divide-[#1A1A2E] max-h-96 overflow-y-auto">
+      <div className="divide-y divide-white/[0.05] max-h-96 overflow-y-auto">
         {loading ? (
-          <div className="py-8 flex justify-center">
-            <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-          </div>
+          <AdminSpinner />
         ) : filtered.length === 0 ? (
           <p className="py-8 text-center text-[#444468] text-xs">
             {filter === 'pending' ? 'Sin saludos pendientes' : 'Nada aquí aún'}
@@ -169,6 +154,6 @@ export function SaludosPanel() {
           </AnimatePresence>
         )}
       </div>
-    </div>
+    </AdminCard>
   )
 }

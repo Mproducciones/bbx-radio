@@ -20,43 +20,7 @@ function RevenueIcon({ id, color }: { id: string; color: string }) {
   )
 }
 
-function RevenueDetail({ line }: { line: BbxRevenueLine }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -4 }}
-      transition={{ duration: 0.22 }}
-      className="rounded-2xl overflow-hidden mt-3"
-      style={{
-        background: `linear-gradient(165deg, ${line.color}12 0%, rgba(12,12,20,0.95) 55%)`,
-        border: `1px solid ${line.color}35`,
-      }}
-    >
-      <div className="p-4 space-y-3">
-        <p className="text-white/75 text-sm leading-relaxed">{line.ownerBenefit}</p>
-        <div className="grid gap-2">
-          {line.breakdown.map(row => (
-            <div
-              key={row.label}
-              className="flex justify-between gap-3 px-3 py-2.5 rounded-xl text-xs"
-              style={{ background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(255,255,255,0.05)' }}
-            >
-              <span className="text-white/45 leading-snug">{row.label}</span>
-              <span className="text-white font-semibold shrink-0 text-right">{row.value}</span>
-            </div>
-          ))}
-        </div>
-        <p className="text-[11px] leading-relaxed text-white/50 pt-1 border-t border-white/6">
-          <span className="font-bold" style={{ color: line.color }}>Cómo venderlo · </span>
-          {line.howToSell}
-        </p>
-      </div>
-    </motion.div>
-  )
-}
-
-function RevenueCard({
+function RevenueRow({
   line,
   open,
   onToggle,
@@ -66,10 +30,8 @@ function RevenueCard({
   onToggle: () => void
 }) {
   return (
-    <button
-      type="button"
-      onClick={onToggle}
-      className="group relative w-full text-left overflow-hidden rounded-2xl transition-all duration-200 active:scale-[0.98]"
+    <div
+      className="relative rounded-2xl overflow-hidden transition-all duration-200"
       style={{
         background: open
           ? `linear-gradient(145deg, ${line.color}18 0%, rgba(14,14,22,0.98) 45%)`
@@ -79,11 +41,16 @@ function RevenueCard({
       }}
     >
       <div
-        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl pointer-events-none"
         style={{ background: `linear-gradient(180deg, ${line.color}, ${line.color}44)` }}
       />
 
-      <div className="relative pl-4 pr-3.5 py-3.5 md:py-4">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="relative w-full text-left active:scale-[0.99] transition-transform pl-4 pr-3.5 py-3.5 md:py-4"
+      >
         <div className="flex items-start justify-between gap-2 mb-2.5">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -115,21 +82,54 @@ function RevenueCard({
             ▾
           </motion.span>
         </div>
-      </div>
-    </button>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="detail"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="border-t border-white/[0.06]"
+            style={{ background: `linear-gradient(180deg, ${line.color}08 0%, transparent 100%)` }}
+          >
+            <div className="px-4 pb-4 pt-3 space-y-3">
+              <p className="text-white/75 text-sm leading-relaxed">{line.ownerBenefit}</p>
+              <div className="grid gap-2">
+                {line.breakdown.map(row => (
+                  <div
+                    key={row.label}
+                    className="flex justify-between gap-3 px-3 py-2.5 rounded-xl text-xs"
+                    style={{ background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(255,255,255,0.05)' }}
+                  >
+                    <span className="text-white/45 leading-snug">{row.label}</span>
+                    <span className="text-white font-semibold shrink-0 text-right">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] leading-relaxed text-white/50 pt-1 border-t border-white/6">
+                <span className="font-bold" style={{ color: line.color }}>Cómo venderlo · </span>
+                {line.howToSell}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
 export function BbxRevenueSection() {
   const [openId, setOpenId] = useState<string | null>(null)
-  const openLine = BBX_REVENUE.lines.find(l => l.id === openId) ?? null
 
   const toggle = (id: string) => setOpenId(prev => (prev === id ? null : id))
 
   return (
     <section id="negocio" className="max-w-6xl mx-auto px-4 py-8 md:py-10">
       <div
-        className="rounded-2xl overflow-hidden"
+        className="rounded-2xl"
         style={{
           background: 'linear-gradient(160deg, rgba(0,217,160,0.04) 0%, #0c0c14 38%, #07070e 100%)',
           border: '1px solid rgba(255,255,255,0.07)',
@@ -230,7 +230,7 @@ export function BbxRevenueSection() {
 
           <div className="space-y-2.5">
             {BBX_REVENUE.lines.map(line => (
-              <RevenueCard
+              <RevenueRow
                 key={line.id}
                 line={line}
                 open={openId === line.id}
@@ -238,10 +238,6 @@ export function BbxRevenueSection() {
               />
             ))}
           </div>
-
-          <AnimatePresence mode="wait">
-            {openLine && <RevenueDetail key={openLine.id} line={openLine} />}
-          </AnimatePresence>
 
           <div
             className="mt-4 rounded-xl px-4 py-3"

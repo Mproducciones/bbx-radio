@@ -1,9 +1,7 @@
 // Registro de oyentes — persistente en Supabase
 
 import { supabaseAdmin } from './supabase'
-
-// IP rate limit en memoria (no necesita persistencia)
-const ipLog = new Map<string, Set<string>>()
+import { checkRateLimit } from './rateLimit'
 
 export interface Listener {
   id: string
@@ -17,18 +15,30 @@ export async function register(
   data: { name: string; phone: string; contest: string },
   ip: string,
 ): Promise<{ ok: boolean; position: number; error?: string }> {
+  if (!(await checkRateLimit('registro', ip))) {
+    return { ok: false, position: 0, error: 'Demasiados intentos. Espera unos minutos.' }
+  }
+
   const cleanPhone = data.phone.replace(/\D/g, '')
   if (cleanPhone.length < 8) return { ok: false, position: 0, error: 'Número inválido' }
 
-  if (!ipLog.has(ip)) ipLog.set(ip, new Set())
-  const contests = ipLog.get(ip)!
-  if (contests.has(data.contest)) return { ok: false, position: 0, error: 'Ya estás inscrito en este sorteo' }
-  contests.add(data.contest)
+  const contest = data.contest.trim().slice(0, 64)
+
+  const { data: existing } = await supabaseAdmin
+    .from('listener_registrations')
+    .select('id')
+    .eq('phone', cleanPhone)
+    .eq('contest', contest)
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return { ok: false, position: 0, error: 'Ya estás inscrito en este sorteo' }
+  }
 
   const { error } = await supabaseAdmin.from('listener_registrations').insert({
     name: data.name.trim().slice(0, 60),
     phone: cleanPhone,
-    contest: data.contest,
+    contest,
     ip,
   })
 
@@ -37,7 +47,7 @@ export async function register(
   const { count } = await supabaseAdmin
     .from('listener_registrations')
     .select('*', { count: 'exact', head: true })
-    .eq('contest', data.contest)
+    .eq('contest', contest)
 
   return { ok: true, position: count ?? 1 }
 }

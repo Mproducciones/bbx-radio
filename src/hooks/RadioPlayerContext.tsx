@@ -27,25 +27,25 @@ const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null)
 
 const STREAM_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 
-function getSessionId(): string {
-  if (typeof sessionStorage === 'undefined') return Math.random().toString(36).slice(2)
-  let id = sessionStorage.getItem('pulso_session')
-  if (!id) {
-    id = Date.now().toString(36) + Math.random().toString(36).slice(2)
-    sessionStorage.setItem('pulso_session', id)
-  }
-  return id
+const listenerSessionReady = { current: false }
+
+function ensureListenerSessionCookie(): Promise<void> {
+  if (listenerSessionReady.current) return Promise.resolve()
+  return fetch('/api/listeners/session', { credentials: 'include' })
+    .then(() => { listenerSessionReady.current = true })
+    .catch(() => { listenerSessionReady.current = true })
 }
 
 function pingListener(action: 'join' | 'leave') {
-  const sessionId = getSessionId()
   const url = action === 'join' ? '/api/listeners/join' : '/api/listeners/leave'
-  const body = JSON.stringify({ sessionId })
-  if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-    navigator.sendBeacon(url, body)
-  } else {
-    fetch(url, { method: 'POST', body, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {})
+  const ping = () => {
+    fetch(url, { method: 'POST', credentials: 'include', keepalive: true }).catch(() => {})
   }
+  if (action === 'join' && !listenerSessionReady.current) {
+    ensureListenerSessionCookie().then(ping)
+    return
+  }
+  ping()
 }
 
 function isTvPath(path: string) {
@@ -64,6 +64,10 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const pathnameRef = useRef(pathname)
   pathnameRef.current = pathname
+
+  useEffect(() => {
+    void ensureListenerSessionCookie()
+  }, [])
 
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)

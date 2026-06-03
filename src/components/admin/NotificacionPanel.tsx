@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { AdminCard, AdminCardHeader, AdminIcons } from './adminUi'
 
 type SendState = 'idle' | 'sending' | 'done' | 'error'
 
@@ -38,16 +39,14 @@ export function NotificacionPanel() {
   }
 
   return (
-    <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-2xl overflow-hidden">
-      <div className="px-4 pt-4 pb-3 border-b border-[#1A1A2E] flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">🔔</span>
-          <p className="text-white font-semibold text-sm">Enviar notificación</p>
-        </div>
-        {subs !== null && (
-          <span className="text-[#444468] text-xs">{subs} suscriptor{subs !== 1 ? 'es' : ''}</span>
-        )}
-      </div>
+    <AdminCard accent="#db8918">
+      <AdminCardHeader
+        title="Enviar notificación"
+        icon={<AdminIcons.bell />}
+        action={subs !== null ? (
+          <span className="text-white/35 text-xs">{subs} suscriptor{subs !== 1 ? 'es' : ''}</span>
+        ) : undefined}
+      />
 
       <div className="p-4">
         {state === 'done' && result && (
@@ -106,12 +105,12 @@ export function NotificacionPanel() {
               style={{ background: 'linear-gradient(135deg, #db8918, #a86611)' }}>
               {state === 'sending'
                 ? <><div className="w-4 h-4 border-2 border-[#07070E] border-t-transparent rounded-full animate-spin" /> Enviando...</>
-                : <>🔔 Enviar a {subs ?? '...'} oyentes</>
+                : <>Enviar a {subs ?? '...'} oyentes</>
               }
             </button>
           </form>
         )}
       </div>
-    </div>
+    </AdminCard>
   )
 }

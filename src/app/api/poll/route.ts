@@ -2,24 +2,49 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { getPoll, vote, setPoll, closePoll, getVote } from '@/lib/pollStore'
 import { isAdminRequestAuthorized } from '@/lib/adminAuth'
 import { savePollResult } from '@/lib/analyticsStore'
-
-function getSession(req: NextRequest): string {
-  return req.cookies.get('pulso_session')?.value
-    ?? req.headers.get('x-session-id')
-    ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    ?? 'anon'
-}
+import {
+  ensureAudienceSession,
+  attachAudienceSessionCookie,
+  getAudienceSessionFromRequest,
+} from '@/lib/audienceSession'
+import { checkRateLimit, rateLimitByIp } from '@/lib/rateLimit'
+import { guardPublicWrite } from '@/lib/requestGuard'
 
 export async function GET(req: NextRequest) {
+  const { sessionId, setCookie } = await ensureAudienceSession(req)
   const poll = getPoll()
-  if (!poll) return NextResponse.json(null)
-  return NextResponse.json({ ...poll, myVote: getVote(getSession(req)) })
+
+  const body = poll
+    ? { ...poll, myVote: getVote(sessionId) }
+    : null
+
+  const res = NextResponse.json(body)
+  if (setCookie) await attachAudienceSessionCookie(res, sessionId)
+  return res
 }
 
 export async function POST(req: NextRequest) {
-  const session = getSession(req)
+  const blocked = guardPublicWrite(req)
+  if (blocked) return blocked
+
+  if (!(await rateLimitByIp(req, 'pollVote'))) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
+  const session = await getAudienceSessionFromRequest(req)
+  if (!session) {
+    return NextResponse.json({ error: 'Session required' }, { status: 403 })
+  }
+
+  if (!(await checkRateLimit('pollVote', session))) {
+    return NextResponse.json({ error: 'Too many votes' }, { status: 429 })
+  }
+
   const { optionId } = await req.json().catch(() => ({}))
-  if (!optionId) return NextResponse.json({ error: 'optionId required' }, { status: 400 })
+  if (!optionId || typeof optionId !== 'string') {
+    return NextResponse.json({ error: 'optionId required' }, { status: 400 })
+  }
+
   const result = vote(session, optionId)
   return NextResponse.json({ ...result, poll: getPoll() })
 }
@@ -33,7 +58,6 @@ export async function PUT(req: NextRequest) {
   if (body?.action === 'close') {
     const current = getPoll()
     if (current && current.totalVotes > 0) {
-      // Persistir resultado antes de cerrar
       savePollResult({
         id: current.id,
         question: current.question,

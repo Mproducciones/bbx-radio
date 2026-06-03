@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
+import { getDemoAds } from '@/lib/demoCampaigns'
+import { sanitizeAdLink } from '@/lib/safeUrl'
 
 interface PremiumAd {
   _id: string
@@ -21,9 +23,34 @@ const EXCLUDED = ['/', '/admin', '/studio', '/bbx', '/tv']
 const DISMISS_KEY = 'premium_ad_dismissed'
 const DISMISS_MINUTES = 30
 
+function defaultPremiumAd(): PremiumAd {
+  const demo = getDemoAds('banner_premium')[0]
+  if (demo) {
+    return {
+      _id: demo._id,
+      nombre: demo.nombre,
+      cliente: demo.cliente,
+      tagline: demo.tagline,
+      cta: demo.cta,
+      colorAccent: demo.colorAccent,
+      imagenUrl: demo.imagenUrl,
+      enlace: demo.enlace,
+    }
+  }
+  return {
+    _id: 'demo',
+    nombre: 'Tu negocio aquí',
+    cliente: 'Tu Empresa · Rancagua',
+    tagline: 'Llega a miles de oyentes en O\'Higgins',
+    cta: 'Anunciate',
+    colorAccent: '#db8918',
+    enlace: '/anunciate',
+  }
+}
+
 export function PremiumAdBanner() {
   const pathname = usePathname()
-  const [ad, setAd]           = useState<PremiumAd | null>(null)
+  const [ad, setAd]           = useState<PremiumAd>(defaultPremiumAd)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -35,24 +62,12 @@ export function PremiumAdBanner() {
     const dismissed = sessionStorage.getItem(DISMISS_KEY)
     if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_MINUTES * 60_000) return
 
+    setVisible(true)
+
     fetch('/api/ads?tipo=banner_premium')
       .then(r => r.ok ? r.json() : [])
       .then((ads: PremiumAd[]) => {
-        if (ads.length > 0) {
-          setAd(ads[0])
-        } else {
-          // Demo visible para mostrar el formato a potenciales anunciantes
-          setAd({
-            _id: 'demo',
-            nombre: 'Tu negocio aquí',
-            cliente: 'Tu Empresa · Rancagua',
-            tagline: 'Llega a miles de oyentes en O\'Higgins',
-            cta: 'Anunciate',
-            colorAccent: '#db8918',
-            enlace: '/anunciate',
-          })
-        }
-        setVisible(true)
+        if (ads.length > 0) setAd(ads[0])
       })
       .catch(() => {})
   }, [pathname])
@@ -62,8 +77,8 @@ export function PremiumAdBanner() {
     setVisible(false)
   }
 
-  if (!ad) return null
   const accent = ad.colorAccent ?? '#db8918'
+  const link = sanitizeAdLink(ad.enlace)
 
   return (
     <AnimatePresence>
@@ -78,9 +93,9 @@ export function PremiumAdBanner() {
         >
           <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_mobile">
           <a
-            href={ad.enlace ?? '#'}
-            target={ad.enlace?.startsWith('http') ? '_blank' : undefined}
-            rel={ad.enlace?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            href={link ?? '#'}
+            target={link?.startsWith('http') ? '_blank' : undefined}
+            rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
             onClick={() => trackAdClick(ad._id, 'banner_premium', 'premium_mobile')}
             className="relative block rounded-2xl overflow-hidden shadow-2xl"
             style={{ boxShadow: `0 8px 32px ${accent}30, 0 2px 8px rgba(0,0,0,0.5)` }}
@@ -126,7 +141,7 @@ export function PremiumAdBanner() {
 }
 
 export function PremiumAdSidebar() {
-  const [ad, setAd] = useState<PremiumAd | null>(null)
+  const [ad, setAd] = useState<PremiumAd>(defaultPremiumAd)
 
   useEffect(() => {
     fetch('/api/ads?tipo=banner_premium')
@@ -135,12 +150,14 @@ export function PremiumAdSidebar() {
       .catch(() => {})
   }, [])
 
-  if (!ad) return null
   const accent = ad.colorAccent ?? '#db8918'
+  const link = sanitizeAdLink(ad.enlace)
 
   return (
     <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_sidebar">
-    <a href={ad.enlace ?? '#'} target="_blank" rel="noopener noreferrer"
+    <a href={link ?? '#'}
+      target={link?.startsWith('http') ? '_blank' : undefined}
+      rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
       onClick={() => trackAdClick(ad._id, 'banner_premium', 'premium_sidebar')}
       className="block relative rounded-xl overflow-hidden mx-4 mb-4"
       style={{ border: `1px solid ${accent}30` }}>

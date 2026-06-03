@@ -1,24 +1,23 @@
-/**
- * Animación de bienvenida
- * 
- * Pantalla negra con luces de colores volando y logo animado.
- * Dura 2 segundos antes de entrar a la app.
- */
-
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
 
+const SEEN_KEY = 'pulso_welcome_seen'
+
 export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
-    setIsVisible(true)
-  }, [])
+    if (sessionStorage.getItem(SEEN_KEY) === '1') {
+      onComplete?.()
+      return
+    }
+    setPlaying(true)
+  }, [onComplete])
 
   useEffect(() => {
-    if (!isVisible) return
+    if (!playing) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -28,22 +27,25 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    // Logo
     const logoImage = new Image()
     logoImage.src = '/LOGO_BIENVENIDA (1)_PhotoGrid.png'
 
     const startTime = Date.now()
     const duration = 1000
 
+    function finish() {
+      sessionStorage.setItem(SEEN_KEY, '1')
+      setPlaying(false)
+      onComplete?.()
+    }
+
     function animate() {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
 
-      // Fondo negro
       ctx!.fillStyle = '#07070E'
       ctx!.fillRect(0, 0, canvas!.width, canvas!.height)
 
-      // Puntos de colores animados (luces volando)
       for (let i = 0; i < 50; i++) {
         const x = (Math.sin(elapsed / 1000 + i) * canvas!.width / 3) + canvas!.width / 2
         const y = (Math.cos(elapsed / 800 + i * 0.5) * canvas!.height / 3) + canvas!.height / 2
@@ -65,7 +67,6 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
         const zoom = 1 + Math.sin(elapsed / 500) * 0.05
         ctx!.scale(zoom, zoom)
 
-        // Glow ring
         const logoSize = Math.min(canvas!.width * 0.55, 280)
         ctx!.shadowColor = '#db8918'
         ctx!.shadowBlur = 60 * alpha
@@ -75,7 +76,6 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
         ctx!.fill()
         ctx!.shadowBlur = 0
 
-        // Logo — full resolution, centered
         ctx!.globalAlpha = alpha
         ctx!.drawImage(logoImage, -logoSize / 2, -logoSize / 2, logoSize, logoSize)
         ctx!.restore()
@@ -84,17 +84,14 @@ export function WelcomeAnimation({ onComplete }: { onComplete?: () => void }) {
       if (progress < 1) {
         requestAnimationFrame(animate)
       } else {
-        setTimeout(() => {
-          setIsVisible(false)
-          if (onComplete) onComplete()
-        }, 100)
+        setTimeout(finish, 100)
       }
     }
 
     animate()
-  }, [onComplete, isVisible])
+  }, [onComplete, playing])
 
-  if (!isVisible) return null
+  if (!playing) return null
 
   return (
     <canvas

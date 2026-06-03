@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { SongRequest } from '@/lib/songRequestStore'
+import { AdminBadge, AdminCard, AdminCardHeader, AdminIcons, AdminSpinner } from './adminUi'
 
 const STATUS_LABEL: Record<SongRequest['status'], string> = {
   pending: 'Pendiente',
@@ -25,7 +26,7 @@ export function SolicitudesPanel() {
 
   const fetchQueue = useCallback(async () => {
     try {
-      const res = await fetch('/api/solicitudes')
+      const res = await fetch('/api/solicitudes', { credentials: 'include' })
       const data = await res.json()
       setQueue(data)
     } catch {} finally {
@@ -58,23 +59,17 @@ export function SolicitudesPanel() {
   const rest = queue.filter(r => r.status !== 'pending').slice(0, 10)
 
   return (
-    <div className="mt-6">
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-[#8888AA] text-xs font-semibold uppercase tracking-wider">
-          Solicitudes de canciones
-        </p>
-        {pending.length > 0 && (
-          <span className="text-[10px] font-bold text-[#db8918] bg-[#db8918]/10 px-2 py-0.5 rounded-full">
-            {pending.length} pendiente{pending.length !== 1 ? 's' : ''}
-          </span>
-        )}
-      </div>
+    <AdminCard accent="#7D59B5">
+      <AdminCardHeader
+        title="Solicitudes de canciones"
+        icon={<AdminIcons.music />}
+        badges={pending.length > 0 ? (
+          <AdminBadge color="#FFB300">{pending.length} pendiente{pending.length !== 1 ? 's' : ''}</AdminBadge>
+        ) : undefined}
+      />
 
-      {loading && (
-        <div className="flex justify-center py-8">
-          <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
+      <div className="p-4 pt-2">
+      {loading && <AdminSpinner />}
 
       {!loading && queue.length === 0 && (
         <div className="text-center py-8 text-[#444468] text-sm">
@@ -117,7 +112,7 @@ export function SolicitudesPanel() {
                     className="flex-1 py-2 rounded-lg text-xs font-bold text-white transition-opacity disabled:opacity-50"
                     style={{ background: '#00D9A0' }}
                   >
-                    Al aire 🎵
+                    Al aire
                   </button>
                   <button
                     onClick={() => updateStatus(req.id, 'approved')}
@@ -162,6 +157,7 @@ export function SolicitudesPanel() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </AdminCard>
   )
 }

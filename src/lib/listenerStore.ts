@@ -2,6 +2,7 @@
 // Each playing client pings every 30s; sessions expire after 90s
 
 const sessions = new Map<string, number>()
+const MAX_SESSIONS = 50_000
 
 function cleanup() {
   const cutoff = Date.now() - 90_000
@@ -10,9 +11,13 @@ function cleanup() {
   }
 }
 
-export function joinListener(sessionId: string) {
+export function joinListener(sessionId: string): { ok: true } | { ok: false; error: string } {
   cleanup()
+  if (sessions.size >= MAX_SESSIONS && !sessions.has(sessionId)) {
+    return { ok: false, error: 'Service busy' }
+  }
   sessions.set(sessionId, Date.now())
+  return { ok: true }
 }
 
 export function leaveListener(sessionId: string) {

@@ -1,24 +1,47 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { addRequest, getQueue } from '@/lib/songRequestStore'
+import { addRequest, getQueue, getQueuePosition } from '@/lib/songRequestStore'
+import { isAdminRequestAuthorized } from '@/lib/adminAuth'
+import { getClientIp } from '@/lib/rateLimit'
+import {
+  guardPublicWrite,
+  readJsonBody,
+  isHoneypotClean,
+  honeypotTriggered,
+} from '@/lib/requestGuard'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!(await isAdminRequestAuthorized(req))) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   const queue = await getQueue()
   return NextResponse.json(queue)
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  const body = await req.json().catch(() => null)
+  const blocked = guardPublicWrite(req)
+  if (blocked) return blocked
 
+  const ip = getClientIp(req)
+  const body = await readJsonBody(req)
+
+  if (!isHoneypotClean(body)) return honeypotTriggered()
   if (!body || typeof body.song !== 'string' || typeof body.artist !== 'string') {
     return NextResponse.json({ error: 'song y artist son requeridos' }, { status: 400 })
   }
 
   const result = await addRequest(
-    { song: body.song, artist: body.artist, dedication: body.dedication },
+    {
+      song: body.song,
+      artist: body.artist,
+      dedication: typeof body.dedication === 'string' ? body.dedication : undefined,
+    },
     ip,
   )
 
-  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.error?.includes('Demasiadas') ? 429 : 400 })
-  return NextResponse.json(result.request, { status: 201 })
+  if (!result.ok) {
+    const status = result.error?.includes('Demasiadas') ? 429 : 400
+    return NextResponse.json({ error: result.error }, { status })
+  }
+  const position = await getQueuePosition(result.request!.id)
+  return NextResponse.json({ ...result.request, position }, { status: 201 })
 }

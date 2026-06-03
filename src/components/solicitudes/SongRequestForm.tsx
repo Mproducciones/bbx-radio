@@ -42,12 +42,8 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
         return
       }
 
-      const created: SongRequest = await res.json()
-      // Get queue to determine position
-      const queueRes = await fetch('/api/solicitudes')
-      const queue: SongRequest[] = await queueRes.json()
-      const pending = queue.filter(r => r.status === 'pending')
-      const pos = pending.findIndex(r => r.id === created.id) + 1
+      const created = await res.json() as SongRequest & { position?: number }
+      const pos = created.position ?? 0
 
       setSuccess({ request: created, position: pos })
       setPhase('success')

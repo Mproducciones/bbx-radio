@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { AdminCard, AdminCardHeader, AdminIcons, AdminSpinner } from './adminUi'
 
 type Contest = {
   id: string
@@ -73,21 +74,21 @@ export function ContestsPanel() {
   }
 
   return (
-    <div className="bg-[#0F0F1A] border border-[#1A1A2E] rounded-2xl overflow-hidden">
-      <div className="px-4 pt-4 pb-3 border-b border-[#1A1A2E] flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">🎁</span>
-          <p className="text-white font-semibold text-sm">Sorteos patrocinados</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setMode(m => m === 'list' ? 'create' : 'list')}
-          className="text-xs font-bold px-2.5 py-1 rounded-lg"
-          style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}
-        >
-          {mode === 'list' ? '+ Nuevo' : '← Volver'}
-        </button>
-      </div>
+    <AdminCard accent="#FF006E">
+      <AdminCardHeader
+        title="Sorteos patrocinados"
+        icon={<AdminIcons.gift />}
+        action={
+          <button
+            type="button"
+            onClick={() => setMode(m => m === 'list' ? 'create' : 'list')}
+            className="text-xs font-bold px-2.5 py-1.5 rounded-lg"
+            style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}
+          >
+            {mode === 'list' ? '+ Nuevo' : '← Volver'}
+          </button>
+        }
+      />
 
       {mode === 'create' ? (
         <form onSubmit={create} className="p-4 space-y-3">
@@ -115,11 +116,9 @@ export function ContestsPanel() {
           </button>
         </form>
       ) : (
-        <div className="divide-y divide-[#1A1A2E] max-h-80 overflow-y-auto">
+        <div className="divide-y divide-white/[0.05] max-h-80 overflow-y-auto">
           {loading ? (
-            <div className="py-6 flex justify-center">
-              <div className="w-5 h-5 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-            </div>
+            <AdminSpinner />
           ) : contests.length === 0 ? (
             <p className="py-8 text-center text-[#444468] text-xs">Sin sorteos. Crea uno para la pestaña Participá.</p>
           ) : (
@@ -154,6 +153,6 @@ export function ContestsPanel() {
           )}
         </div>
       )}
-    </div>
+    </AdminCard>
   )
 }

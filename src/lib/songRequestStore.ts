@@ -1,6 +1,7 @@
 // Cola de solicitudes de canciones — persistente en Supabase
 
 import { supabaseAdmin } from './supabase'
+import { checkRateLimit } from './rateLimit'
 
 export interface SongRequest {
   id: string
@@ -11,22 +12,13 @@ export interface SongRequest {
   status: 'pending' | 'approved' | 'played' | 'rejected'
 }
 
-// IP rate limit en memoria
-const ipLog = new Map<string, number[]>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const hits = (ipLog.get(ip) ?? []).filter(t => now - t < 10 * 60_000)
-  if (hits.length >= 3) return true
-  ipLog.set(ip, [...hits, now])
-  return false
-}
-
 export async function addRequest(
   data: Pick<SongRequest, 'song' | 'artist' | 'dedication'>,
   ip: string,
 ): Promise<{ ok: boolean; request?: SongRequest; error?: string }> {
-  if (isRateLimited(ip)) return { ok: false, error: 'Demasiadas solicitudes. Espera unos minutos.' }
+  if (!(await checkRateLimit('songRequest', ip))) {
+    return { ok: false, error: 'Demasiadas solicitudes. Espera unos minutos.' }
+  }
 
   const id = `req_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
   const { error } = await supabaseAdmin.from('song_requests').insert({
