@@ -33,7 +33,7 @@ function EqBars({ color, playing, compact }: { color: string; playing: boolean; 
 
 export function MiniPlayer() {
   const pathname = usePathname()
-  const { isPlaying, isLoading, hasError, volume, analyser, isConcertMode, toggle, setVolume, openConcert, closeConcert } = useRadioPlayerContext()
+  const { isPlaying, isLoading, hasError, analyser, isConcertMode, toggle, openConcert, closeConcert } = useRadioPlayerContext()
   const { current: track } = useNowPlaying()
   const colors = useAlbumColors(track?.albumArt)
 
@@ -189,9 +189,7 @@ export function MiniPlayer() {
         isLoading={isLoading}
         analyser={analyser}
         colors={colors}
-        volume={volume}
         onToggle={toggle}
-        onVolumeChange={setVolume}
       />
     </>
   )

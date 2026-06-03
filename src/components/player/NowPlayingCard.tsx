@@ -88,10 +88,8 @@ interface Props {
   isPlaying: boolean
   isLoading: boolean
   hasError: boolean
-  volume: number
   analyser: AnalyserNode | null
   onToggle: () => void
-  onVolumeChange: (v: number) => void
   /** Pantalla completa tipo app de radio (referencia SALSA / PWA) */
   immersive?: boolean
 }
@@ -171,59 +169,14 @@ function Waveform({
   )
 }
 
-function VolumeSlider({
-  volume,
-  primary,
-  secondary,
-  onVolumeChange,
-}: {
-  volume: number
-  primary: string
-  secondary: string
-  onVolumeChange: (v: number) => void
-}) {
-  const thumbPct = `${Math.max(4, Math.min(96, volume * 100))}%`
-  return (
-    <div
-      className="w-full max-w-[min(200px,100%)] mx-auto px-2 box-border"
-      onClick={e => {
-        const track = e.currentTarget.querySelector('[data-volume-track]') as HTMLElement | null
-        if (!track) return
-        const r = track.getBoundingClientRect()
-        onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)))
-      }}
-    >
-      <div
-        data-volume-track
-        className="w-full h-1 rounded-full bg-white/10 relative overflow-visible"
-      >
-        <div
-          className="absolute top-0 left-0 h-full rounded-full transition-[width] duration-100 pointer-events-none"
-          style={{ width: thumbPct, background: `linear-gradient(90deg, ${primary}, ${secondary})` }}
-        />
-        <div
-          className="absolute top-1/2 w-3 h-3 rounded-full bg-white pointer-events-none"
-          style={{
-            left: thumbPct,
-            transform: 'translate(-50%, -50%)',
-            boxShadow: `0 0 0 2px ${primary}55`,
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
 export function NowPlayingCard({
   radio,
   nowPlaying,
   isPlaying,
   isLoading,
   hasError,
-  volume,
   analyser,
   onToggle,
-  onVolumeChange,
   immersive = false,
 }: Props) {
   const showZeno    = hasError && !!radio.zenoSlug
@@ -344,7 +297,7 @@ export function NowPlayingCard({
               height={36}
             />
 
-            <div className="flex items-center justify-center mt-2 mb-1.5">
+            <div className="flex items-center justify-center mt-2 pb-1">
               <motion.button
                 whileTap={{ scale: 0.92 }}
                 onClick={() => {
@@ -381,13 +334,6 @@ export function NowPlayingCard({
                 )}
               </motion.button>
             </div>
-
-            <VolumeSlider
-              volume={volume}
-              primary={primary}
-              secondary={secondary}
-              onVolumeChange={onVolumeChange}
-            />
           </div>
         </div>
       </>
@@ -581,46 +527,8 @@ export function NowPlayingCard({
               {/* Divisor */}
               <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginBottom: 18 }} />
 
-              {/* Controles: vol slider + play */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-
-                {/* Vol icono */}
-                <svg width="15" height="15" viewBox="0 0 24 24" fill={primary} style={{ opacity: 0.45, flexShrink: 0 }}>
-                  <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>
-                </svg>
-
-                {/* Slider */}
-                <div style={{ flex: 1, height: 40, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-                  onClick={e => {
-                    const r = e.currentTarget.getBoundingClientRect()
-                    onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)))
-                  }}
-                >
-                  <div style={{ width: '100%', height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.07)', position: 'relative' }}>
-                    <div style={{
-                      position: 'absolute', top: 0, left: 0, height: '100%', borderRadius: 2,
-                      width: `${volume * 100}%`,
-                      background: `linear-gradient(90deg, ${primary}, ${secondary})`,
-                      transition: 'width .1s',
-                    }} />
-                    <div style={{
-                      position: 'absolute', top: '50%',
-                      left: `${volume * 100}%`,
-                      transform: 'translate(-50%, -50%)',
-                      width: 14, height: 14, borderRadius: '50%',
-                      background: '#fff',
-                      boxShadow: `0 0 0 3px ${primary}50, 0 2px 8px rgba(0,0,0,0.5)`,
-                      transition: 'left .1s',
-                    }} />
-                  </div>
-                </div>
-
-                {/* Vol alto */}
-                <svg width="15" height="15" viewBox="0 0 24 24" fill={primary} style={{ opacity: 0.45, flexShrink: 0 }}>
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </svg>
-
-                {/* Play button */}
+              {/* Controles: solo play/pausa (volumen = botones del dispositivo) */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <motion.button
                   whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.06 }}
                   onClick={() => { vibrateNow(isPlaying ? [8] : [10, 30, 10]); onToggle() }}

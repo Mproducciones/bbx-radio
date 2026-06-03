@@ -9,7 +9,7 @@ import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 
 export function HomePageClient() {
-  const { isPlaying, isLoading, hasError, volume, analyser, toggle, setVolume } = useRadioPlayerContext()
+  const { isPlaying, isLoading, hasError, analyser, toggle } = useRadioPlayerContext()
   const { current: nowPlaying } = useNowPlaying()
 
   return (
@@ -67,10 +67,8 @@ export function HomePageClient() {
               isPlaying={isPlaying}
               isLoading={isLoading}
               hasError={hasError}
-              volume={volume}
               analyser={analyser}
               onToggle={toggle}
-              onVolumeChange={setVolume}
             />
           </ClientOnly>
         </div>

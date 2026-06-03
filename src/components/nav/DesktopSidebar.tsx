@@ -43,8 +43,8 @@ const SOCIAL = [
 export function DesktopSidebar() {
   const pathname = usePathname()
   const {
-    isPlaying, isLoading, hasError, volume, analyser,
-    isTvOpen, closeTv, toggle, setVolume, play,
+    isPlaying, isLoading, hasError, analyser,
+    isTvOpen, closeTv, toggle, play,
   } = useRadioPlayerContext()
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin')) return null
@@ -77,10 +77,8 @@ export function DesktopSidebar() {
           isPlaying={isPlaying}
           isLoading={isLoading}
           hasError={hasError}
-          volume={volume}
           analyser={analyser}
           onToggle={handleToggle}
-          onVolumeChange={setVolume}
         />
       </div>
 
