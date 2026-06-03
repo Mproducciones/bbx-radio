@@ -17,7 +17,7 @@ export function HomePageClient() {
       className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)] overflow-x-hidden"
       style={{ zIndex: 1 }}
     >
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden box-border">
         <div className="flex items-center justify-between gap-2 mb-2 shrink-0 min-w-0 max-w-full">
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-xl text-white leading-none tracking-wide truncate">

@@ -11,6 +11,7 @@
     "agent:run": "node scripts/agent-run.mjs",
     "agent:qa": "node scripts/agent-qa.mjs",
     "agent:qa:visual": "node scripts/agent-qa.mjs --visual",
+    "agent:screenshot": "node scripts/agent-screenshot.mjs",
     "qa:overflow": "node scripts/qa-overflow.mjs",
     "db:setup-v3": "node scripts/run-supabase-v3.mjs",
     "db:fix-contest": "node scripts/fix-contest-encoding.mjs",

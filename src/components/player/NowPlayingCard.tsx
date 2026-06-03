@@ -182,23 +182,29 @@ function VolumeSlider({
   secondary: string
   onVolumeChange: (v: number) => void
 }) {
+  const thumbPct = `${Math.max(4, Math.min(96, volume * 100))}%`
   return (
     <div
-      className="w-full max-w-[220px] h-9 flex items-center cursor-pointer mx-auto"
+      className="w-full max-w-[min(200px,100%)] mx-auto px-2 box-border"
       onClick={e => {
-        const r = e.currentTarget.getBoundingClientRect()
+        const track = e.currentTarget.querySelector('[data-volume-track]') as HTMLElement | null
+        if (!track) return
+        const r = track.getBoundingClientRect()
         onVolumeChange(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)))
       }}
     >
-      <div className="w-full h-1 rounded-full bg-white/10 relative">
+      <div
+        data-volume-track
+        className="w-full h-1 rounded-full bg-white/10 relative overflow-visible"
+      >
         <div
-          className="absolute top-0 left-0 h-full rounded-full transition-[width] duration-100"
-          style={{ width: `${volume * 100}%`, background: `linear-gradient(90deg, ${primary}, ${secondary})` }}
+          className="absolute top-0 left-0 h-full rounded-full transition-[width] duration-100 pointer-events-none"
+          style={{ width: thumbPct, background: `linear-gradient(90deg, ${primary}, ${secondary})` }}
         />
         <div
-          className="absolute top-1/2 w-3 h-3 rounded-full bg-white -translate-y-1/2 transition-[left] duration-100"
+          className="absolute top-1/2 w-3 h-3 rounded-full bg-white pointer-events-none"
           style={{
-            left: `${volume * 100}%`,
+            left: thumbPct,
             transform: 'translate(-50%, -50%)',
             boxShadow: `0 0 0 2px ${primary}55`,
           }}
@@ -240,15 +246,15 @@ export function NowPlayingCard({
   if (immersive && !showZeno) {
     const metaTitle = hasRealSong ? (nowPlaying.title ?? radio.name) : radio.name
     const metaSub = hasRealSong ? (nowPlaying.artist ?? '') : radio.slogan
-    const visualSize = Math.min(CV + 32, 240)
+    const visualSize = 188
 
     return (
       <>
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
-        <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden">
-          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1">
+        <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full overflow-hidden">
+          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-0.5">
             <div
-              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square overflow-hidden"
+              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(188px,58vw)] aspect-square overflow-hidden"
               style={{ width: visualSize, height: visualSize }}
             >
               <div
@@ -325,7 +331,7 @@ export function NowPlayingCard({
           </AnimatePresence>
 
           <div
-            className="relative z-[2] shrink-0 pt-2 pb-0.5 px-1 border-t border-white/[0.06]"
+            className="relative z-[2] shrink-0 pt-2 pb-1 px-3 w-full min-w-0 max-w-full box-border overflow-hidden border-t border-white/[0.06]"
             style={{
               background: 'linear-gradient(180deg, transparent, rgba(7,7,14,0.92) 24%)',
             }}

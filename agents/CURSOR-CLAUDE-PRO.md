@@ -99,4 +99,11 @@ npx playwright install chromium
 | `npm run agent:run` | Genera CURRENT-TASK.md + corre QA |
 | `npm run agent:qa` | validate + build |
 | `npm run agent:qa:visual` | overflow en /, /programacion, etc. |
+| `npm run agent:screenshot` | PNG móvil 360/390px → `agents/reports/screenshots/` |
 | `npm run validate` | checker BBX pre-push |
+
+## Capturas (tu celu + automáticas)
+
+1. **Tu foto/screenshot del celu** → adjuntar en Cursor (referencia real).
+2. **Automático:** `QA_URL=https://bbx-radio-9k9y.vercel.app npm run agent:screenshot`
+3. Abrir las PNG generadas y comparar; iterar hasta que coincidan.

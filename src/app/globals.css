@@ -182,8 +182,8 @@
 /* ── BASE STYLES ──────────────────────────────────────────── */
 :root {
   color-scheme: dark;
-  --app-shell-pad-x: max(12px, env(safe-area-inset-left, 0px));
-  --app-shell-pad-right: max(12px, env(safe-area-inset-right, 0px));
+  --app-shell-pad-x: max(16px, env(safe-area-inset-left, 0px));
+  --app-shell-pad-right: max(16px, env(safe-area-inset-right, 0px));
   --app-nav-h: 62px;
   --app-nav-total: calc(var(--app-nav-h) + env(safe-area-inset-bottom, 0px));
   --app-mini-player-h: 48px;
