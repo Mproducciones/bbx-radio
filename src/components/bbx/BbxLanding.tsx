@@ -12,7 +12,7 @@ import {
 } from '@/lib/bbxContent'
 import { BbxPhoneMockup } from './BbxPhoneMockup'
 import { BbxHubTile } from './BbxHubTile'
-import { BbxSectionPanels } from './BbxSectionPanels'
+import { BbxSectionPage } from './BbxSectionPage'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { motion } from 'framer-motion'
 
@@ -41,12 +41,16 @@ export function BbxLanding() {
 
   const openSection = (id: BbxHubSectionId) => {
     setSection(id)
-    document.body.style.overflow = 'hidden'
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   const closeSection = () => {
     setSection(null)
-    document.body.style.overflow = ''
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }
+
+  if (section) {
+    return <BbxSectionPage section={section} onBack={closeSection} />
   }
 
   return (
@@ -212,7 +216,6 @@ export function BbxLanding() {
         </a>
       </div>
 
-      <BbxSectionPanels section={section} onClose={closeSection} />
     </div>
   )
 }

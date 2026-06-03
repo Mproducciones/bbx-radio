@@ -29,6 +29,11 @@ export function BbxHubTile({ value, label, subtitle, accent, onClick, href }: Bb
       </p>
       <p className="relative text-white font-semibold text-xs mt-1.5 leading-tight">{label}</p>
       {subtitle && <p className="relative text-white/38 text-[10px] mt-0.5 leading-snug">{subtitle}</p>}
+      {onClick && (
+        <p className="relative text-[10px] font-bold mt-2 opacity-60 group-hover:opacity-100 transition-opacity" style={{ color: accent }}>
+          Ver detalle →
+        </p>
+      )}
     </>
   )
 

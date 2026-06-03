@@ -69,7 +69,7 @@ export function BbxPlansSection({ embedded }: { embedded?: boolean } = {}) {
   const ordered = [BBX_PLANS[0], BBX_PLANS[1], BBX_PLANS[2]]
 
   return (
-    <section id={embedded ? undefined : 'planes'} className={embedded ? '' : 'max-w-6xl mx-auto px-4 py-8 md:py-12'}>
+    <section id={embedded ? undefined : 'planes'} className={embedded ? 'py-0' : 'max-w-6xl mx-auto px-0 py-2 md:py-4'}>
       {!embedded && (
         <div className="mb-4 md:mb-6">
           <p className="text-[#db8918] text-[9px] font-bold uppercase tracking-[0.18em] mb-1">Precios claros</p>

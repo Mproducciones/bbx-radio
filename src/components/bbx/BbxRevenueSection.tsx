@@ -129,7 +129,7 @@ export function BbxRevenueSection({ embedded }: { embedded?: boolean } = {}) {
   return (
     <section
       id={embedded ? undefined : 'negocio'}
-      className={embedded ? '' : 'max-w-6xl mx-auto px-4 py-8 md:py-10'}
+      className={embedded ? 'py-0' : 'max-w-6xl mx-auto px-0 md:px-4 py-2 md:py-4'}
     >
       <div
         className="rounded-2xl"
