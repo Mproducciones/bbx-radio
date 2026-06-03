@@ -12,40 +12,27 @@ interface SuccessState {
 }
 
 export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
-  const [phase, setPhase] = useState<Phase>('form')
-  const [song, setSong] = useState('')
-  const [artist, setArtist] = useState('')
+  const [phase, setPhase]         = useState<Phase>('form')
+  const [song, setSong]           = useState('')
+  const [artist, setArtist]       = useState('')
   const [dedication, setDedication] = useState('')
-  const [success, setSuccess] = useState<SuccessState | null>(null)
-  const [errorMsg, setErrorMsg] = useState('')
+  const [success, setSuccess]     = useState<SuccessState | null>(null)
+  const [errorMsg, setErrorMsg]   = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!song.trim() || !artist.trim()) return
     setPhase('sending')
-
     try {
       const res = await fetch('/api/solicitudes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ song: song.trim(), artist: artist.trim(), dedication: dedication.trim() || undefined }),
       })
-
-      if (res.status === 429) {
-        setErrorMsg('Demasiadas solicitudes. Espera unos minutos.')
-        setPhase('error')
-        return
-      }
-      if (!res.ok) {
-        setErrorMsg('No se pudo enviar. Intenta de nuevo.')
-        setPhase('error')
-        return
-      }
-
+      if (res.status === 429) { setErrorMsg('Demasiadas solicitudes. Espera unos minutos.'); setPhase('error'); return }
+      if (!res.ok)            { setErrorMsg('No se pudo enviar. Intenta de nuevo.'); setPhase('error'); return }
       const created = await res.json() as SongRequest & { position?: number }
-      const pos = created.position ?? 0
-
-      setSuccess({ request: created, position: pos })
+      setSuccess({ request: created, position: created.position ?? 0 })
       setPhase('success')
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([10, 50, 20])
     } catch {
@@ -55,164 +42,245 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
   }
 
   function reset() {
-    setSong('')
-    setArtist('')
-    setDedication('')
-    setSuccess(null)
-    setErrorMsg('')
-    setPhase('form')
+    setSong(''); setArtist(''); setDedication(''); setSuccess(null); setErrorMsg(''); setPhase('form')
   }
 
+  const canSubmit = song.trim() && artist.trim()
+
   return (
-    <div className="rounded-2xl overflow-hidden h-full flex flex-col" style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.15)' }}>
+    <div
+      className="rounded-2xl overflow-hidden h-full flex flex-col"
+      style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.18)' }}
+    >
       {/* Header */}
-      <div className={compact ? 'px-4 pt-3 pb-2' : 'px-5 pt-5 pb-4'} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="flex items-center gap-2.5">
-          <div className={`rounded-xl flex items-center justify-center ${compact ? 'w-8 h-8' : 'w-10 h-10'}`} style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}>
+      <div
+        className={compact ? 'px-4 pt-3 pb-2.5' : 'px-5 pt-5 pb-4'}
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className={`rounded-xl flex items-center justify-center ${compact ? 'w-8 h-8' : 'w-10 h-10'}`}
+            style={{ background: 'linear-gradient(135deg, rgba(219,137,24,0.25), rgba(123,47,255,0.2))' }}
+          >
             <MicIcon className={compact ? 'w-4 h-4 text-[#db8918]' : 'w-5 h-5 text-[#db8918]'} />
           </div>
-          <p className={`text-white font-semibold ${compact ? 'text-sm' : 'text-base'}`}>Pide tu canción</p>
+          <div>
+            <p className={`text-white font-bold ${compact ? 'text-sm' : 'text-base'}`}>Pide tu canción</p>
+            <p className="text-white/35 text-[10px]">Al aire en tu próximo turno</p>
+          </div>
         </div>
       </div>
 
       <AnimatePresence mode="wait">
+
+        {/* ── Form ── */}
         {phase === 'form' && (
           <motion.form
             key="form"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
             onSubmit={handleSubmit}
-            className={compact ? 'px-4 py-3 flex flex-col gap-2 flex-1' : 'px-5 py-4 flex flex-col gap-3'}
+            className={compact ? 'px-4 py-3 flex flex-col gap-2.5 flex-1' : 'px-5 py-4 flex flex-col gap-3.5'}
           >
-            <label className="flex flex-col gap-1">
-              <span className="text-[#8888AA] text-xs font-medium">Canción *</span>
-              <input
-                value={song}
-                onChange={e => setSong(e.target.value)}
-                placeholder="ej: Amor Secreto"
-                required
-                maxLength={120}
-                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
-              />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-[#8888AA] text-xs font-medium">Artista *</span>
-              <input
-                value={artist}
-                onChange={e => setArtist(e.target.value)}
-                placeholder="ej: Camilo"
-                required
-                maxLength={80}
-                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
-              />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-[#8888AA] text-xs font-medium">Dedicatoria <span className="text-[#444468]">(opcional)</span></span>
-              <input
-                value={dedication}
-                onChange={e => setDedication(e.target.value)}
-                placeholder="ej: Para María con todo mi amor"
-                maxLength={200}
-                className={`bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 text-white text-sm outline-none transition-colors placeholder-[#444468] ${compact ? 'py-2' : 'py-2.5'}`}
-              />
-            </label>
+            <FieldInput
+              label="Canción"
+              required
+              value={song}
+              onChange={setSong}
+              placeholder="ej: Amor Secreto"
+              icon="🎵"
+              compact={compact}
+            />
+            <FieldInput
+              label="Artista"
+              required
+              value={artist}
+              onChange={setArtist}
+              placeholder="ej: Camilo"
+              icon="🎤"
+              compact={compact}
+            />
+            <FieldInput
+              label="Dedicatoria"
+              value={dedication}
+              onChange={setDedication}
+              placeholder="ej: Para María con todo mi amor"
+              icon="💌"
+              compact={compact}
+              optional
+            />
 
             <motion.button
               whileTap={{ scale: 0.97 }}
               type="submit"
-              disabled={!song.trim() || !artist.trim()}
-              className="w-full py-3 rounded-xl font-bold text-sm text-white mt-1 disabled:opacity-40 transition-opacity"
-              style={{ background: 'linear-gradient(135deg, #db8918, #7B2FFF)' }}
+              disabled={!canSubmit}
+              className="w-full py-3 rounded-xl font-bold text-sm text-white mt-auto disabled:opacity-35 transition-opacity relative overflow-hidden"
+              style={{ background: canSubmit ? 'linear-gradient(135deg, #db8918, #7B2FFF)' : 'rgba(255,255,255,0.06)' }}
             >
-              Enviar solicitud
+              {canSubmit && (
+                <motion.div
+                  className="absolute inset-0 opacity-30"
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+                  style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)' }}
+                />
+              )}
+              <span className="relative">Enviar solicitud ♪</span>
             </motion.button>
           </motion.form>
         )}
 
+        {/* ── Sending ── */}
         {phase === 'sending' && (
           <motion.div
             key="sending"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="px-5 py-10 flex flex-col items-center gap-3"
+            className="flex-1 flex flex-col items-center justify-center gap-4 px-5 py-10"
           >
-            <div className="w-8 h-8 border-2 border-[#db8918] border-t-transparent rounded-full animate-spin" />
-            <p className="text-[#8888AA] text-sm">Enviando tu solicitud...</p>
+            <div className="relative w-14 h-14">
+              <div className="absolute inset-0 rounded-full border-2 border-[#db8918]/20" />
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#db8918]"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+              />
+              <div className="absolute inset-3 rounded-full flex items-center justify-center text-xl">🎵</div>
+            </div>
+            <p className="text-white/50 text-sm">Enviando tu solicitud...</p>
           </motion.div>
         )}
 
+        {/* ── Success ── */}
         {phase === 'success' && success && (
           <motion.div
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="px-5 py-6 flex flex-col items-center gap-4 text-center"
+            className="flex-1 px-5 py-6 flex flex-col items-center gap-4 text-center"
           >
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 20, delay: 0.1 }}
-              className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #db891833, #7B2FFF33)' }}
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
+              className="relative w-16 h-16"
             >
-              <CheckIcon className="w-8 h-8 text-[#db8918]" />
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center text-3xl"
+                style={{ background: 'linear-gradient(135deg, rgba(219,137,24,0.2), rgba(123,47,255,0.2))' }}
+              >
+                ✓
+              </div>
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{ border: '2px solid #db8918' }}
+                animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              />
             </motion.div>
 
             <div>
-              <p className="text-white font-bold text-base">¡Solicitud enviada!</p>
-              <p className="text-[#8888AA] text-sm mt-1">
-                <span className="font-semibold text-white">{success.request.song}</span> de{' '}
-                <span className="font-semibold text-white">{success.request.artist}</span>
-              </p>
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="text-white font-bold text-base"
+              >
+                ¡Solicitud enviada!
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="text-white/50 text-sm mt-1"
+              >
+                <span className="text-white font-semibold">{success.request.song}</span>
+                {' '}de{' '}
+                <span className="text-white font-semibold">{success.request.artist}</span>
+              </motion.p>
             </div>
 
             {success.position > 0 && (
-              <div className="rounded-xl px-4 py-3 w-full" style={{ background: 'rgba(219,137,24,0.08)', border: '1px solid rgba(219,137,24,0.2)' }}>
-                <p className="text-[#db8918] text-xs font-semibold uppercase tracking-wide">Tu posición en la cola</p>
-                <p className="text-white text-3xl font-display leading-none mt-1">#{success.position}</p>
-                {success.position === 1 && (
-                  <p className="text-[#8888AA] text-xs mt-1">¡Eres el primero!</p>
-                )}
-                {success.position > 1 && (
-                  <p className="text-[#8888AA] text-xs mt-1">{success.position - 1} {success.position - 1 === 1 ? 'solicitud' : 'solicitudes'} antes que la tuya</p>
-                )}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="rounded-2xl px-5 py-3.5 w-full"
+                style={{ background: 'rgba(219,137,24,0.08)', border: '1px solid rgba(219,137,24,0.25)' }}
+              >
+                <p className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Tu posición en la cola</p>
+                <p className="text-white font-display text-4xl leading-none mt-1">#{success.position}</p>
+                <p className="text-white/40 text-xs mt-1">
+                  {success.position === 1
+                    ? '¡Eres el primero!'
+                    : `${success.position - 1} ${success.position - 1 === 1 ? 'solicitud' : 'solicitudes'} antes`}
+                </p>
+              </motion.div>
             )}
 
             <button
               onClick={reset}
-              className="text-[#666690] text-xs underline underline-offset-2 hover:text-white transition-colors"
+              className="text-white/30 text-xs underline underline-offset-2 hover:text-white/60 transition-colors"
             >
               Enviar otra solicitud
             </button>
           </motion.div>
         )}
 
+        {/* ── Error ── */}
         {phase === 'error' && (
           <motion.div
             key="error"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="px-5 py-6 flex flex-col items-center gap-4 text-center"
+            className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-5 py-6"
           >
-            <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
               <span className="text-2xl">⚠️</span>
             </div>
             <p className="text-red-400 text-sm">{errorMsg}</p>
             <button
               onClick={reset}
-              className="text-white text-sm font-medium underline underline-offset-2"
+              className="text-sm font-semibold px-4 py-2 rounded-xl border border-white/10 text-white/60 hover:text-white transition-colors"
             >
               Intentar de nuevo
             </button>
           </motion.div>
         )}
+
       </AnimatePresence>
     </div>
+  )
+}
+
+// Reusable input field with icon
+function FieldInput({
+  label, value, onChange, placeholder, icon, required, optional, compact,
+}: {
+  label: string; value: string; onChange: (v: string) => void
+  placeholder: string; icon: string; required?: boolean; optional?: boolean; compact?: boolean
+}) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-white/50 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+          <span>{icon}</span> {label}
+          {required && <span className="text-[#db8918]">*</span>}
+        </span>
+        {optional && <span className="text-white/25 text-[10px]">opcional</span>}
+      </div>
+      <input
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        required={required}
+        maxLength={required ? 120 : 200}
+        className={`bg-white/[0.04] border border-white/[0.08] focus:border-[#db8918]/50 focus:bg-white/[0.06] rounded-xl px-3 text-white text-sm outline-none transition-all placeholder-white/20 ${compact ? 'py-2' : 'py-2.5'}`}
+        style={{ caretColor: '#db8918' }}
+      />
+    </label>
   )
 }
 
@@ -220,14 +288,6 @@ function MicIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 15.2 14.47 17 12 17s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V21c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
-    </svg>
-  )
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
     </svg>
   )
 }

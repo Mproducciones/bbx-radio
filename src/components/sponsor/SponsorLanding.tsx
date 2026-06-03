@@ -15,11 +15,43 @@ import { usePageAnimations } from '@/hooks/usePageAnimations'
 
 export function SponsorLanding({ initialListeners }: { initialListeners?: number }) {
   const rootRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
   const [listeners, setListeners] = useState<number | null>(initialListeners ?? null)
   const [selectedId, setSelectedId] = useState<SponsorPlanId | null>(null)
   const [faqOpen, setFaqOpen] = useState<number | null>(0)
 
   usePageAnimations(rootRef)
+
+  // Anime.js hero stagger entrance
+  useEffect(() => {
+    const el = heroRef.current
+    if (!el) return
+    import('animejs').then(({ animate, stagger }) => {
+      animate(el.querySelectorAll('[data-hero-item]'), {
+        translateY: [24, 0],
+        opacity: [0, 1],
+        duration: 600,
+        delay: stagger(100),
+        ease: 'out(3)',
+      })
+    })
+  }, [])
+
+  // Anime.js stat tiles with spring
+  useEffect(() => {
+    const el = heroRef.current
+    if (!el) return
+    const tiles = el.querySelectorAll('[data-stat-tile]')
+    import('animejs').then(({ animate, stagger }) => {
+      animate(tiles, {
+        scale: [0.88, 1],
+        opacity: [0, 1],
+        duration: 500,
+        delay: stagger(80, { start: 350 }),
+        ease: 'spring(1, 90, 12, 0)',
+      })
+    })
+  }, [])
 
   const selectedPlan = selectedId ? SPONSOR_PLANS.find(p => p.id === selectedId) ?? null : null
 
@@ -32,13 +64,13 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
 
   return (
     <div ref={rootRef} className="relative w-full min-w-0 overflow-x-hidden max-md:pb-[calc(var(--app-nav-total)+5.75rem)] md:pb-8">
-      <header className="border-b border-white/10 pb-5 mb-2" data-animate="fade">
-        <p className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2">
+      <header ref={heroRef} className="border-b border-white/10 pb-5 mb-2">
+        <p data-hero-item className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2 opacity-0">
           {SPONSOR_HERO.eyebrow}
         </p>
-        <h1 className="text-xl font-semibold text-white leading-snug mb-2">{SPONSOR_HERO.title}</h1>
-        <p className="text-white/60 text-sm leading-relaxed">{SPONSOR_HERO.subtitle}</p>
-        <p className="mt-2 text-sm text-white/50">
+        <h1 data-hero-item className="text-xl font-semibold text-white leading-snug mb-2 opacity-0">{SPONSOR_HERO.title}</h1>
+        <p data-hero-item className="text-white/60 text-sm leading-relaxed opacity-0">{SPONSOR_HERO.subtitle}</p>
+        <p data-hero-item className="mt-2 text-sm text-white/50 opacity-0">
           <span className="text-[#db8918] font-medium">{RADIO.frequency}</span>
           <span className="mx-1.5">·</span>
           {RADIO.name}, {RADIO.city}
@@ -56,7 +88,8 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
             return (
               <div
                 key={s.label}
-                className="rounded-xl px-3 py-2.5 border border-white/10"
+                data-stat-tile
+                className="rounded-xl px-3 py-2.5 border border-white/10 opacity-0"
                 style={{ background: 'rgba(255,255,255,0.03)' }}
               >
                 <p
