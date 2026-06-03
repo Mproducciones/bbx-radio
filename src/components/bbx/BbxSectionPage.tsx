@@ -175,7 +175,7 @@ export function BbxSectionPage({
 
   return (
     <motion.div
-      className="app-marketing-bleed relative flex flex-col w-full min-w-0 text-white overflow-x-clip min-h-full"
+      className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden min-h-full"
       style={{ background: 'var(--color-ink-900)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

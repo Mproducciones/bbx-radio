@@ -255,7 +255,7 @@ export function BbxLanding() {
   return (
     <div
       ref={mainRef}
-      className="bbx-landing app-marketing-bleed relative flex flex-col w-full min-w-0 max-w-full text-white overflow-x-clip mesh-bg"
+      className="bbx-landing relative flex flex-col w-full min-w-0 max-w-full text-white overflow-x-hidden mesh-bg"
       style={{ minHeight: '100dvh' }}
     >
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden>

@@ -87,7 +87,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
 
   if (!isTabShell) {
     return (
-      <div className="app-scroll-route w-full min-w-0 max-w-full flex-1 flex flex-col min-h-0">
+      <div className="app-scroll-route flex-1 min-h-0 w-full min-w-0 max-w-full">
         {children}
       </div>
     )

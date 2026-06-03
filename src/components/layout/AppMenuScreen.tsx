@@ -18,9 +18,8 @@ export function AppMenuScreen({ children, className, scroll = false }: AppMenuSc
       <main
         className={cn(
           'relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
-          'max-md:flex-1 max-md:min-h-0 max-md:overflow-visible',
-          'max-md:pt-2 max-md:pb-2',
-          'max-md:[scroll-padding-bottom:calc(var(--app-nav-total)+6.25rem)]',
+          'max-md:flex-1 max-md:min-h-0',
+          'max-md:pt-2 max-md:pb-[calc(var(--app-nav-total)+5.5rem)]',
           'md:min-h-screen md:px-4 md:pt-6 md:pb-24',
           isSnap && 'app-scroll-snap',
           className,

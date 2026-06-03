@@ -65,8 +65,12 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
               role="dialog"
               aria-modal="true"
               aria-labelledby="plan-detail-title"
-              className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-[1.35rem] overflow-hidden max-md:h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
+              className="fixed z-[1101] bottom-0 flex flex-col min-h-0 w-full max-w-lg mx-auto rounded-t-[1.35rem] overflow-hidden"
               style={{
+                left: 'var(--app-gutter-inline)',
+                right: 'var(--app-gutter-inline)',
+                width: 'auto',
+                maxHeight: 'min(92dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 0.5rem))',
                 background: 'linear-gradient(180deg, #12121c 0%, var(--color-ink-900) 100%)',
                 border: `1px solid color-mix(in srgb, ${plan.color} 42%, rgba(255,255,255,0.08))`,
                 borderBottom: 'none',
@@ -128,7 +132,7 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-3 [-webkit-overflow-scrolling:touch]">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pb-3 [-webkit-overflow-scrolling:touch]">
                 <AnimatePresence mode="wait">
                   {activeImage && (
                     <motion.div

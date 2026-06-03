@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 
 /** Scroll completo en móvil (no recortar contenido). */
 export default function AnunciateLayout({ children }: { children: React.ReactNode }) {
-  return <div className="app-scroll-route w-full min-w-0 min-h-0 flex-1 flex flex-col overflow-x-hidden">{children}</div>
+  return <div className="w-full min-w-0 flex-1 flex flex-col">{children}</div>
 }

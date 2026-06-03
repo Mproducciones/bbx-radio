@@ -333,19 +333,6 @@ body {
     box-sizing: border-box;
   }
 
-  /*
-   * Marketing (/bbx, /anunciate): fondo full-bleed dentro del shell,
-   * contenido con gutter simétrico auto (safe-area + mínimo 16px).
-   */
-  .app-marketing-bleed {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: none;
-    margin-inline: calc(-1 * var(--app-gutter-inline));
-    padding-inline: var(--app-gutter-inline);
-    overflow-x: clip;
-  }
-
   .app-sticky-bar {
     width: 100%;
     max-width: 100%;
@@ -362,15 +349,22 @@ body {
     box-sizing: border-box;
   }
 
+  /*
+   * Rutas con scroll propio (/bbx, /anunciate): un solo contenedor desplazable.
+   * Sin overflow-x:clip aquí — recortaba el bleed y comía el borde izquierdo.
+   */
   .app-scroll-route {
     flex: 1;
     min-height: 0;
     min-width: 0;
     max-width: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    overflow-x: clip;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 }
 
