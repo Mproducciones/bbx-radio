@@ -13,6 +13,7 @@ import {
   bbxWhatsApp,
   type BbxHubSectionId,
 } from '@/lib/bbxContent'
+import { EASE_OUT, staggerDelay } from '@/lib/motion/framer'
 import { BbxRevenueSection } from './BbxRevenueSection'
 import { BbxPlansSection } from './BbxPlansSection'
 import { AccentButton } from '@/components/shared/AccentButton'
@@ -46,7 +47,7 @@ function ProductoContent() {
             key={f.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.03 }}
+            transition={staggerDelay(i, 0.03)}
             className="rounded-xl p-3.5 md:p-4"
             style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.05)' }}
           >
@@ -65,14 +66,28 @@ function ProductoContent() {
 function ProcesoContent() {
   return (
     <section className="py-2">
-      <h2 className="font-display text-xl md:text-2xl mb-4 md:mb-5">Cómo trabajamos</h2>
+      <motion.h2
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
+        className="font-display text-xl md:text-2xl mb-4 md:mb-5"
+      >
+        Cómo trabajamos
+      </motion.h2>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
-        {BBX_PROCESS.map(p => (
-          <div key={p.step} className="rounded-lg p-3" style={{ background: '#0e0e16' }}>
+        {BBX_PROCESS.map((p, i) => (
+          <motion.div
+            key={p.step}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={staggerDelay(i, 0.06)}
+            className="rounded-lg p-3"
+            style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.05)' }}
+          >
             <p className="font-mono text-[#db8918] text-[10px] font-bold">{p.step}</p>
             <p className="text-white font-semibold text-xs mt-0.5">{p.title}</p>
             <p className="text-white/40 text-[10px] mt-0.5 leading-snug">{p.desc}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
@@ -120,7 +135,13 @@ function FaqContent() {
 
 function SectionCta() {
   return (
-    <section className="mt-8 pb-4">
+    <motion.section
+      className="mt-8 pb-4"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
+    >
       <div
         className="rounded-2xl p-5 md:p-8 text-center"
         style={{ background: 'linear-gradient(160deg,#1a1028,#07070e)', border: '1px solid rgba(219,137,24,0.18)' }}
@@ -138,7 +159,7 @@ function SectionCta() {
           WhatsApp directo
         </AccentButton>
       </div>
-    </section>
+    </motion.section>
   )
 }
 
@@ -153,7 +174,13 @@ export function BbxSectionPage({
   const accent = hub?.accent ?? '#db8918'
 
   return (
-    <div className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden" style={{ background: 'var(--color-ink-900)' }}>
+    <motion.div
+      className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden"
+      style={{ background: 'var(--color-ink-900)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.25, ease: EASE_OUT }}
+    >
       <header
         className="sticky top-0 z-50 shrink-0 border-b border-white/5 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.95)' }}
@@ -197,6 +224,6 @@ export function BbxSectionPage({
         {section === 'faq' && <FaqContent />}
         <SectionCta />
       </div>
-    </div>
+    </motion.div>
   )
 }

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic2, Radio, CalendarOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { EASE_OUT, staggerDelay } from '@/lib/motion/framer'
 import type { Program } from '@/types/radio'
 import { getLiveProgram, getToday, programsForDay, type DayKey } from '@/lib/programSchedule'
 
@@ -145,10 +146,10 @@ export function ProgramSchedule({
           key={selectedDay}
           role="tabpanel"
           aria-label={`Programas del ${selectedFull.toLowerCase()}`}
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          transition={{ duration: 0.18 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: EASE_OUT }}
           className={cn(
             'flex flex-col gap-1.5 max-md:gap-1',
             fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain max-md:pb-[calc(var(--app-mini-player-total)+0.25rem)]',
@@ -191,7 +192,7 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
     <motion.article
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.2 }}
+      transition={staggerDelay(index, 0.04, 0.05)}
       className="relative flex items-center gap-2.5 max-md:gap-2 p-3 max-md:p-2.5 rounded-2xl overflow-hidden"
       style={
         isLive

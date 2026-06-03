@@ -1,6 +1,8 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { accentTileStyle } from '@/lib/accentUi'
+import { springSnappy } from '@/lib/motion/framer'
 
 const TILE_H = 'h-[7.75rem]'
 
@@ -27,13 +29,17 @@ export function BbxHubTile({
 }: BbxHubTileProps) {
   const className = [
     'group relative w-full rounded-xl px-3 py-3 text-left overflow-hidden',
-    'transition-[filter,transform] active:scale-[0.98] hover:brightness-105',
     'flex flex-col items-stretch',
     TILE_H,
-    animate ? '' : '',
   ].join(' ')
 
   const dataAttrs = animate ? { 'data-animate': 'tile' as const } : {}
+  const style = accentTileStyle(accent)
+  const motionProps = {
+    whileTap: { scale: 0.97 },
+    whileHover: { y: -2 },
+    transition: springSnappy,
+  }
 
   const inner = (
     <>
@@ -66,7 +72,7 @@ export function BbxHubTile({
       </p>
 
       <p
-        className="relative text-[11px] font-semibold mt-auto pt-2 opacity-70 group-hover:opacity-100"
+        className="relative text-[11px] font-semibold mt-auto pt-2 opacity-70 group-hover:opacity-100 transition-opacity"
         style={{ color: accent }}
       >
         Ver detalle →
@@ -74,26 +80,32 @@ export function BbxHubTile({
     </>
   )
 
-  const style = accentTileStyle(accent)
-
   if (href) {
     return (
-      <a
+      <motion.a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
         className={className}
         style={style}
+        {...motionProps}
         {...dataAttrs}
       >
         {inner}
-      </a>
+      </motion.a>
     )
   }
 
   return (
-    <button type="button" onClick={onClick} className={className} style={style} {...dataAttrs}>
+    <motion.button
+      type="button"
+      onClick={onClick}
+      className={className}
+      style={style}
+      {...motionProps}
+      {...dataAttrs}
+    >
       {inner}
-    </button>
+    </motion.button>
   )
 }

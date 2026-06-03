@@ -473,6 +473,21 @@ body {
 }
 .float-anim { animation: float-y 4s ease-in-out infinite }
 
+@media (prefers-reduced-motion: reduce) {
+  .float-anim,
+  .text-gradient-animated,
+  .text-gradient-gold,
+  .text-gradient-radio,
+  .btn-shimmer::after,
+  .glow-amber-pulse,
+  .glow-cyan-pulse,
+  .aurora-blob-1,
+  .aurora-blob-2,
+  .aurora-blob-3 {
+    animation: none !important;
+  }
+}
+
 /* ── Glass morphism ─────────────────────────────────────────────────── */
 .glass {
   background: rgba(255,255,255,0.04);

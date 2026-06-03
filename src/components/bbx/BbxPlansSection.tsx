@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BBX_CONTACT, BBX_PLAN_COMPARE, BBX_PLANS, bbxWhatsApp, type BbxPlan } from '@/lib/bbxContent'
+import { staggerDelay } from '@/lib/motion/framer'
 import { BbxPlanPreviewThumb } from './BbxPlanMockup'
 import { BbxPlanDetailSheet } from './BbxPlanDetailSheet'
 import { AccentButton } from '@/components/shared/AccentButton'
@@ -15,9 +16,13 @@ function Check({ on, color }: { on: boolean; color?: string }) {
   )
 }
 
-function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void }) {
+function PlanCard({ plan, onExamples, index }: { plan: BbxPlan; onExamples: () => void; index: number }) {
   return (
-    <article
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-20px' }}
+      transition={staggerDelay(index, 0.08)}
       className="relative flex flex-col rounded-xl overflow-hidden h-full w-full"
       style={{
         background: '#0e0e16',
@@ -58,7 +63,7 @@ function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void 
           Ver cómo se vería
         </AccentButton>
       </div>
-    </article>
+    </motion.article>
   )
 }
 
@@ -90,8 +95,8 @@ export function BbxPlansSection({ embedded }: { embedded?: boolean } = {}) {
       )}
 
       <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-3 md:items-stretch">
-        {ordered.map(plan => (
-          <PlanCard key={plan.id} plan={plan} onExamples={() => setPlanOpen(plan)} />
+        {ordered.map((plan, i) => (
+          <PlanCard key={plan.id} plan={plan} index={i} onExamples={() => setPlanOpen(plan)} />
         ))}
       </div>
 

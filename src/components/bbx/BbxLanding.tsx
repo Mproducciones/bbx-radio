@@ -24,6 +24,14 @@ import {
   bbxWhatsApp,
   type BbxHubSectionId,
 } from '@/lib/bbxContent'
+import {
+  animateStagger,
+  animateStaggerOnView,
+  animeRevealUp,
+  animeStatPop,
+} from '@/lib/motion/anime'
+import { EASE_OUT } from '@/lib/motion/framer'
+import { useAnimeInView } from '@/hooks/useAnimeInView'
 import { BbxPhoneMockup } from './BbxPhoneMockup'
 import { BbxHubTile } from './BbxHubTile'
 import { BbxSectionPage } from './BbxSectionPage'
@@ -54,29 +62,7 @@ function LiveDemoBar() {
 function StatTile({ value, label, accent, index }: {
   value: string; label: string; accent: string; index: number
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const animated = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !animated.current) {
-        animated.current = true
-        import('animejs').then(({ animate }) => {
-          animate(el, {
-            scale: [0.7, 1.04, 1],
-            opacity: [0, 1],
-            duration: 700,
-            delay: index * 90,
-            ease: 'spring(1, 80, 14, 0)',
-          })
-        })
-      }
-    }, { threshold: 0.4 })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [index])
+  const ref = useAnimeInView(animeStatPop, index, { threshold: 0.4 })
 
   return (
     <div
@@ -103,30 +89,7 @@ function StatTile({ value, label, accent, index }: {
 function FeatureCard({ icon: Icon, title, desc, accent, index }: {
   icon: LucideIcon; title: string; desc: string; accent: string; index: number
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const animated = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    el.style.opacity = '0'
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !animated.current) {
-        animated.current = true
-        import('animejs').then(({ animate }) => {
-          animate(el, {
-            translateY: [28, 0],
-            opacity: [0, 1],
-            duration: 600,
-            delay: index * 70,
-            ease: 'out(3)',
-          })
-        })
-      }
-    }, { threshold: 0.15 })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [index])
+  const ref = useAnimeInView(animeRevealUp, index, { threshold: 0.15 })
 
   return (
     <div
@@ -182,9 +145,13 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
   }
 
   return (
-    <div
+    <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-20px' }}
+      transition={{ duration: 0.55, ease: EASE_OUT }}
       className="rounded-3xl p-6 md:p-10 text-center relative overflow-hidden"
       style={{
         background: 'linear-gradient(145deg, rgba(219,137,24,0.12) 0%, rgba(64,185,191,0.04) 50%, #07070e 100%)',
@@ -239,7 +206,7 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
           ← Volver a la radio
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -253,40 +220,29 @@ export function BbxLanding() {
 
   // Hero stagger entrance
   useEffect(() => {
-    if (!heroRef.current) return
-    import('animejs').then(({ animate, stagger }) => {
-      animate(heroRef.current!.querySelectorAll('[data-hero]'), {
-        translateY: [40, 0],
-        opacity: [0, 1],
-        duration: 750,
-        delay: stagger(130),
-        ease: 'out(3)',
-      })
+    const container = heroRef.current
+    if (!container) return
+    void animateStagger(container, '[data-hero]', {
+      translateY: [40, 0],
+      opacity: [0, 1],
+      duration: 750,
+      staggerMs: 130,
+      ease: 'out(3)',
     })
   }, [])
 
-  // Hub tiles spring
+  // Hub tiles spring al scroll
   useEffect(() => {
     const el = hubRef.current
     if (!el) return
-    const tiles = el.querySelectorAll('[data-hub-tile]')
-    tiles.forEach(t => ((t as HTMLElement).style.opacity = '0'))
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        import('animejs').then(({ animate, stagger }) => {
-          animate(tiles, {
-            scale: [0.88, 1],
-            opacity: [0, 1],
-            duration: 520,
-            delay: stagger(65),
-            ease: 'spring(1, 90, 12, 0)',
-          })
-        })
-        obs.disconnect()
-      }
-    }, { threshold: 0.1 })
-    obs.observe(el)
-    return () => obs.disconnect()
+    el.querySelectorAll('[data-hub-tile]').forEach(t => ((t as HTMLElement).style.opacity = '0'))
+    return animateStaggerOnView(el, '[data-hub-tile]', {
+      scale: [0.88, 1],
+      opacity: [0, 1],
+      duration: 520,
+      staggerMs: 65,
+      ease: 'spring(1, 90, 12, 0)',
+    })
   }, [])
 
   const openSection  = (id: BbxHubSectionId) => { setSection(id); window.scrollTo({ top: 0, behavior: 'instant' }) }
@@ -300,13 +256,14 @@ export function BbxLanding() {
     <div
       ref={mainRef}
       className="bbx-landing relative flex flex-col w-full min-w-0 max-w-full text-white overflow-x-hidden mesh-bg"
+      style={{ minHeight: '100dvh' }}
     >
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-15%] left-[-5%] w-[65%] h-[55%] rounded-full opacity-30 blur-[90px]"
+        <div className="absolute top-0 left-0 w-[55%] h-[42%] rounded-full opacity-25 blur-[80px]"
           style={{ background: 'radial-gradient(circle,#db8918 0%,transparent 65%)' }} />
-        <div className="absolute bottom-[-5%] right-[-10%] w-[55%] h-[40%] rounded-full opacity-20 blur-[80px]"
-          style={{ background: 'radial-gradient(circle,#40B9BF 0%,transparent 65%)' }} />
-        <div className="absolute top-[50%] left-[40%] w-[40%] h-[35%] rounded-full opacity-10 blur-[70px]"
+        <div className="absolute bottom-0 right-0 w-[50%] h-[38%] rounded-full blur-[70px]"
+          style={{ background: 'radial-gradient(circle,#40B9BF 0%,transparent 65%)', opacity: 0.18 }} />
+        <div className="absolute top-[45%] left-[35%] w-[38%] h-[32%] rounded-full opacity-10 blur-[60px]"
           style={{ background: 'radial-gradient(circle,#7D59B5 0%,transparent 70%)' }} />
       </div>
 

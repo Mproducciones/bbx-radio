@@ -45,3 +45,4 @@ npm run agent:qa:visual
 - Brief: `agents/brief.yaml` (copiar desde `agents/brief.example.yaml`)
 - Reglas motor: `agents/RULES.md`, `docs/MOTOR-AGENTES.md`
 - Playbook Pro: `agents/CURSOR-CLAUDE-PRO.md`
+- Motion / animación: `agents/skills/MOTION.md`, `src/lib/motion/`

@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
 import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
@@ -7,6 +8,7 @@ import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
+import { EASE_OUT } from '@/lib/motion/framer'
 
 export function HomePageClient() {
   const { isPlaying, isLoading, hasError, analyser, toggle } = useRadioPlayerContext()
@@ -18,8 +20,12 @@ export function HomePageClient() {
       style={{ zIndex: 1 }}
     >
       <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden box-border">
-        <div className="flex items-center justify-between gap-3 mb-2 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03]">
-          <div className="min-w-0 flex-1">
+        <motion.div
+          className="flex items-center justify-between gap-3 mb-2 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03]"
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: EASE_OUT }}
+        >          <div className="min-w-0 flex-1">
             <h1 className="font-display text-lg text-white leading-none tracking-wide truncate">
               {RADIO.name}
             </h1>
@@ -36,7 +42,7 @@ export function HomePageClient() {
           >
             {RADIO.frequency}
           </BbxFrequencyGate>
-        </div>
+        </motion.div>
 
         <ClientOnly
           fallback={
