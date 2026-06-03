@@ -1,16 +1,16 @@
 'use client'
 
-import type { ReactNode, SVGProps } from 'react'
+import type { CSSProperties, ReactNode, SVGProps } from 'react'
 
 export function AdminPageBackground() {
   return (
     <>
-      <div className="fixed inset-0 -z-10 pointer-events-none" style={{ background: '#07070E' }} />
+      <div className="fixed inset-0 -z-10 pointer-events-none admin-mesh" />
       <div
-        className="fixed inset-0 -z-10 pointer-events-none opacity-50"
+        className="fixed inset-0 -z-10 pointer-events-none opacity-40"
         style={{
           background:
-            'radial-gradient(ellipse 70% 45% at 15% -5%, rgba(219,137,24,0.14), transparent 55%), radial-gradient(ellipse 55% 35% at 95% 5%, rgba(64,185,191,0.1), transparent 50%), radial-gradient(ellipse 40% 30% at 50% 100%, rgba(125,89,181,0.08), transparent 55%)',
+            'radial-gradient(ellipse 50% 40% at 80% 20%, rgba(0,217,160,0.06), transparent 60%)',
         }}
       />
     </>
@@ -26,18 +26,10 @@ export function AdminCard({
   className?: string
   accent?: string
 }) {
+  const style = accent ? ({ '--admin-accent': accent } as CSSProperties) : undefined
   return (
-    <div
-      className={`rounded-2xl overflow-hidden backdrop-blur-md ${className}`}
-      style={{
-        background: 'rgba(14, 14, 22, 0.92)',
-        border: `1px solid ${accent ? `${accent}30` : 'rgba(255,255,255,0.07)'}`,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
-      }}
-    >
-      {accent && (
-        <div className="h-0.5 w-full shrink-0" style={{ background: `linear-gradient(90deg, ${accent}, transparent 80%)` }} />
-      )}
+    <div className={`admin-card ${className}`.trim()} style={style}>
+      {accent ? <div className="admin-card__stripe" aria-hidden /> : null}
       {children}
     </div>
   )
@@ -48,28 +40,22 @@ export function AdminCardHeader({
   icon,
   badges,
   action,
+  accent = '#db8918',
 }: {
   title: string
   icon?: ReactNode
   badges?: ReactNode
   action?: ReactNode
+  accent?: string
 }) {
   return (
-    <div
-      className="px-4 pt-4 pb-3 flex items-center justify-between gap-3"
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
-    >
+    <div className="admin-card-header" style={{ '--admin-accent': accent } as CSSProperties}>
       <div className="flex items-center gap-2.5 min-w-0">
-        {icon && (
-          <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(219,137,24,0.12)', color: '#db8918' }}
-          >
-            {icon}
-          </div>
-        )}
-        <p className="text-white font-semibold text-sm truncate">{title}</p>
-        {badges}
+        {icon ? <div className="admin-card-header__icon">{icon}</div> : null}
+        <div className="min-w-0">
+          <p className="text-white font-semibold text-sm truncate">{title}</p>
+          {badges ? <div className="flex flex-wrap gap-1.5 mt-1">{badges}</div> : null}
+        </div>
       </div>
       {action}
     </div>
@@ -78,15 +64,15 @@ export function AdminCardHeader({
 
 export function AdminSectionTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-center gap-3 mb-3">
-      <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] shrink-0">{children}</p>
-      <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.1), transparent)' }} />
+    <div className="admin-section-title">
+      <p className="admin-section-title__text">{children}</p>
+      <div className="admin-section-title__line" aria-hidden />
     </div>
   )
 }
 
 export function AdminKpiGrid({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-3 gap-2 sm:gap-3">{children}</div>
+  return <div className="admin-kpi-grid">{children}</div>
 }
 
 export function AdminKpi({
@@ -101,18 +87,10 @@ export function AdminKpi({
   icon: ReactNode
 }) {
   return (
-    <div
-      className="rounded-xl p-2.5 sm:p-3.5 text-center min-w-0 transition-transform active:scale-[0.98]"
-      style={{ background: 'rgba(0,0,0,0.28)', border: `1px solid ${color}22` }}
-    >
-      <div
-        className="w-7 h-7 sm:w-8 sm:h-8 mx-auto mb-1.5 sm:mb-2 rounded-lg flex items-center justify-center"
-        style={{ background: `${color}14`, color }}
-      >
-        {icon}
-      </div>
+    <div className="admin-kpi" style={{ '--kpi-accent': color } as CSSProperties}>
+      <div className="admin-kpi__icon">{icon}</div>
       <p className="font-display text-xl sm:text-2xl text-white leading-none tabular-nums">{value}</p>
-      <p className="text-[8px] sm:text-[10px] mt-1 leading-tight font-medium" style={{ color: `${color}cc` }}>
+      <p className="text-[8px] sm:text-[10px] mt-1 leading-tight font-semibold uppercase tracking-wide" style={{ color: `${color}cc` }}>
         {sub}
       </p>
     </div>
@@ -127,10 +105,7 @@ export function AdminBadge({
   color?: string
 }) {
   return (
-    <span
-      className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-      style={{ background: `${color}22`, color, border: `1px solid ${color}35` }}
-    >
+    <span className="admin-badge" style={{ '--badge-accent': color } as CSSProperties}>
       {children}
     </span>
   )
@@ -145,19 +120,71 @@ export function AdminGhostButton({
   onClick?: () => void
   href?: string
 }) {
-  const cls =
-    'text-white/45 hover:text-white text-xs rounded-lg px-2.5 py-1.5 transition-colors border border-white/[0.08] hover:border-white/15 hover:bg-white/[0.03]'
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+      <a href={href} target="_blank" rel="noopener noreferrer" className="admin-btn-ghost">
         {children}
       </a>
     )
   }
   return (
-    <button type="button" onClick={onClick} className={cls}>
+    <button type="button" onClick={onClick} className="admin-btn-ghost">
       {children}
     </button>
+  )
+}
+
+export function AdminTabs({
+  tabs,
+  active,
+  onChange,
+  accent = '#db8918',
+}: {
+  tabs: { key: string; label: string }[]
+  active: string
+  onChange: (key: string) => void
+  accent?: string
+}) {
+  return (
+    <div className="admin-tabs" style={{ '--tab-accent': accent } as CSSProperties}>
+      {tabs.map(tab => (
+        <button
+          key={tab.key}
+          type="button"
+          onClick={() => onChange(tab.key)}
+          className={`admin-tab ${active === tab.key ? 'is-active' : ''}`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export function AdminSegment({
+  options,
+  value,
+  onChange,
+  accent = '#db8918',
+}: {
+  options: { value: string | number; label: string }[]
+  value: string | number
+  onChange: (v: string | number) => void
+  accent?: string
+}) {
+  return (
+    <div className="admin-segment" style={{ '--segment-accent': accent } as CSSProperties}>
+      {options.map(opt => (
+        <button
+          key={String(opt.value)}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`admin-segment__btn ${value === opt.value ? 'is-active' : ''}`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
   )
 }
 

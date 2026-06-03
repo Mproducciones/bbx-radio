@@ -6,6 +6,10 @@
 ADMIN_USERNAME=admin@tudominio.com
 ADMIN_PASSWORD=           # Mínimo 12 caracteres — generar con gestor de contraseñas
 ADMIN_SESSION_SECRET=     # Mínimo 32 caracteres aleatorios (openssl rand -hex 32)
+
+# Super admin BBX — solo tú; gestiona suscripciones de todas las radios
+SUPER_ADMIN_USERNAME=     # Usuario distinto al admin de la radio
+SUPER_ADMIN_PASSWORD=     # Mínimo 12 caracteres
 ```
 
 **IMPORTANTE:** Nunca uses contraseñas de ejemplo en producción. Sin estas variables el panel `/admin` no funciona.
@@ -104,7 +108,9 @@ SUBSCRIPTION_GRACE_DAYS=7          # días de gracia tras vencimiento
 
 ### 3. Pago manual (transferencia / efectivo)
 
-Panel `/admin` → **Suscripción BBX** → **Marcar pagado (+30 d)**.
+**Solo super admin BBX** (`SUPER_ADMIN_*`): `/admin` → pestaña **Suscripciones BBX** → **Pagado (+30 d)**.
+
+El admin de la radio (credenciales `ADMIN_*`) **no ve** esta sección.
 
 ### 4. Pago automático con Stripe (opcional)
 

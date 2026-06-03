@@ -2,14 +2,16 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   BarChart3,
+  ChevronLeft,
   Megaphone,
   MessageCircle,
   Mic2,
+  Pause,
+  Radio,
   Rocket,
   Settings2,
   Tv,
@@ -45,13 +47,37 @@ function LiveDemoBar() {
   if (!isPlaying) return null
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-amber text-[10px]"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 border border-[#db8918]/30"
+      style={{ background: 'linear-gradient(90deg, rgba(219,137,24,0.12) 0%, rgba(255,255,255,0.03) 100%)' }}
+      role="region"
+      aria-label="Demo de radio en vivo"
     >
-      <span className="w-1.5 h-1.5 rounded-full bg-[#db8918] animate-pulse" />
-      <span className="text-[#db8918] font-semibold">Demo en vivo</span>
-      <button type="button" onClick={toggle} className="text-white/40 hover:text-white ml-1 transition-colors">
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        style={{ background: 'rgba(219,137,24,0.18)', color: '#db8918' }}
+      >
+        <Radio className="w-5 h-5" strokeWidth={2.5} aria-hidden />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#db8918] animate-pulse shrink-0" aria-hidden />
+          <p className="text-[10px] font-bold uppercase tracking-wide text-[#db8918]">Demo en vivo</p>
+        </div>
+        <p className="text-[11px] text-white/55 truncate mt-0.5">Radio Bienvenida 93.3 · estás escuchando la app</p>
+      </div>
+      <button
+        type="button"
+        onClick={toggle}
+        className="shrink-0 inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 min-h-[44px] text-xs font-bold text-white transition-colors"
+        style={{
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.14)',
+        }}
+        aria-label="Pausar demo en vivo"
+      >
+        <Pause className="w-4 h-4" strokeWidth={2.5} aria-hidden />
         Pausar
       </button>
     </motion.div>
@@ -201,9 +227,14 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
         <button
           type="button"
           onClick={onBack}
-          className="text-white/30 text-xs hover:text-white/60 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm w-full sm:w-auto text-white/75 hover:text-white transition-colors min-h-[44px]"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.12)',
+          }}
         >
-          ← Volver a la radio
+          <ChevronLeft className="w-4 h-4 shrink-0" strokeWidth={2.5} aria-hidden />
+          Volver a Radio Bienvenida
         </button>
       </div>
     </motion.div>
@@ -275,11 +306,15 @@ export function BbxLanding() {
         <div className="app-gutter-x w-full min-h-12 py-2 flex items-center justify-between gap-2 md:max-w-5xl md:mx-auto md:px-4">
           <Link
             href="/"
-            className="shrink-0 inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-semibold text-white/70 hover:text-white transition-colors"
-            style={{ background: 'rgba(255,255,255,0.06)' }}
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl px-2.5 py-2 min-h-[44px] transition-colors hover:bg-white/[0.08]"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+            aria-label="Volver a Radio Bienvenida en vivo"
           >
-            <ChevronLeft className="w-4 h-4" strokeWidth={2.5} aria-hidden />
-            Radio
+            <ChevronLeft className="w-4 h-4 shrink-0 text-white/80" strokeWidth={2.5} aria-hidden />
+            <span className="text-left leading-none hidden min-[360px]:block">
+              <span className="block text-[9px] font-bold uppercase tracking-wide text-white/40">Volver</span>
+              <span className="block text-[11px] font-semibold text-white mt-0.5">En vivo</span>
+            </span>
           </Link>
           <div className="flex items-center gap-2 min-w-0 justify-center flex-1 px-1">
             <span className="font-display text-xl md:text-2xl tracking-widest leading-none text-gradient-gold truncate">
@@ -312,7 +347,7 @@ export function BbxLanding() {
 
         {/* ── HERO ──────────────────────────────────────────────────────────── */}
         <section className="pt-6 pb-10 md:pt-16" ref={heroRef}>
-          <div className="mb-5 h-7 flex items-center">
+          <div className="mb-5 min-h-[3rem] flex items-stretch">
             <LiveDemoBar />
           </div>
 
@@ -412,26 +447,40 @@ export function BbxLanding() {
 
         {/* ── HUB ───────────────────────────────────────────────────────────── */}
         <section className="pb-10">
-          <div className="mb-6">
+          <div className="mb-4">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/35 mb-1.5">Explorar</p>
             <h2 className="font-display text-white leading-none"
               style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)' }}>
               Todo lo que hacemos
             </h2>
+            <p className="text-white/45 text-xs mt-3 leading-relaxed max-w-md">
+              Cada tarjeta abre el detalle completo — tocá para ver módulos, planes, proceso y preguntas frecuentes.
+            </p>
           </div>
           <div ref={hubRef} className="grid grid-cols-2 md:grid-cols-3 gap-3 min-w-0">
             {BBX_HUB_SECTIONS.map(tile => (
               <div key={tile.id} className="flex min-w-0" data-hub-tile>
                 <BbxHubTile
-                  value={tile.value} label={tile.label} subtitle={tile.subtitle}
-                  accent={tile.accent} animate={false} onClick={() => openSection(tile.id)}
+                  value={tile.value}
+                  label={tile.label}
+                  subtitle={tile.subtitle}
+                  hint={tile.hint}
+                  accent={tile.accent}
+                  animate={false}
+                  onClick={() => openSection(tile.id)}
                 />
               </div>
             ))}
             <div className="flex min-w-0" data-hub-tile>
               <BbxHubTile
-                value="24h" emphasis="action" label="Agendar demo"
-                subtitle="WhatsApp directo" accent="#128C7E" animate={false}
+                value="24h"
+                emphasis="action"
+                label="Agendar demo"
+                subtitle="WhatsApp directo con Bryan"
+                hint="Respuesta en minutos"
+                accent="#128C7E"
+                actionLabel="Abrir WhatsApp"
+                animate={false}
                 href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')}
               />
             </div>

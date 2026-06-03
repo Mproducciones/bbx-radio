@@ -29,18 +29,12 @@ export function LiveListenerCounter() {
 
   return (
     <AdminCard accent="#db8918" className="h-full">
-      <div
-        className="relative overflow-hidden p-5 h-full flex flex-col"
-        style={{ background: 'linear-gradient(145deg, rgba(26,10,46,0.6) 0%, rgba(14,14,22,0.4) 100%)' }}
-      >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 30% 0%, rgba(219,137,24,0.15) 0%, transparent 65%)' }}
-        />
+      <div className="admin-live-hero h-full flex flex-col">
+        <div className="admin-live-hero__glow" aria-hidden />
 
         <div className="relative flex items-start justify-between gap-4 flex-1">
           <div className="min-w-0">
-            <p className="text-white/45 text-[10px] font-bold uppercase tracking-[0.18em] mb-2">Escuchando ahora</p>
+            <p className="admin-eyebrow mb-2">Escuchando ahora</p>
             <div className="flex items-end gap-2">
               <AnimatePresence mode="wait">
                 <motion.span

@@ -16,7 +16,7 @@ import { StudioPublicidadLinks } from '@/components/admin/StudioPublicidadLinks'
 import { AdminSectionTitle } from '@/components/admin/adminUi'
 import type { AdminSection } from '@/components/admin/AdminNav'
 
-export function AdminSectionContent({ section }: { section: AdminSection }) {
+export function AdminSectionContent({ section, superAdmin = false }: { section: AdminSection; superAdmin?: boolean }) {
   switch (section) {
     case 'overview':
       return (
@@ -29,10 +29,7 @@ export function AdminSectionContent({ section }: { section: AdminSection }) {
               <AnalyticsPanel />
             </div>
           </div>
-          <section>
-            <AdminSectionTitle>Tendencia de oyentes</AdminSectionTitle>
-            <ListenerChart />
-          </section>
+          <ListenerChart />
         </div>
       )
 
@@ -65,8 +62,9 @@ export function AdminSectionContent({ section }: { section: AdminSection }) {
       )
 
     case 'billing':
+      if (!superAdmin) return null
       return (
-        <div className="max-w-2xl">
+        <div className="max-w-lg">
           <BillingPanel />
         </div>
       )

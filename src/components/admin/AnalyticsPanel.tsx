@@ -34,7 +34,7 @@ export function AnalyticsPanel() {
   return (
     <AdminCard accent="#40B9BF" className="h-full">
       <div className="p-4 sm:p-5 h-full flex flex-col">
-        <p className="text-white/45 text-[10px] font-bold uppercase tracking-[0.18em] mb-3">Métricas en tiempo real</p>
+        <p className="admin-eyebrow mb-3">Métricas en tiempo real</p>
         <AdminKpiGrid>
           <AdminKpi value={stats.listeners} sub="oyentes activos" color="#db8918" icon={<AdminIcons.radio />} />
           <AdminKpi value={stats.registrations} sub="leads capturados" color="#40B9BF" icon={<AdminIcons.users />} />

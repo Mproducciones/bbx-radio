@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Saludo } from '@/lib/saludoTypes'
-import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner } from './adminUi'
+import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner, AdminTabs } from './adminUi'
 
 const MOTIVO_EMOJI: Record<string, string> = {
   cumpleanos: '🎂', aniversario: '💑', dedicatoria: '🎵',
@@ -67,21 +67,7 @@ export function SaludosPanel() {
         action={<AdminGhostButton onClick={fetchSaludos}>↻ Actualizar</AdminGhostButton>}
       />
 
-      <div className="flex border-b border-white/[0.05]">
-        {tabs.map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setFilter(tab.key)}
-            className="flex-1 py-2.5 text-xs font-medium transition-colors"
-            style={filter === tab.key
-              ? { color: '#db8918', borderBottom: '2px solid #db8918' }
-              : { color: '#444468' }
-            }
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <AdminTabs tabs={tabs} active={filter} onChange={k => setFilter(k as Filter)} accent="#db8918" />
 
       <div className="divide-y divide-white/[0.05] max-h-96 overflow-y-auto">
         {loading ? (

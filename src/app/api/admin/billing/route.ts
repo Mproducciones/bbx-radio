@@ -1,25 +1,27 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { isAdminRequestAuthorized } from '@/lib/adminAuth'
+import { isSuperAdminRequestAuthorized } from '@/lib/adminAuth'
 import {
-  getSubscriptionRecord,
+  getSubscriptionRecordForTenant,
   getTenantId,
+  listAllTenantSubscriptions,
   markPaymentReceived,
   suspendTenant,
   upsertTenantSubscription,
 } from '@/lib/subscription'
 
 export async function GET(req: NextRequest) {
-  if (!(await isAdminRequestAuthorized(req))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isSuperAdminRequestAuthorized(req))) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const sub = await getSubscriptionRecord()
-  return NextResponse.json({ ...sub, tenantId: getTenantId() })
+  const tenants = await listAllTenantSubscriptions()
+  const currentTenantId = getTenantId()
+  return NextResponse.json({ tenants, currentTenantId })
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!(await isAdminRequestAuthorized(req))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isSuperAdminRequestAuthorized(req))) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   const body = await req.json().catch(() => null)
@@ -27,7 +29,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'action requerida' }, { status: 400 })
   }
 
-  const tenantId = getTenantId()
+  const tenantId = body.tenantId ? String(body.tenantId) : getTenantId()
 
   switch (body.action) {
     case 'mark_paid': {
@@ -36,7 +38,7 @@ export async function PATCH(req: NextRequest) {
         plan: body.plan ? String(body.plan) : undefined,
         billingEmail: body.billingEmail ? String(body.billingEmail) : undefined,
         amountClp: body.amountClp ? Number(body.amountClp) : undefined,
-        notes: body.notes ? String(body.notes) : 'Pago registrado manualmente desde panel',
+        notes: body.notes ? String(body.notes) : 'Pago registrado manualmente desde panel BBX',
       })
       if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 })
       break
@@ -82,6 +84,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'action inválida' }, { status: 400 })
   }
 
-  const sub = await getSubscriptionRecord()
-  return NextResponse.json({ ok: true, subscription: sub })
+  const subscription = await getSubscriptionRecordForTenant(tenantId)
+  const tenants = await listAllTenantSubscriptions()
+  return NextResponse.json({ ok: true, subscription, tenants })
 }

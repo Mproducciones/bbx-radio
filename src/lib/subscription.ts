@@ -145,11 +145,12 @@ function defaultActiveRecord(): SubscriptionRecord {
   }
 }
 
-export async function getSubscriptionRecord(): Promise<SubscriptionRecord> {
+export async function getSubscriptionRecordForTenant(tenantId: string): Promise<SubscriptionRecord> {
   const override = envOverride()
-  if (override) {
+  if (override && tenantId === getTenantId()) {
     return {
       ...defaultActiveRecord(),
+      tenantId,
       status: override,
       reason: override === 'suspended'
         ? 'Suspendido manualmente (variable de entorno).'
@@ -163,13 +164,34 @@ export async function getSubscriptionRecord(): Promise<SubscriptionRecord> {
     const { data, error } = await supabaseAdmin
       .from('tenant_subscriptions')
       .select('*')
-      .eq('tenant_id', getTenantId())
+      .eq('tenant_id', tenantId)
       .maybeSingle()
 
-    if (error || !data) return defaultActiveRecord()
+    if (error || !data) return { ...defaultActiveRecord(), tenantId }
     return rowToRecord(data as TenantSubscriptionRow)
   } catch {
-    return defaultActiveRecord()
+    return { ...defaultActiveRecord(), tenantId }
+  }
+}
+
+export async function getSubscriptionRecord(): Promise<SubscriptionRecord> {
+  return getSubscriptionRecordForTenant(getTenantId())
+}
+
+export async function listAllTenantSubscriptions(): Promise<SubscriptionRecord[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('tenant_subscriptions')
+      .select('*')
+      .order('tenant_id')
+
+    if (error || !data?.length) {
+      return [await getSubscriptionRecord()]
+    }
+
+    return (data as TenantSubscriptionRow[]).map(rowToRecord)
+  } catch {
+    return [await getSubscriptionRecord()]
   }
 }
 

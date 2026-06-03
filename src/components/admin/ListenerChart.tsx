@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { AdminCard, AdminSpinner } from './adminUi'
+import { AdminCard, AdminSpinner, AdminSegment, AdminCardHeader, AdminIcons } from './adminUi'
 
 interface DataPoint { recorded_at: string; count: number }
 
@@ -85,28 +85,26 @@ export function ListenerChart() {
   }, [range])
 
   return (
-    <AdminCard>
-      <div className="p-4">
+    <AdminCard accent="#db8918">
+      <AdminCardHeader title="Tendencia de oyentes" icon={<AdminIcons.chart />} accent="#db8918" />
+      <div className="p-4 pt-3">
       <div className="flex items-center justify-between mb-3 gap-3">
         <div className="min-w-0">
           {peak > 0 && (
-            <p className="text-white/40 text-[10px]">
+            <p className="text-white/45 text-[10px]">
               Pico de <span className="text-[#db8918] font-bold">{peak}</span> oyentes en las últimas {range}h
             </p>
           )}
         </div>
-        <div className="flex gap-1">
-          {([24, 48] as const).map(h => (
-            <button key={h} onClick={() => setRange(h)}
-              className="text-[10px] px-2 py-1 rounded-lg transition-colors"
-              style={range === h
-                ? { background: '#db8918', color: '#07070E', fontWeight: 700 }
-                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)' }
-              }>
-              {h}h
-            </button>
-          ))}
-        </div>
+        <AdminSegment
+          accent="#db8918"
+          value={range}
+          onChange={v => setRange(v as 24 | 48)}
+          options={[
+            { value: 24, label: '24h' },
+            { value: 48, label: '48h' },
+          ]}
+        />
       </div>
 
       {loading ? (

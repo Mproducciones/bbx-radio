@@ -31,13 +31,14 @@ export const BBX_HUB_SECTIONS: {
   value: string
   label: string
   subtitle: string
+  hint: string
   accent: string
 }[] = [
-  { id: 'producto', value: '6+', label: 'Módulos', subtitle: 'Plataforma completa', accent: '#db8918' },
-  { id: 'negocio', value: '+390K', label: 'Ingresos extra', subtitle: 'Modelo de negocio', accent: '#00D9A0' },
-  { id: 'planes', value: '3', label: 'Planes', subtitle: 'Desde $80.000/mes', accent: '#7D59B5' },
-  { id: 'proceso', value: '48h', label: 'Implementación', subtitle: 'Cómo trabajamos', accent: '#40B9BF' },
-  { id: 'faq', value: 'FAQ', label: 'Preguntas', subtitle: 'Respuestas rápidas', accent: '#db8918' },
+  { id: 'producto', value: '6+', label: 'Módulos', subtitle: 'Plataforma completa', hint: 'Player, ads, panel…', accent: '#db8918' },
+  { id: 'negocio', value: '+390K', label: 'Ingresos extra', subtitle: 'Modelo de negocio', hint: 'Cómo monetizar', accent: '#00D9A0' },
+  { id: 'planes', value: '3', label: 'Planes', subtitle: 'Desde $80.000/mes', hint: 'Comparar precios', accent: '#7D59B5' },
+  { id: 'proceso', value: '48h', label: 'Implementación', subtitle: 'Cómo trabajamos', hint: 'Paso a paso', accent: '#40B9BF' },
+  { id: 'faq', value: 'FAQ', label: 'Preguntas', subtitle: 'Respuestas rápidas', hint: 'Dudas frecuentes', accent: '#db8918' },
 ]
 
 export const BBX_FEATURES = [

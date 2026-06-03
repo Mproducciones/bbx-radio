@@ -18,17 +18,16 @@ function StudioContentCard({ item }: { item: StudioContentItem }) {
 
   return (
     <div
-      className="relative flex flex-col rounded-2xl overflow-hidden transition-all"
-      style={{
-        background: 'rgba(14,14,22,0.92)',
-        border: `1px solid ${item.color}22`,
-        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-      }}
+      className="admin-studio-card relative flex flex-col"
+      style={{ '--studio-accent': item.color } as React.CSSProperties}
     >
       <div className="p-4 flex gap-3 flex-1">
         <div
           className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
-          style={{ background: `${item.color}16` }}
+          style={{
+            background: `color-mix(in srgb, ${item.color} 16%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${item.color} 30%, transparent)`,
+          }}
         >
           {item.emoji}
         </div>
@@ -91,12 +90,7 @@ export function StudioContentPanel() {
           href="/studio"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all active:scale-[0.98]"
-          style={{
-            background: 'linear-gradient(135deg, #db8918, #e8a840)',
-            color: '#07070E',
-            boxShadow: '0 4px 16px rgba(219,137,24,0.25)',
-          }}
+          className="admin-btn-primary shrink-0 !w-auto inline-flex px-5 py-2.5"
         >
           Abrir Studio completo
         </a>
@@ -104,7 +98,7 @@ export function StudioContentPanel() {
 
       {STUDIO_CONTENT_GROUPS.map(group => (
         <section key={group.id}>
-          <p className="text-white/25 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">{group.title}</p>
+          <p className="admin-eyebrow mb-3">{group.title}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {getStudioItemsByGroup(group.id).map(item => (
               <StudioContentCard key={item.schemaType} item={item} />

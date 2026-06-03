@@ -6,6 +6,7 @@ import { BBX_CONTACT, type BbxPlan, bbxWhatsApp } from '@/lib/bbxContent'
 import { BbxPlanMockup } from './BbxPlanMockup'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
 import { SheetPortal } from '@/components/shared/SheetPortal'
+import { PlanIncludesDisclosure } from '@/components/shared/PlanIncludesDisclosure'
 
 export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; onClose: () => void }) {
   const [activeIdx, setActiveIdx] = useState(0)
@@ -34,7 +35,7 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
               key={plan.id}
               role="dialog"
               aria-modal
-              className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-2xl overflow-hidden max-md:h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
+              className="fixed z-[1101] bottom-0 left-1/2 flex flex-col min-h-0 min-w-0 -translate-x-1/2 w-[min(32rem,calc(100vw-2*var(--app-gutter-inline)))] max-w-full rounded-t-2xl overflow-hidden max-md:max-h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
             style={{ background: '#0c0c14', borderTop: `2px solid ${plan.color}`, boxShadow: `0 -12px 48px ${plan.color}20` }}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
@@ -90,36 +91,19 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
                 )}
               </AnimatePresence>
 
-              <button
-                type="button"
-                onClick={() => setShowList(v => !v)}
-                className="mt-3 w-full text-left text-[10px] font-semibold text-white/35 py-2 border-t border-white/6"
-              >
-                {showList ? '▾ Ocultar lista del plan' : '▸ Ver lista completa del plan (texto)'}
-              </button>
-              <AnimatePresence>
-                {showList && (
-                  <motion.ul
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden space-y-1.5 pt-2 pb-2"
-                  >
-                    {plan.features.map(f => (
-                      <li key={f} className="flex gap-2 text-xs text-white/65">
-                        <span className="shrink-0 font-bold" style={{ color: plan.color }}>✓</span>{f}
-                      </li>
-                    ))}
-                  </motion.ul>
-                )}
-              </AnimatePresence>
+              <PlanIncludesDisclosure
+                items={plan.features}
+                accent={plan.color}
+                showList={showList}
+                onToggle={() => setShowList(v => !v)}
+              />
             </div>
 
-            <div className="shrink-0 px-4 pt-2 border-t border-white/8"
+            <div className="shrink-0 px-4 pt-3 border-t border-white/8 min-w-0"
               style={{ background: '#0a0a12', paddingBottom: 'max(0.65rem, env(safe-area-inset-bottom, 0px))' }}>
               <a href={bbxWhatsApp(`Hola ${BBX_CONTACT.name}, quiero el plan ${plan.nombre} de BBX.`)}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center w-full min-h-[44px] py-3 rounded-xl text-sm font-bold mb-1"
+                className="flex items-center justify-center w-full max-w-full min-w-0 min-h-[44px] py-3 rounded-xl text-sm font-bold"
                 style={{ background: plan.color, color: '#07070e' }}>
                 Consultar plan {plan.nombre}
               </a>

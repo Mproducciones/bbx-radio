@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { ChevronLeft, Home } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft } from 'lucide-react'
 import {
   BBX_CONTACT,
   BBX_FEATURES,
@@ -189,17 +189,24 @@ export function BbxSectionPage({
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1 text-xs font-semibold text-white/70 hover:text-white shrink-0 rounded-xl px-2.5 py-2 min-h-[44px]"
-            style={{ background: 'rgba(255,255,255,0.06)' }}
+            className="flex items-center gap-2 text-left shrink-0 rounded-xl px-2.5 py-2 min-h-[44px] transition-colors hover:bg-white/[0.08]"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+            aria-label="Volver al explorador BBX"
           >
-            <ChevronLeft className="w-4 h-4" strokeWidth={2.5} aria-hidden />
-            BBX
+            <ChevronLeft className="w-4 h-4 shrink-0 text-white/80" strokeWidth={2.5} aria-hidden />
+            <span className="leading-none">
+              <span className="block text-[9px] font-bold uppercase tracking-wide text-white/40">Volver</span>
+              <span className="block text-[11px] font-semibold text-white mt-0.5">Explorar</span>
+            </span>
           </button>
           <Link
             href="/"
-            className="flex items-center gap-1 text-[10px] font-semibold text-white/45 hover:text-white shrink-0 rounded-lg px-2 py-2 min-h-[44px]"
+            className="flex items-center gap-1.5 shrink-0 rounded-xl px-2.5 py-2 min-h-[44px] text-[10px] font-semibold text-white/55 hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+            aria-label="Ir a la radio en vivo"
           >
-            Radio
+            <Home className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
+            <span className="hidden min-[380px]:inline">En vivo</span>
           </Link>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm text-white truncate">{hub?.label ?? section}</p>
