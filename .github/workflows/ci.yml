@@ -23,12 +23,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Instalar dependencias
@@ -46,8 +46,11 @@ jobs:
       - name: Build de producción
         run: pnpm build
         env:
-          # Variables mínimas para que Next.js compile sin error de runtime
           NEXT_PUBLIC_PLAN: pro
           NEXT_TELEMETRY_DISABLED: 1
-          # Secrets opcionales — el build no falla sin ellos
           NEXTAUTH_SECRET: ci-placeholder
+          # Placeholders — el build evalúa src/lib/supabase.ts al compilar
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          SUPABASE_SERVICE_KEY: ci-placeholder-service-key
+          SUBSCRIPTION_STATUS: active
