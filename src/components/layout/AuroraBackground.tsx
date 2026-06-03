@@ -6,12 +6,12 @@ const EXCLUDED = ['/admin', '/studio', '/anunciate']
 
 /** Blur en wrapper + animación en hijo — Safari iOS congela transform si blur está en el mismo nodo */
 function AuroraBlob({
-  animation,
+  animClass,
   blur,
   box,
   gradient,
 }: {
-  animation: string
+  animClass: string
   blur: number
   box: React.CSSProperties
   gradient: string
@@ -26,11 +26,9 @@ function AuroraBlob({
       }}
     >
       <div
-        className="w-full h-full rounded-full"
+        className={`w-full h-full rounded-full ${animClass}`}
         style={{
           background: gradient,
-          animation,
-          WebkitAnimation: animation,
           willChange: 'transform',
         }}
       />
@@ -43,23 +41,28 @@ export function AuroraBackground() {
   if (EXCLUDED.some(p => pathname.startsWith(p))) return null
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden="true">
+    <div
+      className="fixed inset-0 pointer-events-none overflow-hidden max-md:[clip-path:inset(0)]"
+      style={{ zIndex: 0, width: '100%', maxWidth: '100%' }}
+      aria-hidden="true"
+    >
+      {/* % en lugar de vw + sin scale en móvil — evita overflow-x por transform */}
       <AuroraBlob
-        animation="aurora-1 14s ease-in-out infinite"
+        animClass="aurora-blob-1"
         blur={50}
-        box={{ width: '55vw', height: '55vw', top: '0', left: '0', maxWidth: '100%' }}
+        box={{ width: '42%', height: '42%', top: '-4%', left: '-4%' }}
         gradient="radial-gradient(circle, rgba(219,137,24,0.14) 0%, transparent 70%)"
       />
       <AuroraBlob
-        animation="aurora-2 18s ease-in-out infinite"
+        animClass="aurora-blob-2"
         blur={50}
-        box={{ width: '50vw', height: '50vw', top: '0', right: '0' }}
+        box={{ width: '38%', height: '38%', top: '-2%', right: '-2%' }}
         gradient="radial-gradient(circle, rgba(125,89,181,0.12) 0%, transparent 70%)"
       />
       <AuroraBlob
-        animation="aurora-3 22s ease-in-out infinite"
+        animClass="aurora-blob-3"
         blur={60}
-        box={{ width: '55vw', height: '55vw', bottom: '0', left: '50%', transform: 'translateX(-50%)' }}
+        box={{ width: '44%', height: '44%', bottom: '-4%', left: '28%' }}
         gradient="radial-gradient(circle, rgba(64,185,191,0.10) 0%, transparent 70%)"
       />
     </div>

@@ -248,7 +248,7 @@ export function NowPlayingCard({
         <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden">
           <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1">
             <div
-              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square overflow-visible"
+              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square overflow-hidden"
               style={{ width: visualSize, height: visualSize }}
             >
               <div

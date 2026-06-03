@@ -215,15 +215,21 @@
 html {
   min-height: 100%;
   min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
   overflow-x: clip;
   max-width: 100%;
+  overscroll-behavior-x: none;
 }
 
 body {
   min-height: 100%;
   min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
   overflow-x: clip;
   max-width: 100%;
+  overscroll-behavior-x: none;
   background-color: var(--color-ink-900);
   color: var(--color-ink-50);
   font-family: var(--font-ui);
@@ -238,7 +244,7 @@ body {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    overflow-x: clip;
+    overflow-x: hidden;
     max-width: 100%;
   }
 
@@ -249,9 +255,13 @@ body {
     max-height: 100dvh;
     min-height: 0;
     min-width: 0;
+    width: 100%;
     max-width: 100%;
     overflow: hidden;
-    overflow-x: clip;
+    overflow-x: hidden;
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
   }
 
   .app-mobile-main {
@@ -322,19 +332,28 @@ body {
   60%       { transform: translate3d(-5vw, 4vw, 0) scale(1.12); }
 }
 
+.aurora-blob-1 { animation: aurora-1 14s ease-in-out infinite; }
+.aurora-blob-2 { animation: aurora-2 18s ease-in-out infinite; }
+.aurora-blob-3 { animation: aurora-3 22s ease-in-out infinite; }
+
 @media (max-width: 767px) {
-  @keyframes aurora-1 {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-    50%       { transform: translate3d(2vw, 3vw, 0) scale(1.05); }
+  /* Solo traslación suave — scale() desbordaba el viewport (overflow-x) */
+  @keyframes aurora-1-mobile {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%       { transform: translate3d(2%, 3%, 0); }
   }
-  @keyframes aurora-2 {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-    50%       { transform: translate3d(-2vw, 2vw, 0) scale(1.05); }
+  @keyframes aurora-2-mobile {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%       { transform: translate3d(-2%, 2%, 0); }
   }
-  @keyframes aurora-3 {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-    50%       { transform: translate3d(2vw, -2vw, 0) scale(1.04); }
+  @keyframes aurora-3-mobile {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%       { transform: translate3d(2%, -2%, 0); }
   }
+
+  .aurora-blob-1 { animation: aurora-1-mobile 20s ease-in-out infinite; }
+  .aurora-blob-2 { animation: aurora-2-mobile 24s ease-in-out infinite; }
+  .aurora-blob-3 { animation: aurora-3-mobile 26s ease-in-out infinite; }
 }
 
 /* El grano se maneja via NoiseOverlay.tsx para excluir /admin y /studio */
