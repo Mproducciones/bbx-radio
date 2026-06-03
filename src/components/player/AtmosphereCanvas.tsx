@@ -27,6 +27,7 @@ export function AtmosphereCanvas({
   secondaryColor,
   anchor = 'player',
 }: AtmosphereCanvasProps) {
+  const wrapRef   = useRef<HTMLDivElement>(null)
   const canvasRef   = useRef<HTMLCanvasElement>(null)
   const rafRef      = useRef<number>(0)
   const energyRef   = useRef({ bass: 0, mid: 0, treble: 0, beat: 0, beatAge: 0 })
@@ -190,18 +191,24 @@ export function AtmosphereCanvas({
   }, [analyser, isPlaying, primaryColor, secondaryColor, anchor])
 
   useEffect(() => {
+    const wrap = wrapRef.current
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!wrap || !canvas) return
     const resize = () => {
-      const vv = window.visualViewport
-      canvas.width  = vv?.width  ?? window.innerWidth
-      canvas.height = vv?.height ?? window.innerHeight
+      const w = wrap.clientWidth
+      const h = wrap.clientHeight
+      if (w < 1 || h < 1) return
+      canvas.width  = w
+      canvas.height = h
     }
     resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(wrap)
     window.addEventListener('resize', resize)
     window.visualViewport?.addEventListener('resize', resize)
     rafRef.current = requestAnimationFrame(draw)
     return () => {
+      ro.disconnect()
       window.removeEventListener('resize', resize)
       window.visualViewport?.removeEventListener('resize', resize)
       cancelAnimationFrame(rafRef.current)
@@ -209,11 +216,11 @@ export function AtmosphereCanvas({
   }, [draw])
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
-      aria-hidden="true"
-    />
+    <div ref={wrapRef} className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none" style={{ zIndex: 0 }} aria-hidden="true">
+      <canvas
+        ref={canvasRef}
+        className="block w-full h-full pointer-events-none"
+      />
+    </div>
   )
 }

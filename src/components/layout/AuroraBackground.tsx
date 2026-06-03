@@ -42,8 +42,8 @@ export function AuroraBackground() {
 
   return (
     <div
-      className="fixed inset-0 pointer-events-none overflow-hidden max-md:[clip-path:inset(0)]"
-      style={{ zIndex: 0, width: '100%', maxWidth: '100%' }}
+      className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+      style={{ zIndex: 0 }}
       aria-hidden="true"
     >
       {/* % en lugar de vw + sin scale en móvil — evita overflow-x por transform */}

@@ -218,7 +218,7 @@ export function InteractiveLogo({
         ) : (
           <motion.div
             key="img"
-            className="absolute inset-0 rounded-full overflow-visible pointer-events-none z-[10]"
+            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-[10]"
             animate={{
               y: melt * 28,
               scale: burstActive ? [1, 1.14, 1.06, 1] : 1 - melt * 0.12,

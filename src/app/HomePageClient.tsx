@@ -18,8 +18,8 @@ export function HomePageClient() {
       style={{ zIndex: 1 }}
     >
       <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden">
-        <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
-          <div className="min-w-0">
+        <div className="flex items-center justify-between gap-2 mb-2 shrink-0 min-w-0 max-w-full">
+          <div className="min-w-0 flex-1">
             <h1 className="font-display text-xl text-white leading-none tracking-wide truncate">
               {RADIO.name}
             </h1>

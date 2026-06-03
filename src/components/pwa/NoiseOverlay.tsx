@@ -9,7 +9,7 @@ export function NoiseOverlay() {
   if (EXCLUDED.some(p => pathname.startsWith(p))) return null
   return (
     <div
-      className="fixed inset-0 pointer-events-none"
+      className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
       style={{
         zIndex: 9999,
         opacity: 0.028,

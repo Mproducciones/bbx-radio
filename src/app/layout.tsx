@@ -83,10 +83,11 @@ export default function RootLayout({
         <SubscriptionGraceBanner />
         <WelcomeAnimation />
         <RadioPlayerProvider>
-          <AuroraBackground />
-          <AtmosphereWrapper />
-          {/* Desktop: 2-column layout. Mobile: single column. */}
-          <div className="app-mobile-shell w-full min-w-0 max-w-full overflow-x-clip md:flex md:h-screen md:overflow-hidden">
+          {/* Fondos dentro del shell (absolute, no fixed) — evitan overflow-x en el documento */}
+          <div className="app-mobile-shell relative w-full min-w-0 max-w-full overflow-hidden md:flex md:h-screen md:overflow-hidden">
+            <AuroraBackground />
+            <AtmosphereWrapper />
+            <NoiseOverlay />
             <DesktopSidebar />
             <AppMainArea>
               <SwipeLayout>
@@ -97,7 +98,6 @@ export default function RootLayout({
           </div>
           <MiniPlayer />
           <PushPermission />
-          <NoiseOverlay />
           <PremiumAdBanner />
           <InstallBanner />
           <AdminAccessButton />

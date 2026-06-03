@@ -249,6 +249,8 @@ body {
   }
 
   .app-mobile-shell {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     height: 100dvh;
@@ -262,6 +264,11 @@ body {
     padding-left: max(12px, env(safe-area-inset-left, 0px));
     padding-right: max(12px, env(safe-area-inset-right, 0px));
     box-sizing: border-box;
+  }
+
+  .app-mobile-shell > *:not([aria-hidden="true"]) {
+    position: relative;
+    z-index: 1;
   }
 
   .app-mobile-main {
@@ -291,7 +298,10 @@ body {
 /* Sin contain:paint — recortaba bordes redondeados y dejaba esquinas “cortadas” */
 @media (min-width: 768px) {
   .app-mobile-shell {
+    position: relative;
     overflow: hidden;
+    padding-left: 0;
+    padding-right: 0;
   }
   .app-mobile-main {
     min-width: 0;
