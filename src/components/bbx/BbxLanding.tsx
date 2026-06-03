@@ -67,7 +67,7 @@ export function BbxLanding() {
   return (
     <div
       ref={rootRef}
-      className="bbx-landing min-h-[100dvh] w-full text-white overflow-x-hidden"
+      className="bbx-landing w-full min-w-0 text-white overflow-x-hidden md:min-h-[100dvh]"
       style={{ background: '#07070e' }}
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
@@ -94,7 +94,7 @@ export function BbxLanding() {
         </div>
       </header>
 
-      <main className="relative z-[1] w-full max-w-lg mx-auto px-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-10 md:max-w-6xl">
+      <main className="relative z-[1] w-full max-w-lg mx-auto px-4 pb-28 md:pb-10 md:max-w-6xl">
         <section className="pt-4 pb-5 md:pt-10" data-animate="fade">
           <div className="flex justify-center mb-3 min-h-[28px]">
             <LiveDemoBar />
@@ -153,7 +153,7 @@ export function BbxLanding() {
             <h2 className="text-base font-semibold text-white">Plataforma completa</h2>
             <p className="text-white/50 text-sm mt-1">Toca una tarjeta para ver el detalle</p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 min-w-0">
             {BBX_HUB_SECTIONS.map(tile => (
               <div key={tile.id} className="flex min-w-0">
                 <BbxHubTile

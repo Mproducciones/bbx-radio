@@ -2,89 +2,52 @@
 
 import { useEffect, type RefObject } from 'react'
 
-type AnimeInstance = {
-  (params: Record<string, unknown>): { pause: () => void }
-  set: (targets: Element | Element[] | NodeListOf<Element>, props: Record<string, unknown>) => void
-  stagger: (value: number, opts?: { start?: number }) => number
+function animateElements(nodes: Element[], startDelay: number, staggerMs: number) {
+  const timers: number[] = []
+  const reduced =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  nodes.forEach((el, i) => {
+    const node = el as HTMLElement
+    if (reduced) {
+      node.style.opacity = '1'
+      node.style.transform = 'none'
+      return
+    }
+
+    node.style.opacity = '0'
+    node.style.transform = 'translateY(14px)'
+
+    timers.push(
+      window.setTimeout(() => {
+        node.style.transition = 'opacity 0.55s ease-out, transform 0.55s ease-out'
+        node.style.opacity = '1'
+        node.style.transform = 'translateY(0)'
+      }, startDelay + i * staggerMs),
+    )
+  })
+
+  return () => timers.forEach(t => window.clearTimeout(t))
 }
 
-declare global {
-  interface Window {
-    anime?: AnimeInstance
-  }
-}
-
-let animeLoadPromise: Promise<AnimeInstance | null> | null = null
-
-function loadAnime(): Promise<AnimeInstance | null> {
-  if (typeof window === 'undefined') return Promise.resolve(null)
-  if (window.anime) return Promise.resolve(window.anime)
-
-  if (!animeLoadPromise) {
-    animeLoadPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = 'https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js'
-      script.async = true
-      script.onload = () => resolve(window.anime ?? null)
-      script.onerror = () => reject(new Error('anime.js failed to load'))
-      document.head.appendChild(script)
-    })
-  }
-
-  return animeLoadPromise
-}
-
-/** Entrada escalonada con data-animate="tile" | "fade" | "cta" */
+/** Entrada escalonada (CSS, sin CDN — compatible con CSP). */
 export function usePageAnimations(rootRef: RefObject<HTMLElement | null>, enabled = true) {
   useEffect(() => {
     if (!enabled || !rootRef.current) return
 
-    let cancelled = false
+    const root = rootRef.current
+    const fades = [...root.querySelectorAll('[data-animate="fade"]')]
+    const tiles = [...root.querySelectorAll('[data-animate="tile"]')]
+    const cta = root.querySelector('[data-animate="cta"]')
 
-    loadAnime().then(anime => {
-      if (cancelled || !anime || !rootRef.current) return
-
-      const root = rootRef.current
-      const tiles = root.querySelectorAll('[data-animate="tile"]')
-      const fades = root.querySelectorAll('[data-animate="fade"]')
-      const cta = root.querySelector('[data-animate="cta"]')
-      const all = [...tiles, ...fades, ...(cta ? [cta] : [])]
-
-      anime.set(all, { opacity: 0, translateY: 16 })
-
-      anime({
-        targets: fades,
-        opacity: [0, 1],
-        translateY: [12, 0],
-        duration: 560,
-        easing: 'easeOutCubic',
-        delay: anime.stagger(70, { start: 0 }),
-      })
-
-      anime({
-        targets: tiles,
-        opacity: [0, 1],
-        translateY: [18, 0],
-        scale: [0.97, 1],
-        duration: 640,
-        easing: 'easeOutExpo',
-        delay: anime.stagger(55, { start: 180 }),
-      })
-
-      if (cta) {
-        anime({
-          targets: cta,
-          opacity: [0, 1],
-          translateY: [12, 0],
-          duration: 520,
-          easing: 'easeOutCubic',
-          delay: 400,
-        })
-      }
-    })
+    const cleanFade = animateElements(fades, 0, 70)
+    const cleanTile = animateElements(tiles, 160, 55)
+    const cleanCta = cta ? animateElements([cta], 380, 0) : () => {}
 
     return () => {
-      cancelled = true
+      cleanFade()
+      cleanTile()
+      cleanCta()
     }
   }, [enabled, rootRef])
 }

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 /** BBX: scroll propio a pantalla completa, fuera del recorte del shell de la app. */
 export default function BbxLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bbx-layout w-full min-h-[100dvh] max-md:overflow-y-auto overflow-x-hidden max-md:[-webkit-overflow-scrolling:touch]">
+    <div className="bbx-layout w-full min-w-0 max-md:flex-1 max-md:min-h-0 max-md:overflow-y-auto max-md:overflow-x-hidden max-md:overscroll-contain md:min-h-[100dvh]">
       {children}
     </div>
   )

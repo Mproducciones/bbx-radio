@@ -30,7 +30,7 @@ function ValueRow({
           className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0"
           style={{ border: `1px solid ${line.color}40` }}
         >
-          <Image src={line.image} alt="" fill className="object-cover" sizes="48px" />
+          <Image src={line.image} alt="" fill className="object-cover" sizes="48px" loading="eager" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white leading-snug">{line.title}</p>

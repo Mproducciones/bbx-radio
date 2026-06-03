@@ -69,29 +69,34 @@ export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan
         <p className="text-white/55 text-sm mt-1">Precios en CLP · toca un plan para ver pantallas y detalle completo</p>
       </div>
 
-      <div className="rounded-xl border border-white/10 overflow-hidden mb-3 text-xs" data-animate="fade">
-        <div className="grid grid-cols-4 gap-px bg-white/10 font-semibold text-white/50">
-          <div className="bg-[#0c0c14] px-2 py-2">Plan</div>
-          <div className="bg-[#0c0c14] px-2 py-2 text-right">Precio</div>
-          <div className="bg-[#0c0c14] px-2 py-2 col-span-2">Incluye</div>
+      <div
+        className="hidden md:block rounded-xl border border-white/10 overflow-hidden mb-3 text-xs min-w-0"
+        data-animate="fade"
+      >
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,2fr)] gap-px bg-white/10 font-semibold text-white/50">
+          <div className="bg-[#0c0c14] px-3 py-2">Plan</div>
+          <div className="bg-[#0c0c14] px-3 py-2 text-right">Precio</div>
+          <div className="bg-[#0c0c14] px-3 py-2">Incluye</div>
         </div>
         {ordered.map(plan => (
           <button
             key={plan.id}
             type="button"
             onClick={() => onSelect(plan)}
-            className="grid grid-cols-4 gap-px bg-white/10 w-full text-left active:bg-white/[0.04]"
+            className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,2fr)] gap-px bg-white/10 w-full text-left active:bg-white/[0.04]"
           >
-            <div className="bg-[#0c0c14] px-2 py-2.5 text-white font-medium">{plan.nombre}</div>
-            <div className="bg-[#0c0c14] px-2 py-2.5 text-right tabular-nums text-white">${plan.precio}</div>
-            <div className="bg-[#0c0c14] px-2 py-2.5 col-span-2 text-white/55 leading-snug">
+            <div className="bg-[#0c0c14] px-3 py-2.5 text-white font-medium truncate">{plan.nombre}</div>
+            <div className="bg-[#0c0c14] px-3 py-2.5 text-right tabular-nums text-white whitespace-nowrap">
+              ${plan.precio}
+            </div>
+            <div className="bg-[#0c0c14] px-3 py-2.5 text-white/55 leading-snug line-clamp-2">
               {plan.features.join(' · ')}
             </div>
           </button>
         ))}
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2.5 min-w-0">
         {ordered.map(plan => (
           <PlanCard key={plan.id} plan={plan} onSelect={onSelect} />
         ))}

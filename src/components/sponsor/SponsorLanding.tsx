@@ -31,7 +31,7 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
   }, [])
 
   return (
-    <div ref={rootRef} className="relative max-md:pb-[calc(var(--app-nav-total)+5rem)] md:pb-8">
+    <div ref={rootRef} className="relative w-full min-w-0 overflow-x-hidden max-md:pb-[calc(var(--app-nav-total)+5rem)] md:pb-8">
       <header className="border-b border-white/10 pb-5 mb-2" data-animate="fade">
         <p className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2">
           {SPONSOR_HERO.eyebrow}

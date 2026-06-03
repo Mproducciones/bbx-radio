@@ -11,7 +11,7 @@ const SECTIONS = [
 export function SponsorSectionNav() {
   return (
     <nav
-      className="sticky z-20 -mx-4 px-4 py-2 mb-4 border-b border-white/8 backdrop-blur-xl"
+      className="sticky z-20 py-2 mb-4 border-b border-white/8 backdrop-blur-xl w-full min-w-0"
       style={{ top: 0, background: 'rgba(7,7,14,0.92)' }}
       aria-label="Secciones de publicidad"
     >

@@ -12,7 +12,9 @@ export function AppMainArea({ children }: { children: ReactNode }) {
   return (
     <div
       className={`app-mobile-main flex-1 md:overflow-y-auto ${
-        scrollOnMobile ? 'max-md:overflow-y-auto max-md:min-h-0' : 'max-md:overflow-hidden'
+        scrollOnMobile
+          ? 'max-md:min-h-0 max-md:overflow-y-auto max-md:overflow-x-hidden max-md:overscroll-contain'
+          : 'max-md:overflow-hidden'
       }`}
     >
       {children}
