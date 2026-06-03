@@ -155,25 +155,27 @@ export function BbxLanding() {
     >
       {/* Ambient blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[50%] rounded-full opacity-25 blur-[120px]"
-          style={{ background: 'radial-gradient(circle,#db8918 0%,transparent 70%)' }} />
-        <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[45%] rounded-full opacity-15 blur-[100px]"
-          style={{ background: 'radial-gradient(circle,#40B9BF 0%,transparent 70%)' }} />
+        <div className="absolute top-[-15%] left-[-5%] w-[65%] h-[55%] rounded-full opacity-30 blur-[90px]"
+          style={{ background: 'radial-gradient(circle,#db8918 0%,transparent 65%)' }} />
+        <div className="absolute bottom-[-5%] right-[-10%] w-[55%] h-[40%] rounded-full opacity-20 blur-[80px]"
+          style={{ background: 'radial-gradient(circle,#40B9BF 0%,transparent 65%)' }} />
+        <div className="absolute top-[50%] left-[40%] w-[40%] h-[35%] rounded-full opacity-10 blur-[70px]"
+          style={{ background: 'radial-gradient(circle,#7D59B5 0%,transparent 70%)' }} />
       </div>
 
       {/* Sticky header */}
       <header className="sticky top-0 z-50 border-b border-white/8 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.94)' }}>
         <div className="w-full max-w-xl mx-auto h-12 flex items-center justify-between gap-2 px-4 md:max-w-5xl">
-          <div className="flex items-center gap-2">
-            <span className="font-display text-2xl tracking-widest leading-none text-white">BBX</span>
-            <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="font-display text-2xl tracking-widest leading-none text-white shrink-0">BBX</span>
+            <span className="hidden sm:inline text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0"
               style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918', border: '1px solid rgba(219,137,24,0.3)' }}>
               Radio System
             </span>
           </div>
           <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a"
-            className="shrink-0 !text-[11px] !px-3 !py-1.5">
+            className="shrink-0 !text-[11px] !px-2.5 !py-1.5 whitespace-nowrap">
             Demo gratis
           </AccentButton>
         </div>
@@ -199,8 +201,11 @@ export function BbxLanding() {
               </p>
               <h1
                 data-hero
-                className="font-display text-[2.6rem] sm:text-5xl leading-none tracking-wide"
-                style={{ textShadow: '0 0 40px rgba(219,137,24,0.2)' }}
+                className="font-display leading-[1.05] tracking-wide opacity-0"
+                style={{
+                  fontSize: 'clamp(1.55rem, 8.5vw, 2.6rem)',
+                  textShadow: '0 0 40px rgba(219,137,24,0.25)',
+                }}
               >
                 {BBX_HERO.title}
               </h1>

@@ -75,14 +75,56 @@ export function HomePageClient() {
         </div>
       </div>
 
-      <div className="hidden md:flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
-        <p className="text-[var(--color-mag-400)] text-[10px] font-black uppercase tracking-widest mb-3">
-          Transmitiendo en vivo
+      {/* Desktop: panel central con estado en vivo */}
+      <div className="hidden md:flex flex-col items-center justify-center min-h-[80vh] px-8 text-center relative">
+        {/* Glow background */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 40%, rgba(219,137,24,0.08) 0%, transparent 65%)',
+          }}
+        />
+
+        {/* Live pill */}
+        <div
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-8"
+          style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.25)' }}
+        >
+          <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
+          <span className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Transmitiendo en vivo</span>
+        </div>
+
+        <h2 className="font-display text-6xl text-white leading-none mb-3 tracking-wide">{RADIO.name}</h2>
+        <p className="text-[var(--color-mag-400)] font-semibold text-lg mb-6">{RADIO.frequency}</p>
+
+        <p className="text-white/35 text-sm max-w-xs leading-relaxed mb-10">
+          El reproductor está en la barra lateral. Usa el menú para explorar la grilla, votar, mandar saludos y más.
         </p>
-        <h2 className="font-display text-5xl text-white leading-none mb-4">{RADIO.name}</h2>
-        <p className="text-[var(--color-ink-400)] text-sm max-w-sm">
-          Usa el menú lateral para ver la grilla, participar en la votación, mandar saludos y más.
-        </p>
+
+        {/* Quick links */}
+        <div className="flex flex-wrap gap-2 justify-center">
+          {[
+            { href: '/programacion', label: 'Ver grilla' },
+            { href: '/participa',    label: 'Votar' },
+            { href: '/saludos',      label: 'Mandar saludo' },
+            { href: '/noticias',     label: 'Noticias' },
+          ].map(({ href, label }) => (
+            <a
+              key={href}
+              href={href}
+              className="text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.6)',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#fff'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(219,137,24,0.4)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.6)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
       </div>
     </main>
   )

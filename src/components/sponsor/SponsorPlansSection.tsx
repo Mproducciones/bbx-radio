@@ -99,7 +99,7 @@ function PlanCard({ plan, onSelect, index }: {
             <p className="font-black tabular-nums leading-none" style={{ color: plan.color, fontSize: '1.85rem' }}>
               ${plan.precio}
             </p>
-            <p className="text-[9px] text-white/35 mt-1">/mes CLP</p>
+            <p className="text-[9px] text-white/35 mt-1">al mes · CLP</p>
           </div>
         </div>
 
