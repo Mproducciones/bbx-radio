@@ -16,7 +16,7 @@ export function HomePageClient() {
       style={{ zIndex: 1 }}
     >
       {/* Móvil: reproductor a pantalla completa (referencia app radio PWA) */}
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full px-3">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full px-2.5 pt-0.5">
         <ClientOnly
           fallback={
             <div className="flex-1 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
