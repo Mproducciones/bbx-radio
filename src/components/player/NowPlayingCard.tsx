@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
@@ -22,50 +22,56 @@ const NB = 52    // number of bars
 function CircularBars({ isPlaying, primary, secondary, analyser }: {
   isPlaying: boolean; primary: string; secondary: string; analyser: AnalyserNode | null
 }) {
-  const ref    = useRef<HTMLCanvasElement>(null)
-  const smooth = useRef(Array(NB).fill(8))
-  const altBar = useMemo(() => Array.from({ length: NB }, () => Math.random() > 0.8), [])
+  const ref = useRef<HTMLCanvasElement>(null)
+  const smooth = useRef(Array(NB).fill(10))
 
   useEffect(() => {
     const canvas = ref.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const cx = CV / 2, cy = CV / 2
+    const cx = CV / 2
+    const cy = CV / 2
     let raf: number
     const freqData = new Uint8Array(analyser?.frequencyBinCount ?? 128)
 
     function draw() {
       ctx!.clearRect(0, 0, CV, CV)
       readFrequencyData(analyser, isPlaying, freqData)
+      const t = performance.now() / 1000
 
       for (let i = 0; i < NB; i++) {
+        const bin = Math.floor((i / NB) * freqData.length)
+        const prev = freqData[Math.max(0, bin - 1)]
+        const next = freqData[Math.min(freqData.length - 1, bin + 1)]
+        const spread = (prev + freqData[bin] + next) / (3 * 255)
+        const pulse = 0.5 + 0.5 * Math.sin(t * 2.6 + i * 0.38)
+
         let target: number
         if (isPlaying) {
-          const bin = Math.floor((i / NB) * freqData.length)
-          target = 6 + (freqData[bin] / 255) * 42
+          target = 10 + spread * 34 + pulse * 16
         } else {
-          target = 8 + Math.sin((Date.now() / 500) + i * 0.45) * 4
+          target = 10 + pulse * 8
         }
 
-        smooth.current[i] += (target - smooth.current[i]) * 0.25
+        smooth.current[i] += (target - smooth.current[i]) * 0.28
         const len = smooth.current[i]
         const angle = (i / NB) * 2 * Math.PI - Math.PI / 2
-        const r0 = LR + 5
+        const r0 = LR + 4
         ctx!.beginPath()
         ctx!.moveTo(cx + Math.cos(angle) * r0, cy + Math.sin(angle) * r0)
         ctx!.lineTo(cx + Math.cos(angle) * (r0 + len), cy + Math.sin(angle) * (r0 + len))
-        ctx!.strokeStyle = altBar[i] ? secondary : primary
+        ctx!.strokeStyle = i % 2 === 0 ? primary : secondary
         ctx!.lineWidth = 2.5
         ctx!.lineCap = 'round'
-        ctx!.globalAlpha = 0.9
+        ctx!.globalAlpha = 0.55 + Math.min(0.45, len / 48)
         ctx!.stroke()
       }
       raf = requestAnimationFrame(draw)
     }
     draw()
     return () => cancelAnimationFrame(raf)
-  }, [isPlaying, primary, secondary, analyser, altBar])
+  }, [isPlaying, primary, secondary, analyser])
 
   return (
     <canvas ref={ref} width={CV} height={CV}
@@ -242,50 +248,38 @@ export function NowPlayingCard({
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
         <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden">
           <SecretHintToast message={secrets.hintFlash} />
-          <div className="absolute inset-0 pointer-events-none" aria-hidden>
-            <div
-              className="absolute top-[12%] left-1/2 -translate-x-1/2 w-[100%] h-[38%] rounded-full opacity-70 blur-3xl"
-              style={{ background: `radial-gradient(ellipse, ${primary}28 0%, transparent 70%)` }}
-            />
-            <div
-              className="absolute bottom-[22%] right-[-8%] w-[55%] h-[32%] rounded-full opacity-45 blur-3xl"
-              style={{ background: `radial-gradient(ellipse, ${secondary}20 0%, transparent 72%)` }}
-            />
-          </div>
 
           <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1">
             <div
               className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square"
               style={{ width: visualSize, height: visualSize }}
             >
-              <div className="absolute inset-2 rounded-2xl overflow-hidden opacity-75">
+              <div
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+                style={{
+                  width: '92%',
+                  height: '92%',
+                  background: `radial-gradient(circle, ${primary}42 0%, ${primary}18 42%, ${secondary}08 58%, transparent 72%)`,
+                  filter: 'blur(22px)',
+                }}
+                aria-hidden
+              />
+              <div
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full overflow-hidden opacity-50 pointer-events-none"
+                style={{ width: '86%', height: '86%' }}
+                aria-hidden
+              >
                 <DotGridVisualizer
                   analyser={analyser}
                   isPlaying={isPlaying}
                   primary={primary}
                   secondary={secondary}
+                  className="w-full h-full"
                 />
               </div>
-              <div className="relative scale-[0.88] sm:scale-[0.92] origin-center">
+              <div className="relative scale-[0.88] sm:scale-[0.92] origin-center z-[1]">
                 <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
                   <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
-                  {isPlaying && (
-                    <motion.div
-                      className="absolute rounded-full pointer-events-none"
-                      style={{
-                        width: LR * 2 + 20,
-                        height: LR * 2 + 20,
-                        top: '50%',
-                        left: '50%',
-                        marginTop: -(LR + 10),
-                        marginLeft: -(LR + 10),
-                        background: `radial-gradient(circle, ${primary}35 0%, transparent 70%)`,
-                        filter: 'blur(14px)',
-                      }}
-                      animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.9, 0.5] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  )}
                   <InteractiveLogo
                     artSrc={artSrc}
                     title={title ?? radio.name}

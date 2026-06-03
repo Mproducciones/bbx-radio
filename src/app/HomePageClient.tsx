@@ -73,10 +73,6 @@ export function HomePageClient() {
             />
           </ClientOnly>
         </div>
-
-        <p className="text-center text-white/25 text-[10px] font-medium uppercase tracking-wide mt-2 mb-1 leading-relaxed px-2 shrink-0">
-          Mantén el logo · 5 toques en {RADIO.frequency} → BBX
-        </p>
       </div>
 
       <div className="hidden md:flex flex-col items-center justify-center min-h-[70vh] px-8 text-center">
