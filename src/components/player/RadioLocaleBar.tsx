@@ -135,7 +135,7 @@ export function RadioLocaleBar({
   return (
     <div
       className={`flex items-center justify-between gap-2 w-full min-w-0 rounded-xl relative z-[3] ${
-        compact ? 'py-2 px-3 text-xs' : 'py-2.5 px-3.5 text-sm'
+        compact ? 'py-2.5 px-3 text-xs min-h-[2.75rem]' : 'py-2.5 px-3.5 text-sm'
       } ${className}`}
       style={{
         background: 'rgba(7,7,14,0.88)',
@@ -165,8 +165,10 @@ export function RadioLocaleBar({
             style={{ color: 'rgba(255,255,255,0.7)' }}
             title={wx.label}
           >
-            <span className="text-base leading-none" aria-hidden>{wx.emoji}</span>
-            <span>{weather.temp}°</span>
+            <span className={`leading-none ${compact ? 'text-lg' : 'text-base'}`} aria-hidden>
+              {wx.emoji}
+            </span>
+            <span className={compact ? 'text-sm font-bold' : ''}>{weather.temp}°</span>
           </span>
         ) : (
           <span style={{ color: 'rgba(255,255,255,0.35)' }} title={weatherError ? 'Clima no disponible' : 'Cargando'}>

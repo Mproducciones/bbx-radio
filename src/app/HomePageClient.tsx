@@ -2,6 +2,7 @@
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
+import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
@@ -24,21 +25,30 @@ export function HomePageClient() {
             </h1>
             <p className="text-white/35 text-xs mt-0.5 font-medium truncate">{RADIO.slogan}</p>
           </div>
-          <span
-            className="font-display text-sm leading-none px-2.5 py-1 rounded-lg shrink-0"
+          <BbxFrequencyGate
+            className="font-display text-sm leading-none px-2.5 py-1 rounded-lg shrink-0 active:scale-95 transition-transform"
             style={{
               color: 'var(--color-mag-400)',
               background: 'rgba(219,137,24,0.08)',
-              border: '1px solid rgba(219,137,24,0.2)',
+              border: '1px solid rgba(219,137,24,0.35)',
             }}
           >
             {RADIO.frequency}
-          </span>
+          </BbxFrequencyGate>
         </div>
 
-        <RadioLocaleBar radio={RADIO} compact className="mb-2 shrink-0" />
+        <ClientOnly
+          fallback={
+            <div
+              className="mb-2 h-11 w-full rounded-xl animate-pulse shrink-0"
+              style={{ background: 'rgba(255,255,255,0.05)' }}
+            />
+          }
+        >
+          <RadioLocaleBar radio={RADIO} compact className="mb-2 shrink-0 relative z-[4]" />
+        </ClientOnly>
 
-        <div className="flex-1 flex flex-col min-h-0 min-w-0">
+        <div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
           <ClientOnly
             fallback={
               <div className="flex-1 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
@@ -64,8 +74,8 @@ export function HomePageClient() {
           </ClientOnly>
         </div>
 
-        <p className="text-center text-white/15 text-[10px] font-medium uppercase tracking-widest mt-2 mb-1 leading-relaxed px-2 shrink-0">
-          Mantén el logo para modo pulso
+        <p className="text-center text-white/25 text-[10px] font-medium uppercase tracking-wide mt-2 mb-1 leading-relaxed px-2 shrink-0">
+          Mantén el logo · 5 toques en {RADIO.frequency} → BBX
         </p>
       </div>
 
