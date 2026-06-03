@@ -9,21 +9,22 @@
 
 ### Variables de entorno (obligatorio para build/dev)
 
-No hay `.env.example` en el repo; la referencia es `ENV_SETUP.md`. Crear **`.env.local`** en la raíz (gitignored) antes de `pnpm dev` o `pnpm build`.
+Plantilla: **`.env.example`** → copiar a **`.env.local`** (gitignored). Detalle en **`ENV_SETUP.md`**.
 
 Mínimo para que compile y arranque:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_KEY` (requerida en servidor al usar `supabaseAdmin`; sin clave válida las APIs con persistencia fallan)
+- `SUPABASE_SERVICE_KEY` (requerida al importar `supabaseAdmin` en rutas API)
 
-Recomendado en Cloud Agent sin acceso a Supabase real:
-
-- `SUBSCRIPTION_STATUS=active` — evita depender de la tabla `tenant_subscriptions` en dev.
-- `NEXT_PUBLIC_PLAN=pro`
-- `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` (CMS; la UI funciona con fallbacks locales si Sanity no responde).
+**Cloud Agent sin secretos del usuario:** con placeholders en `.env.local` + `SUBSCRIPTION_STATUS=active` + Sanity (`nmwhp66x` / `production`) basta para **UI, player, build y `agent:qa`**. La persistencia real (solicitudes, saludos, admin con DB) necesita claves Supabase válidas en Vercel o en secrets locales.
 
 Sin `.env.local`, `next build` falla al evaluar `src/lib/supabase.ts`.
+
+### Producción
+
+- App: https://bbx-radio-9k9y.vercel.app/
+- Deploy: integración GitHub → Vercel en push a `main` (mismas env vars que en el dashboard del proyecto).
 
 ### Servicios
 
@@ -52,7 +53,7 @@ Reglas de producto y overflow móvil: `.cursor/rules/bbx-pulso.mdc` (`npm run ag
 
 ### Gotchas
 
-- El CI de GitHub compila con pocas env vars; en local **Supabase público es obligatorio** para el build actual.
+- El CI en `.github/workflows/ci.yml` usa Node 22, pnpm 10 y `pnpm run agent:qa` (validate + build) con env de placeholder alineadas a `.env.example`.
 - `src/proxy.ts` contiene lógica tipo middleware; no confundir con un `middleware.ts` aparte.
 - Hot reload no recarga variables de `.env.local`; reiniciar `pnpm dev` tras cambiar env.
 - APK Android (`pnpm build:apk`) requiere Android SDK; no es necesario para desarrollo web.
