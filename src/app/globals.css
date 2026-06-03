@@ -182,8 +182,12 @@
 /* ── BASE STYLES ──────────────────────────────────────────── */
 :root {
   color-scheme: dark;
+  --app-shell-pad-x: max(12px, env(safe-area-inset-left, 0px));
+  --app-shell-pad-right: max(12px, env(safe-area-inset-right, 0px));
   --app-nav-h: 62px;
   --app-nav-total: calc(var(--app-nav-h) + env(safe-area-inset-bottom, 0px));
+  --app-mini-player-h: 48px;
+  --app-mini-player-total: calc(var(--app-mini-player-h) + 6px);
   --app-screen-h: calc(100dvh - var(--app-nav-total));
   --app-ad-banner-h: 88px;
   --app-content-h: calc(var(--app-screen-h) - var(--app-ad-banner-h));
@@ -261,8 +265,8 @@ body {
     max-width: 100%;
     overflow: hidden;
     overflow-x: hidden;
-    padding-left: max(12px, env(safe-area-inset-left, 0px));
-    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    padding-left: var(--app-shell-pad-x);
+    padding-right: var(--app-shell-pad-right);
     box-sizing: border-box;
   }
 

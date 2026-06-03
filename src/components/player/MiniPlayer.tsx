@@ -6,22 +6,23 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
+import { isMiniPlayerSlimRoute } from '@/lib/miniPlayerRoutes'
 import { ConcertMode } from './ConcertMode'
 import { RADIO, NOW_PLAYING } from '@/lib/radioConfig'
 
-// Mini EQ bars for "now playing" indicator
-function EqBars({ color, playing }: { color: string; playing: boolean }) {
+function EqBars({ color, playing, compact }: { color: string; playing: boolean; compact?: boolean }) {
   const heights = [0.5, 1, 0.7, 0.9, 0.55]
+  const h = compact ? 12 : 16
   return (
-    <div className="flex items-end gap-px h-4 shrink-0">
-      {heights.map((h, i) => (
+    <div className={`flex items-end gap-px shrink-0 ${compact ? 'h-3' : 'h-4'}`}>
+      {heights.map((bar, i) => (
         <motion.div
           key={i}
           className="w-0.5 rounded-full"
-          style={{ background: color, minHeight: 3, height: h * 16 }}
+          style={{ background: color, minHeight: 2, height: bar * h }}
           animate={playing
-            ? { scaleY: [h, 1, h * 0.4, 1, h], height: [h * 16, 16, h * 6, 14, h * 16] }
-            : { height: 4, scaleY: 1 }
+            ? { scaleY: [bar, 1, bar * 0.4, 1, bar], height: [bar * h, h, bar * 4, h * 0.85, bar * h] }
+            : { height: 3, scaleY: 1 }
           }
           transition={{ duration: 0.9 + i * 0.12, repeat: Infinity, delay: i * 0.1, ease: 'easeInOut' }}
         />
@@ -36,143 +37,138 @@ export function MiniPlayer() {
   const { current: track } = useNowPlaying()
   const colors = useAlbumColors(track?.albumArt)
 
-  const isHome   = pathname === '/'
+  const isHome = pathname === '/'
   const isHidden = pathname.startsWith('/admin') || pathname.startsWith('/studio') || pathname.startsWith('/bbx')
-  const show     = !isHome && !isHidden && !hasError
+  const slim = isMiniPlayerSlimRoute(pathname)
+  const show = !isHome && !isHidden && !hasError
+
+  const artSize = slim ? 32 : 36
+  const playSize = slim ? 36 : 40
 
   return (
     <>
       <AnimatePresence>
         {show && (
           <motion.div
-            initial={{ y: 80, opacity: 0 }}
+            initial={{ y: 48, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-            className="fixed z-[100] md:hidden"
+            exit={{ y: 48, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 480, damping: 34 }}
+            className="fixed z-[100] md:hidden max-w-full min-w-0"
             style={{
-              bottom: 'calc(64px + env(safe-area-inset-bottom, 0px))',
-              left: 0, right: 0,
-              padding: '0 8px 4px',
+              bottom: 'var(--app-nav-total)',
+              left: 'var(--app-shell-pad-x)',
+              right: 'var(--app-shell-pad-right)',
+              height: 'var(--app-mini-player-h)',
+              paddingBottom: 4,
             }}
           >
-            <motion.div
-              className="relative overflow-hidden rounded-2xl"
+            <div
+              className="relative h-full w-full min-w-0 max-w-full overflow-hidden rounded-xl flex items-center"
               style={{
-                background: 'rgba(12,10,20,0.95)',
-                backdropFilter: 'blur(28px)',
-                WebkitBackdropFilter: 'blur(28px)',
-                border: `1px solid ${colors.primary}35`,
-                boxShadow: `0 -2px 24px ${colors.primary}18, 0 8px 40px rgba(0,0,0,0.6)`,
+                background: 'rgba(12,10,20,0.96)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: `1px solid ${colors.primary}28`,
+                boxShadow: slim ? '0 4px 16px rgba(0,0,0,0.45)' : `0 4px 20px ${colors.primary}12`,
               }}
             >
-              {/* Animated top accent line */}
-              <motion.div
-                className="absolute top-0 left-0 right-0 h-px"
-                style={{ background: `linear-gradient(90deg, transparent 0%, ${colors.primary} 40%, ${colors.secondary} 70%, transparent 100%)` }}
-                animate={{ opacity: isPlaying ? [0.6, 1, 0.6] : 0.3 }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-
-              {/* Ambient glow when playing */}
-              {isPlaying && (
+              {!slim && isPlaying && (
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
-                  animate={{ background: [`radial-gradient(ellipse at 25% 50%, ${colors.primary}10 0%, transparent 55%)`, `radial-gradient(ellipse at 35% 50%, ${colors.primary}15 0%, transparent 55%)`] }}
+                  animate={{
+                    background: [
+                      `radial-gradient(ellipse at 20% 50%, ${colors.primary}08 0%, transparent 50%)`,
+                      `radial-gradient(ellipse at 30% 50%, ${colors.primary}12 0%, transparent 50%)`,
+                    ],
+                  }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatType: 'reverse' }}
                 />
               )}
 
-              <div className="relative flex items-center gap-3 px-3.5 py-2.5">
-
-                {/* Art + EQ overlay */}
+              <div className={`relative flex items-center w-full min-w-0 max-w-full ${slim ? 'gap-2 px-2' : 'gap-2.5 px-2.5'}`}>
                 <motion.button
+                  type="button"
                   whileTap={{ scale: 0.93 }}
-                  onClick={openConcert}
-                  className="relative w-10 h-10 rounded-xl flex-shrink-0 overflow-hidden"
-                  style={{ background: `linear-gradient(135deg, ${colors.primary}55, ${colors.secondary}33)` }}
+                  onClick={slim ? toggle : openConcert}
+                  className="relative rounded-lg flex-shrink-0 overflow-hidden"
+                  style={{
+                    width: artSize,
+                    height: artSize,
+                    background: `linear-gradient(135deg, ${colors.primary}44, ${colors.secondary}22)`,
+                  }}
+                  aria-label={slim ? (isPlaying ? 'Pausar' : 'Reproducir') : 'Abrir reproductor'}
                 >
                   {track?.albumArt ? (
                     <Image
                       src={track.albumArt}
                       alt=""
-                      width={40}
-                      height={40}
+                      width={artSize}
+                      height={artSize}
                       className="w-full h-full object-cover"
                       unoptimized
                     />
                   ) : (
-                    <motion.span
-                      animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                      className="w-full h-full flex items-center justify-center text-xl opacity-50"
-                    >
-                      ♪
-                    </motion.span>
+                    <span className="w-full h-full flex items-center justify-center text-base opacity-50">♪</span>
                   )}
-                  {isPlaying && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
-                      <EqBars color="#fff" playing={isPlaying} />
+                  {isPlaying && !slim && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/35 rounded-lg">
+                      <EqBars color="#fff" playing compact />
                     </div>
                   )}
                 </motion.button>
 
-                {/* Info */}
-                <button onClick={openConcert} className="flex-1 min-w-0 text-left">
-                  <div className="flex items-center gap-2">
-                    <p className="text-white text-sm font-semibold truncate leading-tight">
+                <button
+                  type="button"
+                  onClick={slim ? toggle : openConcert}
+                  className="flex-1 min-w-0 text-left"
+                >
+                  <p className="text-white text-xs font-semibold truncate leading-tight">
                     {track?.title ?? NOW_PLAYING.title}
                   </p>
-                    {isPlaying && (
-                      <span
-                        className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-1"
-                        style={{ color: colors.primary, background: `${colors.primary}18`, border: `1px solid ${colors.primary}30` }}
-                      >
-                        <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: colors.primary }} />
-                        VIVO
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-white/40 text-xs truncate mt-0.5">
-                    {track?.artist ?? NOW_PLAYING.artist}
-                  </p>
+                  {!slim && (
+                    <p className="text-white/40 text-[10px] truncate mt-0.5">
+                      {track?.artist ?? NOW_PLAYING.artist}
+                    </p>
+                  )}
                 </button>
 
-                {/* Play/Pause */}
                 <motion.button
+                  type="button"
                   whileTap={{ scale: 0.88 }}
                   onClick={toggle}
                   disabled={isLoading}
-                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative"
-                  style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})` }}
+                  className="rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{
+                    width: playSize,
+                    height: playSize,
+                    background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+                  }}
+                  aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
                 >
-                  {isPlaying && (
-                    <motion.span
-                      className="absolute inset-0 rounded-full"
-                      style={{ border: `1.5px solid ${colors.primary}` }}
-                      animate={{ scale: [1, 1.55], opacity: [0.5, 0] }}
-                      transition={{ duration: 1.6, repeat: Infinity }}
-                    />
+                  {isLoading ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : isPlaying ? (
+                    <PauseIcon className="w-3.5 h-3.5 text-white" />
+                  ) : (
+                    <PlayIcon className="w-3.5 h-3.5 text-white ml-0.5" />
                   )}
-                  {isLoading
-                    ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    : isPlaying
-                      ? <PauseIcon className="w-4 h-4 text-white" />
-                      : <PlayIcon className="w-4 h-4 text-white ml-0.5" />
-                  }
                 </motion.button>
 
-                {/* Expand */}
-                <motion.button
-                  whileTap={{ scale: 0.88 }}
-                  onClick={openConcert}
-                  className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(255,255,255,0.06)' }}
-                >
-                  <ExpandIcon className="w-4 h-4 text-white/40" />
-                </motion.button>
+                {!slim && (
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.88 }}
+                    onClick={openConcert}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(255,255,255,0.06)' }}
+                    aria-label="Pantalla completa"
+                  >
+                    <ExpandIcon className="w-3.5 h-3.5 text-white/40" />
+                  </motion.button>
+                )}
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

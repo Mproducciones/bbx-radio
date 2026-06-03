@@ -19,7 +19,21 @@ interface PremiumAd {
 }
 
 /** En Vivo el play queda abajo — el banner fijo lo tapaba */
-const EXCLUDED = ['/', '/admin', '/studio', '/bbx', '/tv', '/anunciate', '/patrocinadores']
+const EXCLUDED = [
+  '/',
+  '/admin',
+  '/studio',
+  '/bbx',
+  '/tv',
+  '/anunciate',
+  '/patrocinadores',
+  '/programacion',
+  '/participa',
+  '/saludos',
+  '/noticias',
+  '/eventos',
+  '/replay',
+]
 const DISMISS_KEY = 'premium_ad_dismissed'
 const DISMISS_MINUTES = 30
 
@@ -89,7 +103,11 @@ export function PremiumAdBanner() {
           exit={{ y: 60, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 1.5 }}
           className="fixed z-[90] md:hidden"
-          style={{ bottom: 'calc(var(--app-nav-total) + 4px)', left: 8, right: 8 }}
+          style={{
+            bottom: 'calc(var(--app-nav-total) + var(--app-mini-player-total) + 4px)',
+            left: 'var(--app-shell-pad-x)',
+            right: 'var(--app-shell-pad-right)',
+          }}
         >
           <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_mobile">
           <a

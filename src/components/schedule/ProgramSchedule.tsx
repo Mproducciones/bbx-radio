@@ -149,7 +149,10 @@ export function ProgramSchedule({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -10 }}
           transition={{ duration: 0.18 }}
-          className={cn('flex flex-col gap-1.5 max-md:gap-1', fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain')}
+          className={cn(
+            'flex flex-col gap-1.5 max-md:gap-1',
+            fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain max-md:pb-[calc(var(--app-mini-player-total)+0.25rem)]',
+          )}
         >
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center py-10 gap-3">

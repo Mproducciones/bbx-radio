@@ -1,0 +1,32 @@
+# Copiar a brief.yaml y ajustar antes de un run del motor (fase 1+)
+app:
+  name: Radio Bienvenida
+  slug: bbx-radio
+  plan: pro
+  locale: es-CL
+  site_url: https://bbx-radio-9k9y.vercel.app
+
+brand:
+  primary: "#db8918"
+  secondary: "#40B9BF"
+  tone: cercano, radio local, profesional
+
+goals:
+  - pwa_produccion_vercel
+  - layout_movil_sin_overflow
+  - mini_player_discreto_en_grilla_y_listas
+  - visuales_premium_sin_recargar_ui
+
+constraints:
+  - no_cambiar_bottom_nav_sin_aprobacion_usuario
+  - no_commits_sin_pedido_explicito
+  - mobile_first_max_767px
+
+quality_gates:
+  - npm_run_build
+  - overflow_viewport_360
+  - manifest_icons_valid
+  - eslint_max_warnings_50
+
+variants_to_try: 3
+max_iterations_per_variant: 5
