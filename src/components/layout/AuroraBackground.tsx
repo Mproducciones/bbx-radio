@@ -47,19 +47,19 @@ export function AuroraBackground() {
       <AuroraBlob
         animation="aurora-1 14s ease-in-out infinite"
         blur={50}
-        box={{ width: '60vw', height: '60vw', top: '-20vw', left: '-15vw' }}
+        box={{ width: '55vw', height: '55vw', top: '0', left: '0', maxWidth: '100%' }}
         gradient="radial-gradient(circle, rgba(219,137,24,0.14) 0%, transparent 70%)"
       />
       <AuroraBlob
         animation="aurora-2 18s ease-in-out infinite"
         blur={50}
-        box={{ width: '50vw', height: '50vw', top: '-10vw', right: '-10vw' }}
+        box={{ width: '50vw', height: '50vw', top: '0', right: '0' }}
         gradient="radial-gradient(circle, rgba(125,89,181,0.12) 0%, transparent 70%)"
       />
       <AuroraBlob
         animation="aurora-3 22s ease-in-out infinite"
         blur={60}
-        box={{ width: '70vw', height: '70vw', bottom: '-30vw', left: '15vw' }}
+        box={{ width: '55vw', height: '55vw', bottom: '0', left: '50%', transform: 'translateX(-50%)' }}
         gradient="radial-gradient(circle, rgba(64,185,191,0.10) 0%, transparent 70%)"
       />
     </div>

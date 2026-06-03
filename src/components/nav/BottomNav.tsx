@@ -3,19 +3,26 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { FEATURES } from '@/lib/plan'
+import { APP_NAV_ROUTES } from '@/lib/appNavRoutes'
 
-const ALL_TABS = [
-  { href: '/',              label: 'En Vivo',    icon: LiveIcon,        show: true },
-  { href: '/programacion',  label: 'Grilla',     icon: ScheduleIcon,  show: true },
-  { href: '/participa',     label: 'Participá',  icon: ParticipaIcon, show: true },
-  { href: '/saludos',       label: 'Saludos',    icon: SaludosIcon,   show: true },
-  { href: '/replay',        label: 'Replay',     icon: ReplayIcon,    show: FEATURES.replay },
-  { href: '/tv',            label: 'TV',         icon: TvIcon,        show: true },
-  { href: '/anunciate',     label: 'Anuncia',    icon: BusinessIcon,  show: FEATURES.publicidad },
-]
+const TAB_META: Record<
+  string,
+  { label: string; icon: React.ComponentType<{ className?: string }> }
+> = {
+  '/':             { label: 'En Vivo',   icon: LiveIcon },
+  '/programacion': { label: 'Grilla',    icon: ScheduleIcon },
+  '/participa':    { label: 'Participá', icon: ParticipaIcon },
+  '/saludos':      { label: 'Saludos',   icon: SaludosIcon },
+  '/replay':       { label: 'Replay',    icon: ReplayIcon },
+  '/tv':           { label: 'TV',        icon: TvIcon },
+  '/anunciate':    { label: 'Anuncia',   icon: BusinessIcon },
+}
 
-const TABS = ALL_TABS.filter(t => t.show)
+const TABS = APP_NAV_ROUTES.map(href => ({
+  href,
+  label: TAB_META[href].label,
+  icon: TAB_META[href].icon,
+}))
 
 export function BottomNav() {
   const pathname = usePathname()

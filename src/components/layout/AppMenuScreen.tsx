@@ -34,7 +34,7 @@ export function AppMenuScreen({ children, className, scroll = false }: AppMenuSc
   return (
     <main
       className={cn(
-        'relative z-[1] mx-auto w-full max-w-md md:max-w-2xl',
+        'relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
         'app-mobile-page max-md:overflow-hidden',
         'max-md:px-4 max-md:pt-1 max-md:pb-0',
         'md:min-h-screen md:px-4 md:pt-6 md:pb-24',

@@ -78,7 +78,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" data-theme="dark" suppressHydrationWarning>
-      <body className="min-h-screen max-md:h-[100dvh] max-md:overflow-hidden antialiased" suppressHydrationWarning>
+      <body className="min-h-screen max-md:h-[100dvh] max-md:overflow-hidden overflow-x-clip antialiased" suppressHydrationWarning>
         <ServiceWorkerRegister />
         <SubscriptionGraceBanner />
         <WelcomeAnimation />
@@ -86,7 +86,7 @@ export default function RootLayout({
           <AuroraBackground />
           <AtmosphereWrapper />
           {/* Desktop: 2-column layout. Mobile: single column. */}
-          <div className="app-mobile-shell md:flex md:h-screen md:overflow-hidden">
+          <div className="app-mobile-shell w-full min-w-0 max-w-full overflow-x-clip md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
             <AppMainArea>
               <SwipeLayout>
