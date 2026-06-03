@@ -49,4 +49,15 @@ android/.idea/
 android/captures/
 android/app/release/
 
+# Capturas locales de QA (no van al repo)
+/ss-*.png
+/cur-*.png
+/new-*.png
+/an-*.png
+/v3-*.png
+/v4-*.png
+/v5-*.png
+/screenshot-*.png
+/home-audit.png
+
 .vercel
