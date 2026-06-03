@@ -10,7 +10,6 @@ interface AtmosphereCanvasProps {
   isPlaying: boolean
   primaryColor: string
   secondaryColor: string
-  /** En Vivo el foco va arriba; en menú (saludos, etc.) centrado en pantalla */
   anchor?: AtmosphereAnchor
 }
 
@@ -33,13 +32,6 @@ export function AtmosphereCanvas({
   const energyRef   = useRef({ bass: 0, mid: 0, treble: 0, beat: 0, beatAge: 0 })
   const beatCoolRef = useRef(0)
   const ringsRef    = useRef<{ r: number; alpha: number; color: 0 | 1 }[]>([])
-  const logoRef     = useRef<HTMLImageElement | null>(null)
-
-  useEffect(() => {
-    const img = new window.Image()
-    img.src = '/icons/icon-512.png'
-    img.onload = () => { logoRef.current = img }
-  }, [])
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current
@@ -52,26 +44,27 @@ export function AtmosphereCanvas({
     const cx = W / 2
     const isMobile = W < 768
     const ambient = anchor === 'center' && isMobile
+
+    // cy alineado con el centro del vinyl en móvil:
+    // el vinyl está dentro de flex-1 centrado, debajo del header (~88px) y encima de controls (~170px)
+    // estimamos el centro del vinyl en H*0.38 en móvil
     const cy =
       anchor === 'center'
         ? H * (ambient ? 0.82 : 0.5)
         : isMobile
-          ? Math.min(210, H * 0.24)
+          ? H * 0.38
           : H * 0.32
     const scale = ambient ? 0.5 : 1
 
-    // ── Frecuencias ────────────────────────────────────────────────────────
     const N   = 128
     const buf = new Uint8Array(analyser?.frequencyBinCount ?? 128)
     readFrequencyData(analyser, isPlaying, buf)
     const { bass: bassRaw, mid: midRaw } = spectrumEnergy(buf)
-    let bass = bassRaw
-    let mid = midRaw
 
     const e = energyRef.current
     const idlePulse = 0.12 + Math.sin(performance.now() / 2200) * 0.08
-    e.bass = lerp(e.bass, isPlaying ? bass : idlePulse, isPlaying ? 0.2 : 0.04)
-    e.mid  = lerp(e.mid,  isPlaying ? mid  : idlePulse * 0.6, isPlaying ? 0.15 : 0.04)
+    e.bass = lerp(e.bass, isPlaying ? bassRaw : idlePulse, isPlaying ? 0.2 : 0.04)
+    e.mid  = lerp(e.mid,  isPlaying ? midRaw  : idlePulse * 0.6, isPlaying ? 0.15 : 0.04)
 
     // Beat detection
     const now = performance.now()
@@ -79,7 +72,7 @@ export function AtmosphereCanvas({
       beatCoolRef.current = now
       e.beat    = 1
       e.beatAge = 0
-      ringsRef.current.push({ r: 55, alpha: 0.6, color: Math.random() > 0.5 ? 0 : 1 })
+      ringsRef.current.push({ r: 55, alpha: 0.55, color: Math.random() > 0.5 ? 0 : 1 })
     }
     e.beat    = lerp(e.beat, 0, 0.1)
     e.beatAge = (e.beatAge ?? 0) + 1
@@ -87,61 +80,84 @@ export function AtmosphereCanvas({
     const [r1, g1, b1] = hexToRgb(primaryColor)
     const [r2, g2, b2] = hexToRgb(secondaryColor)
 
-    // ── Fondo — capa suave (no tapar la aurora) ───────────────────────────
+    // Fondo suave
     ctx.fillStyle = `rgba(7,7,14,${isPlaying ? 0.04 : 0.08})`
     ctx.fillRect(0, 0, W, H)
 
-    // ── Glow central ───────────────────────────────────────────────────────
-    const glowR = (90 + e.bass * 200 + e.beat * 90) * scale
-    const grd   = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR)
-    grd.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.14 + e.bass * 0.22})`)
-    grd.addColorStop(0.5, `rgba(${r2},${g2},${b2},${0.06 + e.mid  * 0.12})`)
-    grd.addColorStop(1,   'rgba(7,7,14,0)')
-    ctx.fillStyle = grd
+    // ── Glow orb grande — reemplaza el logo ────────────────────────────────
+    // Tres capas de glow superpuestas para efecto volumétrico
+    const glowOuter = (140 + e.bass * 220 + e.beat * 80) * scale
+    const glowMid   = (70  + e.bass * 120) * scale
+    const glowInner = (30  + e.bass * 60)  * scale
+
+    // Capa exterior — muy suave, gran radio
+    const grdOuter = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowOuter)
+    grdOuter.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.10 + e.bass * 0.14})`)
+    grdOuter.addColorStop(0.4, `rgba(${r2},${g2},${b2},${0.05 + e.mid  * 0.09})`)
+    grdOuter.addColorStop(1,   'rgba(7,7,14,0)')
+    ctx.fillStyle = grdOuter
     ctx.fillRect(0, 0, W, H)
 
-    // ── Anillos de pulso (beat) ─────────────────────────────────────────────
+    // Capa media — más intensa
+    const grdMid = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowMid)
+    grdMid.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.18 + e.bass * 0.28})`)
+    grdMid.addColorStop(0.5, `rgba(${r2},${g2},${b2},${0.08 + e.mid  * 0.14})`)
+    grdMid.addColorStop(1,   'rgba(7,7,14,0)')
+    ctx.fillStyle = grdMid
+    ctx.fillRect(0, 0, W, H)
+
+    // Capa interior — núcleo brillante
+    const grdInner = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowInner)
+    grdInner.addColorStop(0,   `rgba(${r1},${g1},${b1},${0.35 + e.bass * 0.45})`)
+    grdInner.addColorStop(0.6, `rgba(${r2},${g2},${b2},${0.15 + e.mid  * 0.2})`)
+    grdInner.addColorStop(1,   'rgba(7,7,14,0)')
+    ctx.fillStyle = grdInner
+    ctx.fillRect(0, 0, W, H)
+
+    // ── Anillos de pulso (beat) ────────────────────────────────────────────
     const rings = ringsRef.current
     for (let i = rings.length - 1; i >= 0; i--) {
       const ring = rings[i]
       ring.r     += 3.5
-      ring.alpha *= 0.93
-      if (ring.alpha < 0.01) { rings.splice(i, 1); continue }
+      ring.alpha *= 0.92
+      // Clip rings al ancho de pantalla — evita que se vean "cortados" abruptamente
+      const maxR = Math.max(W, H) * 0.75
+      if (ring.alpha < 0.01 || ring.r > maxR) { rings.splice(i, 1); continue }
+      // Fade extra cuando se acercan al borde
+      const edgeFade = Math.max(0, 1 - ring.r / maxR)
       const [rr, rg, rb] = ring.color === 0 ? [r1, g1, b1] : [r2, g2, b2]
       ctx.beginPath()
       ctx.arc(cx, cy, ring.r, 0, Math.PI * 2)
-      ctx.strokeStyle = `rgba(${rr},${rg},${rb},${ring.alpha})`
+      ctx.strokeStyle = `rgba(${rr},${rg},${rb},${ring.alpha * edgeFade})`
       ctx.lineWidth = 1.5
       ctx.stroke()
     }
 
-    // ── Barras de frecuencia radiales ──────────────────────────────────────
-    const BAR_COUNT  = N
-    const BASE_R     = 52 * scale
-    const MAX_H      = Math.min(W, H) * 0.18 * scale
-    const angleStep  = (Math.PI * 2) / BAR_COUNT
+    // ── Barras de frecuencia radiales ─────────────────────────────────────
+    const BASE_R    = 52 * scale
+    const MAX_H     = Math.min(W, H) * 0.18 * scale
+    const angleStep = (Math.PI * 2) / N
 
     if (isPlaying || e.bass > 0.02) {
-      for (let i = 0; i < BAR_COUNT; i++) {
-        const freqIdx  = Math.floor((i / BAR_COUNT) * (buf.length * 0.75))
-        const rawFreq  = (buf[freqIdx] ?? 0) / 255
-        const freq     = isPlaying ? rawFreq : rawFreq * 0.05
+      for (let i = 0; i < N; i++) {
+        const freqIdx = Math.floor((i / N) * (buf.length * 0.75))
+        const rawFreq = (buf[freqIdx] ?? 0) / 255
+        const freq    = isPlaying ? rawFreq : rawFreq * 0.05
 
         if (freq < 0.01) continue
 
-        const angle   = i * angleStep - Math.PI / 2
-        const barH    = freq * MAX_H
-        const x1      = cx + Math.cos(angle) * BASE_R
-        const y1      = cy + Math.sin(angle) * BASE_R
-        const x2      = cx + Math.cos(angle) * (BASE_R + barH)
-        const y2      = cy + Math.sin(angle) * (BASE_R + barH)
+        const angle = i * angleStep - Math.PI / 2
+        const barH  = freq * MAX_H
+        const x1    = cx + Math.cos(angle) * BASE_R
+        const y1    = cy + Math.sin(angle) * BASE_R
+        const x2    = cx + Math.cos(angle) * (BASE_R + barH)
+        const y2    = cy + Math.sin(angle) * (BASE_R + barH)
 
-        // Color interpolado entre primary y secondary según posición
-        const t   = i / BAR_COUNT
-        const cr  = Math.round(lerp(r1, r2, t))
-        const cg  = Math.round(lerp(g1, g2, t))
-        const cb  = Math.round(lerp(b1, b2, t))
-        const a   = 0.25 + freq * 0.65
+        const t  = i / N
+        const cr = Math.round(lerp(r1, r2, t))
+        const cg = Math.round(lerp(g1, g2, t))
+        const cb = Math.round(lerp(b1, b2, t))
+        const a  = 0.25 + freq * 0.65
 
         ctx.beginPath()
         ctx.moveTo(x1, y1)
@@ -153,26 +169,14 @@ export function AtmosphereCanvas({
       }
     }
 
-    // ── Círculo base suave ─────────────────────────────────────────────────
+    // Círculo base suave
     ctx.beginPath()
     ctx.arc(cx, cy, BASE_R - 1, 0, Math.PI * 2)
     ctx.strokeStyle = `rgba(${r1},${g1},${b1},${0.08 + e.bass * 0.1})`
     ctx.lineWidth   = 1
     ctx.stroke()
 
-    // ── Logo al centro ────────────────────────────────────────────────────
-    if (logoRef.current) {
-      const logoSize = (BASE_R - 4) * 2
-      ctx.save()
-      ctx.beginPath()
-      ctx.arc(cx, cy, BASE_R - 4, 0, Math.PI * 2)
-      ctx.clip()
-      ctx.globalAlpha = ambient ? 0.12 : 0.38
-      ctx.drawImage(logoRef.current, cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize)
-      ctx.restore()
-    }
-
-    // Vignette inferior — en modo center más suave para no tapar el contenido
+    // Vignette inferior
     const vignetteTop = anchor === 'center' ? H * (ambient ? 0.55 : 0.72) : isMobile ? H * 0.58 : H * 0.35
     const vignetteEnd = anchor === 'center' ? (ambient ? 0.72 : isMobile ? 0.45 : 0.55) : isMobile ? 0.65 : 0.78
     const vignette = ctx.createLinearGradient(0, vignetteTop, 0, H)
@@ -190,7 +194,7 @@ export function AtmosphereCanvas({
     if (!canvas) return
     const resize = () => {
       const vv = window.visualViewport
-      canvas.width = vv?.width ?? window.innerWidth
+      canvas.width  = vv?.width  ?? window.innerWidth
       canvas.height = vv?.height ?? window.innerHeight
     }
     resize()
@@ -205,7 +209,11 @@ export function AtmosphereCanvas({
   }, [draw])
 
   return (
-    <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0 }} aria-hidden="true" />
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: 0 }}
+      aria-hidden="true"
+    />
   )
 }
