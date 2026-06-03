@@ -18,7 +18,7 @@ const NAV_TABS = [
 /** Mockup del producto — alineado con la PWA de la radio */
 export function BbxPhoneMockup() {
   return (
-    <div className="relative mx-auto w-[min(100%,300px)]">
+    <div className="relative mx-auto w-full max-w-[min(100%,280px)]">
       <div
         className="absolute -inset-8 rounded-full opacity-60 blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(219,137,24,0.35) 0%, rgba(64,185,191,0.15) 45%, transparent 70%)' }}
@@ -33,7 +33,10 @@ export function BbxPhoneMockup() {
           boxShadow: '0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.08)',
         }}
       >
-        <div className="rounded-[1.5rem] overflow-hidden flex flex-col" style={{ background: '#07070e', minHeight: 420 }}>
+        <div
+          className="rounded-[1.5rem] overflow-hidden flex flex-col max-h-[min(420px,52dvh)]"
+          style={{ background: '#07070e', minHeight: 320 }}
+        >
           <div className="flex items-center justify-between px-4 pt-3 pb-1 relative shrink-0">
             <span className="text-[9px] text-white/40 font-mono">9:41</span>
             <div className="w-16 h-4 rounded-full bg-black/80 absolute left-1/2 -translate-x-1/2 top-2" />

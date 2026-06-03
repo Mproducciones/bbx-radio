@@ -8,14 +8,11 @@ const TAP_WINDOW_MS = 550
 const BURST_MS = 4200
 const TRIPLE_TAP_DELAY_MS = 300
 
-export type PlayerGameMode = 'none' | 'catch'
-
 export function usePlayerSecrets(isPlaying: boolean) {
   const [logoDigital, setLogoDigital] = useState(false)
   const [logoBurst, setLogoBurst] = useState(false)
-  const [gameMode, setGameMode] = useState<PlayerGameMode>('none')
   const [logoHold, setLogoHold] = useState(0)
-  const [catchScore, setCatchScore] = useState(0)
+  const [hintFlash, setHintFlash] = useState<string | null>(null)
 
   const logoTimer = useRef<ReturnType<typeof setInterval> | null>(null)
   const burstTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -23,6 +20,11 @@ export function usePlayerSecrets(isPlaying: boolean) {
   const logoHeld = useRef(false)
   const tapTimes = useRef<number[]>([])
   const justActivatedDigital = useRef(false)
+
+  const flashHint = useCallback((msg: string) => {
+    setHintFlash(msg)
+    window.setTimeout(() => setHintFlash(null), 2200)
+  }, [])
 
   const clearLogoHold = useCallback(() => {
     if (logoTimer.current) clearInterval(logoTimer.current)
@@ -42,29 +44,24 @@ export function usePlayerSecrets(isPlaying: boolean) {
     clearBurst()
     setLogoDigital(true)
     justActivatedDigital.current = true
-    window.setTimeout(() => { justActivatedDigital.current = false }, 700)
+    window.setTimeout(() => {
+      justActivatedDigital.current = false
+    }, 700)
+    flashHint('MODO PULSO · SISTEMA')
     queueVibrate([12, 40, 20, 40])
-  }, [clearLogoHold, clearBurst])
+  }, [clearLogoHold, clearBurst, flashHint])
 
   const activateBurst = useCallback(() => {
-    if (gameMode === 'catch' || logoDigital) return
+    if (logoDigital) return
     clearBurst()
     setLogoBurst(true)
+    flashHint('PULSO FM · ACTIVO')
     queueVibrate([6, 24, 10])
     burstTimer.current = setTimeout(clearBurst, BURST_MS)
-  }, [gameMode, logoDigital, clearBurst])
-
-  const activateCatch = useCallback((syncHaptic = false) => {
-    clearBurst()
-    setLogoDigital(false)
-    setGameMode('catch')
-    setCatchScore(0)
-    if (syncHaptic) vibrateNow([8, 16, 8, 16, 24])
-    else queueVibrate([8, 16, 8, 16, 24])
-  }, [clearBurst])
+  }, [logoDigital, clearBurst, flashHint])
 
   const startLogoHold = useCallback(() => {
-    if (logoDigital || gameMode === 'catch' || logoBurst) return
+    if (logoDigital || logoBurst) return
     clearLogoHold()
     logoHeld.current = true
     const start = Date.now()
@@ -74,7 +71,7 @@ export function usePlayerSecrets(isPlaying: boolean) {
       setLogoHold(p)
       if (p >= 1) activateDigital()
     }, 16)
-  }, [logoDigital, gameMode, logoBurst, clearLogoHold, activateDigital])
+  }, [logoDigital, logoBurst, clearLogoHold, activateDigital])
 
   const endLogoHold = useCallback(() => {
     logoHeld.current = false
@@ -92,26 +89,20 @@ export function usePlayerSecrets(isPlaying: boolean) {
     tapTimes.current.push(now)
     const count = tapTimes.current.length
 
-    if (logoDigital && count >= 2 && isPlaying) {
-      if (tripleWait.current) clearTimeout(tripleWait.current)
+    if (count >= 3 && isPlaying && !logoDigital) {
       tapTimes.current = []
-      activateCatch(true)
+      activateBurst()
+      vibrateNow([8, 16, 8, 16, 24])
       return
     }
 
     if (tripleWait.current) clearTimeout(tripleWait.current)
 
-    if (count >= 3 && isPlaying && !logoDigital) {
-      tapTimes.current = []
-      activateCatch(true)
-      return
-    }
-
     if (count >= 2 && isPlaying && !logoDigital) {
       tripleWait.current = setTimeout(() => {
         if (tapTimes.current.length >= 3) {
           tapTimes.current = []
-          activateCatch()
+          activateBurst()
         } else if (tapTimes.current.length === 2) {
           tapTimes.current = []
           activateBurst()
@@ -119,7 +110,7 @@ export function usePlayerSecrets(isPlaying: boolean) {
         tripleWait.current = null
       }, TRIPLE_TAP_DELAY_MS)
     }
-  }, [logoDigital, isPlaying, activateCatch, activateBurst])
+  }, [logoDigital, isPlaying, activateBurst])
 
   const onLogoTouchEnd = useCallback(() => {
     endLogoHold()
@@ -133,22 +124,14 @@ export function usePlayerSecrets(isPlaying: boolean) {
     }
   }, [logoDigital])
 
-  const exitCatch = useCallback(() => {
-    setGameMode('none')
-    setCatchScore(0)
-  }, [])
-
   return {
     logoDigital,
     logoBurst,
-    gameMode,
     logoHold,
-    catchScore,
-    setCatchScore,
+    hintFlash,
     startLogoHold,
     endLogoHold,
     onLogoTouchEnd,
     onLogoTap,
-    exitCatch,
   }
 }

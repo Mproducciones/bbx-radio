@@ -16,7 +16,7 @@ function PlanCard({
       type="button"
       data-animate="tile"
       onClick={() => onSelect(plan)}
-      className="w-full text-left rounded-xl p-4 border active:scale-[0.99] transition-transform"
+      className="w-full min-w-0 text-left rounded-xl p-3.5 sm:p-4 border active:scale-[0.99] transition-transform"
       style={{
         borderColor: plan.popular ? `${plan.color}55` : 'rgba(255,255,255,0.1)',
         background: plan.popular
@@ -24,7 +24,7 @@ function PlanCard({
           : 'rgba(255,255,255,0.03)',
       }}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3 min-w-0">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-base font-semibold text-white">{plan.nombre}</span>
@@ -42,13 +42,13 @@ function PlanCard({
             {plan.features.map(f => (
               <li key={f} className="text-xs text-white/45 flex gap-1.5">
                 <span style={{ color: plan.color }}>·</span>
-                {f}
+                <span className="break-words">{f}</span>
               </li>
             ))}
           </ul>
         </div>
         <div className="shrink-0 text-right">
-          <p className="text-xl font-bold text-white tabular-nums">${plan.precio}</p>
+          <p className="text-lg sm:text-xl font-bold text-white tabular-nums">${plan.precio}</p>
           <p className="text-xs text-white/45">/mes CLP</p>
         </div>
       </div>
@@ -63,10 +63,12 @@ export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan
   const ordered = [SPONSOR_PLANS[0], SPONSOR_PLANS[1], SPONSOR_PLANS[2]]
 
   return (
-    <section id="planes" className="mb-6 scroll-mt-14">
-      <div data-animate="fade" className="mb-3">
+    <section id="planes" className="mb-6 scroll-mt-14 min-w-0">
+      <div data-animate="fade" className="mb-3 min-w-0">
         <h2 className="text-base font-semibold text-white">Planes de publicidad</h2>
-        <p className="text-white/55 text-sm mt-1">Precios en CLP · toca un plan para ver pantallas y detalle completo</p>
+        <p className="text-white/55 text-sm mt-1 leading-relaxed">
+          Precios en CLP · toca un plan para ver pantallas y detalle completo
+        </p>
       </div>
 
       <div

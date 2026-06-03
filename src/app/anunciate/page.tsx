@@ -12,7 +12,7 @@ export default function AnunciatePage() {
   const initialListeners = getListenerCount()
 
   return (
-    <AppMenuScreen scroll className="md:max-w-2xl lg:max-w-3xl">
+    <AppMenuScreen scroll className="w-full max-w-full md:max-w-2xl lg:max-w-3xl">
       <SponsorLanding initialListeners={initialListeners} />
     </AppMenuScreen>
   )

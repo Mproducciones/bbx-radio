@@ -13,6 +13,8 @@ interface RadioLocaleBarProps {
   radio: RadioConfig
   accent?: string
   className?: string
+  /** Versión compacta para móvil bajo el header del home */
+  compact?: boolean
 }
 
 function formatChileTime(timezone: string): string {
@@ -55,6 +57,7 @@ export function RadioLocaleBar({
   radio,
   accent = 'var(--color-mag-400)',
   className = '',
+  compact = false,
 }: RadioLocaleBarProps) {
   const timezone = radio.location?.timezone ?? 'America/Santiago'
   const lat = radio.location?.lat ?? -34.1708
@@ -131,7 +134,9 @@ export function RadioLocaleBar({
 
   return (
     <div
-      className={`flex items-center justify-between gap-3 py-2.5 px-3.5 rounded-xl relative z-[3] ${className}`}
+      className={`flex items-center justify-between gap-2 w-full min-w-0 rounded-xl relative z-[3] ${
+        compact ? 'py-2 px-3 text-xs' : 'py-2.5 px-3.5 text-sm'
+      } ${className}`}
       style={{
         background: 'rgba(7,7,14,0.88)',
         border: '1px solid rgba(219,137,24,0.22)',
@@ -140,14 +145,16 @@ export function RadioLocaleBar({
       aria-label={`Ubicación ${placeLabel}, hora y clima`}
     >
       <span
-        className="text-sm font-bold truncate min-w-0"
+        className={`font-bold truncate min-w-0 ${compact ? 'text-xs' : 'text-sm'}`}
         style={{ color: 'rgba(255,255,255,0.75)' }}
         title={placeLabel}
       >
         {placeLabel}
       </span>
 
-      <div className="flex items-center gap-2.5 flex-shrink-0 text-sm font-bold tabular-nums">
+      <div
+        className={`flex items-center gap-2 flex-shrink-0 font-bold tabular-nums ${compact ? 'text-xs' : 'text-sm'}`}
+      >
         <time dateTime={time} style={{ color: accent }} title="Hora Chile">
           {mounted ? time : '--:--'}
         </time>

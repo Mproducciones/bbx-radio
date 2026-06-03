@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useMemo, useState } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { readFrequencyData, readTimeDomainData } from '@/lib/analyserRead'
@@ -10,7 +9,7 @@ import { vibrateNow } from '@/lib/haptics'
 import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
-import { BeatCatchGame } from './easterEggs/BeatCatchGame'
+import { SecretHintToast } from './easterEggs/SecretHintToast'
 import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 import { DotGridVisualizer } from './DotGridVisualizer'
 import { VinylDiscFrame, neumoControlStyle } from './VinylDiscFrame'
@@ -77,45 +76,6 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
 const AMBER  = '#db8918'
 const CYAN   = '#40B9BF'
 const PURPLE = '#7D59B5'
-
-/** Reloj local de la radio (Chile) para el player inmersivo. */
-function ImmersiveClock({ timezone }: { timezone: string }) {
-  const [time, setTime] = useState('')
-
-  useEffect(() => {
-    const tick = () => {
-      try {
-        setTime(
-          new Intl.DateTimeFormat('es-CL', {
-            timeZone: timezone,
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-          }).format(new Date()),
-        )
-      } catch {
-        const d = new Date()
-        const h = d.getHours()
-        const m = String(d.getMinutes()).padStart(2, '0')
-        const ap = h >= 12 ? 'p.m.' : 'a.m.'
-        setTime(`${h % 12 || 12}:${m} ${ap}`)
-      }
-    }
-    tick()
-    const id = window.setInterval(tick, 30_000)
-    return () => window.clearInterval(id)
-  }, [timezone])
-
-  return (
-    <time
-      className="text-xs font-semibold tabular-nums text-white/85 shrink-0"
-      dateTime={time || undefined}
-      title="Hora local"
-    >
-      {time || '--:--'}
-    </time>
-  )
-}
 
 interface Props {
   radio: RadioConfig
@@ -275,12 +235,13 @@ export function NowPlayingCard({
   if (immersive && !showZeno) {
     const metaTitle = hasRealSong ? (nowPlaying.title ?? radio.name) : radio.name
     const metaSub = hasRealSong ? (nowPlaying.artist ?? '') : radio.slogan
-    const visualSize = Math.min(CV + 52, 268)
+    const visualSize = Math.min(CV + 32, 240)
 
     return (
       <>
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
-        <div className="relative flex flex-col flex-1 min-h-0 w-full overflow-hidden">
+        <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden">
+          <SecretHintToast message={secrets.hintFlash} />
           <div className="absolute inset-0 pointer-events-none" aria-hidden>
             <div
               className="absolute top-[12%] left-1/2 -translate-x-1/2 w-[100%] h-[38%] rounded-full opacity-70 blur-3xl"
@@ -292,78 +253,57 @@ export function NowPlayingCard({
             />
           </div>
 
-          <header className="relative z-[2] flex items-center justify-between gap-2 shrink-0 pb-1">
-            <div className="flex items-center gap-2 min-w-0">
-              <Image src="/icons/icon-96.png" alt="" width={28} height={28} className="rounded-md shrink-0" />
-              <p className="font-display text-base text-[#db8918] leading-none truncate">{radio.name}</p>
-            </div>
-            <ImmersiveClock timezone={radio.location?.timezone ?? 'America/Santiago'} />
-          </header>
-
-          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0">
-            {secrets.gameMode === 'catch' ? (
-              <div className="w-full max-w-[280px] px-1">
-                <BeatCatchGame
-                  isPlaying={isPlaying}
+          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1">
+            <div
+              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square"
+              style={{ width: visualSize, height: visualSize }}
+            >
+              <div className="absolute inset-2 rounded-2xl overflow-hidden opacity-75">
+                <DotGridVisualizer
                   analyser={analyser}
+                  isPlaying={isPlaying}
                   primary={primary}
                   secondary={secondary}
-                  onScore={secrets.setCatchScore}
-                  onExit={secrets.exitCatch}
                 />
               </div>
-            ) : (
-              <div
-                className="relative shrink-0 flex items-center justify-center max-w-[min(268px,78vw)]"
-                style={{ width: visualSize, height: visualSize }}
-              >
-                <div className="absolute inset-2 rounded-2xl overflow-hidden opacity-75">
-                  <DotGridVisualizer
-                    analyser={analyser}
+              <div className="relative scale-[0.88] sm:scale-[0.92] origin-center">
+                <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
+                  <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
+                  {isPlaying && (
+                    <motion.div
+                      className="absolute rounded-full pointer-events-none"
+                      style={{
+                        width: LR * 2 + 20,
+                        height: LR * 2 + 20,
+                        top: '50%',
+                        left: '50%',
+                        marginTop: -(LR + 10),
+                        marginLeft: -(LR + 10),
+                        background: `radial-gradient(circle, ${primary}35 0%, transparent 70%)`,
+                        filter: 'blur(14px)',
+                      }}
+                      animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.9, 0.5] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  )}
+                  <InteractiveLogo
+                    artSrc={artSrc}
+                    title={title ?? radio.name}
+                    frequency={radio.frequency}
                     isPlaying={isPlaying}
                     primary={primary}
                     secondary={secondary}
+                    logoDigital={secrets.logoDigital}
+                    logoBurst={secrets.logoBurst}
+                    logoHold={secrets.logoHold}
+                    onHoldStart={secrets.startLogoHold}
+                    onHoldEnd={secrets.endLogoHold}
+                    onTouchEnd={secrets.onLogoTouchEnd}
+                    onTap={secrets.onLogoTap}
                   />
-                </div>
-                <div className="relative scale-[0.92] origin-center">
-                  <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
-                    <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
-                    {isPlaying && (
-                      <motion.div
-                        className="absolute rounded-full pointer-events-none"
-                        style={{
-                          width: LR * 2 + 20,
-                          height: LR * 2 + 20,
-                          top: '50%',
-                          left: '50%',
-                          marginTop: -(LR + 10),
-                          marginLeft: -(LR + 10),
-                          background: `radial-gradient(circle, ${primary}35 0%, transparent 70%)`,
-                          filter: 'blur(14px)',
-                        }}
-                        animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.9, 0.5] }}
-                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                      />
-                    )}
-                    <InteractiveLogo
-                      artSrc={artSrc}
-                      title={title ?? radio.name}
-                      frequency={radio.frequency}
-                      isPlaying={isPlaying}
-                      primary={primary}
-                      secondary={secondary}
-                      logoDigital={secrets.logoDigital}
-                      logoBurst={secrets.logoBurst}
-                      logoHold={secrets.logoHold}
-                      onHoldStart={secrets.startLogoHold}
-                      onHoldEnd={secrets.endLogoHold}
-                      onTouchEnd={secrets.onLogoTouchEnd}
-                      onTap={secrets.onLogoTap}
-                    />
-                  </VinylDiscFrame>
-                </div>
+                </VinylDiscFrame>
               </div>
-            )}
+            </div>
           </div>
 
           <AnimatePresence mode="wait" initial={false}>
@@ -469,7 +409,7 @@ export function NowPlayingCard({
         overflow: 'hidden',
         position: 'relative',
         background: `linear-gradient(170deg, #12091e 0%, #07070e 55%)`,
-        border: `1px solid ${secrets.logoDigital || secrets.logoBurst || secrets.gameMode === 'catch' ? `${primary}50` : `${primary}20`}`,
+        border: `1px solid ${secrets.logoDigital || secrets.logoBurst ? `${primary}50` : `${primary}20`}`,
         boxShadow: isPlaying
           ? secrets.logoBurst
             ? `0 0 0 1px ${primary}40, 0 0 60px ${primary}55, 0 24px 80px ${glow}, 0 8px 32px rgba(0,0,0,0.8)`
@@ -477,6 +417,7 @@ export function NowPlayingCard({
           : `0 12px 48px rgba(0,0,0,0.7)`,
         transition: 'box-shadow 1.5s, border-color 1.5s',
       }}>
+        <SecretHintToast message={secrets.hintFlash} />
         {/* Accent top */}
         <div style={{ height: 3, position: 'relative', overflow: 'hidden' }}>
           <div style={{
@@ -638,18 +579,7 @@ export function NowPlayingCard({
 
               {/* Onda o minijuego */}
               <div style={{ marginBottom: 20, position: 'relative' }}>
-                {secrets.gameMode === 'catch' ? (
-                  <BeatCatchGame
-                    isPlaying={isPlaying}
-                    analyser={analyser}
-                    primary={primary}
-                    secondary={secondary}
-                    onScore={secrets.setCatchScore}
-                    onExit={secrets.exitCatch}
-                  />
-                ) : (
-                  <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
-                )}
+                <Waveform analyser={analyser} isPlaying={isPlaying} primary={primary} secondary={secondary} />
               </div>
 
               {/* Divisor */}

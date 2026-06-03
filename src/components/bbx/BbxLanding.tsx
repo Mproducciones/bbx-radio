@@ -67,7 +67,7 @@ export function BbxLanding() {
   return (
     <div
       ref={rootRef}
-      className="bbx-landing w-full min-w-0 text-white overflow-x-hidden md:min-h-[100dvh]"
+      className="bbx-landing w-full min-w-0 max-w-full text-white overflow-x-hidden md:min-h-[100dvh]"
       style={{ background: '#07070e' }}
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
@@ -94,12 +94,12 @@ export function BbxLanding() {
         </div>
       </header>
 
-      <main className="relative z-[1] w-full max-w-lg mx-auto px-4 pb-28 md:pb-10 md:max-w-6xl">
-        <section className="pt-4 pb-5 md:pt-10" data-animate="fade">
-          <div className="flex justify-center mb-3 min-h-[28px]">
+      <main className="relative z-[1] w-full max-w-lg mx-auto px-3 sm:px-4 pb-32 md:pb-10 md:max-w-6xl box-border">
+        <section className="pt-3 pb-4 sm:pt-4 md:pt-10" data-animate="fade">
+          <div className="flex justify-center mb-2 min-h-[28px]">
             <LiveDemoBar />
           </div>
-          <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-10 items-center min-w-0">
             <div className="order-2 md:order-1 space-y-3">
               <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-[0.2em]">
                 {BBX_HERO.eyebrow}
@@ -125,7 +125,7 @@ export function BbxLanding() {
                 </AccentButton>
               </div>
             </div>
-            <div className="order-1 md:order-2 flex justify-center" data-animate="fade">
+            <div className="order-1 md:order-2 flex justify-center min-w-0 w-full" data-animate="fade">
               <BbxPhoneMockup />
             </div>
           </div>
@@ -209,7 +209,7 @@ export function BbxLanding() {
       </footer>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 backdrop-blur-xl px-4 pt-2.5"
+        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 backdrop-blur-xl px-3 sm:px-4 pt-2.5 max-w-[100vw]"
         style={{
           background: 'rgba(7,7,14,0.97)',
           paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
