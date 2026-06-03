@@ -153,7 +153,7 @@ export function BbxSectionPage({
   const accent = hub?.accent ?? '#db8918'
 
   return (
-    <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 text-white overflow-x-hidden" style={{ background: 'var(--color-ink-900)' }}>
+    <div className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden" style={{ background: 'var(--color-ink-900)' }}>
       <header
         className="sticky top-0 z-50 shrink-0 border-b border-white/5 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.95)' }}

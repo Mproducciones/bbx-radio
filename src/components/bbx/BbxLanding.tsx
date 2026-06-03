@@ -299,7 +299,7 @@ export function BbxLanding() {
   return (
     <div
       ref={mainRef}
-      className="bbx-landing relative flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full text-white overflow-x-hidden mesh-bg"
+      className="bbx-landing relative flex flex-col w-full min-w-0 max-w-full text-white overflow-x-hidden mesh-bg"
     >
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-15%] left-[-5%] w-[65%] h-[55%] rounded-full opacity-30 blur-[90px]"
