@@ -20,6 +20,22 @@ const STATUS_STYLE: Record<string, { bg: string; text: string }> = {
 
 export function SponsorLiveSection() {
   const listRef = useRef<HTMLUListElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        import('animejs').then(({ animate }) => {
+          animate(el, { translateY: [10, 0], opacity: [0, 1], duration: 440, ease: 'out(3)' })
+        })
+        obs.disconnect()
+      }
+    }, { threshold: 0.4 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   useEffect(() => {
     const el = listRef.current
@@ -44,7 +60,7 @@ export function SponsorLiveSection() {
 
   return (
     <section id="probar" className="mb-6 border-t border-white/8 pt-5 scroll-mt-14">
-      <div data-animate="fade" className="mb-4">
+      <div ref={headerRef} className="mb-4 opacity-0">
         <h2 className="text-base font-semibold text-white">Prueba en vivo</h2>
         <p className="text-white/55 text-sm mt-1 leading-relaxed">
           Tocá cada función para verla en la app. Los spots FM se activan al contratar.
@@ -88,9 +104,9 @@ export function SponsorLiveSection() {
                 </svg>
               )}
               {!isLink && (
-                <span className="text-[10px] font-bold shrink-0 px-2 py-1 rounded-lg"
-                  style={{ background: 'rgba(219,137,24,0.1)', color: '#db8918' }}>
-                  Pronto
+                <span className="text-[10px] font-semibold shrink-0 px-2 py-1 rounded-lg"
+                  style={{ background: 'rgba(125,89,181,0.12)', color: '#7D59B5' }}>
+                  Al contratar
                 </span>
               )}
             </div>
@@ -111,7 +127,7 @@ export function SponsorLiveSection() {
                   {inner}
                 </Link>
               ) : (
-                <div>{inner}</div>
+                <div className="opacity-55">{inner}</div>
               )}
             </li>
           )

@@ -85,6 +85,7 @@ function FeatureTile({ icon, title, desc, accent, delay }: {
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    el.style.opacity = '0'
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !animated.current) {
         animated.current = true
@@ -104,9 +105,11 @@ function FeatureTile({ icon, title, desc, accent, delay }: {
   }, [delay])
 
   return (
-    <div ref={el => { if (el) (el as HTMLDivElement & { __ref?: typeof ref }).style.opacity = '0' }}
-      className="rounded-2xl p-3.5"
-      style={{ background: `${accent}08`, border: `1px solid ${accent}20` }}>
+    <div
+      ref={ref}
+      className="rounded-2xl p-3.5 transition-[border-color,box-shadow] hover:brightness-110"
+      style={{ background: `${accent}08`, border: `1px solid ${accent}20` }}
+    >
       <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2.5 text-sm"
         style={{ background: `${accent}18` }}>
         {icon}
@@ -121,6 +124,7 @@ export function BbxLanding() {
   const router = useRouter()
   const [section, setSection] = useState<BbxHubSectionId | null>(null)
   const heroRef = useRef<HTMLDivElement>(null)
+  const hubRef = useRef<HTMLDivElement>(null)
 
   // Anime.js hero entrance
   useEffect(() => {
@@ -134,6 +138,30 @@ export function BbxLanding() {
         ease: 'out(3)',
       })
     })
+  }, [])
+
+  // Anime.js hub tiles stagger on scroll
+  useEffect(() => {
+    const el = hubRef.current
+    if (!el) return
+    const tiles = el.querySelectorAll('[data-hub-tile]')
+    tiles.forEach(t => ((t as HTMLElement).style.opacity = '0'))
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        import('animejs').then(({ animate, stagger }) => {
+          animate(tiles, {
+            scale: [0.92, 1],
+            opacity: [0, 1],
+            duration: 480,
+            delay: stagger(65),
+            ease: 'spring(1, 90, 12, 0)',
+          })
+        })
+        obs.disconnect()
+      }
+    }, { threshold: 0.15 })
+    obs.observe(el)
+    return () => obs.disconnect()
   }, [])
 
   const openSection = (id: BbxHubSectionId) => {
@@ -253,16 +281,16 @@ export function BbxLanding() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-1">Ir al detalle</p>
             <h2 className="font-display text-2xl text-white">Explorar BBX</h2>
           </div>
-          <div className="grid grid-cols-2 gap-2.5 min-w-0">
+          <div ref={hubRef} className="grid grid-cols-2 gap-2.5 min-w-0">
             {BBX_HUB_SECTIONS.map(tile => (
-              <div key={tile.id} className="flex min-w-0">
+              <div key={tile.id} className="flex min-w-0" data-hub-tile>
                 <BbxHubTile value={tile.value} label={tile.label} subtitle={tile.subtitle}
-                  accent={tile.accent} onClick={() => openSection(tile.id)} />
+                  accent={tile.accent} animate={false} onClick={() => openSection(tile.id)} />
               </div>
             ))}
-            <div className="flex min-w-0">
+            <div className="flex min-w-0" data-hub-tile>
               <BbxHubTile value="24h" emphasis="action" label="Agendar demo"
-                subtitle="WhatsApp directo" accent="#128C7E"
+                subtitle="WhatsApp directo" accent="#128C7E" animate={false}
                 href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')} />
             </div>
           </div>

@@ -118,7 +118,7 @@ function ValueRow({
                 {line.breakdown.map(r => (
                   <div key={r.label} className="flex justify-between gap-3 px-3 py-2.5">
                     <span className="text-white/45 text-xs">{r.label}</span>
-                    <span className="text-white text-xs font-semibold shrink-0 text-right">{r.value}</span>
+                    <span className="text-xs font-semibold shrink-0 text-right" style={{ color: line.color }}>{r.value}</span>
                   </div>
                 ))}
               </div>

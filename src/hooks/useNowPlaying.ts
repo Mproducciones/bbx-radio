@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 
 export interface Track {
-  title:  string
-  artist: string
+  title:    string
+  artist:   string
+  albumArt?: string
   playedAt: string // ISO timestamp
 }
 
@@ -29,6 +30,7 @@ export function useNowPlaying(): NowPlayingState {
       const track: Track = {
         title:    data.title,
         artist:   data.artist,
+        albumArt: data.albumArt ?? undefined,
         playedAt: new Date().toISOString(),
       }
 

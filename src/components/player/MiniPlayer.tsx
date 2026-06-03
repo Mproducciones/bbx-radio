@@ -1,9 +1,11 @@
 'use client'
 
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
+import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { ConcertMode } from './ConcertMode'
 import { RADIO, NOW_PLAYING } from '@/lib/radioConfig'
 
@@ -31,7 +33,8 @@ function EqBars({ color, playing }: { color: string; playing: boolean }) {
 export function MiniPlayer() {
   const pathname = usePathname()
   const { isPlaying, isLoading, hasError, volume, analyser, isConcertMode, toggle, setVolume, openConcert, closeConcert } = useRadioPlayerContext()
-  const colors = useAlbumColors(NOW_PLAYING.albumArt)
+  const { current: track } = useNowPlaying()
+  const colors = useAlbumColors(track?.albumArt)
 
   const isHome   = pathname === '/'
   const isHidden = pathname.startsWith('/admin') || pathname.startsWith('/studio') || pathname.startsWith('/bbx')
@@ -86,16 +89,27 @@ export function MiniPlayer() {
                 <motion.button
                   whileTap={{ scale: 0.93 }}
                   onClick={openConcert}
-                  className="relative w-10 h-10 rounded-xl flex-shrink-0 overflow-hidden flex items-center justify-center"
+                  className="relative w-10 h-10 rounded-xl flex-shrink-0 overflow-hidden"
                   style={{ background: `linear-gradient(135deg, ${colors.primary}55, ${colors.secondary}33)` }}
                 >
-                  <motion.span
-                    animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                    transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-                    className="text-xl opacity-50"
-                  >
-                    ♪
-                  </motion.span>
+                  {track?.albumArt ? (
+                    <Image
+                      src={track.albumArt}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <motion.span
+                      animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+                      className="w-full h-full flex items-center justify-center text-xl opacity-50"
+                    >
+                      ♪
+                    </motion.span>
+                  )}
                   {isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
                       <EqBars color="#fff" playing={isPlaying} />
@@ -106,7 +120,9 @@ export function MiniPlayer() {
                 {/* Info */}
                 <button onClick={openConcert} className="flex-1 min-w-0 text-left">
                   <div className="flex items-center gap-2">
-                    <p className="text-white text-sm font-semibold truncate leading-tight">{NOW_PLAYING.title}</p>
+                    <p className="text-white text-sm font-semibold truncate leading-tight">
+                    {track?.title ?? NOW_PLAYING.title}
+                  </p>
                     {isPlaying && (
                       <span
                         className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-1"
@@ -117,7 +133,9 @@ export function MiniPlayer() {
                       </span>
                     )}
                   </div>
-                  <p className="text-white/40 text-xs truncate mt-0.5">{NOW_PLAYING.artist}</p>
+                  <p className="text-white/40 text-xs truncate mt-0.5">
+                    {track?.artist ?? NOW_PLAYING.artist}
+                  </p>
                 </button>
 
                 {/* Play/Pause */}
@@ -163,7 +181,7 @@ export function MiniPlayer() {
         isOpen={isConcertMode}
         onClose={closeConcert}
         radio={RADIO}
-        nowPlaying={NOW_PLAYING}
+        nowPlaying={track ? { ...NOW_PLAYING, title: track.title, artist: track.artist, albumArt: track.albumArt } : NOW_PLAYING}
         isPlaying={isPlaying}
         isLoading={isLoading}
         analyser={analyser}
