@@ -274,7 +274,13 @@ body {
   }
 }
 
-/* Desktop: limites del área principal — evita overflow horizontal */
+/* Overflow clip — todos los niveles, mobile y desktop */
+.app-mobile-shell,
+.app-mobile-main,
+.app-mobile-page {
+  contain: paint;
+}
+
 @media (min-width: 768px) {
   .app-mobile-shell {
     overflow: hidden;

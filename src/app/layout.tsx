@@ -90,6 +90,7 @@ export default function RootLayout({
             </AppMainArea>
             <ClientBottomNav />
           </div>
+          <MiniPlayer />
           <PushPermission />
           <NoiseOverlay />
           <PremiumAdBanner />

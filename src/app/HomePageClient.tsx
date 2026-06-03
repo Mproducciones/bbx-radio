@@ -14,10 +14,10 @@ export function HomePageClient() {
 
   return (
     <main
-      className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)]"
-      style={{ zIndex: 1 }}
+      className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)] overflow-x-hidden"
+      style={{ zIndex: 1, contain: 'paint' }}
     >
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full max-w-md mx-auto px-3 pt-2 pb-2">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full max-w-md mx-auto px-3 pt-2 pb-2 overflow-x-hidden">
         <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
           <div className="min-w-0">
             <h1 className="font-display text-xl text-white leading-none tracking-wide truncate">

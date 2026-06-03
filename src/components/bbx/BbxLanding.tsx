@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   BBX_FEATURES,
   BBX_HERO,
@@ -14,7 +14,6 @@ import {
 import { BbxPhoneMockup } from './BbxPhoneMockup'
 import { BbxHubTile } from './BbxHubTile'
 import { BbxSectionPage } from './BbxSectionPage'
-import { AccentButton } from '@/components/shared/AccentButton'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 const FEATURE_ICONS = ['🎙️', '💬', '📢', '📺', '🗳️', '⚙️']

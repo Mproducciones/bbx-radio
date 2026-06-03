@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { RADIO } from '@/lib/radioConfig'
 import { SPONSOR_PLANS, type SponsorPlanId } from '@/lib/sponsorPlans'
-import { SPONSOR_FAQ, sponsorWaLink } from '@/lib/sponsorContent'
+import { sponsorWaLink } from '@/lib/sponsorContent'
 import { PlanDetailSheet } from './PlanDetailSheet'
 
 // ── Plan card ─────────────────────────────────────────────────────────────────
