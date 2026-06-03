@@ -234,6 +234,8 @@ body {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
+    overflow-x: clip;
+    max-width: 100%;
   }
 
   .app-mobile-shell {
@@ -242,24 +244,33 @@ body {
     height: 100dvh;
     max-height: 100dvh;
     min-height: 0;
+    min-width: 0;
+    max-width: 100%;
     overflow: hidden;
+    overflow-x: clip;
   }
 
   .app-mobile-main {
     flex: 1;
     min-height: 0;
+    min-width: 0;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    overflow-x: clip;
   }
 
   .app-mobile-page {
     flex: 1;
     min-height: 0;
+    min-width: 0;
+    max-width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    overflow-x: clip;
   }
 }
 

@@ -15,12 +15,12 @@ export function SponsorSectionNav() {
       style={{ top: 0, background: 'rgba(7,7,14,0.92)' }}
       aria-label="Secciones de publicidad"
     >
-      <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5 -mx-0.5 px-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SECTIONS.map(s => (
           <a
             key={s.id}
             href={`#${s.id}`}
-            className="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold text-white/70 border border-white/12 hover:text-white hover:border-[#db8918]/50 active:bg-white/[0.06] transition-colors"
+            className="shrink-0 px-2.5 py-1.5 rounded-full text-[11px] font-semibold text-white/70 border border-white/12 hover:text-white hover:border-[#db8918]/50 active:bg-white/[0.06] transition-colors whitespace-nowrap"
           >
             {s.label}
           </a>

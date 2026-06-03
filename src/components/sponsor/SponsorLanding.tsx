@@ -31,7 +31,7 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
   }, [])
 
   return (
-    <div ref={rootRef} className="relative w-full min-w-0 overflow-x-hidden max-md:pb-[calc(var(--app-nav-total)+5rem)] md:pb-8">
+    <div ref={rootRef} className="relative w-full min-w-0 overflow-x-hidden max-md:pb-[calc(var(--app-nav-total)+5.75rem)] md:pb-8">
       <header className="border-b border-white/10 pb-5 mb-2" data-animate="fade">
         <p className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2">
           {SPONSOR_HERO.eyebrow}
@@ -137,10 +137,13 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
       </section>
 
       <div
-        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] px-4 pt-2.5 pointer-events-none border-t border-white/10 backdrop-blur-xl"
+        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] pt-2.5 pointer-events-none border-t border-white/10 backdrop-blur-xl box-border"
         style={{
           bottom: 'var(--app-nav-total)',
-          background: 'rgba(7,7,14,0.97)',
+          background: '#07070e',
+          paddingLeft: 'max(1rem, env(safe-area-inset-left, 0px))',
+          paddingRight: 'max(1rem, env(safe-area-inset-right, 0px))',
+          paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
         }}
       >
         <AccentButton

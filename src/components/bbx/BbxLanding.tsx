@@ -86,15 +86,27 @@ export function BbxLanding() {
         style={{ background: 'rgba(7,7,14,0.94)' }}
         data-animate="fade"
       >
-        <div className="w-full max-w-lg mx-auto px-4 h-12 flex items-center justify-between gap-3">
-          <span className="font-display text-xl tracking-wider leading-none">BBX</span>
-          <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" className="shrink-0 !text-[11px] !px-3 !py-1.5">
+        <div
+          className="w-full max-w-lg mx-auto h-12 flex items-center justify-between gap-2 min-w-0 box-border"
+          style={{
+            paddingLeft: 'max(1rem, env(safe-area-inset-left, 0px))',
+            paddingRight: 'max(1rem, env(safe-area-inset-right, 0px))',
+          }}
+        >
+          <span className="font-display text-xl tracking-wider leading-none shrink-0">BBX</span>
+          <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" className="shrink-0 !text-[11px] !px-3 !py-1.5 max-w-[42%]">
             Demo
           </AccentButton>
         </div>
       </header>
 
-      <main className="relative z-[1] w-full max-w-lg mx-auto px-3 sm:px-4 pb-32 md:pb-10 md:max-w-6xl box-border">
+      <main
+        className="relative z-[1] w-full max-w-lg mx-auto pb-32 md:pb-10 md:max-w-6xl box-border min-w-0"
+        style={{
+          paddingLeft: 'max(0.75rem, env(safe-area-inset-left, 0px))',
+          paddingRight: 'max(0.75rem, env(safe-area-inset-right, 0px))',
+        }}
+      >
         <section className="pt-3 pb-4 sm:pt-4 md:pt-10" data-animate="fade">
           <div className="flex justify-center mb-2 min-h-[28px]">
             <LiveDemoBar />
@@ -209,9 +221,11 @@ export function BbxLanding() {
       </footer>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 backdrop-blur-xl px-3 sm:px-4 pt-2.5 max-w-[100vw]"
+        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 backdrop-blur-xl pt-2.5 box-border"
         style={{
           background: 'rgba(7,7,14,0.97)',
+          paddingLeft: 'max(0.75rem, env(safe-area-inset-left, 0px))',
+          paddingRight: 'max(0.75rem, env(safe-area-inset-right, 0px))',
           paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
         }}
       >

@@ -18,9 +18,9 @@ const NAV_TABS = [
 /** Mockup del producto — alineado con la PWA de la radio */
 export function BbxPhoneMockup() {
   return (
-    <div className="relative mx-auto w-full max-w-[min(100%,280px)]">
+    <div className="relative mx-auto w-full max-w-[min(100%,280px)] min-w-0 overflow-hidden">
       <div
-        className="absolute -inset-8 rounded-full opacity-60 blur-3xl pointer-events-none"
+        className="absolute inset-0 rounded-full opacity-50 blur-3xl pointer-events-none scale-90"
         style={{ background: 'radial-gradient(circle, rgba(219,137,24,0.35) 0%, rgba(64,185,191,0.15) 45%, transparent 70%)' }}
       />
       <motion.div
@@ -61,24 +61,23 @@ export function BbxPhoneMockup() {
           </div>
 
           <div
-            className="mx-3 rounded-2xl overflow-hidden relative shrink-0"
+            className="mx-3 rounded-2xl overflow-hidden relative shrink-0 flex flex-col"
             style={{ height: 200, background: 'linear-gradient(170deg, #1a1028 0%, #07070e 70%)' }}
           >
             <div
-              className="absolute inset-0 opacity-35"
-              style={{ background: 'radial-gradient(circle at 50% 35%, #db8918 0%, transparent 55%)' }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-28 h-28">
+              className="relative flex-1 min-h-0 overflow-hidden flex items-center justify-center"
+              style={{ background: 'radial-gradient(circle at 50% 40%, rgba(219,137,24,0.2) 0%, transparent 55%)' }}
+            >
+              <div className="relative w-[7.5rem] h-[7.5rem] shrink-0">
                 {[...Array(24)].map((_, i) => (
                   <div
                     key={i}
                     className="absolute left-1/2 top-1/2 origin-bottom rounded-full"
                     style={{
                       width: 2,
-                      height: 6 + (i % 3) * 5,
+                      height: 5 + (i % 3) * 4,
                       marginLeft: -1,
-                      marginTop: -48,
+                      marginTop: -38,
                       transform: `rotate(${(i / 24) * 360}deg)`,
                       background: i % 2 === 0 ? '#db8918' : '#40B9BF',
                       opacity: 0.45 + (i % 4) * 0.1,
@@ -86,25 +85,25 @@ export function BbxPhoneMockup() {
                   />
                 ))}
                 <div
-                  className="absolute inset-3 rounded-full flex flex-col items-center justify-center"
+                  className="absolute inset-2 rounded-full flex flex-col items-center justify-center"
                   style={{ background: '#0c0c14', border: '2px solid rgba(219,137,24,0.45)' }}
                 >
-                  <span className="font-display text-2xl leading-none" style={{ color: '#db8918' }}>
+                  <span className="font-display text-xl leading-none" style={{ color: '#db8918' }}>
                     {RADIO.frequency.replace(/\s*FM/i, '').trim() || '93.3'}
                   </span>
                   <span className="text-[8px] text-white/40 mt-0.5">En Vivo</span>
                 </div>
               </div>
             </div>
-            <div className="absolute bottom-2.5 left-3 right-3 flex items-center gap-2">
-              <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="shrink-0 px-3 pb-2.5 pt-1.5 flex items-center gap-2 border-t border-white/[0.06]">
+              <div className="flex-1 min-w-0 h-1 rounded-full bg-white/10 overflow-hidden">
                 <div className="h-full w-3/5 rounded-full" style={{ background: '#db8918' }} />
               </div>
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg"
-                style={{ background: '#db8918', boxShadow: '0 4px 16px rgba(219,137,24,0.45)' }}
+                className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center"
+                style={{ background: '#db8918', boxShadow: '0 4px 12px rgba(219,137,24,0.4)' }}
               >
-                <span className="text-[#07070e] text-sm ml-0.5">▶</span>
+                <span className="text-[#07070e] text-xs ml-0.5 leading-none">▶</span>
               </div>
             </div>
           </div>
