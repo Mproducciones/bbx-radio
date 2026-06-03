@@ -18,7 +18,7 @@ function fail(msg) { console.error(`  ✗ ${msg}`); errors.push(msg) }
 function warn(msg) { console.warn(`  ⚠ ${msg}`); warnings.push(msg) }
 
 // ── 1. manifest.json ──────────────────────────────────────────
-console.log('\n[1/6] manifest.json')
+console.log('\n[1/7] manifest.json')
 const manifestPath = join(ROOT, 'public/manifest.json')
 
 if (!existsSync(manifestPath)) {
@@ -59,7 +59,7 @@ if (!existsSync(manifestPath)) {
 }
 
 // ── 2. Service Worker ─────────────────────────────────────────
-console.log('\n[2/6] Service Worker')
+console.log('\n[2/7] Service Worker')
 const swPath = join(ROOT, 'public/sw.js')
 
 if (!existsSync(swPath)) {
@@ -74,7 +74,7 @@ if (!existsSync(swPath)) {
 }
 
 // ── 3. Archivos críticos ──────────────────────────────────────
-console.log('\n[3/6] Archivos críticos')
+console.log('\n[3/7] Archivos críticos')
 const criticalFiles = [
   'src/lib/radioConfig.ts',
   'src/app/layout.tsx',
@@ -89,7 +89,7 @@ for (const file of criticalFiles) {
 }
 
 // ── 4. TypeScript ─────────────────────────────────────────────
-console.log('\n[4/6] TypeScript')
+console.log('\n[4/7] TypeScript')
 try {
   execSync('npx tsc --noEmit', { cwd: ROOT, stdio: 'pipe' })
   ok('sin errores de TypeScript')
@@ -99,7 +99,7 @@ try {
 }
 
 // ── 5. Código fuente — patrones problemáticos ─────────────────
-console.log('\n[5/6] Calidad de código')
+console.log('\n[5/7] Calidad de código')
 
 function walkSrc(dir, exts = ['.ts', '.tsx']) {
   const results = []
@@ -160,8 +160,33 @@ else warn(`${anyCount} uso(s) de tipo \`any\` — revisar si son necesarios`)
 
 if (hardcodedSecrets === 0) ok('sin secretos hardcodeados detectados')
 
-// ── 6. Variables de entorno requeridas ────────────────────────
-console.log('\n[6/6] Entorno')
+// ── 6. Android APK (Capacitor) ────────────────────────────────
+console.log('\n[6/7] Android APK')
+const mainActivity = join(ROOT, 'android/app/src/main/java/cl/radiobienvenida/app/MainActivity.java')
+const androidManifest = join(ROOT, 'android/app/src/main/AndroidManifest.xml')
+
+if (!existsSync(mainActivity)) {
+  warn('android/ no encontrado — omitiendo chequeo APK')
+} else {
+  ok('MainActivity.java presente')
+  const ma = readFileSync(mainActivity, 'utf8')
+  if (ma.includes('setMediaPlaybackRequiresUserGesture(false)')) {
+    ok('WebView: reproducción sin gesto extra (radio)')
+  } else {
+    warn('MainActivity: falta setMediaPlaybackRequiresUserGesture(false) para autoplay')
+  }
+
+  if (existsSync(androidManifest)) {
+    const am = readFileSync(androidManifest, 'utf8')
+    for (const perm of ['INTERNET', 'FOREGROUND_SERVICE_MEDIA_PLAYBACK', 'POST_NOTIFICATIONS']) {
+      if (am.includes(perm)) ok(`permiso ${perm}`)
+      else warn(`AndroidManifest: falta ${perm}`)
+    }
+  }
+}
+
+// ── 7. Variables de entorno requeridas ────────────────────────
+console.log('\n[7/7] Entorno')
 const envLocal = join(ROOT, '.env.local')
 const envExample = join(ROOT, '.env.example')
 

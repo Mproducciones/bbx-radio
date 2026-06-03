@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Capacitor Android — artefactos generados (el código fuente está en java/res)
+    "android/**/build/**",
+    "android/app/build/**",
+    "android/capacitor-cordova-android-plugins/**",
+    "android/app/src/main/assets/public/**",
   ]),
 ]);
 

@@ -1,8 +1,11 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
-// Para desarrollo local: CAPACITOR_SERVER_URL=http://192.168.1.X:3000 (IP de tu PC en la red)
-// Para producción:       CAPACITOR_SERVER_URL=https://tu-app.vercel.app
-const serverUrl = process.env.CAPACITOR_SERVER_URL
+// Producción APK: CAPACITOR_SERVER_URL=https://bbx-radio-9k9y.vercel.app (o pnpm cap:sync:prod)
+// Dev en red local: CAPACITOR_SERVER_URL=http://192.168.1.X:3000 + build debug de Android
+const PROD_APP_URL = 'https://bbx-radio-9k9y.vercel.app'
+const serverUrl =
+  process.env.CAPACITOR_SERVER_URL ??
+  (process.env.CAPACITOR_APK_PROD === '1' ? PROD_APP_URL : undefined)
 
 const config: CapacitorConfig = {
   appId: 'cl.radiobienvenida.app',
