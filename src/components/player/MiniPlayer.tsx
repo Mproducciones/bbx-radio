@@ -38,7 +38,11 @@ export function MiniPlayer() {
   const colors = useAlbumColors(track?.albumArt)
 
   const isHome = pathname === '/'
-  const isHidden = pathname.startsWith('/admin') || pathname.startsWith('/studio') || pathname.startsWith('/bbx')
+  const isHidden =
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/studio') ||
+    pathname.startsWith('/bbx') ||
+    pathname.startsWith('/anunciate')
   const slim = isMiniPlayerSlimRoute(pathname)
   const show = !isHome && !isHidden && !hasError
 

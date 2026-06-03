@@ -9,6 +9,7 @@ import { sponsorWaLink } from '@/lib/sponsorContent'
 import { SponsorPlanIcon } from '@/components/shared/SponsorPlanIcon'
 import { ProWaButton } from '@/components/shared/ProWaButton'
 import { PlanDetailSheet } from './PlanDetailSheet'
+import { SponsorStickyWaBar } from './SponsorStickyWaBar'
 
 function PlanCard({
   plan,
@@ -206,7 +207,7 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
         </div>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8 w-full min-w-0 box-border">
         <ProWaButton href={waLink}>Cotizar por WhatsApp</ProWaButton>
         <p className="text-center text-white/30 text-xs mt-3 font-medium">
           Respondemos en menos de 2 horas · Sin compromiso
@@ -220,22 +221,9 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
         <FaqAccordion />
       </div>
 
-      <div className="h-20 md:hidden" />
+      <div className="h-24 md:hidden" aria-hidden />
 
-      <div
-        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] app-sticky-bar border-t border-white/[0.06] backdrop-blur-xl"
-        style={{
-          bottom: 'var(--app-nav-total)',
-          background: 'rgba(7,7,14,0.96)',
-          paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))',
-        }}
-      >
-        <div className="app-sticky-bar-inner pt-3">
-          <ProWaButton href={waLink} compact>
-            Cotizar por WhatsApp
-          </ProWaButton>
-        </div>
-      </div>
+      <SponsorStickyWaBar href={waLink} />
 
       <PlanDetailSheet plan={selectedPlan} onClose={() => setSelectedId(null)} />
     </div>

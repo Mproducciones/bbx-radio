@@ -216,6 +216,12 @@
   body[data-sheet-open] .sponsor-sticky-cta {
     display: none;
   }
+
+  /* CTA WhatsApp anunciate — anclado al viewport vía portal */
+  .sponsor-sticky-cta {
+    box-sizing: border-box;
+    max-width: calc(100vw - var(--app-shell-pad-x) - var(--app-shell-pad-right));
+  }
 }
 
 html {
@@ -820,6 +826,8 @@ body {
   justify-content: center;
   gap: 0.625rem;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.95rem 1.25rem;
   border-radius: 1rem;
   font-weight: 700;
