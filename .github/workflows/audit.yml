@@ -1,0 +1,75 @@
+name: Audit semanal — Dependencias + Calidad
+
+on:
+  schedule:
+    # Todos los lunes a las 9:00 AM UTC (06:00 Chile)
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # permite ejecutar manualmente desde GitHub
+
+jobs:
+  deps:
+    name: Dependencias desactualizadas
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Reporte de dependencias desactualizadas
+        run: |
+          echo "## 📦 Dependencias desactualizadas" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm outdated --format json 2>/dev/null | node -e "
+            const data = require('fs').readFileSync('/dev/stdin','utf8').trim()
+            if (!data) { console.log('✅ Todo actualizado'); process.exit(0) }
+            try {
+              const pkgs = JSON.parse(data)
+              const rows = Object.entries(pkgs).map(([n,v]) =>
+                \`| \${n} | \${v.current} | \${v.latest} |\`
+              ).join('\n')
+              console.log('| Paquete | Actual | Disponible |')
+              console.log('|---------|--------|------------|')
+              console.log(rows)
+            } catch { console.log('Sin datos de outdated') }
+          " >> $GITHUB_STEP_SUMMARY || echo "Sin dependencias desactualizadas" >> $GITHUB_STEP_SUMMARY
+
+      - name: Audit de seguridad
+        run: |
+          echo "## 🔒 Audit de seguridad" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm audit --audit-level moderate 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
+
+  lighthouse:
+    name: Lighthouse — App en producción
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://bbx-radio-9k9y.vercel.app/
+          uploadArtifacts: false
+          temporaryPublicStorage: true
+          runs: 1
+
+      - name: Resumen Lighthouse
+        run: |
+          echo "## 🏎️ Lighthouse — bbx-radio-9k9y.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Ver resultados en el log de Lighthouse CI arriba" >> $GITHUB_STEP_SUMMARY

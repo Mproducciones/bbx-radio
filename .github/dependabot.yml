@@ -1,0 +1,48 @@
+version: 2
+
+updates:
+  # NPM / pnpm — dependencias de la app
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Santiago
+    open-pull-requests-limit: 5
+    groups:
+      # Actualiza todas las deps de Radix juntas en un solo PR
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+      # Framer + Anime juntos (animaciones)
+      animations:
+        patterns:
+          - "framer-motion"
+          - "animejs"
+      # Next.js + React juntos (framework core)
+      framework:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+    ignore:
+      # No tocar Capacitor (Android) sin revisión manual
+      - dependency-name: "@capacitor/*"
+        update-types: ["version-update:semver-major"]
+    labels:
+      - dependencies
+      - automated
+    commit-message:
+      prefix: "chore(deps)"
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - dependencies
+      - automated
+    commit-message:
+      prefix: "chore(ci)"
