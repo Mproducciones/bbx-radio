@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   BBX_CONTACT,
   BBX_HERO,
@@ -16,6 +16,7 @@ import { BbxHubTile } from './BbxHubTile'
 import { BbxSectionPage } from './BbxSectionPage'
 import { AccentButton } from '@/components/shared/AccentButton'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
+import { useBbxPageAnimations } from '@/hooks/useBbxPageAnimations'
 import { motion } from 'framer-motion'
 
 function LiveDemoBar() {
@@ -29,7 +30,6 @@ function LiveDemoBar() {
       style={{
         background: 'linear-gradient(135deg, rgba(219,137,24,0.16), rgba(219,137,24,0.06))',
         border: '1px solid rgba(219,137,24,0.35)',
-        boxShadow: '0 4px 16px rgba(219,137,24,0.15)',
       }}
     >
       <span className="w-1.5 h-1.5 rounded-full bg-[#db8918] animate-pulse" />
@@ -43,7 +43,10 @@ function LiveDemoBar() {
 
 export function BbxLanding() {
   const router = useRouter()
+  const rootRef = useRef<HTMLDivElement>(null)
   const [section, setSection] = useState<BbxHubSectionId | null>(null)
+
+  useBbxPageAnimations(rootRef, !section)
 
   const openSection = (id: BbxHubSectionId) => {
     setSection(id)
@@ -63,7 +66,8 @@ export function BbxLanding() {
 
   return (
     <div
-      className="min-h-screen text-white overflow-x-hidden pb-[calc(3.75rem+env(safe-area-inset-bottom,0px))] md:pb-8"
+      ref={rootRef}
+      className="bbx-landing min-h-[100dvh] w-full text-white overflow-x-hidden"
       style={{ background: '#07070e' }}
     >
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
@@ -79,118 +83,120 @@ export function BbxLanding() {
 
       <header
         className="sticky top-0 z-50 border-b border-white/8 backdrop-blur-xl"
-        style={{ background: 'rgba(7,7,14,0.92)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+        style={{ background: 'rgba(7,7,14,0.94)' }}
+        data-bbx-animate="fade"
       >
-        <div className="max-w-6xl mx-auto px-4 h-12 md:h-14 flex items-center justify-between gap-2">
-          <span className="font-display text-xl md:text-2xl tracking-wider">BBX</span>
-          <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" className="shrink-0">
-            Demo gratis
+        <div className="w-full max-w-lg mx-auto px-4 h-12 flex items-center justify-between gap-3">
+          <span className="font-display text-xl tracking-wider leading-none">BBX</span>
+          <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" className="shrink-0 !text-[11px] !px-3 !py-1.5">
+            Demo
           </AccentButton>
         </div>
       </header>
 
-      <main className="relative z-[1] max-w-6xl mx-auto px-4">
-        <section className="pt-5 pb-6 md:pt-10 md:pb-8">
-          <div className="flex justify-center mb-3">
+      <main className="relative z-[1] w-full max-w-lg mx-auto px-4 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-10 md:max-w-6xl">
+        <section className="pt-4 pb-5 md:pt-10" data-bbx-animate="fade">
+          <div className="flex justify-center mb-3 min-h-[28px]">
             <LiveDemoBar />
           </div>
           <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
-            <div className="order-2 md:order-1">
-              <p className="text-[#40B9BF] text-[9px] font-bold uppercase tracking-[0.22em] mb-2">
+            <div className="order-2 md:order-1 space-y-3">
+              <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-[0.2em]">
                 {BBX_HERO.eyebrow}
               </p>
-              <h1 className="text-lg md:text-xl font-semibold leading-snug mb-2">{BBX_HERO.title}</h1>
-              <p className="text-white/55 text-sm leading-relaxed mb-3 max-w-lg">{BBX_HERO.subtitle}</p>
+              <h1 className="text-xl md:text-2xl font-semibold leading-snug">{BBX_HERO.title}</h1>
+              <p className="text-white/55 text-sm leading-relaxed">{BBX_HERO.subtitle}</p>
               <p
-                className="inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full mb-4"
+                className="inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(0,217,160,0.12), rgba(0,217,160,0.04))',
-                  border: '1px solid rgba(0,217,160,0.25)',
+                  background: 'rgba(0,217,160,0.1)',
+                  border: '1px solid rgba(0,217,160,0.22)',
                 }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00D9A0]" />
                 {BBX_HERO.proof}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 pt-1">
                 <AccentButton href={bbxWhatsApp('Hola Bryan, quiero demo BBX.')} accent="#db8918" highlight="#f2c16a">
-                  Demo en 24h
+                  Demo 24h
                 </AccentButton>
                 <AccentButton type="button" variant="secondary" accent="#40B9BF" onClick={() => openSection('negocio')}>
-                  Modelo de negocio
+                  Negocio
                 </AccentButton>
               </div>
             </div>
-            <div className="order-1 md:order-2">
+            <div className="order-1 md:order-2 flex justify-center" data-bbx-animate="fade">
               <BbxPhoneMockup />
             </div>
           </div>
         </section>
 
-        <section className="pb-5">
-          <div className="grid grid-cols-2 gap-2">
+        <section className="pb-5" data-bbx-animate="fade">
+          <div className="grid grid-cols-2 gap-3">
             {BBX_STATS.map(s => (
               <div
                 key={s.label}
-                className="rounded-xl p-3 text-center"
+                className="rounded-xl px-3 py-3 text-center min-h-[4.25rem] flex flex-col justify-center"
                 style={accentTileStyle(s.accent)}
               >
-                <p
-                  className="font-display text-lg leading-none tabular-nums"
-                  style={{ color: s.accent, textShadow: `0 0 20px ${s.accent}44` }}
-                >
+                <p className="font-display text-xl leading-none tabular-nums" style={{ color: s.accent }}>
                   {s.value}
                 </p>
-                <p className="text-white/45 text-[10px] mt-1 leading-tight">{s.label}</p>
+                <p className="text-white/50 text-[11px] mt-1.5 leading-tight">{s.label}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="pb-8 md:pb-10">
-          <h2 className="text-base font-semibold text-white mb-1">Plataforma completa</h2>
-          <p className="text-white/50 text-sm mb-3">Toca una tarjeta para ver el detalle</p>
-          <div className="grid grid-cols-2 gap-2.5 auto-rows-fr">
+        <section className="pb-6">
+          <div className="mb-3" data-bbx-animate="fade">
+            <h2 className="text-base font-semibold text-white">Plataforma completa</h2>
+            <p className="text-white/50 text-sm mt-1">Toca una tarjeta para ver el detalle</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             {BBX_HUB_SECTIONS.map(tile => (
-              <BbxHubTile
-                key={tile.id}
-                value={tile.value}
-                label={tile.label}
-                subtitle={tile.subtitle}
-                accent={tile.accent}
-                onClick={() => openSection(tile.id)}
-              />
+              <div key={tile.id} className="flex min-w-0">
+                <BbxHubTile
+                  value={tile.value}
+                  label={tile.label}
+                  subtitle={tile.subtitle}
+                  accent={tile.accent}
+                  onClick={() => openSection(tile.id)}
+                />
+              </div>
             ))}
-            <BbxHubTile
-              value="24h"
-              emphasis="action"
-              label="Agendar demo"
-              subtitle="WhatsApp directo"
-              accent="#128C7E"
-              href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')}
-            />
+            <div className="flex min-w-0">
+              <BbxHubTile
+                value="24h"
+                emphasis="action"
+                label="Agendar demo"
+                subtitle="WhatsApp directo"
+                accent="#128C7E"
+                href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')}
+              />
+            </div>
           </div>
         </section>
 
-        <section className="pb-4 max-md:pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
+        <section data-bbx-animate="cta">
           <div
             className="rounded-2xl p-5 text-center"
             style={{
-              background: 'linear-gradient(165deg, rgba(219,137,24,0.12) 0%, #12121c 40%, #07070e 100%)',
+              background: 'linear-gradient(165deg, rgba(219,137,24,0.12) 0%, #12121c 45%, #07070e 100%)',
               border: '1px solid rgba(219,137,24,0.22)',
-              boxShadow: '0 12px 40px -12px rgba(219,137,24,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
             }}
           >
-            <h2 className="font-display text-xl md:text-2xl mb-1.5">¿Digitalizamos tu radio?</h2>
-            <p className="text-white/55 text-sm mb-3">
+            <h2 className="font-display text-xl mb-1.5">¿Digitalizamos tu radio?</h2>
+            <p className="text-white/55 text-sm mb-4">
               {BBX_CONTACT.name} · demo 24h · setup 48h
             </p>
-            <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" fullWidth className="max-w-xs mx-auto mb-2">
+            <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" fullWidth className="max-w-xs mx-auto hidden md:flex">
               Agendar demo
             </AccentButton>
             <button
               type="button"
               onClick={() => router.back()}
-              className="text-white/35 text-xs hover:text-white/60"
+              className="text-white/40 text-sm hover:text-white/70 mt-3"
             >
               ← Volver a la radio
             </button>
@@ -198,21 +204,22 @@ export function BbxLanding() {
         </section>
       </main>
 
-      <footer className="hidden md:block border-t border-white/5 py-4 text-center relative z-[1]">
+      <footer className="hidden md:block border-t border-white/5 py-4 text-center relative z-[1] max-w-6xl mx-auto">
         <p className="font-display text-sm text-white/50">BBX RADIO SYSTEM</p>
       </footer>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 px-3 pt-2 md:hidden border-t border-white/10 backdrop-blur-xl"
+        className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-white/10 backdrop-blur-xl px-4 pt-2.5"
         style={{
-          background: 'rgba(7,7,14,0.96)',
-          paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))',
-          boxShadow: '0 -12px 40px rgba(0,0,0,0.5)',
+          background: 'rgba(7,7,14,0.97)',
+          paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" fullWidth>
-          Agendar demo
-        </AccentButton>
+        <div className="max-w-lg mx-auto">
+          <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" fullWidth>
+            Agendar demo
+          </AccentButton>
+        </div>
       </div>
     </div>
   )

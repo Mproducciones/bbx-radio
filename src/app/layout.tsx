@@ -7,6 +7,7 @@ import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
 import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
+import { AppMainArea } from '@/components/layout/AppMainArea'
 import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { AuroraBackground } from '@/components/layout/AuroraBackground'
@@ -82,11 +83,11 @@ export default function RootLayout({
           {/* Desktop: 2-column layout. Mobile: single column. */}
           <div className="app-mobile-shell md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
-            <div className="app-mobile-main flex-1 md:overflow-y-auto">
+            <AppMainArea>
               <SwipeLayout>
                 {children}
               </SwipeLayout>
-            </div>
+            </AppMainArea>
             <ClientBottomNav />
           </div>
           <PushPermission />

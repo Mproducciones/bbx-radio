@@ -2,15 +2,17 @@
 
 import { accentTileStyle } from '@/lib/accentUi'
 
+const TILE_H = 'h-[7.75rem]'
+
 type BbxHubTileProps = {
   value: string
   label: string
   subtitle?: string
   accent: string
-  /** Tarjetas de acción (ej. WhatsApp): sin número grande arriba */
   emphasis?: 'stat' | 'action'
   onClick?: () => void
   href?: string
+  animate?: boolean
 }
 
 export function BbxHubTile({
@@ -21,55 +23,54 @@ export function BbxHubTile({
   emphasis = 'stat',
   onClick,
   href,
+  animate = true,
 }: BbxHubTileProps) {
-  const className =
-    'group relative w-full min-h-[5.75rem] rounded-xl px-3 py-3 text-left overflow-hidden transition-all active:scale-[0.98] hover:brightness-110 flex flex-col'
+  const className = [
+    'group relative w-full rounded-xl px-3 py-3 text-left overflow-hidden',
+    'transition-[filter,transform] active:scale-[0.98] hover:brightness-105',
+    'flex flex-col items-stretch',
+    TILE_H,
+    animate ? '' : '',
+  ].join(' ')
+
+  const dataAttrs = animate ? { 'data-bbx-animate': 'tile' as const } : {}
 
   const inner = (
     <>
       <div
-        className="absolute inset-x-0 top-0 h-[2px] opacity-90"
-        style={{ background: `linear-gradient(90deg, ${accent}, transparent 85%)` }}
-      />
-      <div
-        className="absolute -right-6 -top-6 w-20 h-20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none blur-2xl"
-        style={{ background: accent }}
+        className="absolute inset-x-0 top-0 h-[2px]"
+        style={{ background: `linear-gradient(90deg, ${accent}, transparent 88%)` }}
       />
 
-      {emphasis === 'stat' ? (
-        <p
-          className="relative font-display text-[1.35rem] leading-none tabular-nums tracking-wide"
-          style={{ color: accent, textShadow: `0 0 20px ${accent}44` }}
-        >
-          {value}
-        </p>
-      ) : (
-        <span
-          className="relative self-start text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md"
-          style={{ background: `${accent}22`, color: accent, border: `1px solid ${accent}40` }}
-        >
-          {value}
-        </span>
-      )}
+      <div className="relative h-9 flex items-end shrink-0">
+        {emphasis === 'stat' ? (
+          <p
+            className="font-display text-2xl leading-none tabular-nums tracking-wide"
+            style={{ color: accent }}
+          >
+            {value}
+          </p>
+        ) : (
+          <span
+            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md leading-none"
+            style={{ background: `${accent}22`, color: accent, border: `1px solid ${accent}45` }}
+          >
+            {value}
+          </span>
+        )}
+      </div>
+
+      <p className="relative text-sm font-semibold text-white leading-snug mt-2 line-clamp-1">{label}</p>
+      <p className="relative text-xs text-white/55 leading-snug mt-0.5 line-clamp-2 flex-1 min-h-[2rem]">
+        {subtitle ?? '\u00A0'}
+      </p>
 
       <p
-        className={`relative text-white font-semibold leading-snug ${
-          emphasis === 'action' ? 'text-sm mt-2' : 'text-sm mt-1.5'
-        }`}
+        className="relative text-[11px] font-semibold mt-auto pt-2 opacity-70 group-hover:opacity-100"
+        style={{ color: accent }}
       >
-        {label}
+        Ver detalle →
       </p>
-      {subtitle && (
-        <p className="relative text-white/55 text-xs mt-0.5 leading-snug flex-1">{subtitle}</p>
-      )}
-      {(onClick || href) && (
-        <p
-          className="relative text-[11px] font-semibold mt-2 tracking-wide opacity-75 group-hover:opacity-100 transition-opacity"
-          style={{ color: accent }}
-        >
-          Ver detalle →
-        </p>
-      )}
     </>
   )
 
@@ -77,14 +78,21 @@ export function BbxHubTile({
 
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className} style={style}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        style={style}
+        {...dataAttrs}
+      >
         {inner}
       </a>
     )
   }
 
   return (
-    <button type="button" onClick={onClick} className={className} style={style}>
+    <button type="button" onClick={onClick} className={className} style={style} {...dataAttrs}>
       {inner}
     </button>
   )
