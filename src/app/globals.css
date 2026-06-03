@@ -320,6 +320,44 @@ body {
     overflow: hidden;
     overflow-x: clip;
   }
+
+  /* Columna de contenido alineada con bottom nav — el shell ya aplica inset horizontal */
+  .app-page-column {
+    width: 100%;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .app-sticky-bar {
+    width: 100%;
+    max-width: 100%;
+    padding-left: var(--app-shell-pad-x);
+    padding-right: var(--app-shell-pad-right);
+    box-sizing: border-box;
+  }
+
+  .app-sticky-bar-inner {
+    width: 100%;
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .app-scroll-route {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
 }
 
 /* Sin contain:paint — recortaba bordes redondeados y dejaba esquinas “cortadas” */

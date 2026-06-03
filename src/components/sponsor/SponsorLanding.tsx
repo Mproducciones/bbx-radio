@@ -27,7 +27,7 @@ function PlanCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       whileTap={{ scale: 0.99 }}
-      className={`pro-plan-card w-full text-left ${plan.popular ? 'pro-plan-card--featured' : ''}`}
+      className={`pro-plan-card w-full min-w-0 max-w-full text-left overflow-hidden ${plan.popular ? 'pro-plan-card--featured' : ''}`}
       style={{ '--plan-accent': plan.color } as React.CSSProperties}
     >
       <div className="pro-plan-stripe" />
@@ -38,9 +38,9 @@ function PlanCard({
             <SponsorPlanIcon planId={plan.id} className="w-5 h-5" />
           </div>
 
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 overflow-hidden">
             <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className="text-white font-semibold text-lg tracking-tight">{plan.nombre}</span>
+              <span className="text-white font-semibold text-base max-md:text-[15px] tracking-tight">{plan.nombre}</span>
               {plan.popular && (
                 <span
                   className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
@@ -57,9 +57,9 @@ function PlanCard({
             <p className="text-white/45 text-xs leading-relaxed">{plan.tagline}</p>
           </div>
 
-          <div className="shrink-0 text-right pl-1">
+          <div className="shrink-0 text-right pl-1 max-w-[38%]">
             <p
-              className="font-display text-3xl leading-none tabular-nums tracking-wide"
+              className="font-display text-2xl max-md:text-xl leading-none tabular-nums tracking-wide truncate"
               style={{ color: plan.color }}
             >
               ${plan.precio}
@@ -223,18 +223,18 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
       <div className="h-20 md:hidden" />
 
       <div
-        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] pt-3 border-t border-white/[0.06] backdrop-blur-xl"
+        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] app-sticky-bar border-t border-white/[0.06] backdrop-blur-xl"
         style={{
           bottom: 'var(--app-nav-total)',
           background: 'rgba(7,7,14,0.96)',
-          paddingLeft: 'max(1rem, env(safe-area-inset-left, 0px))',
-          paddingRight: 'max(1rem, env(safe-area-inset-right, 0px))',
           paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <ProWaButton href={waLink} compact>
-          Cotizar por WhatsApp
-        </ProWaButton>
+        <div className="app-sticky-bar-inner pt-3">
+          <ProWaButton href={waLink} compact>
+            Cotizar por WhatsApp
+          </ProWaButton>
+        </div>
       </div>
 
       <PlanDetailSheet plan={selectedPlan} onClose={() => setSelectedId(null)} />

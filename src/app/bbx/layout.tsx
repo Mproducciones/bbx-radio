@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 /** BBX: un solo contenedor de scroll dentro del shell móvil (evita doble scroll y taps bloqueados). */
 export default function BbxLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bbx-layout relative flex flex-1 flex-col min-h-0 min-w-0 w-full max-w-full overflow-x-hidden overflow-y-auto overscroll-contain touch-pan-y md:min-h-[100dvh] [&>*]:shrink-0">
+    <div className="bbx-layout app-scroll-route relative flex flex-1 flex-col min-h-0 min-w-0 w-full max-w-full overflow-x-hidden overflow-y-auto overscroll-contain touch-pan-y md:min-h-[100dvh] [&>*]:shrink-0">
       {children}
     </div>
   )

@@ -85,7 +85,13 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
 
   const isTabShell = !isAppScrollRoute(pathname) && !pathname.startsWith('/admin') && !pathname.startsWith('/studio')
 
-  if (!isTabShell) return <>{children}</>
+  if (!isTabShell) {
+    return (
+      <div className="app-scroll-route w-full min-w-0 max-w-full flex-1 flex flex-col min-h-0">
+        {children}
+      </div>
+    )
+  }
 
   const slideVariants = {
     enter: (d: number) => ({ x: d >= 0 ? '100%' : '-100%', opacity: 0.6 }),
