@@ -37,8 +37,7 @@ export function BbxFrequencyGate({
       onClick={onTap}
       className={className}
       style={{ ...style, cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}
-      aria-label="93.3 FM — 5 toques rápidos para abrir BBX"
-      title="5 toques rápidos → BBX"
+      aria-label="93.3 FM"
     >
       {children}
     </button>
