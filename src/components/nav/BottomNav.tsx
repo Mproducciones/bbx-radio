@@ -32,7 +32,7 @@ export function BottomNav() {
         WebkitBackdropFilter: 'blur(24px)',
       }}
     >
-      <div className="w-full min-w-0 max-w-full px-1 flex items-center h-[var(--app-nav-h)]">
+      <div className="max-w-md mx-auto px-1 flex items-center h-[var(--app-nav-h)]">
         {TABS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 
