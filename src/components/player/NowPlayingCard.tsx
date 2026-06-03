@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
@@ -77,6 +77,45 @@ function CircularBars({ isPlaying, primary, secondary, analyser }: {
 const AMBER  = '#db8918'
 const CYAN   = '#40B9BF'
 const PURPLE = '#7D59B5'
+
+/** Reloj local de la radio (Chile) para el player inmersivo. */
+function ImmersiveClock({ timezone }: { timezone: string }) {
+  const [time, setTime] = useState('')
+
+  useEffect(() => {
+    const tick = () => {
+      try {
+        setTime(
+          new Intl.DateTimeFormat('es-CL', {
+            timeZone: timezone,
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          }).format(new Date()),
+        )
+      } catch {
+        const d = new Date()
+        const h = d.getHours()
+        const m = String(d.getMinutes()).padStart(2, '0')
+        const ap = h >= 12 ? 'p.m.' : 'a.m.'
+        setTime(`${h % 12 || 12}:${m} ${ap}`)
+      }
+    }
+    tick()
+    const id = window.setInterval(tick, 30_000)
+    return () => window.clearInterval(id)
+  }, [timezone])
+
+  return (
+    <time
+      className="text-xs font-semibold tabular-nums text-white/85 shrink-0"
+      dateTime={time || undefined}
+      title="Hora local"
+    >
+      {time || '--:--'}
+    </time>
+  )
+}
 
 interface Props {
   radio: RadioConfig
@@ -258,16 +297,7 @@ export function NowPlayingCard({
               <Image src="/icons/icon-96.png" alt="" width={28} height={28} className="rounded-md shrink-0" />
               <p className="font-display text-base text-[#db8918] leading-none truncate">{radio.name}</p>
             </div>
-            <BbxFrequencyGate
-              className="text-[11px] font-semibold tabular-nums leading-none px-2 py-0.5 rounded-md shrink-0"
-              style={{
-                color: primary,
-                background: `${primary}12`,
-                border: `1px solid ${primary}30`,
-              }}
-            >
-              {radio.frequency}
-            </BbxFrequencyGate>
+            <ImmersiveClock timezone={radio.location?.timezone ?? 'America/Santiago'} />
           </header>
 
           <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0">
@@ -377,19 +407,7 @@ export function NowPlayingCard({
               height={36}
             />
 
-            <div className="flex items-center justify-center gap-5 mt-2 mb-1.5">
-              <button
-                type="button"
-                aria-label="Bajar volumen"
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white/80 transition-transform active:scale-95"
-                style={neumoControlStyle(primary)}
-                onClick={() => onVolumeChange(Math.max(0, volume - 0.08))}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z" />
-                </svg>
-              </button>
-
+            <div className="flex items-center justify-center mt-2 mb-1.5">
               <motion.button
                 whileTap={{ scale: 0.92 }}
                 onClick={() => {
@@ -398,7 +416,7 @@ export function NowPlayingCard({
                 }}
                 disabled={isLoading}
                 aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
-                className="relative w-14 h-14 rounded-full flex items-center justify-center shrink-0"
+                className="relative w-12 h-12 rounded-full flex items-center justify-center shrink-0"
                 style={{
                   ...neumoControlStyle(primary, false),
                   background: isPlaying
@@ -406,37 +424,25 @@ export function NowPlayingCard({
                     : neumoControlStyle(primary).background,
                   color: isPlaying ? '#07070e' : '#fff',
                   boxShadow: isPlaying
-                    ? `0 0 28px ${glow}, 6px 6px 16px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.2)`
+                    ? `0 0 32px ${glow}, 8px 8px 20px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.25)`
                     : neumoControlStyle(primary).boxShadow,
                 }}
               >
                 {isLoading ? (
                   <div
-                    className="w-5 h-5 rounded-full border-2 border-current border-t-transparent animate-spin"
+                    className="w-6 h-6 rounded-full border-2 border-current border-t-transparent animate-spin"
                     style={{ animationDuration: '0.7s' }}
                   />
                 ) : isPlaying ? (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                   </svg>
                 ) : (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 2 }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}>
                     <path d="M8 5.14v14l11-7-11-7z" />
                   </svg>
                 )}
               </motion.button>
-
-              <button
-                type="button"
-                aria-label="Subir volumen"
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white/80 transition-transform active:scale-95"
-                style={neumoControlStyle(primary)}
-                onClick={() => onVolumeChange(Math.min(1, volume + 0.08))}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                </svg>
-              </button>
             </div>
 
             <VolumeSlider
