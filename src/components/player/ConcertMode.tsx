@@ -17,14 +17,12 @@ interface ConcertModeProps {
   isLoading: boolean
   analyser: AnalyserNode | null
   colors: AlbumColors
-  volume: number
   onToggle: () => void
-  onVolumeChange: (v: number) => void
 }
 
 export function ConcertMode({
   isOpen, onClose, radio, nowPlaying, isPlaying,
-  isLoading, analyser, colors, volume, onToggle, onVolumeChange,
+  isLoading, analyser, colors, onToggle,
 }: ConcertModeProps) {
 
   // Swipe down to close
@@ -177,19 +175,7 @@ export function ConcertMode({
           {/* ── Controles ────────────────────────────────────── */}
           <div className="flex-shrink-0 px-8 pb-safe pb-8 flex flex-col gap-5">
 
-            {/* Play / volumen */}
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2 flex-1">
-                <VolumeIcon className="w-4 h-4 text-white/30 flex-shrink-0" />
-                <input
-                  type="range" min={0} max={1} step={0.02} value={volume}
-                  onChange={e => onVolumeChange(Number(e.target.value))}
-                  className="flex-1 h-1 cursor-pointer"
-                  style={{ accentColor: colors.primary }}
-                />
-                <VolumeHighIcon className="w-4 h-4 text-white/30 flex-shrink-0" />
-              </div>
-
+            <div className="flex items-center justify-center">
               <motion.button
                 whileTap={{ scale: 0.88 }}
                 onClick={() => { haptic(); onToggle() }}
@@ -238,12 +224,6 @@ function PlayIcon({ className }: { className?: string }) {
 }
 function PauseIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-}
-function VolumeIcon({ className }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M7 9v6h4l5 5V4l-5 5H7z"/></svg>
-}
-function VolumeHighIcon({ className }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
 }
 function MicIcon({ className }: { className?: string }) {
   return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 15.2 14.47 17 12 17s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V21c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>

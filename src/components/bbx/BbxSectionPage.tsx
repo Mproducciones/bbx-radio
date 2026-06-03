@@ -1,7 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronLeft } from 'lucide-react'
 import {
   BBX_CONTACT,
   BBX_FEATURES,
@@ -151,20 +153,27 @@ export function BbxSectionPage({
   const accent = hub?.accent ?? '#db8918'
 
   return (
-    <div className="min-h-full text-white" style={{ background: '#07070e' }}>
+    <div className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden" style={{ background: 'var(--color-ink-900)' }}>
       <header
-        className="sticky top-0 z-50 border-b border-white/5 backdrop-blur-xl"
+        className="sticky top-0 z-50 shrink-0 border-b border-white/5 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.95)' }}
       >
-        <div className="max-w-6xl mx-auto px-4 h-12 flex items-center gap-3">
+        <div className="max-w-6xl mx-auto px-3 md:px-4 min-h-12 py-2 flex items-center gap-2">
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1.5 text-xs font-semibold text-white/60 hover:text-white shrink-0 rounded-xl px-2.5 py-2"
+            className="flex items-center gap-1 text-xs font-semibold text-white/70 hover:text-white shrink-0 rounded-xl px-2.5 py-2 min-h-[44px]"
             style={{ background: 'rgba(255,255,255,0.06)' }}
           >
-            ← Volver
+            <ChevronLeft className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+            BBX
           </button>
+          <Link
+            href="/"
+            className="flex items-center gap-1 text-[10px] font-semibold text-white/45 hover:text-white shrink-0 rounded-lg px-2 py-2 min-h-[44px]"
+          >
+            Radio
+          </Link>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm text-white truncate">{hub?.label ?? section}</p>
             <p className="text-[10px] text-white/40 truncate">{hub?.subtitle}</p>
@@ -180,7 +189,7 @@ export function BbxSectionPage({
         <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent 80%)` }} />
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-5 pb-[calc(5rem+env(safe-area-inset-bottom,0px))]">
+      <div className="relative z-[1] flex-1 min-w-0 max-w-6xl mx-auto w-full px-4 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
         {section === 'producto' && <ProductoContent />}
         {section === 'proceso' && <ProcesoContent />}
         {section === 'negocio' && <BbxRevenueSection embedded />}

@@ -11,26 +11,20 @@ const PLAN_LABEL: Record<SponsorPlanId, string> = {
 }
 
 function PhoneFrame({ children, badge, compact, large }: { children: React.ReactNode; badge?: string; compact?: boolean; large?: boolean }) {
+  const maxW = compact ? 'max-w-[260px]' : large ? 'max-w-[min(100%,340px)]' : 'max-w-[min(100%,300px)]'
   return (
     <div className="w-full">
       {badge && (
-        <p className="text-[10px] font-bold uppercase tracking-wider mb-2 text-center" style={{ color: '#db8918' }}>
+        <p className="pro-eyebrow mb-2 text-center" style={{ color: 'var(--color-mag-400)' }}>
           {badge}
         </p>
       )}
-      <div
-        className={`mx-auto w-full rounded-[1.6rem] p-2 ${compact ? 'max-w-[260px]' : large ? 'max-w-[min(100%,340px)]' : 'max-w-[min(100%,300px)]'}`}
-        style={{
-          background: 'linear-gradient(145deg,#2a2a38,#12121c)',
-          boxShadow: compact ? '0 8px 24px rgba(0,0,0,0.4)' : '0 16px 40px rgba(0,0,0,0.5)',
-          border: '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        <div className="rounded-[1.15rem] overflow-hidden bg-[#07070e] border border-white/5">
-          <div className="flex items-center justify-between px-3 py-1.5 bg-black/40">
-            <span className="text-[8px] text-white/40">9:41</span>
-            <div className="w-12 h-3 rounded-full bg-black/80" />
-            <span className="text-[8px] text-white/40">●●●</span>
+      <div className={`pro-phone-frame mx-auto w-full ${maxW}`}>
+        <div className="rounded-[1.15rem] overflow-hidden bg-ink-900 border border-white/[0.06]">
+          <div className="flex items-center justify-between px-3 py-2 bg-black/50 border-b border-white/[0.05]">
+            <span className="text-[9px] text-white/45 font-medium tabular-nums">9:41</span>
+            <div className="w-14 h-4 rounded-full bg-black/70 border border-white/[0.08]" />
+            <span className="text-[9px] text-white/35 tracking-widest">···</span>
           </div>
           {children}
         </div>
@@ -51,15 +45,24 @@ function EnVivoScreen({
 
   return (
     <>
-      <div className="px-3 py-2 border-b border-white/5 flex justify-between items-center">
+      <div className="px-3 py-2.5 border-b border-white/[0.06] flex justify-between items-center bg-white/[0.02]">
         <span className="font-display text-sm text-white tracking-wide">RADIO BIENVENIDA</span>
-        <span className="text-[9px] font-bold px-2 py-0.5 rounded-md" style={{ color: accent, background: `${accent}18` }}>
+        <span
+          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+          style={{
+            color: accent,
+            background: `color-mix(in srgb, ${accent} 14%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${accent} 35%, transparent)`,
+          }}
+        >
           93.3 FM
         </span>
       </div>
 
-      {/* Reproductor */}
-      <div className="relative h-36 flex items-center justify-center" style={{ background: 'linear-gradient(180deg,#1a1028,#07070e)' }}>
+      <div
+        className="relative h-36 flex items-center justify-center"
+        style={{ background: 'linear-gradient(180deg, rgba(125,89,181,0.15) 0%, var(--color-ink-900) 72%)' }}
+      >
         <img src="/icons/fondo.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-25 pointer-events-none" />
         <div className="relative w-20 h-20 rounded-full border-2 flex items-center justify-center" style={{ borderColor: `${accent}80`, boxShadow: `0 0 30px ${accent}40` }}>
           <img src="/icons/icon-512.png" alt="" className="w-14 h-14 rounded-full object-contain opacity-90" />
@@ -84,9 +87,15 @@ function EnVivoScreen({
         <div
           className="rounded-xl px-3 py-2.5 flex items-center gap-2.5 relative overflow-hidden"
           style={{
-            background: isHero || isExclusive ? `${accent}20` : 'rgba(255,255,255,0.05)',
-            border: `2px solid ${isHero || isExclusive ? accent : 'rgba(255,255,255,0.12)'}`,
-            boxShadow: isHero ? `0 0 24px ${accent}35` : isExclusive ? `0 0 20px ${accent}25` : undefined,
+            background: isHero || isExclusive
+              ? `color-mix(in srgb, ${accent} 18%, transparent)`
+              : 'rgba(255,255,255,0.04)',
+            border: `1px solid ${isHero || isExclusive ? `color-mix(in srgb, ${accent} 55%, transparent)` : 'rgba(255,255,255,0.1)'}`,
+            boxShadow: isHero
+              ? `0 8px 28px -8px color-mix(in srgb, ${accent} 40%, transparent)`
+              : isExclusive
+                ? `0 6px 22px -8px color-mix(in srgb, ${accent} 32%, transparent)`
+                : undefined,
           }}
         >
           {(isHero || isExclusive) && (

@@ -9,7 +9,7 @@ import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 
 export function HomePageClient() {
-  const { isPlaying, isLoading, hasError, volume, analyser, toggle, setVolume } = useRadioPlayerContext()
+  const { isPlaying, isLoading, hasError, analyser, toggle } = useRadioPlayerContext()
   const { current: nowPlaying } = useNowPlaying()
 
   return (
@@ -18,19 +18,20 @@ export function HomePageClient() {
       style={{ zIndex: 1 }}
     >
       <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden box-border">
-        <div className="flex items-center justify-between gap-2 mb-2 shrink-0 min-w-0 max-w-full">
+        <div className="flex items-center justify-between gap-3 mb-2 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03]">
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-xl text-white leading-none tracking-wide truncate">
+            <h1 className="font-display text-lg text-white leading-none tracking-wide truncate">
               {RADIO.name}
             </h1>
-            <p className="text-white/35 text-xs mt-0.5 font-medium truncate">{RADIO.slogan}</p>
+            <p className="text-white/40 text-[11px] mt-1 font-medium truncate">{RADIO.slogan}</p>
           </div>
           <BbxFrequencyGate
-            className="font-display text-sm leading-none px-2.5 py-1 rounded-lg shrink-0 active:scale-95 transition-transform"
+            className="font-display text-sm leading-none px-2.5 py-1.5 rounded-full shrink-0 active:scale-95 transition-transform"
             style={{
               color: 'var(--color-mag-400)',
-              background: 'rgba(219,137,24,0.08)',
-              border: '1px solid rgba(219,137,24,0.35)',
+              background: 'color-mix(in srgb, var(--color-mag-400) 12%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--color-mag-400) 38%, transparent)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
             }}
           >
             {RADIO.frequency}
@@ -66,10 +67,8 @@ export function HomePageClient() {
               isPlaying={isPlaying}
               isLoading={isLoading}
               hasError={hasError}
-              volume={volume}
               analyser={analyser}
               onToggle={toggle}
-              onVolumeChange={setVolume}
             />
           </ClientOnly>
         </div>

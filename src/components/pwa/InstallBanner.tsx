@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 type Platform = 'ios' | 'android' | 'other'
 
@@ -21,6 +22,7 @@ function isInStandaloneMode(): boolean {
 }
 
 export function InstallBanner() {
+  const pathname = usePathname()
   const [show, setShow] = useState(false)
   const [platform, setPlatform] = useState<Platform>('other')
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
@@ -63,6 +65,9 @@ export function InstallBanner() {
   }
 
   if (!show) return null
+  if (pathname.startsWith('/bbx') || pathname.startsWith('/admin') || pathname.startsWith('/studio')) {
+    return null
+  }
 
   return (
     <div className="fixed bottom-[72px] left-3 right-3 z-[900] md:hidden">

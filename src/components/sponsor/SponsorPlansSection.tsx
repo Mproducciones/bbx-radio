@@ -3,13 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { SPONSOR_PLANS, type SponsorPlan } from '@/lib/sponsorPlans'
 import { sponsorWaLink } from '@/lib/sponsorContent'
-import { AccentButton } from '@/components/shared/AccentButton'
-
-const PLAN_ICONS: Record<string, string> = {
-  basico: '📻',
-  premium: '🚀',
-  empresarial: '🏆',
-}
+import { SponsorPlanIcon } from '@/components/shared/SponsorPlanIcon'
+import { ProWaButton } from '@/components/shared/ProWaButton'
 
 function CheckIcon({ color }: { color: string }) {
   return (
@@ -53,31 +48,18 @@ function PlanCard({ plan, onSelect, index }: {
       ref={ref}
       type="button"
       onClick={() => onSelect(plan)}
-      className="relative w-full text-left rounded-2xl overflow-hidden opacity-0 active:scale-[0.98] transition-transform"
-      style={{
-        background: `linear-gradient(150deg, ${plan.color}30 0%, #0d0d1a 55%, #09090f 100%)`,
-        border: `1.5px solid ${plan.popular ? plan.color + '65' : plan.color + '30'}`,
-        boxShadow: plan.popular
-          ? `0 0 0 1px ${plan.color}18, 0 16px 56px -10px ${plan.color}45`
-          : `0 6px 28px -6px ${plan.color}28`,
-      }}
+      className={`pro-plan-card relative w-full text-left overflow-hidden opacity-0 active:scale-[0.99] transition-transform ${plan.popular ? 'pro-plan-card--featured' : ''}`}
+      style={{ '--plan-accent': plan.color } as React.CSSProperties}
     >
-      {/* Top color bar */}
-      <div
-        className="h-1.5"
-        style={{ background: `linear-gradient(90deg, ${plan.color} 0%, ${plan.color}88 55%, transparent 100%)` }}
-      />
+      <div className="pro-plan-stripe" />
 
       <div className="p-4 pb-5">
 
         {/* Icon + Plan name */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl shrink-0"
-              style={{ background: `${plan.color}22`, border: `1px solid ${plan.color}38` }}
-            >
-              {PLAN_ICONS[plan.id]}
+            <div className="pro-icon-tile" style={{ '--plan-accent': plan.color } as React.CSSProperties}>
+              <SponsorPlanIcon planId={plan.id} className="w-5 h-5" />
             </div>
             <div>
               <p className="text-white font-bold text-base leading-tight">{plan.nombre}</p>
@@ -207,7 +189,9 @@ export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan
               className="grid grid-cols-[minmax(0,1.2fr)_auto_minmax(0,2fr)] w-full text-left hover:bg-white/[0.03] transition-colors border-t border-white/5"
             >
               <div className="px-4 py-3 flex items-center gap-2">
-                <span>{PLAN_ICONS[plan.id]}</span>
+                <span style={{ color: plan.color }} className="shrink-0">
+                  <SponsorPlanIcon planId={plan.id} className="w-4 h-4" />
+                </span>
                 <span className="text-white font-semibold">{plan.nombre}</span>
                 {plan.popular && (
                   <span className="text-[8px] px-1.5 py-0.5 rounded-full font-bold"
@@ -235,9 +219,7 @@ export function SponsorPlansSection({ onSelect }: { onSelect: (plan: SponsorPlan
       </div>
 
       <div className="mt-5">
-        <AccentButton href={sponsorWaLink()} accent="#128C7E" highlight="#25D366" fullWidth>
-          Cotizar por WhatsApp
-        </AccentButton>
+        <ProWaButton href={sponsorWaLink()}>Cotizar por WhatsApp</ProWaButton>
       </div>
     </section>
   )

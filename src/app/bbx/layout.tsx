@@ -11,10 +11,10 @@ export const metadata: Metadata = {
   },
 }
 
-/** BBX: scroll propio a pantalla completa, fuera del recorte del shell de la app. */
+/** BBX: un solo contenedor de scroll dentro del shell móvil (evita doble scroll y taps bloqueados). */
 export default function BbxLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bbx-layout w-full min-w-0 max-md:flex-1 max-md:min-h-0 max-md:overflow-y-auto max-md:overflow-x-hidden max-md:overscroll-contain md:min-h-[100dvh]">
+    <div className="bbx-layout relative flex flex-1 flex-col min-h-0 min-w-0 w-full max-w-full overflow-x-hidden overflow-y-auto overscroll-contain touch-pan-y md:min-h-[100dvh] [&>*]:shrink-0">
       {children}
     </div>
   )

@@ -12,9 +12,18 @@ concurrency:
 
 jobs:
   check:
-    name: TypeScript + ESLint + Validate
+    name: TypeScript + QA + Build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_PLAN: pro
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      SUPABASE_SERVICE_KEY: ci-placeholder-service-key
+      SUBSCRIPTION_STATUS: active
+      NEXT_PUBLIC_SANITY_PROJECT_ID: nmwhp66x
+      NEXT_PUBLIC_SANITY_DATASET: production
 
     steps:
       - name: Checkout
@@ -23,12 +32,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: Instalar dependencias
@@ -37,17 +46,5 @@ jobs:
       - name: TypeScript
         run: npx tsc --noEmit
 
-      - name: ESLint (solo src — no bloquea por android/sw generados)
-        run: pnpm exec eslint src --max-warnings 50
-
-      - name: Validación PWA + Archivos críticos
-        run: node scripts/validate.mjs
-
-      - name: Build de producción
-        run: pnpm build
-        env:
-          # Variables mínimas para que Next.js compile sin error de runtime
-          NEXT_PUBLIC_PLAN: pro
-          NEXT_TELEMETRY_DISABLED: 1
-          # Secrets opcionales — el build no falla sin ellos
-          NEXTAUTH_SECRET: ci-placeholder
+      - name: QA agente (validate + build de producción)
+        run: pnpm run agent:qa

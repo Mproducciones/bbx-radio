@@ -47,7 +47,7 @@ export function useRadioPlayer({
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [volume, setVolumeState] = useState(0.8)
+  const volume = 1
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -74,6 +74,7 @@ export function useRadioPlayer({
     const audio = new Audio(streamUrl)
     audio.crossOrigin = 'anonymous'
     audio.preload = 'none'
+    audio.volume = 1
     audioRef.current = audio
 
     const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
@@ -133,8 +134,7 @@ export function useRadioPlayer({
   }, [isPlaying, play, pause])
 
   const setVolume = useCallback((v: number) => {
-    setVolumeState(v)
-    if (audioRef.current) audioRef.current.volume = v
+    if (audioRef.current) audioRef.current.volume = Math.max(0, Math.min(1, v))
   }, [])
 
   useEffect(() => {

@@ -5,11 +5,13 @@ import { usePathname } from 'next/navigation'
 import { useListeningMilestone } from '@/hooks/useListeningMilestone'
 import { MilestoneBadge } from '@/components/player/MilestoneBadge'
 
+/** Volumen del elemento audio siempre al máximo; el usuario regula con los botones del dispositivo. */
+const STREAM_VOLUME = 1
+
 interface RadioPlayerContextValue {
   isPlaying: boolean
   isLoading: boolean
   hasError: boolean
-  volume: number
   analyser: AnalyserNode | null
   isTvOpen: boolean
   isConcertMode: boolean
@@ -18,7 +20,6 @@ interface RadioPlayerContextValue {
   play: () => void
   pause: () => void
   toggle: () => void
-  setVolume: (v: number) => void
   openConcert: () => void
   closeConcert: () => void
 }
@@ -56,7 +57,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [volume, setVolumeState] = useState(0.8)
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const [isTvOpen, setIsTvOpen] = useState(false)
   const [isConcertMode, setIsConcertMode] = useState(false)
@@ -197,7 +197,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     const audio = new Audio(STREAM_URL)
     audio.crossOrigin = 'anonymous'
     audio.preload = 'none'
-    audio.volume = volume
+    audio.volume = STREAM_VOLUME
     audio.setAttribute('playsinline', 'true')
     audio.setAttribute('webkit-playsinline', 'true')
     audioRef.current = audio
@@ -260,10 +260,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume
-  }, [volume])
-
-  useEffect(() => {
     const onTv = isTvPath(pathname)
     if (onTv) {
       pauseForTv()
@@ -282,8 +278,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     }
   }, [isPlaying, pause, play])
 
-  const setVolume = useCallback((v: number) => setVolumeState(v), [])
-
   const openConcert = useCallback(() => setIsConcertMode(true), [])
   const closeConcert = useCallback(() => setIsConcertMode(false), [])
 
@@ -297,7 +291,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [resumeAfterTv])
 
   return (
-    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, volume, analyser, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, setVolume, openConcert, closeConcert }}>
+    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, analyser, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>
       {children}
       <MilestoneBadge milestone={milestone} />
     </RadioPlayerContext.Provider>

@@ -67,10 +67,10 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
               aria-labelledby="plan-detail-title"
               className="fixed z-[1101] inset-x-0 bottom-0 mx-auto w-full max-w-lg flex flex-col rounded-t-[1.35rem] overflow-hidden max-md:h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
               style={{
-                background: '#0c0c14',
-                border: `1px solid ${plan.color}50`,
+                background: 'linear-gradient(180deg, #12121c 0%, var(--color-ink-900) 100%)',
+                border: `1px solid color-mix(in srgb, ${plan.color} 42%, rgba(255,255,255,0.08))`,
                 borderBottom: 'none',
-                boxShadow: `0 -16px 60px ${plan.color}25`,
+                boxShadow: `0 -20px 64px -12px color-mix(in srgb, ${plan.color} 28%, transparent)`,
               }}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
@@ -196,7 +196,11 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                 >
                   Cotizar plan {plan.nombre}
                 </AccentButton>
-                <button type="button" onClick={onClose} className="text-xs text-white/45 hover:text-white py-1">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="text-xs text-white/45 hover:text-white py-2 rounded-lg w-full border border-white/[0.08] bg-white/[0.03]"
+                >
                   Cerrar
                 </button>
               </div>
