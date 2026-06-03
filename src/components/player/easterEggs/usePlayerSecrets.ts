@@ -12,19 +12,12 @@ export function usePlayerSecrets(isPlaying: boolean) {
   const [logoDigital, setLogoDigital] = useState(false)
   const [logoBurst, setLogoBurst] = useState(false)
   const [logoHold, setLogoHold] = useState(0)
-  const [hintFlash, setHintFlash] = useState<string | null>(null)
-
   const logoTimer = useRef<ReturnType<typeof setInterval> | null>(null)
   const burstTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const tripleWait = useRef<ReturnType<typeof setTimeout> | null>(null)
   const logoHeld = useRef(false)
   const tapTimes = useRef<number[]>([])
   const justActivatedDigital = useRef(false)
-
-  const flashHint = useCallback((msg: string) => {
-    setHintFlash(msg)
-    window.setTimeout(() => setHintFlash(null), 2200)
-  }, [])
 
   const clearLogoHold = useCallback(() => {
     if (logoTimer.current) clearInterval(logoTimer.current)
@@ -47,9 +40,8 @@ export function usePlayerSecrets(isPlaying: boolean) {
     window.setTimeout(() => {
       justActivatedDigital.current = false
     }, 700)
-    flashHint('MODO PULSO · SISTEMA')
     queueVibrate([12, 40, 20, 40])
-  }, [clearLogoHold, clearBurst, flashHint])
+  }, [clearLogoHold, clearBurst])
 
   const activateBurst = useCallback(() => {
     if (logoDigital) return
@@ -127,7 +119,6 @@ export function usePlayerSecrets(isPlaying: boolean) {
     logoDigital,
     logoBurst,
     logoHold,
-    hintFlash,
     startLogoHold,
     endLogoHold,
     onLogoTouchEnd,

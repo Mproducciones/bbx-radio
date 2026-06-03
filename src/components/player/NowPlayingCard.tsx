@@ -9,7 +9,6 @@ import { vibrateNow } from '@/lib/haptics'
 import { ZenoEmbed } from './ZenoEmbed'
 import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
-import { SecretHintToast } from './easterEggs/SecretHintToast'
 import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 import { DotGridVisualizer } from './DotGridVisualizer'
 import { VinylDiscFrame, neumoControlStyle } from './VinylDiscFrame'
@@ -247,8 +246,6 @@ export function NowPlayingCard({
       <>
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
         <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden">
-          <SecretHintToast message={secrets.hintFlash} />
-
           <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1">
             <div
               className="relative shrink-0 flex items-center justify-center w-full max-w-[min(240px,72vw)] aspect-square"
@@ -411,7 +408,6 @@ export function NowPlayingCard({
           : `0 12px 48px rgba(0,0,0,0.7)`,
         transition: 'box-shadow 1.5s, border-color 1.5s',
       }}>
-        <SecretHintToast message={secrets.hintFlash} />
         {/* Accent top */}
         <div style={{ height: 3, position: 'relative', overflow: 'hidden' }}>
           <div style={{
