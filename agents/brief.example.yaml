@@ -28,5 +28,16 @@ quality_gates:
   - manifest_icons_valid
   - eslint_max_warnings_50
 
+# Rutas y anchos para npm run agent:qa:visual
+qa_routes:
+  - /
+  - /programacion
+  - /participa
+  - /saludos
+qa_widths:
+  - 360
+  - 390
+  - 430
+
 variants_to_try: 3
 max_iterations_per_variant: 5

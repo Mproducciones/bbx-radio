@@ -49,20 +49,20 @@ export function AuroraBackground() {
       {/* % en lugar de vw + sin scale en móvil — evita overflow-x por transform */}
       <AuroraBlob
         animClass="aurora-blob-1"
-        blur={50}
-        box={{ width: '42%', height: '42%', top: '-4%', left: '-4%' }}
+        blur={40}
+        box={{ width: '38%', height: '38%', top: '0', left: '0' }}
         gradient="radial-gradient(circle, rgba(219,137,24,0.14) 0%, transparent 70%)"
       />
       <AuroraBlob
         animClass="aurora-blob-2"
-        blur={50}
-        box={{ width: '38%', height: '38%', top: '-2%', right: '-2%' }}
+        blur={40}
+        box={{ width: '34%', height: '34%', top: '0', right: '0' }}
         gradient="radial-gradient(circle, rgba(125,89,181,0.12) 0%, transparent 70%)"
       />
       <AuroraBlob
         animClass="aurora-blob-3"
-        blur={60}
-        box={{ width: '44%', height: '44%', bottom: '-4%', left: '28%' }}
+        blur={45}
+        box={{ width: '36%', height: '36%', bottom: '0', left: '32%' }}
         gradient="radial-gradient(circle, rgba(64,185,191,0.10) 0%, transparent 70%)"
       />
     </div>

@@ -61,3 +61,8 @@ android/app/release/
 /home-audit.png
 
 .vercel
+
+# Motor agentes — brief local y reportes QA
+agents/brief.yaml
+agents/out/CURRENT-TASK.md
+agents/reports/*.json

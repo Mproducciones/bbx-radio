@@ -351,18 +351,15 @@ body {
 .aurora-blob-3 { animation: aurora-3 22s ease-in-out infinite; }
 
 @media (max-width: 767px) {
-  /* Solo traslación suave — scale() desbordaba el viewport (overflow-x) */
+  /* Sin traslación en móvil — evita scrollWidth > innerWidth */
   @keyframes aurora-1-mobile {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    50%       { transform: translate3d(2%, 3%, 0); }
+    0%, 100% { transform: none; }
   }
   @keyframes aurora-2-mobile {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    50%       { transform: translate3d(-2%, 2%, 0); }
+    0%, 100% { transform: none; }
   }
   @keyframes aurora-3-mobile {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    50%       { transform: translate3d(2%, -2%, 0); }
+    0%, 100% { transform: none; }
   }
 
   .aurora-blob-1 { animation: aurora-1-mobile 20s ease-in-out infinite; }

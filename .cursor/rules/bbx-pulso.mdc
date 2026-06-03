@@ -1,0 +1,47 @@
+---
+description: BBX Radio / PULSO — reglas obligatorias para agentes (Cursor + Claude)
+globs:
+  - src/**/*
+  - public/**/*
+  - agents/**/*
+alwaysApply: true
+---
+
+# Radio Bienvenida / pulso-app
+
+## Idioma y alcance
+- Responder y documentar en **español**.
+- Cambios **mínimos y focalizados**; no refactorizar fuera del pedido.
+
+## Prohibido sin confirmación explícita del usuario
+- Mover, renombrar o rediseñar el **bottom nav** (`BottomNav.tsx`, `max-w-md mx-auto`).
+- Cambiar orden de tabs en menú o swipe sin alinear `appNavRoutes.ts` + `BottomNav.tsx`.
+- `git commit` / `git push` / deploy salvo que el usuario lo pida.
+
+## Mobile / responsive (crítico)
+- Cero **overflow horizontal** a 360px: `document.documentElement.scrollWidth <= window.innerWidth`.
+- No usar `position: fixed` para fondos decorativos; usar `absolute` dentro de `.app-mobile-shell`.
+- No `100vw` en capas animadas; evitar `scale()` grande en aurora en móvil.
+- No `contain: paint` en shell (recorta bordes redondeados).
+- Flex hijos: `min-w-0`, contenedores `max-w-full`, `overflow-x-hidden` donde aplique.
+- Mini player en listas: modo **slim** (`miniPlayerRoutes.ts`), ~48px alto.
+
+## Arquitectura nav
+- Una sola fuente de rutas: `src/lib/appNavRoutes.ts`.
+- Swipe móvil: fade, no `x: 100%` (ver `SwipeLayout.tsx`).
+
+## Calidad antes de dar por terminado
+Ejecutar en terminal:
+```bash
+npm run agent:qa
+```
+Si falla overflow visual:
+```bash
+pnpm add -D playwright && npx playwright install chromium
+npm run agent:qa:visual
+```
+
+## Archivos de referencia
+- Brief: `agents/brief.yaml` (copiar desde `agents/brief.example.yaml`)
+- Reglas motor: `agents/RULES.md`, `docs/MOTOR-AGENTES.md`
+- Playbook Pro: `agents/CURSOR-CLAUDE-PRO.md`

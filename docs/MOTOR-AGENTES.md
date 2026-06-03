@@ -92,11 +92,29 @@ quality_gates:
 - No garantiza “cero bugs” sin gates; garantiza **reintentos hasta PASS** si defines gates claros.
 - APIs (Claude, etc.) tienen costo y límites — el orquestador debe llevar **presupuesto máximo por run**.
 
-## Próximo paso concreto en este repo
+## Fase 1 — implementada en este repo
 
-1. Completar gates en CI: build + script overflow 360px en URL preview.
-2. Añadir `agents/brief.example.yaml` y script orquestador mínimo (fase 1).
-3. Documentar reglas inmutables (menú, nav) en `agents/RULES.md` para que los agentes no las rompan.
+| Pieza | Ubicación |
+|-------|-----------|
+| Reglas Cursor (auto) | `.cursor/rules/bbx-pulso.mdc` |
+| Reglas inmutables | `agents/RULES.md` |
+| Playbook Pro | `agents/CURSOR-CLAUDE-PRO.md` |
+| Brief plantilla | `agents/brief.example.yaml` → copiar a `agents/brief.yaml` |
+| Tarea generada | `agents/out/CURRENT-TASK.md` |
+| Orquestador | `npm run agent:run -- --goal "..."` |
+| QA | `npm run agent:qa` / `npm run agent:qa:visual` |
+
+```bash
+cp agents/brief.example.yaml agents/brief.yaml
+npm install
+npx playwright install chromium
+npm run agent:run -- --goal "Tu objetivo en una frase"
+```
+
+## Próximo paso (fase 2)
+
+1. CI en PR: `agent:qa` + `agent:qa:visual` contra preview URL.
+2. Variantes en git worktree + scoring JSON automático.
 
 ## Referencias útiles
 

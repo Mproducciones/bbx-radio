@@ -1,7 +1,7 @@
 'use strict'
 
-const STATIC_CACHE  = 'radio-bienvenida-static-v21'
-const IMAGE_CACHE   = 'radio-bienvenida-images-v21'
+const STATIC_CACHE  = 'radio-bienvenida-static-v22'
+const IMAGE_CACHE   = 'radio-bienvenida-images-v22'
 
 const STATIC_FILES = [
   '/manifest.json',
