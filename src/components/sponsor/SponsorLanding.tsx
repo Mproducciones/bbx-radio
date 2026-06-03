@@ -64,36 +64,45 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
 
   return (
     <div ref={rootRef} className="relative w-full min-w-0 overflow-x-hidden max-md:pb-[calc(var(--app-nav-total)+5.75rem)] md:pb-8">
-      <header ref={heroRef} className="border-b border-white/10 pb-5 mb-2">
-        <p data-hero-item className="text-[#40B9BF] text-xs font-semibold uppercase tracking-wide mb-2 opacity-0">
+      {/* ── HERO compacto — máximo 3 líneas antes del contenido ── */}
+      <header ref={heroRef} className="pb-4 mb-0">
+        {/* Eyebrow */}
+        <p data-hero-item className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-widest mb-2 opacity-0">
           {SPONSOR_HERO.eyebrow}
         </p>
-        <h1 data-hero-item className="text-xl font-semibold text-white leading-snug mb-2 opacity-0">{SPONSOR_HERO.title}</h1>
-        <p data-hero-item className="text-white/60 text-sm leading-relaxed opacity-0">{SPONSOR_HERO.subtitle}</p>
-        <p data-hero-item className="mt-2 text-sm text-white/50 opacity-0">
-          <span className="text-[#db8918] font-medium">{RADIO.frequency}</span>
-          <span className="mx-1.5">·</span>
-          {RADIO.name}, {RADIO.city}
-        </p>
 
-        <div className="grid grid-cols-2 gap-2 mt-4">
+        {/* Título + radio info en una sola fila */}
+        <div data-hero-item className="opacity-0 mb-3">
+          <h1 className="text-xl font-bold text-white leading-snug">
+            {SPONSOR_HERO.title}
+          </h1>
+          <p className="text-white/45 text-xs mt-1">
+            <span className="text-[#db8918] font-semibold">{RADIO.frequency}</span>
+            <span className="mx-1">·</span>
+            {RADIO.name}, {RADIO.city}
+          </p>
+        </div>
+
+        {/* Stats — pills horizontales en mobile, grid en desktop */}
+        <div
+          data-hero-item
+          className="opacity-0 flex md:grid md:grid-cols-4 gap-2 overflow-x-auto overscroll-x-contain pb-1 -mx-0.5 px-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {SPONSOR_STATS.map(s => {
             const isLive = 'live' in s && s.live
             const value: string =
               isLive && listeners != null
-                ? listeners > 0
-                  ? String(listeners)
-                  : 'En vivo'
+                ? listeners > 0 ? String(listeners) : 'En vivo'
                 : s.value
             return (
               <div
                 key={s.label}
                 data-stat-tile
-                className="rounded-xl px-3 py-2.5 border border-white/10 opacity-0"
+                className="shrink-0 flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-white/10 md:flex-col md:items-start md:gap-1"
                 style={{ background: 'rgba(255,255,255,0.03)' }}
               >
                 <p
-                  className={`font-bold tabular-nums leading-none ${isLive && listeners === 0 ? 'text-sm' : 'text-lg'}`}
+                  className="font-bold tabular-nums leading-none text-lg whitespace-nowrap"
                   style={{ color: s.accent }}
                 >
                   {value}
@@ -101,17 +110,26 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00D9A0] ml-1 align-middle animate-pulse" />
                   )}
                 </p>
-                <p className="text-xs text-white/50 mt-1 leading-tight">{s.label}</p>
+                <p className="text-[10px] text-white/45 leading-tight whitespace-nowrap">{s.label}</p>
               </div>
             )
           })}
         </div>
+
+        {/* Subtítulo — solo en desktop */}
+        <p data-hero-item className="hidden md:block text-white/55 text-sm leading-relaxed mt-4 opacity-0">
+          {SPONSOR_HERO.subtitle}
+        </p>
       </header>
 
       <SponsorSectionNav />
 
-      <SponsorValueSection />
+      {/* Planes PRIMERO — es la decisión más importante */}
       <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
+
+      {/* Beneficios — después de ver los planes */}
+      <SponsorValueSection />
+
       <SponsorLiveSection />
 
       <p className="mb-6 text-center" data-animate="fade">
@@ -121,17 +139,26 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
       </p>
 
       <section id="pasos" className="mb-6 border-t border-white/8 pt-5 scroll-mt-14">
-        <h2 className="text-base font-semibold text-white mb-3" data-animate="fade">
+        <h2 className="text-base font-semibold text-white mb-4" data-animate="fade">
           Cómo empezar
         </h2>
-        <ol className="space-y-3">
-          {SPONSOR_STEPS.map(s => (
-            <li key={s.step} className="flex gap-3 text-sm" data-animate="tile">
-              <span className="text-[#db8918] font-mono font-bold shrink-0 w-6">{s.step}</span>
-              <span className="leading-relaxed">
-                <span className="text-white font-semibold">{s.title}</span>
-                <span className="text-white/50"> — {s.desc}</span>
-              </span>
+        <ol className="space-y-0 rounded-2xl overflow-hidden border border-white/8 divide-y divide-white/8">
+          {SPONSOR_STEPS.map((s, i) => (
+            <li
+              key={s.step}
+              className="flex items-center gap-4 px-4 py-4"
+              data-animate="tile"
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-base font-black shrink-0"
+                style={{ background: 'rgba(219,137,24,0.12)', color: '#db8918' }}
+              >
+                {i + 1}
+              </div>
+              <div>
+                <p className="text-white font-semibold text-sm">{s.title}</p>
+                <p className="text-white/45 text-xs leading-snug mt-0.5">{s.desc}</p>
+              </div>
             </li>
           ))}
         </ol>

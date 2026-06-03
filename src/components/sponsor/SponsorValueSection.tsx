@@ -143,7 +143,7 @@ function ValueRow({
 }
 
 export function SponsorValueSection() {
-  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set(['fm']))
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set<string>())
   const titleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
