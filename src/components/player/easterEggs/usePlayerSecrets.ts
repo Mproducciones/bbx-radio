@@ -55,10 +55,9 @@ export function usePlayerSecrets(isPlaying: boolean) {
     if (logoDigital) return
     clearBurst()
     setLogoBurst(true)
-    flashHint('PULSO FM · ACTIVO')
     queueVibrate([6, 24, 10])
     burstTimer.current = setTimeout(clearBurst, BURST_MS)
-  }, [logoDigital, clearBurst, flashHint])
+  }, [logoDigital, clearBurst])
 
   const startLogoHold = useCallback(() => {
     if (logoDigital || logoBurst) return
