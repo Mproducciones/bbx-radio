@@ -31,7 +31,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="shrink-0 w-full z-[1000] md:hidden border-t border-white/[0.06]"
+      className="shrink-0 w-full min-w-0 max-w-full z-[1000] md:hidden border-t border-white/[0.06] overflow-hidden"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         background: 'rgba(7,7,14,0.92)',
@@ -45,7 +45,7 @@ export function BottomNav() {
 
           return (
             <Link key={href} href={href}
-              className="flex-1 flex flex-col items-center justify-center relative py-2 rounded-2xl transition-colors min-w-0"
+              className="flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0 max-w-[14.28%]"
               style={{ color: isActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
             >
               {isActive && (
@@ -59,7 +59,7 @@ export function BottomNav() {
 
               <div className="relative flex flex-col items-center gap-0.5 px-0.5">
                 <Icon className="w-[17px] h-[17px] flex-shrink-0" />
-                <span className="text-[8px] font-semibold leading-none tracking-wide truncate max-w-full">
+                <span className="text-[7px] font-semibold leading-none tracking-wide truncate max-w-full">
                   {label}
                 </span>
               </div>

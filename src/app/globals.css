@@ -264,13 +264,36 @@ body {
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-    overflow-x: hidden;
+    overflow-x: clip;
+    box-sizing: border-box;
+  }
+
+  /* Fondo estático móvil — sin blur animado (evita scrollWidth +8px) */
+  .app-mobile-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(219,137,24,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 45% at 95% 5%, rgba(125,89,181,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(64,185,191,0.08) 0%, transparent 55%);
+  }
+
+  .app-mobile-inset {
     padding-left: var(--app-shell-pad-x);
     padding-right: var(--app-shell-pad-right);
     box-sizing: border-box;
   }
 
-  .app-mobile-shell > *:not([aria-hidden="true"]) {
+  .app-mobile-shell > [aria-hidden='true'] {
+    clip-path: inset(0);
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .app-mobile-shell > .app-mobile-inset {
     position: relative;
     z-index: 1;
   }
@@ -304,8 +327,9 @@ body {
   .app-mobile-shell {
     position: relative;
     overflow: hidden;
-    padding-left: 0;
-    padding-right: 0;
+  }
+  .app-mobile-shell::before {
+    display: none;
   }
   .app-mobile-main {
     min-width: 0;

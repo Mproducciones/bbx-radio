@@ -1,8 +1,23 @@
 'use client'
 
+import { useSyncExternalStore } from 'react'
 import { usePathname } from 'next/navigation'
 
 const EXCLUDED = ['/admin', '/studio', '/anunciate']
+
+function subscribeMobile(cb: () => void) {
+  const mq = window.matchMedia('(max-width: 767px)')
+  mq.addEventListener('change', cb)
+  return () => mq.removeEventListener('change', cb)
+}
+
+function getMobileSnapshot() {
+  return window.matchMedia('(max-width: 767px)').matches
+}
+
+function getMobileServerSnapshot() {
+  return true
+}
 
 /** Blur en wrapper + animación en hijo — Safari iOS congela transform si blur está en el mismo nodo */
 function AuroraBlob({
@@ -38,15 +53,16 @@ function AuroraBlob({
 
 export function AuroraBackground() {
   const pathname = usePathname()
-  if (EXCLUDED.some(p => pathname.startsWith(p))) return null
+  const mobile = useSyncExternalStore(subscribeMobile, getMobileSnapshot, getMobileServerSnapshot)
+
+  if (mobile || EXCLUDED.some(p => pathname.startsWith(p))) return null
 
   return (
     <div
-      className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+      className="aurora-root absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
-      {/* % en lugar de vw + sin scale en móvil — evita overflow-x por transform */}
       <AuroraBlob
         animClass="aurora-blob-1"
         blur={40}

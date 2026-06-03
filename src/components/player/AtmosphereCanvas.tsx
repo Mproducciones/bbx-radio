@@ -216,7 +216,7 @@ export function AtmosphereCanvas({
   }, [draw])
 
   return (
-    <div ref={wrapRef} className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none" style={{ zIndex: 0 }} aria-hidden="true">
+    <div ref={wrapRef} className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none max-md:hidden" style={{ zIndex: 0 }} aria-hidden="true">
       <canvas
         ref={canvasRef}
         className="block w-full h-full pointer-events-none"

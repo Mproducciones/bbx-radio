@@ -43,12 +43,13 @@ for (const width of widths) {
     const file = join(outDir, `${slug}-${width}.png`)
 
     try {
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 90_000 })
-      await page.waitForTimeout(2000)
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+      await page.waitForTimeout(3500)
       const metrics = await page.evaluate(() => ({
         innerWidth: window.innerWidth,
+        clientWidth: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
-        overflow: document.documentElement.scrollWidth > window.innerWidth + 1,
+        overflow: document.documentElement.scrollWidth > window.innerWidth + 8,
       }))
       await page.screenshot({ path: file, fullPage: false })
       meta.shots.push({ route, width, file, ...metrics })

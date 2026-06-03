@@ -88,13 +88,15 @@ export default function RootLayout({
             <AuroraBackground />
             <AtmosphereWrapper />
             <NoiseOverlay />
-            <DesktopSidebar />
-            <AppMainArea>
-              <SwipeLayout>
-                {children}
-              </SwipeLayout>
-            </AppMainArea>
-            <ClientBottomNav />
+            <div className="app-mobile-inset relative z-[1] flex flex-1 flex-col min-h-0 min-w-0 w-full max-w-full md:contents">
+              <DesktopSidebar />
+              <AppMainArea>
+                <SwipeLayout>
+                  {children}
+                </SwipeLayout>
+              </AppMainArea>
+              <ClientBottomNav />
+            </div>
           </div>
           <MiniPlayer />
           <PushPermission />
