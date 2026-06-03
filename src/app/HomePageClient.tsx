@@ -14,7 +14,7 @@ export function HomePageClient() {
 
   return (
     <main
-      className="relative max-w-md md:max-w-none mx-auto flex flex-col max-md:h-[var(--app-screen-h)] md:min-h-[calc(100dvh-64px)]"
+      className="relative max-w-md md:max-w-none mx-auto w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)]"
       style={{ zIndex: 1 }}
     >
       {/* Mobile: solo reproductor */}

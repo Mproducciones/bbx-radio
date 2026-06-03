@@ -72,7 +72,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" data-theme="dark" suppressHydrationWarning>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>
+      <body className="min-h-screen max-md:h-[100dvh] max-md:overflow-hidden antialiased" suppressHydrationWarning>
         <ServiceWorkerRegister />
         <SubscriptionGraceBanner />
         <WelcomeAnimation />
@@ -80,18 +80,18 @@ export default function RootLayout({
           <AuroraBackground />
           <AtmosphereWrapper />
           {/* Desktop: 2-column layout. Mobile: single column. */}
-          <div className="md:flex md:h-screen md:overflow-hidden">
+          <div className="app-mobile-shell md:flex md:h-screen md:overflow-hidden">
             <DesktopSidebar />
-            <div className="flex-1 md:overflow-y-auto max-md:h-[var(--app-screen-h)]">
+            <div className="app-mobile-main flex-1 md:overflow-y-auto">
               <SwipeLayout>
                 {children}
               </SwipeLayout>
             </div>
+            <ClientBottomNav />
           </div>
           <PushPermission />
           <NoiseOverlay />
           <PremiumAdBanner />
-          <ClientBottomNav />
           <InstallBanner />
           <AdminAccessButton />
         </RadioPlayerProvider>

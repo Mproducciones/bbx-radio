@@ -110,6 +110,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
           animate="center"
           exit="exit"
           transition={{ type: 'spring', stiffness: 380, damping: 36, mass: 0.75 }}
+          className="app-mobile-page md:min-h-0"
           style={{ willChange: 'transform' }}
         >
           {children}
@@ -130,7 +131,7 @@ function SwipeDots({ pathname }: { pathname: string }) {
     <div
       className="fixed z-[99] md:hidden flex items-center gap-1.5 pointer-events-none"
       style={{
-        bottom: 'calc(64px + env(safe-area-inset-bottom, 0px) + 6px)',
+        bottom: 'calc(var(--app-nav-total) + 6px)',
         left: '50%',
         transform: 'translateX(-50%)',
       }}

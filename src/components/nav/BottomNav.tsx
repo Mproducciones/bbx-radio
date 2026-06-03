@@ -23,16 +23,16 @@ export function BottomNav() {
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[1000] md:hidden">
-      <div className="absolute inset-0"
-        style={{
-          background: 'rgba(7,7,14,0.85)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-        }} />
-
-      <div className="relative max-w-md mx-auto px-1 flex items-center h-[62px]">
+    <nav
+      className="shrink-0 w-full z-[1000] md:hidden border-t border-white/[0.06]"
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        background: 'rgba(7,7,14,0.92)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+      }}
+    >
+      <div className="max-w-md mx-auto px-1 flex items-center h-[var(--app-nav-h)]">
         {TABS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 
@@ -60,8 +60,6 @@ export function BottomNav() {
           )
         })}
       </div>
-
-      <div style={{ height: 'env(safe-area-inset-bottom, 0px)' }} />
     </nav>
   )
 }

@@ -19,7 +19,7 @@ interface PremiumAd {
 }
 
 /** En Vivo el play queda abajo — el banner fijo lo tapaba */
-const EXCLUDED = ['/', '/admin', '/studio', '/bbx', '/tv']
+const EXCLUDED = ['/', '/admin', '/studio', '/bbx', '/tv', '/anunciate', '/patrocinadores']
 const DISMISS_KEY = 'premium_ad_dismissed'
 const DISMISS_MINUTES = 30
 

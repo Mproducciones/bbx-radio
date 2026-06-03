@@ -227,6 +227,42 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* App móvil: una sola columna = viewport completo, sin hueco bajo el nav */
+@media (max-width: 767px) {
+  html,
+  body {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .app-mobile-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-mobile-main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .app-mobile-page {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
 /* Hero del player — Safari iOS pinta mejor <img> que background-image */
 .player-hero-fondo {
   opacity: 0.28;

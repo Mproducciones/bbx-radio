@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 /** BBX usa scroll propio; evita que el contenedor de la app recorte el contenido. */
 export default function BbxLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="max-md:min-h-[var(--app-screen-h)] max-md:overflow-y-auto overflow-x-hidden">
+    <div className="max-md:min-h-0 max-md:h-auto max-md:overflow-y-auto overflow-x-hidden">
       {children}
     </div>
   )

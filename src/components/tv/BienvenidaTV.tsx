@@ -46,7 +46,7 @@ export function BienvenidaTV() {
   }, [])
 
   return (
-    <div className="flex flex-col h-[var(--app-screen-h)] md:min-h-screen bg-black max-md:overflow-hidden">
+    <div className="app-mobile-page flex flex-col md:min-h-screen bg-black">
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 shrink-0 md:py-3"

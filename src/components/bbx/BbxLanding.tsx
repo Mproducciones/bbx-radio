@@ -147,9 +147,9 @@ export function BbxLanding() {
         </section>
 
         <section className="pb-8 md:pb-10">
-          <h2 className="text-sm font-semibold text-white mb-1">Plataforma completa</h2>
-          <p className="text-white/40 text-xs mb-3">Toca una tarjeta para ver el detalle</p>
-          <div className="grid grid-cols-2 gap-2">
+          <h2 className="text-base font-semibold text-white mb-1">Plataforma completa</h2>
+          <p className="text-white/50 text-sm mb-3">Toca una tarjeta para ver el detalle</p>
+          <div className="grid grid-cols-2 gap-2.5 auto-rows-fr">
             {BBX_HUB_SECTIONS.map(tile => (
               <BbxHubTile
                 key={tile.id}
@@ -162,6 +162,7 @@ export function BbxLanding() {
             ))}
             <BbxHubTile
               value="24h"
+              emphasis="action"
               label="Agendar demo"
               subtitle="WhatsApp directo"
               accent="#128C7E"
@@ -170,7 +171,7 @@ export function BbxLanding() {
           </div>
         </section>
 
-        <section className="pb-10">
+        <section className="pb-4 max-md:pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-10">
           <div
             className="rounded-2xl p-5 text-center"
             style={{
@@ -179,8 +180,8 @@ export function BbxLanding() {
               boxShadow: '0 12px 40px -12px rgba(219,137,24,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
             }}
           >
-            <h2 className="font-display text-lg md:text-xl mb-1">¿Digitalizamos tu radio?</h2>
-            <p className="text-white/45 text-xs mb-3">
+            <h2 className="font-display text-xl md:text-2xl mb-1.5">¿Digitalizamos tu radio?</h2>
+            <p className="text-white/55 text-sm mb-3">
               {BBX_CONTACT.name} · demo 24h · setup 48h
             </p>
             <AccentButton href={demoHref} accent="#db8918" highlight="#f2c16a" fullWidth className="max-w-xs mx-auto mb-2">
@@ -197,7 +198,7 @@ export function BbxLanding() {
         </section>
       </main>
 
-      <footer className="border-t border-white/5 py-4 text-center relative z-[1]">
+      <footer className="hidden md:block border-t border-white/5 py-4 text-center relative z-[1]">
         <p className="font-display text-sm text-white/50">BBX RADIO SYSTEM</p>
       </footer>
 
