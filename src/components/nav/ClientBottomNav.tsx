@@ -16,7 +16,7 @@ export function ClientBottomNav() {
     return () => obs.disconnect()
   }, [])
 
-  if (pathname === '/admin' || sheetOpen) {
+  if (pathname === '/admin' || pathname.startsWith('/bbx') || sheetOpen) {
     return null
   }
 

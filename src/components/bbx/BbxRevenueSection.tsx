@@ -121,13 +121,16 @@ function RevenueRow({
   )
 }
 
-export function BbxRevenueSection() {
+export function BbxRevenueSection({ embedded }: { embedded?: boolean } = {}) {
   const [openId, setOpenId] = useState<string | null>(null)
 
   const toggle = (id: string) => setOpenId(prev => (prev === id ? null : id))
 
   return (
-    <section id="negocio" className="max-w-6xl mx-auto px-4 py-8 md:py-10">
+    <section
+      id={embedded ? undefined : 'negocio'}
+      className={embedded ? '' : 'max-w-6xl mx-auto px-4 py-8 md:py-10'}
+    >
       <div
         className="rounded-2xl"
         style={{

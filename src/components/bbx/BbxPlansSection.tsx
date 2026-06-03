@@ -63,24 +63,32 @@ function PlanCard({ plan, onExamples }: { plan: BbxPlan; onExamples: () => void 
   )
 }
 
-export function BbxPlansSection() {
+export function BbxPlansSection({ embedded }: { embedded?: boolean } = {}) {
   const [planOpen, setPlanOpen] = useState<BbxPlan | null>(null)
   const [showCompare, setShowCompare] = useState(false)
   const ordered = [BBX_PLANS[0], BBX_PLANS[1], BBX_PLANS[2]]
 
   return (
-    <section id="planes" className="max-w-6xl mx-auto px-4 py-8 md:py-12">
-      <div className="mb-4 md:mb-6">
-        <p className="text-[#db8918] text-[9px] font-bold uppercase tracking-[0.18em] mb-1">Precios claros</p>
-        <h2 className="font-display text-2xl md:text-4xl text-white leading-none">Planes BBX</h2>
-        <p className="text-white/40 text-xs mt-1">Mensual + setup único · sin permanencia</p>
-        <p className="text-white/30 text-[10px] mt-2 leading-relaxed max-w-xl">
-          Vendés <span className="text-[#db8918] font-semibold">Pro</span> como producto estándar (PWA + ingresos digitales).{' '}
-          <span className="text-[#7D59B5] font-semibold">Premium</span> es upgrade: dominio, APK y Play Store los hace BBX.{' '}
-          Precios Capa 1 (radio → BBX) —{' '}
-          <a href="#precios-capas" className="text-[#40B9BF] hover:underline">ver las dos capas</a>.
+    <section id={embedded ? undefined : 'planes'} className={embedded ? '' : 'max-w-6xl mx-auto px-4 py-8 md:py-12'}>
+      {!embedded && (
+        <div className="mb-4 md:mb-6">
+          <p className="text-[#db8918] text-[9px] font-bold uppercase tracking-[0.18em] mb-1">Precios claros</p>
+          <h2 className="font-display text-2xl md:text-4xl text-white leading-none">Planes BBX</h2>
+          <p className="text-white/40 text-xs mt-1">Mensual + setup único · sin permanencia</p>
+          <p className="text-white/30 text-[10px] mt-2 leading-relaxed max-w-xl">
+            Vendés <span className="text-[#db8918] font-semibold">Pro</span> como producto estándar (PWA + ingresos digitales).{' '}
+            <span className="text-[#7D59B5] font-semibold">Premium</span> es upgrade: dominio, APK y Play Store los hace BBX.{' '}
+            Precios Capa 1 (radio → BBX) —{' '}
+            <a href="#precios-capas" className="text-[#40B9BF] hover:underline">ver las dos capas</a>.
+          </p>
+        </div>
+      )}
+      {embedded && (
+        <p className="text-white/30 text-[10px] mb-3 leading-relaxed">
+          <span className="text-[#db8918] font-semibold">Pro</span> es el estándar ·{' '}
+          <span className="text-[#7D59B5] font-semibold">Premium</span> agrega dominio y Play Store.
         </p>
-      </div>
+      )}
 
       <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-3 md:gap-3 md:items-stretch">
         {ordered.map(plan => (

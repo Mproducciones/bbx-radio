@@ -23,6 +23,23 @@ export const BBX_STATS = [
   { value: '100%', label: 'Marca de tu radio', accent: '#00D9A0' },
 ] as const
 
+export type BbxHubSectionId = 'producto' | 'proceso' | 'negocio' | 'planes' | 'faq'
+
+/** Botones hub — abren panel con el detalle (menos scroll en la landing). */
+export const BBX_HUB_SECTIONS: {
+  id: BbxHubSectionId
+  value: string
+  label: string
+  subtitle: string
+  accent: string
+}[] = [
+  { id: 'producto', value: '6+', label: 'Módulos', subtitle: 'Plataforma completa', accent: '#db8918' },
+  { id: 'negocio', value: '+390K', label: 'Ingresos extra', subtitle: 'Modelo de negocio', accent: '#00D9A0' },
+  { id: 'planes', value: '3', label: 'Planes', subtitle: 'Desde $80.000/mes', accent: '#7D59B5' },
+  { id: 'proceso', value: '48h', label: 'Implementación', subtitle: 'Cómo trabajamos', accent: '#40B9BF' },
+  { id: 'faq', value: 'FAQ', label: 'Preguntas', subtitle: 'Respuestas rápidas', accent: '#db8918' },
+]
+
 export const BBX_FEATURES = [
   {
     id: 'player',

@@ -3,62 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { LiveListenerCounter } from '@/components/admin/LiveListenerCounter'
-import { SaludosPanel } from '@/components/admin/SaludosPanel'
-import { AdsPanel } from '@/components/admin/AdsPanel'
-import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
-import { SolicitudesPanel } from '@/components/admin/SolicitudesPanel'
-import { ListenerChart } from '@/components/admin/ListenerChart'
-import { PollManager } from '@/components/admin/PollManager'
-import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
-import { ContestsPanel } from '@/components/admin/ContestsPanel'
-import { ReportsPanel } from '@/components/admin/ReportsPanel'
-import { BillingPanel } from '@/components/admin/BillingPanel'
 import { AdminPageBackground } from '@/components/admin/adminUi'
+import { AdminSidebarNav, AdminMobileNav, type AdminSection, ADMIN_SECTIONS } from '@/components/admin/AdminNav'
+import { AdminSectionContent } from '@/components/admin/AdminSectionContent'
 
 type PageState = 'login' | 'dashboard'
-
-const STUDIO_LINKS = [
-  {
-    label: 'Programación',
-    desc: 'Parrilla semanal',
-    color: '#FF006E',
-    href: '/studio',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" strokeLinecap="round" />
-        <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Publicidad',
-    desc: 'Campañas y banners',
-    color: '#db8918',
-    href: '/studio',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Replay',
-    desc: 'Episodios anteriores',
-    color: '#00D9A0',
-    href: '/studio',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-]
 
 export default function AdminPage() {
   const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('login')
+  const [section, setSection] = useState<AdminSection>('overview')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'error'>('idle')
@@ -70,6 +24,11 @@ export default function AdminPage() {
       .then(d => { if (d.authorized) setPageState('dashboard') })
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('billing') === 'success') setSection('billing')
+  }, [pageState])
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -90,6 +49,8 @@ export default function AdminPage() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' })
     router.push('/')
   }
+
+  const sectionMeta = ADMIN_SECTIONS.find(s => s.id === section)
 
   if (pageState === 'login') {
     return (
@@ -150,12 +111,11 @@ export default function AdminPage() {
     <div className="relative min-h-screen">
       <AdminPageBackground />
 
-      {/* Header sticky */}
       <header
         className="sticky top-0 z-50 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.85)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div
               className="w-10 h-10 rounded-xl overflow-hidden shrink-0 p-0.5"
@@ -167,7 +127,9 @@ export default function AdminPage() {
             </div>
             <div className="min-w-0">
               <p className="text-white font-bold text-sm leading-none truncate">Radio Bienvenida</p>
-              <p className="text-white/40 text-xs mt-0.5">Panel de control</p>
+              <p className="text-white/40 text-xs mt-0.5 truncate">
+                {sectionMeta?.label ?? 'Panel de control'}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -185,94 +147,15 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-5 pb-10">
-        {/* KPI hero */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
-          <div className="lg:col-span-2">
-            <LiveListenerCounter />
-          </div>
-          <div className="lg:col-span-3">
-            <AnalyticsPanel />
-          </div>
-        </div>
+      <AdminMobileNav active={section} onChange={setSection} />
 
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <div className="flex flex-col gap-5">
-            <section>
-              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Operación en vivo</p>
-              <SaludosPanel />
-            </section>
-            <AdsPanel />
-            <ContestsPanel />
-            <SolicitudesPanel />
-            <PollManager />
-          </div>
+      <div className="max-w-7xl mx-auto px-4 py-5 pb-10 flex gap-6 lg:gap-8">
+        <AdminSidebarNav active={section} onChange={setSection} />
 
-          <div className="flex flex-col gap-5">
-            <section>
-              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Suscripción</p>
-              <BillingPanel />
-            </section>
-            <section>
-              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Comunicaciones</p>
-              <NotificacionPanel />
-            </section>
-
-            <section>
-              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Gestionar contenido</p>
-              <div className="grid grid-cols-3 gap-2.5">
-                {STUDIO_LINKS.map(link => (
-                  <a key={link.label} href={link.href}
-                    className="group relative flex flex-col items-center gap-2 p-3.5 sm:p-4 rounded-2xl transition-all overflow-hidden active:scale-[0.98]"
-                    style={{ background: 'rgba(14,14,22,0.92)', border: `1px solid ${link.color}22`, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                      style={{ background: `radial-gradient(circle at 50% 0%, ${link.color}12, transparent 70%)` }}
-                    />
-                    <div
-                      className="relative w-10 h-10 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"
-                      style={{ background: `${link.color}16`, color: link.color }}
-                    >
-                      {link.icon}
-                    </div>
-                    <div className="text-center relative">
-                      <p className="text-white text-[11px] font-bold leading-tight">{link.label}</p>
-                      <p className="text-white/35 text-[9px] mt-0.5 leading-tight hidden sm:block">{link.desc}</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </section>
-
-            <ReportsPanel />
-
-            <section>
-              <p className="text-white/35 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Tendencia de oyentes</p>
-              <ListenerChart />
-            </section>
-
-            <a href="https://wa.me/56922105555" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 w-full rounded-2xl px-4 py-4 transition-all hover:opacity-95 active:scale-[0.99]"
-              style={{ background: 'linear-gradient(135deg, rgba(18,140,126,0.2), rgba(10,107,95,0.15))', border: '1px solid rgba(18,140,126,0.35)', boxShadow: '0 4px 24px rgba(18,140,126,0.12)' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#128C7E' }}>
-                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-              </div>
-              <div className="min-w-0">
-                <p className="text-white/50 text-xs">¿Necesitas ayuda?</p>
-                <p className="text-white font-bold text-sm">Soporte directo · BBX</p>
-              </div>
-              <svg className="w-4 h-4 text-white/30 ml-auto shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <p className="mt-10 text-center text-white/15 text-xs">Powered by BBX Radio System</p>
+        <main className="flex-1 min-w-0">
+          <AdminSectionContent section={section} />
+          <p className="mt-10 text-center text-white/15 text-xs">Powered by BBX Radio System</p>
+        </main>
       </div>
     </div>
   )

@@ -20,7 +20,7 @@ const TABS = ALL_TABS.filter(t => t.show)
 export function BottomNav() {
   const pathname = usePathname()
 
-  if (pathname.startsWith('/studio') || pathname.startsWith('/admin')) return null
+  if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[1000] md:hidden">

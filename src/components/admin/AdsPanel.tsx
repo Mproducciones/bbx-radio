@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { studioStructurePath } from '@/lib/studioStructure'
 import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner } from './adminUi'
+
+const STUDIO_PUBLICIDAD = studioStructurePath('publicidad')
 
 interface Ad {
   _id: string
@@ -70,7 +73,7 @@ export function AdsPanel() {
             {expiring.length > 0 && <AdminBadge color="#FFB300">{expiring.length} por vencer</AdminBadge>}
           </>
         }
-        action={<AdminGhostButton href="/studio">+ Nueva campaña</AdminGhostButton>}
+        action={<AdminGhostButton href={STUDIO_PUBLICIDAD}>+ Nueva campaña</AdminGhostButton>}
       />
 
       <div className="divide-y divide-white/[0.05] max-h-80 overflow-y-auto">
@@ -79,9 +82,9 @@ export function AdsPanel() {
         ) : ads.length === 0 ? (
           <div className="py-8 text-center">
             <p className="text-[#444468] text-xs">Sin campañas. Crea una desde Studio.</p>
-            <a href="/studio" target="_blank"
+            <a href={STUDIO_PUBLICIDAD} target="_blank"
               className="mt-3 inline-block text-[#db8918] text-xs border border-[#db8918]/30 rounded-lg px-4 py-2 hover:bg-[#db8918]/10 transition-colors">
-              Abrir Studio
+              Crear en Studio
             </a>
           </div>
         ) : (
@@ -117,7 +120,7 @@ export function AdsPanel() {
                       })()}
                     </p>
                   </div>
-                  <a href="/studio" target="_blank"
+                  <a href={STUDIO_PUBLICIDAD} target="_blank"
                     className="text-[#333355] hover:text-white transition-colors text-[10px] flex-shrink-0">
                     editar →
                   </a>
