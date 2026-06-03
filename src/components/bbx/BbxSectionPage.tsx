@@ -185,7 +185,7 @@ export function BbxSectionPage({
       <div className="max-w-6xl mx-auto px-4 py-5 pb-[calc(5rem+env(safe-area-inset-bottom,0px))]">
         {section === 'producto' && <ProductoContent />}
         {section === 'proceso' && <ProcesoContent />}
-        {section === 'negocio' && <BbxRevenueSection />}
+        {section === 'negocio' && <BbxRevenueSection embedded />}
         {section === 'planes' && <BbxPlansSection />}
         {section === 'faq' && <FaqContent />}
         <SectionCta />

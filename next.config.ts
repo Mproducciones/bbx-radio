@@ -11,7 +11,7 @@ const APP_CSP = [
   "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://vercel.live",
   "img-src 'self' data: blob: https://cdn.sanity.io https://image.mux.com https://placehold.co https://picsum.photos https://fastly.picsum.photos https://vercel.com https://vercel.live",
   "media-src 'self' blob: https://sonicstream-puntual.grupozgh.cl https://panel.tvstream.cl https://panel.tvstream.cl:1936",
-  "connect-src 'self' https://*.api.sanity.io https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://sonicstream-puntual.grupozgh.cl wss://ws-us3.pusher.com https://vercel.live",
+  "connect-src 'self' https://*.api.sanity.io https://nmwhp66x.api.sanity.io https://www.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://sonicstream-puntual.grupozgh.cl wss://ws-us3.pusher.com https://vercel.live https://picsum.photos https://fastly.picsum.photos https://placehold.co",
   "frame-src https://vercel.live",
   "object-src 'none'",
   "base-uri 'self'",

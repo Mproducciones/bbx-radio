@@ -24,29 +24,29 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
   }, [])
 
   return (
-    <div className="relative max-md:pb-[calc(var(--app-nav-total)+5.5rem)] md:pb-10">
+    <div className="relative max-md:pb-[calc(var(--app-nav-total)+3.75rem)] md:pb-10">
       <header
-        className="rounded-2xl md:rounded-3xl overflow-hidden mb-6 md:mb-8 relative"
+        className="rounded-2xl overflow-hidden mb-5 md:mb-6 relative"
         style={{
           background: 'linear-gradient(165deg, #14101f 0%, #0e0e16 50%, #07070e 100%)',
           border: '1px solid rgba(219,137,24,0.2)',
         }}
       >
         <div className="h-1 w-full shrink-0" style={{ background: 'linear-gradient(90deg, #40B9BF, #db8918, #7D59B5)' }} />
-        <div className="p-4 md:p-8 flex flex-col">
-          <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5">{SPONSOR_HERO.eyebrow}</p>
+        <div className="p-4 md:p-6 flex flex-col">
+          <p className="text-[#40B9BF] text-[11px] font-semibold uppercase tracking-[0.12em] mb-1">{SPONSOR_HERO.eyebrow}</p>
 
-          <div className="md:grid md:grid-cols-[1fr,200px] md:gap-8 items-start">
+          <div className="md:grid md:grid-cols-[1fr,180px] md:gap-6 items-start">
             <div>
-              <h1 className="font-display text-[clamp(1.65rem,7vw,3rem)] text-white leading-[0.95] mb-2 md:mb-3">
+              <h1 className="font-display text-[clamp(1.35rem,5.5vw,2.25rem)] text-white leading-[1.05] mb-2">
                 {SPONSOR_HERO.title}
               </h1>
-              <p className="text-white/55 text-sm leading-relaxed max-w-xl">{SPONSOR_HERO.subtitle}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}>
+              <p className="text-white/65 text-sm leading-relaxed max-w-xl">{SPONSOR_HERO.subtitle}</p>
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: 'rgba(219,137,24,0.15)', color: '#db8918' }}>
                   {RADIO.frequency}
                 </span>
-                <span className="text-xs text-white/50 px-3 py-1.5 rounded-full border border-white/10">
+                <span className="text-[11px] text-white/55 px-2.5 py-1 rounded-full border border-white/10">
                   {RADIO.name} · {RADIO.city}
                 </span>
               </div>
@@ -59,17 +59,17 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 md:mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
             {SPONSOR_STATS.map(s => {
               const isLive = 'live' in s && s.live
               const value = isLive && listeners != null ? String(listeners) : s.value
               return (
-                <div key={s.label} className="rounded-xl py-2.5 md:py-3 px-2 text-center" style={{ background: 'rgba(0,0,0,0.25)', border: `1px solid ${s.accent}25` }}>
-                  <p className="font-display text-xl md:text-2xl leading-none" style={{ color: s.accent }}>
+                <div key={s.label} className="rounded-lg py-2 px-2 text-center" style={{ background: 'rgba(0,0,0,0.25)', border: `1px solid ${s.accent}25` }}>
+                  <p className="font-display text-lg md:text-xl leading-none tabular-nums" style={{ color: s.accent }}>
                     {value}
                     {isLive && listeners != null && <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00D9A0] ml-0.5 animate-pulse align-middle" />}
                   </p>
-                  <p className="text-white/40 text-[8px] md:text-[9px] mt-1 uppercase tracking-wide font-semibold leading-tight">{s.label}</p>
+                  <p className="text-white/55 text-[10px] mt-1 uppercase tracking-wide font-medium leading-tight">{s.label}</p>
                 </div>
               )
             })}
@@ -79,7 +79,7 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
             href={sponsorWaLink()}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:inline-flex mt-6 px-6 py-3.5 rounded-xl font-bold text-[#07070e]"
+            className="hidden md:inline-flex mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold text-[#07070e]"
             style={{ background: 'linear-gradient(135deg, #db8918, #e8a840)' }}
           >
             Cotizar mi campaña
@@ -88,10 +88,10 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
       </header>
 
       <SponsorValueSection />
-      <SponsorLiveSection />
       <SponsorPlansSection onSelect={p => setSelectedId(p.id)} />
+      <SponsorLiveSection />
 
-      <section className="mb-6 md:mb-8 text-center">
+      <section className="mb-5 text-center">
         <a
           href="/patrocinadores"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#40B9BF] hover:text-white transition-colors"
@@ -101,8 +101,8 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         </a>
       </section>
 
-      <section className="mb-8 md:mb-10 rounded-2xl p-4 md:p-6" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
-        <h2 className="font-display text-lg md:text-xl text-white mb-3 md:mb-4">Cómo empezar</h2>
+      <section className="mb-6 rounded-xl p-4 md:p-5" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <h2 className="font-display text-base md:text-lg text-white mb-3">Cómo empezar</h2>
         <div className="space-y-4 md:grid md:grid-cols-3 md:gap-4 md:space-y-0">
           {SPONSOR_STEPS.map(s => (
             <div key={s.step} className="flex gap-3 md:block">
@@ -116,8 +116,8 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
         </div>
       </section>
 
-      <section className="mb-6 md:mb-8 md:max-w-2xl md:mx-auto">
-        <h2 className="font-display text-lg md:text-xl text-white mb-3 md:mb-4 md:text-center">Preguntas frecuentes</h2>
+      <section className="mb-5 md:max-w-2xl md:mx-auto">
+        <h2 className="font-display text-base md:text-lg text-white mb-3 md:text-center">Preguntas frecuentes</h2>
         <div className="space-y-2">
           {SPONSOR_FAQ.map((item, i) => (
             <div key={item.q} className="rounded-xl overflow-hidden" style={{ background: '#0e0e16', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -147,27 +147,27 @@ export function SponsorLanding({ initialListeners }: { initialListeners?: number
       </section>
 
       <div
-        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] px-4 py-2 pointer-events-none"
+        className="sponsor-sticky-cta md:hidden fixed left-0 right-0 z-[999] px-4 py-1.5 pointer-events-none"
         style={{
           bottom: 'var(--app-nav-total)',
-          background: 'linear-gradient(180deg, transparent 0%, rgba(7,7,14,0.92) 35%)',
+          background: 'linear-gradient(180deg, transparent 0%, rgba(7,7,14,0.94) 40%)',
         }}
       >
         <a
           href={sponsorWaLink()}
           target="_blank"
           rel="noopener noreferrer"
-          className="pointer-events-auto flex justify-center w-full max-w-md mx-auto min-h-[48px] items-center py-3.5 rounded-xl font-bold text-white shadow-lg active:scale-[0.98] transition-transform"
-          style={{ background: '#128C7E', boxShadow: '0 4px 24px rgba(18,140,126,0.35)' }}
+          className="pointer-events-auto flex justify-center w-full max-w-md mx-auto min-h-[44px] items-center py-2.5 rounded-lg text-sm font-semibold text-white active:scale-[0.98] transition-transform"
+          style={{ background: '#128C7E', boxShadow: '0 2px 16px rgba(18,140,126,0.3)' }}
         >
           Cotizar por WhatsApp
         </a>
       </div>
 
-      <section className="hidden md:block rounded-2xl p-6 text-center mb-4" style={{ background: 'rgba(18,140,126,0.08)', border: '1px solid rgba(18,140,126,0.2)' }}>
-        <p className="text-white font-bold mb-1">¿Listo para salir al aire?</p>
+      <section className="hidden md:block rounded-xl p-5 text-center mb-4" style={{ background: 'rgba(18,140,126,0.08)', border: '1px solid rgba(18,140,126,0.2)' }}>
+        <p className="text-white font-semibold text-sm mb-1">¿Listo para salir al aire?</p>
         <a href={sponsorWaLink()} target="_blank" rel="noopener noreferrer"
-          className="inline-flex mt-3 px-8 py-3 rounded-xl font-bold text-white" style={{ background: '#128C7E' }}>
+          className="inline-flex mt-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white" style={{ background: '#128C7E' }}>
           Hablar con ventas
         </a>
       </section>

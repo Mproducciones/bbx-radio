@@ -150,7 +150,7 @@ export const BBX_REVENUE = {
       id: 'programatico',
       title: 'Monetización programática',
       amountLabel: '$30.000',
-      color: '#7D59B5',
+      color: '#C4B5FD',
       hook: 'Ingreso pasivo complementario en la app.',
       ownerBenefit:
         'No reemplaza ventas directas, pero suma sin esfuerzo comercial. Entra solo con tráfico en la PWA.',
