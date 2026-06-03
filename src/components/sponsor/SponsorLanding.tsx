@@ -162,7 +162,7 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
   ]
 
   return (
-    <div className="relative w-full min-w-0 overflow-x-hidden pb-4">
+    <div className="app-marketing-bleed relative w-full min-w-0 overflow-x-clip pb-4">
 
       <motion.div
         initial={{ opacity: 0, y: -10 }}

@@ -182,8 +182,10 @@
 /* ── BASE STYLES ──────────────────────────────────────────── */
 :root {
   color-scheme: dark;
-  --app-shell-pad-x: max(16px, env(safe-area-inset-left, 0px));
-  --app-shell-pad-right: max(16px, env(safe-area-inset-right, 0px));
+  /* Gutter simétrico — mismo valor izq/der en todo dispositivo */
+  --app-gutter-inline: max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  --app-shell-pad-x: var(--app-gutter-inline);
+  --app-shell-pad-right: var(--app-gutter-inline);
   --app-nav-h: 62px;
   --app-nav-total: calc(var(--app-nav-h) + env(safe-area-inset-bottom, 0px));
   --app-mini-player-h: 48px;
@@ -331,11 +333,23 @@ body {
     box-sizing: border-box;
   }
 
+  /*
+   * Marketing (/bbx, /anunciate): fondo full-bleed dentro del shell,
+   * contenido con gutter simétrico auto (safe-area + mínimo 16px).
+   */
+  .app-marketing-bleed {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    margin-inline: calc(-1 * var(--app-gutter-inline));
+    padding-inline: var(--app-gutter-inline);
+    overflow-x: clip;
+  }
+
   .app-sticky-bar {
     width: 100%;
     max-width: 100%;
-    padding-left: var(--app-shell-pad-x);
-    padding-right: var(--app-shell-pad-right);
+    padding-inline: var(--app-gutter-inline);
     box-sizing: border-box;
   }
 

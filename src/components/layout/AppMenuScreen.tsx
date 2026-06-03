@@ -19,7 +19,6 @@ export function AppMenuScreen({ children, className, scroll = false }: AppMenuSc
         className={cn(
           'relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
           'max-md:flex-1 max-md:min-h-0 max-md:overflow-visible',
-          'max-md:max-w-md max-md:mx-auto',
           'max-md:pt-2 max-md:pb-2',
           'max-md:[scroll-padding-bottom:calc(var(--app-nav-total)+6.25rem)]',
           'md:min-h-screen md:px-4 md:pt-6 md:pb-24',
@@ -37,7 +36,6 @@ export function AppMenuScreen({ children, className, scroll = false }: AppMenuSc
       className={cn(
         'relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
         'app-mobile-page max-md:overflow-hidden',
-        'max-md:max-w-md max-md:mx-auto',
         'max-md:pt-1 max-md:pb-0',
         'md:min-h-screen md:px-4 md:pt-6 md:pb-24',
         className,

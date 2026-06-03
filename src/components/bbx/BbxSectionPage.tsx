@@ -175,7 +175,7 @@ export function BbxSectionPage({
 
   return (
     <motion.div
-      className="relative flex flex-col w-full min-w-0 text-white overflow-x-hidden"
+      className="app-marketing-bleed relative flex flex-col w-full min-w-0 text-white overflow-x-clip min-h-full"
       style={{ background: 'var(--color-ink-900)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -185,7 +185,7 @@ export function BbxSectionPage({
         className="sticky top-0 z-50 shrink-0 border-b border-white/5 backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.95)' }}
       >
-        <div className="app-page-column w-full md:max-w-6xl md:mx-auto md:px-4 min-h-12 py-2 flex items-center gap-2">
+        <div className="w-full md:max-w-6xl md:mx-auto md:px-4 min-h-12 py-2 flex items-center gap-2">
           <button
             type="button"
             onClick={onBack}
@@ -216,7 +216,7 @@ export function BbxSectionPage({
         <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${accent}, transparent 80%)` }} />
       </header>
 
-      <div className="relative z-[1] flex-1 min-w-0 app-page-column w-full md:max-w-6xl md:mx-auto md:px-4 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
+      <div className="relative z-[1] flex-1 min-w-0 w-full md:max-w-6xl md:mx-auto md:px-4 py-5 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
         {section === 'producto' && <ProductoContent />}
         {section === 'proceso' && <ProcesoContent />}
         {section === 'negocio' && <BbxRevenueSection embedded />}
