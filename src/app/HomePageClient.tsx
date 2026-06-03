@@ -75,51 +75,78 @@ export function HomePageClient() {
         </div>
       </div>
 
-      {/* Desktop: panel central con estado en vivo */}
-      <div className="hidden md:flex flex-col items-center justify-center min-h-[80vh] px-8 text-center relative">
-        {/* Glow background */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 40%, rgba(219,137,24,0.08) 0%, transparent 65%)',
-          }}
-        />
+      {/* Desktop: panel central inmersivo */}
+      <div className="hidden md:flex flex-col items-center justify-center min-h-[80vh] px-8 text-center relative overflow-hidden">
+        {/* Gradient background glow */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 50% 35%, rgba(219,137,24,0.1) 0%, rgba(64,185,191,0.04) 40%, transparent 70%)' }} />
 
-        {/* Live pill */}
+        {/* Radio waves SVG animation */}
+        <div className="relative mb-10" style={{ width: 120, height: 120 }}>
+          {/* Rings */}
+          {[0, 1, 2].map(i => (
+            <span
+              key={i}
+              className="radio-wave absolute inset-0 rounded-full"
+              style={{ color: '#db8918', animationDelay: `${i * 0.65}s` }}
+            />
+          ))}
+          {/* Center dot */}
+          <div
+            className="absolute inset-0 m-auto flex items-center justify-center rounded-full"
+            style={{
+              width: 64, height: 64,
+              background: 'linear-gradient(135deg, rgba(219,137,24,0.2), rgba(219,137,24,0.08))',
+              border: '1.5px solid rgba(219,137,24,0.4)',
+              boxShadow: '0 0 40px rgba(219,137,24,0.3)',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#db8918">
+              <path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm0 20a9 9 0 1 1 0-18 9 9 0 0 1 0 18zm-2.5-5.5L16 12l-6.5-3.5v7z"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* Live badge */}
         <div
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-8"
-          style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.25)' }}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 glass-amber"
         >
           <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
           <span className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Transmitiendo en vivo</span>
         </div>
 
-        <h2 className="font-display text-6xl text-white leading-none mb-3 tracking-wide">{RADIO.name}</h2>
-        <p className="text-[var(--color-mag-400)] font-semibold text-lg mb-6">{RADIO.frequency}</p>
+        <h2 className="font-display text-gradient-gold leading-none mb-2 tracking-wide"
+          style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}>
+          {RADIO.name}
+        </h2>
+        <p className="text-[#40B9BF] font-bold text-xl mb-2">{RADIO.frequency}</p>
+        <p className="text-white/30 text-sm mb-10">{RADIO.city}</p>
 
-        <p className="text-white/35 text-sm max-w-xs leading-relaxed mb-10">
-          El reproductor está en la barra lateral. Usa el menú para explorar la grilla, votar, mandar saludos y más.
-        </p>
-
-        {/* Quick links */}
+        {/* Quick nav */}
         <div className="flex flex-wrap gap-2 justify-center">
           {[
-            { href: '/programacion', label: 'Ver grilla' },
-            { href: '/participa',    label: 'Votar' },
-            { href: '/saludos',      label: 'Mandar saludo' },
-            { href: '/noticias',     label: 'Noticias' },
-          ].map(({ href, label }) => (
+            { href: '/programacion', label: '📋 Grilla',        accent: '#db8918' },
+            { href: '/participa',    label: '🎵 Votar',          accent: '#40B9BF' },
+            { href: '/saludos',      label: '💬 Mandar saludo',  accent: '#7D59B5' },
+            { href: '/noticias',     label: '📰 Noticias',       accent: '#00D9A0' },
+          ].map(({ href, label, accent }) => (
             <a
               key={href}
               href={href}
-              className="text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
-              style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: 'rgba(255,255,255,0.6)',
+              className="glass card-lift text-sm font-semibold px-4 py-2.5 rounded-xl transition-all"
+              style={{ color: 'rgba(255,255,255,0.65)' }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLAnchorElement
+                el.style.color = '#fff'
+                el.style.borderColor = `${accent}50`
+                el.style.boxShadow = `0 4px 20px -4px ${accent}40`
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#fff'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(219,137,24,0.4)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.6)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.1)' }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLAnchorElement
+                el.style.color = 'rgba(255,255,255,0.65)'
+                el.style.borderColor = ''
+                el.style.boxShadow = ''
+              }}
             >
               {label}
             </a>

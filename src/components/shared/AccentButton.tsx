@@ -11,10 +11,11 @@ type AccentButtonProps = {
   children: ReactNode
   fullWidth?: boolean
   className?: string
+  shimmer?: boolean
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>
 
 const base =
-  'inline-flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all active:scale-[0.98] disabled:opacity-50'
+  'inline-flex items-center justify-center gap-1.5 rounded-xl text-xs font-bold tracking-wide transition-all active:scale-[0.97] disabled:opacity-50 relative overflow-hidden'
 
 export function AccentButton({
   accent = '#db8918',
@@ -24,16 +25,18 @@ export function AccentButton({
   children,
   fullWidth,
   className = '',
+  shimmer = true,
   type = 'button',
   ...rest
 }: AccentButtonProps) {
-  const sizeClass = fullWidth ? 'w-full px-4 py-2.5' : 'px-4 py-2'
+  const sizeClass = fullWidth ? 'w-full px-4 py-3' : 'px-4 py-2.5'
   const style =
     variant === 'primary'
       ? accentPrimaryButtonStyle(accent, highlight)
       : accentSecondaryButtonStyle(accent)
 
-  const cls = `${base} ${sizeClass} ${className}`.trim()
+  const shimmerClass = shimmer && variant === 'primary' ? 'btn-shimmer' : ''
+  const cls = `${base} ${sizeClass} ${shimmerClass} ${className}`.trim()
 
   if (href) {
     return (
