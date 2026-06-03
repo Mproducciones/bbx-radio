@@ -8,6 +8,7 @@ import { InstallBanner } from '@/components/pwa/InstallBanner'
 import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { AppMainArea } from '@/components/layout/AppMainArea'
+import { AppMobileInset } from '@/components/layout/AppMobileInset'
 import { PremiumAdBanner } from '@/components/ads/PremiumAdBanner'
 import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { AuroraBackground } from '@/components/layout/AuroraBackground'
@@ -88,7 +89,7 @@ export default function RootLayout({
             <AuroraBackground />
             <AtmosphereWrapper />
             <NoiseOverlay />
-            <div className="app-mobile-inset relative z-[1] flex flex-1 flex-col min-h-0 min-w-0 w-full max-w-full md:contents">
+            <AppMobileInset>
               <DesktopSidebar />
               <AppMainArea>
                 <SwipeLayout>
@@ -96,7 +97,7 @@ export default function RootLayout({
                 </SwipeLayout>
               </AppMainArea>
               <ClientBottomNav />
-            </div>
+            </AppMobileInset>
           </div>
           <MiniPlayer />
           <PushPermission />

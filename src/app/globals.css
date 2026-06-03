@@ -295,6 +295,17 @@ body {
     box-sizing: border-box;
   }
 
+  /* Marketing / scroll: panel edge-to-edge; gutter solo dentro del contenido */
+  .app-mobile-inset--flush {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .app-gutter-x {
+    padding-inline: var(--app-gutter-inline);
+    box-sizing: border-box;
+  }
+
   .app-mobile-shell > [aria-hidden='true'] {
     clip-path: inset(0);
     overflow: hidden;

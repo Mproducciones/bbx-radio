@@ -272,7 +272,7 @@ export function BbxLanding() {
         className="sticky top-0 z-50 shrink-0 border-b border-white/[0.06] backdrop-blur-xl"
         style={{ background: 'rgba(7,7,14,0.92)' }}
       >
-        <div className="w-full min-h-12 py-2 flex items-center justify-between gap-2 md:max-w-5xl md:mx-auto md:px-4">
+        <div className="app-gutter-x w-full min-h-12 py-2 flex items-center justify-between gap-2 md:max-w-5xl md:mx-auto md:px-4">
           <Link
             href="/"
             className="shrink-0 inline-flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-semibold text-white/70 hover:text-white transition-colors"
@@ -308,7 +308,7 @@ export function BbxLanding() {
         </div>
       </header>
 
-      <main className="relative z-[1] flex-1 w-full min-w-0 pb-6 md:pb-16 md:max-w-5xl md:mx-auto md:px-4">
+      <main className="app-gutter-x relative z-[1] flex-1 w-full min-w-0 pb-6 md:pb-16 md:max-w-5xl md:mx-auto md:px-4">
 
         {/* ── HERO ──────────────────────────────────────────────────────────── */}
         <section className="pt-6 pb-10 md:pt-16" ref={heroRef}>
@@ -450,7 +450,7 @@ export function BbxLanding() {
       </footer>
 
       <div
-        className="relative z-[1] shrink-0 md:hidden sticky bottom-0 border-t border-white/[0.08] backdrop-blur-xl pt-3"
+        className="relative z-[1] shrink-0 md:hidden sticky bottom-0 border-t border-white/[0.08] backdrop-blur-xl pt-3 app-gutter-x"
         style={{
           background: 'rgba(7,7,14,0.97)',
           paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
