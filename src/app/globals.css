@@ -1016,6 +1016,16 @@ body {
 }
 
 /* ── Participa — encaje en pantalla, formas orgánicas ─────────────────── */
+@media (max-width: 767px) {
+  .participa-route.app-mobile-page {
+    padding-top: max(12px, var(--app-safe-top), var(--app-content-pad-y));
+  }
+
+  .participa-route.app-mobile-page > div {
+    padding-bottom: calc(var(--app-nav-total) + 0.65rem);
+  }
+}
+
 .participa-shell {
   display: flex;
   flex-direction: column;
@@ -1027,7 +1037,7 @@ body {
 .participa-hero {
   position: relative;
   border-radius: 1.35rem;
-  overflow: hidden;
+  overflow: clip;
   border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow:
     0 16px 40px -20px rgba(219, 137, 24, 0.35),
@@ -1036,7 +1046,7 @@ body {
 
 .participa-hero__inner {
   position: relative;
-  padding: 0.65rem 1rem 0.75rem;
+  padding: 0.85rem 1rem 0.9rem;
   background: linear-gradient(145deg, rgba(18, 18, 30, 0.96) 0%, rgba(7, 7, 14, 0.9) 100%);
 }
 
@@ -1079,17 +1089,18 @@ body {
 .participa-segment__btn {
   flex: 1;
   min-width: 0;
-  min-height: 2.625rem;
+  min-height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   padding: 0.4rem 0.5rem;
   border-radius: 9999px;
-  border: 1px solid transparent;
-  font-size: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.8125rem;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.07);
   transition:
     color 0.2s,
     background 0.22s,
@@ -1104,6 +1115,7 @@ body {
 
 .participa-segment__btn.is-active {
   color: #07070e;
+  background: transparent;
   border-color: color-mix(in srgb, var(--tab-accent, var(--color-mag-400)) 40%, transparent);
   box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--tab-accent, var(--color-mag-400)) 50%, transparent);
 }
@@ -1148,13 +1160,27 @@ body {
   border-radius: 1rem;
   font-size: 0.875rem;
   font-weight: 800;
-  color: #07070e;
+  color: #fff;
   border: none;
+}
+
+.participa-btn-primary.is-ready {
+  background: linear-gradient(135deg, #db8918, #7b2fff);
+  color: #07070e;
+  box-shadow: 0 8px 24px -8px rgba(219, 137, 24, 0.55);
+}
+
+.participa-btn-primary.is-disabled,
+.participa-btn-primary:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 1;
 }
 
 .participa-vote-card {
   border-radius: 1.25rem;
   min-height: 6.25rem;
+  min-width: 0;
 }
 
 @media (max-width: 380px) {

@@ -129,8 +129,7 @@ export function ListenerSignup({ playful }: { playful?: boolean } = {}) {
               <motion.button
                 type="submit"
                 whileTap={{ scale: 0.97 }}
-                className="participa-btn-primary relative overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, #7D59B5, #db8918)' }}
+                className="participa-btn-primary is-ready relative overflow-hidden"
               >
                 ¡Quiero participar! 🎁
               </motion.button>

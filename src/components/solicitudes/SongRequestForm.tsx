@@ -143,8 +143,7 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
               whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={!canSubmit}
-              className="participa-btn-primary mt-auto disabled:opacity-35 text-white relative overflow-hidden"
-              style={{ background: canSubmit ? 'linear-gradient(135deg, #db8918, #7B2FFF)' : 'rgba(255,255,255,0.06)' }}
+              className={`participa-btn-primary mt-auto relative overflow-hidden ${canSubmit ? 'is-ready' : 'is-disabled'}`}
             >
               {canSubmit && (
                 <motion.div

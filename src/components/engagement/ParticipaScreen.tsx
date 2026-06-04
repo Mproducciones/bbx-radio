@@ -51,7 +51,7 @@ export function ParticipaScreen() {
   }
 
   return (
-    <AppMenuScreen>
+    <AppMenuScreen className="participa-route">
       <div className="participa-shell relative">
         <ParticipaHero />
         <SponsorDemoBar />

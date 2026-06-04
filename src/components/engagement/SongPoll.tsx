@@ -271,30 +271,14 @@ export function SongPoll({
           {poll.question}
         </p>
 
-        <div className={`relative flex-1 min-h-0 grid grid-cols-[1fr_auto_1fr] items-stretch ${compact ? 'gap-1.5' : 'gap-2'}`}>
-          {/* VS badge */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
-            <motion.div
-              className="w-9 h-9 rounded-full flex items-center justify-center font-black text-[10px]"
-              style={{
-                background: '#07070e',
-                border: '2px solid rgba(255,255,255,0.15)',
-                color: '#fff',
-                boxShadow: '0 0 20px rgba(219,137,24,0.4)',
-              }}
-              animate={!voted ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-              transition={{ duration: 1.5, repeat: voted ? 0 : Infinity }}
-            >
-              VS
-            </motion.div>
-          </div>
-
-          {[a, b].map((opt, idx) => {
+        <div className={`flex-1 min-h-0 grid grid-cols-[1fr_auto_1fr] items-stretch ${compact ? 'gap-1' : 'gap-2'}`}>
+          {([a, b] as const).map((opt, idx) => {
             const pv = opt.id === a.id ? pA : pB
             const isWinner = winner === opt.id
             const isMine = poll.myVote === opt.id
             const isOther = voted && !isMine
             const accent = opt.id === a.id ? '#db8918' : '#40B9BF'
+            const gridCol = idx === 0 ? 'col-start-1' : 'col-start-3'
 
             return (
               <motion.button
@@ -302,7 +286,7 @@ export function SongPoll({
                 whileTap={voted ? {} : { scale: 0.94 }}
                 onClick={() => castVote(opt.id)}
                 disabled={voted || voting}
-                className={`participa-vote-card relative overflow-hidden text-center flex flex-col justify-end ${compact ? 'p-2 pt-2.5' : 'p-3 min-h-[8.5rem]'}`}
+                className={`participa-vote-card ${gridCol} row-start-1 relative overflow-hidden text-center flex flex-col justify-end ${compact ? 'p-2 pt-2.5' : 'p-3 min-h-[8.5rem]'}`}
                 style={{
                   background: isMine
                     ? `linear-gradient(180deg, ${accent}28 0%, rgba(7,7,14,0.9) 100%)`
@@ -360,6 +344,24 @@ export function SongPoll({
               </motion.button>
             )
           })}
+
+          <div
+            className="col-start-2 row-start-1 flex items-center justify-center self-center shrink-0 w-10 pointer-events-none z-[2]"
+            aria-hidden
+          >
+            <motion.div
+              className="w-9 h-9 rounded-full flex items-center justify-center font-black text-[10px] text-white"
+              style={{
+                background: '#07070e',
+                border: '2px solid rgba(255,255,255,0.2)',
+                boxShadow: '0 0 16px rgba(219,137,24,0.35)',
+              }}
+              animate={!voted ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+              transition={{ duration: 1.5, repeat: voted ? 0 : Infinity }}
+            >
+              VS
+            </motion.div>
+          </div>
         </div>
 
         <AnimatePresence>

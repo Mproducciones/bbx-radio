@@ -31,7 +31,7 @@ export function ParticipaHero() {
   }, [])
 
   return (
-    <header className="participa-hero shrink-0">
+    <header className="participa-hero shrink-0 overflow-visible">
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
@@ -70,15 +70,15 @@ export function ParticipaHero() {
           <RadioWaveBars />
         </div>
 
-        <div className="mt-1.5 h-[1.125rem] overflow-hidden">
+        <div className="mt-2 min-h-[2.5rem] flex items-start">
           <AnimatePresence mode="wait">
             <motion.p
               key={hookIdx}
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
+              exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.3, ease: EASE_OUT }}
-              className="text-[11px] sm:text-xs font-semibold leading-snug truncate"
+              className="text-[11px] sm:text-xs font-semibold leading-snug line-clamp-2"
               style={{ color: '#f5d4a8' }}
             >
               {PARTICIPA_HOOKS[hookIdx]}
