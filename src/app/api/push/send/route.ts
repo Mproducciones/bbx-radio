@@ -27,13 +27,55 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Demasiados envíos. Espera un momento.', code: 'rate_limit' }, { status: 429 })
   }
 
+  const { title, body, url } = await req.json().catch(() => ({}))
+  if (!title || !body || typeof title !== 'string' || typeof body !== 'string') {
+    return NextResponse.json({ error: 'title y body son requeridos', code: 'bad_request' }, { status: 400 })
+  }
+
+  const siteOrigin = req.nextUrl.origin
+  const safeUrl = sanitizePushUrl(typeof url === 'string' ? url : undefined, siteOrigin)
+
+  // Siempre guardar en campanita primero (no depende de VAPID)
+  const { notification: inApp, dbError: inAppDbError } = await createAppNotification({
+    title: title.slice(0, 120),
+    body: body.slice(0, 240),
+    url: safeUrl,
+  })
+
+  if (!inApp) {
+    return NextResponse.json({
+      ok: false,
+      inApp: false,
+      code: 'inapp_db_error',
+      error: 'No se pudo guardar en la campanita',
+      hint: inAppDbError?.includes('app_notifications')
+        ? 'Ejecuta supabase-app-notifications.sql en Supabase SQL Editor.'
+        : inAppDbError ?? 'Revisa Supabase y SUPABASE_SERVICE_KEY en Vercel.',
+      dbError: inAppDbError,
+    }, { status: 503 })
+  }
+
+  const payload = JSON.stringify({
+    title: title.slice(0, 120),
+    body: body.slice(0, 240),
+    url: safeUrl,
+    id: inApp.id,
+  })
+
   const vapid = vapidReady()
   if (!vapid.ok) {
     return NextResponse.json({
-      error: `Faltan variables en Vercel: ${vapid.missing.join(', ')}. Genera claves con: npx web-push generate-vapid-keys`,
-      code: 'vapid_missing',
+      ok: true,
+      sent: 0,
+      failed: 0,
+      total: 0,
+      inApp: true,
+      notificationId: inApp.id,
+      pushSkipped: true,
+      message: 'Guardado en la campanita. Push al celular: configura VAPID en Vercel.',
       missing: vapid.missing,
-    }, { status: 503 })
+      url: safeUrl,
+    })
   }
 
   const email = process.env.VAPID_EMAIL!.trim()
@@ -44,22 +86,18 @@ export async function POST(req: NextRequest) {
     webpush.setVapidDetails(email, pubKey, privKey)
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Claves VAPID inválidas'
-    return NextResponse.json({ error: msg, code: 'vapid_invalid' }, { status: 503 })
+    return NextResponse.json({
+      ok: true,
+      inApp: true,
+      notificationId: inApp.id,
+      sent: 0,
+      failed: 0,
+      total: 0,
+      pushSkipped: true,
+      message: 'Aviso en campanita OK. Push falló: ' + msg,
+      url: safeUrl,
+    })
   }
-
-  const { title, body, url } = await req.json().catch(() => ({}))
-  if (!title || !body || typeof title !== 'string' || typeof body !== 'string') {
-    return NextResponse.json({ error: 'title y body son requeridos', code: 'bad_request' }, { status: 400 })
-  }
-
-  const siteOrigin = req.nextUrl.origin
-  const safeUrl = sanitizePushUrl(typeof url === 'string' ? url : undefined, siteOrigin)
-
-  const inApp = await createAppNotification({
-    title: title.slice(0, 120),
-    body: body.slice(0, 240),
-    url: safeUrl,
-  })
 
   const { data: subs, error: dbError } = await supabaseAdmin
     .from('push_subscriptions')
@@ -74,24 +112,14 @@ export async function POST(req: NextRequest) {
       sent: 0,
       failed: 0,
       total: 0,
-      inApp: Boolean(inApp),
-      notificationId: inApp?.id,
+      inApp: true,
+      notificationId: inApp.id,
       pushSkipped: true,
-      message: inApp
-        ? 'Aviso guardado en la campanita. Push no disponible (revisa supabase-push.sql).'
-        : 'Ejecuta supabase-app-notifications.sql y supabase-push.sql en Supabase.',
+      message: 'Aviso en campanita OK. Push: falta tabla push_subscriptions.',
       hint,
-      code: 'db_error',
       url: safeUrl,
     })
   }
-
-  const payload = JSON.stringify({
-    title: title.slice(0, 120),
-    body: body.slice(0, 240),
-    url: safeUrl,
-    id: inApp?.id,
-  })
 
   if (!subs || subs.length === 0) {
     return NextResponse.json({
@@ -100,11 +128,12 @@ export async function POST(req: NextRequest) {
       failed: 0,
       total: 0,
       inApp: true,
-      notificationId: inApp?.id,
-      message: 'Guardado en la campanita de la app. Sin suscriptores push aún.',
+      notificationId: inApp.id,
+      message: 'Guardado en la campanita. Sin suscriptores push aún.',
       url: safeUrl,
     })
   }
+
   let sent = 0
   let failed = 0
 
@@ -131,7 +160,7 @@ export async function POST(req: NextRequest) {
     failed,
     total: subs.length,
     inApp: true,
-    notificationId: inApp?.id,
+    notificationId: inApp.id,
     url: safeUrl,
   })
 }

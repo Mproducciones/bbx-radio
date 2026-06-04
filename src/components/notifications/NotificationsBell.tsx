@@ -9,6 +9,11 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
 } from '@/lib/notificationsRead'
+import {
+  getLocalNotifications,
+  mergeNotifications,
+  saveLocalNotification,
+} from '@/lib/notificationsLocalCache'
 import { EASE_OUT } from '@/lib/motion/framer'
 
 type AppNotification = {
@@ -42,24 +47,40 @@ export function NotificationsBell() {
   const [items, setItems] = useState<AppNotification[]>([])
   const [loading, setLoading] = useState(false)
   const [unread, setUnread] = useState(0)
+  const [dbHint, setDbHint] = useState<string | null>(null)
 
   const hidden = HIDDEN_PREFIXES.some(p => pathname.startsWith(p))
+
+  const applyList = useCallback((list: AppNotification[]) => {
+    setItems(list)
+    setUnread(countUnread(list.map(n => n.id)))
+  }, [])
 
   const refresh = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/notifications', { cache: 'no-store' })
+      const res = await fetch(`/api/notifications?t=${Date.now()}`, { cache: 'no-store' })
       const data = await res.json()
-      const list = (data.items ?? []) as AppNotification[]
-      setItems(list)
-      setUnread(countUnread(list.map(n => n.id)))
+      const remote = (data.items ?? []) as AppNotification[]
+      const local = getLocalNotifications()
+      const merged = mergeNotifications(remote, local)
+      applyList(merged)
+      if (!data.dbReady) {
+        setDbHint(data.hint ?? data.dbError ?? 'Falta tabla app_notifications en Supabase.')
+      } else {
+        setDbHint(null)
+        if (remote.length > 0) {
+          remote.forEach(n => saveLocalNotification(n))
+        }
+      }
     } catch {
-      setItems([])
-      setUnread(0)
+      const local = getLocalNotifications()
+      applyList(local)
+      setDbHint(local.length ? null : 'Sin conexión al servidor de avisos.')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [applyList])
 
   useEffect(() => {
     if (hidden) return
@@ -158,7 +179,12 @@ export function NotificationsBell() {
                 {loading && items.length === 0 && (
                   <p className="app-notif-panel__empty">Cargando…</p>
                 )}
-                {!loading && items.length === 0 && (
+                {dbHint && (
+                  <p className="app-notif-panel__empty text-[#db8918]/90">
+                    {dbHint}
+                  </p>
+                )}
+                {!loading && items.length === 0 && !dbHint && (
                   <p className="app-notif-panel__empty">
                     Aún no hay avisos. Cuando el locutor envíe uno desde el panel, aparecerá aquí.
                   </p>

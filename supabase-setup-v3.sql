@@ -28,8 +28,27 @@ CREATE TABLE IF NOT EXISTS contests (
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS app_notifications (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title      TEXT NOT NULL,
+  body       TEXT NOT NULL,
+  url        TEXT NOT NULL DEFAULT '/',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_app_notifications_created ON app_notifications (created_at DESC);
+
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  endpoint   TEXT PRIMARY KEY,
+  p256dh     TEXT NOT NULL,
+  auth       TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 ALTER TABLE ad_events DISABLE ROW LEVEL SECURITY;
 ALTER TABLE contests DISABLE ROW LEVEL SECURITY;
+ALTER TABLE app_notifications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE push_subscriptions DISABLE ROW LEVEL SECURITY;
 
 INSERT INTO contests (slug, title, prize, description, sponsor_name, deadline, active)
 VALUES (

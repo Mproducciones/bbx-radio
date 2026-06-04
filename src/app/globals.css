@@ -1952,7 +1952,7 @@ body {
 /* ── Campanita — bandeja de avisos in-app ─────────────────────────────── */
 .app-notif-bell {
   position: fixed;
-  z-index: 190;
+  z-index: 221;
   top: calc(var(--app-safe-top) + 10px);
   right: calc(var(--app-gutter-right) + 4px);
   width: 2.5rem;
@@ -2004,7 +2004,7 @@ body {
 
 .app-notif-panel {
   position: fixed;
-  z-index: 189;
+  z-index: 220;
   top: calc(var(--app-safe-top) + 3.25rem);
   left: var(--app-gutter-left);
   right: var(--app-gutter-right);

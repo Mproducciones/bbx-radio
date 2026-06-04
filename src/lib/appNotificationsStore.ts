@@ -9,8 +9,6 @@ export type AppNotification = {
 }
 
 const MAX_STORED = 80
-let memNotifs: AppNotification[] = []
-let memWarned = false
 
 function rowToNotif(r: Record<string, unknown>): AppNotification {
   return {
@@ -22,18 +20,16 @@ function rowToNotif(r: Record<string, unknown>): AppNotification {
   }
 }
 
-async function memFallback() {
-  if (!memWarned && process.env.NODE_ENV === 'development') {
-    memWarned = true
-    console.warn('[notifications] Supabase fallback — ejecuta supabase-app-notifications.sql')
-  }
+export type CreateNotificationResult = {
+  notification: AppNotification | null
+  dbError?: string
 }
 
 export async function createAppNotification(input: {
   title: string
   body: string
   url: string
-}): Promise<AppNotification | null> {
+}): Promise<CreateNotificationResult> {
   const row = {
     title: input.title.slice(0, 120),
     body: input.body.slice(0, 500),
@@ -47,19 +43,16 @@ export async function createAppNotification(input: {
     .single()
 
   if (error) {
-    await memFallback()
-    const item: AppNotification = {
-      id: `mem-${Date.now()}`,
-      ...row,
-      created_at: new Date().toISOString(),
+    const msg = error.message || 'Error al guardar aviso'
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[notifications]', msg, '— ejecuta supabase-app-notifications.sql')
     }
-    memNotifs = [item, ...memNotifs].slice(0, MAX_STORED)
-    return item
+    return { notification: null, dbError: msg }
   }
 
   const notif = rowToNotif(data)
   await trimOldNotifications()
-  return notif
+  return { notification: notif }
 }
 
 async function trimOldNotifications() {
@@ -74,7 +67,13 @@ async function trimOldNotifications() {
   await supabaseAdmin.from('app_notifications').delete().in('id', ids)
 }
 
-export async function listAppNotifications(limit = 40): Promise<AppNotification[]> {
+export type ListNotificationsResult = {
+  items: AppNotification[]
+  dbReady: boolean
+  dbError?: string
+}
+
+export async function listAppNotifications(limit = 40): Promise<ListNotificationsResult> {
   const { data, error } = await supabaseAdmin
     .from('app_notifications')
     .select('*')
@@ -82,8 +81,14 @@ export async function listAppNotifications(limit = 40): Promise<AppNotification[
     .limit(limit)
 
   if (error) {
-    await memFallback()
-    return [...memNotifs]
+    return {
+      items: [],
+      dbReady: false,
+      dbError: error.message,
+    }
   }
-  return (data ?? []).map(rowToNotif)
+  return {
+    items: (data ?? []).map(rowToNotif),
+    dbReady: true,
+  }
 }

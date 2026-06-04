@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getReadNotificationIds, markNotificationRead } from '@/lib/notificationsRead'
+import { saveLocalNotification } from '@/lib/notificationsLocalCache'
 import { EASE_OUT } from '@/lib/motion/framer'
 
 type ToastPayload = {
@@ -36,7 +37,12 @@ export function InAppNotificationToast() {
     if (getReadNotificationIds().has(payload.id)) return
     if (lastShownId.current === payload.id) return
     lastShownId.current = payload.id
+    saveLocalNotification({
+      ...payload,
+      created_at: new Date().toISOString(),
+    })
     setToast(payload)
+    window.dispatchEvent(new CustomEvent('bbx-notifications-refresh'))
     if (hideTimer.current) clearTimeout(hideTimer.current)
     hideTimer.current = setTimeout(dismiss, AUTO_HIDE_MS)
   }, [hidden, dismiss])

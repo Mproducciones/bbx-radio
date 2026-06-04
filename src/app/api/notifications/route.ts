@@ -10,9 +10,22 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const items = await listAppNotifications(40)
-    return NextResponse.json({ items })
-  } catch {
-    return NextResponse.json({ items: [] })
+    const { items, dbReady, dbError } = await listAppNotifications(40)
+    return NextResponse.json({
+      items,
+      dbReady,
+      dbError,
+      hint: !dbReady
+        ? 'Ejecuta supabase-app-notifications.sql en Supabase y redeploy.'
+        : undefined,
+    })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Error'
+    return NextResponse.json({
+      items: [],
+      dbReady: false,
+      dbError: msg,
+      hint: 'Revisa SUPABASE_SERVICE_KEY en Vercel.',
+    })
   }
 }

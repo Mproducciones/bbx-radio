@@ -84,8 +84,8 @@ export function NotificacionPanel() {
         body: JSON.stringify({ title, body, url }),
       })
       const data = await res.json()
-      if (!res.ok) {
-        const extra = data.hint ? ` ${data.hint}` : data.missing?.length ? ` (${data.missing.join(', ')})` : ''
+      if (!res.ok || data.ok === false) {
+        const extra = data.hint ? ` ${data.hint}` : data.dbError ? ` ${data.dbError}` : data.missing?.length ? ` (${data.missing.join(', ')})` : ''
         setSendError(`${data.error ?? 'No se pudo enviar'}${extra}`)
         setState('error')
         if (res.status === 401) loadStatus()
