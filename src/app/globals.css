@@ -1190,6 +1190,10 @@ body {
   text-transform: uppercase;
 }
 
+.premium-ad-inline {
+  margin-bottom: 0.35rem;
+}
+
 .participa-segment {
   display: flex;
   flex-shrink: 0;
@@ -1894,11 +1898,6 @@ body {
   .saludos-btn {
     min-height: 2.85rem;
     font-size: 0.8125rem;
-  }
-
-  .saludos-sponsor-banner {
-    max-width: calc(100% - 2.75rem);
-    margin-right: auto;
   }
 
   .saludos-sponsor-banner a {

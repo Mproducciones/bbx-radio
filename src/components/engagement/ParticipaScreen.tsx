@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { TabPanelSkeleton } from '@/components/ui/TabPanelSkeleton'
 import { SponsorDemoBar } from '@/components/ads/SponsorDemoBar'
+import { PremiumAdInline } from '@/components/ads/PremiumAdBanner'
 import { ParticipaHero } from '@/components/engagement/ParticipaHero'
 import { ParticipaActionTabs, type ParticipaTab } from '@/components/engagement/ParticipaActionTabs'
 import { FEATURES } from '@/lib/plan'
@@ -54,6 +55,7 @@ export function ParticipaScreen() {
         <ParticipaHero />
         <SponsorDemoBar />
         <ParticipaActionTabs tabs={tabs} active={tab} onChange={selectTab} />
+        <PremiumAdInline />
 
         <div className="participa-content w-full min-w-0">
           <AnimatePresence mode="wait">

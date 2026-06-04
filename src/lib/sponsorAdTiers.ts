@@ -162,10 +162,18 @@ export function demoAdsForSponsorTier(tier: SponsorAdTierId): Record<string, Dem
 }
 
 export const SPONSOR_DEMO_TIER_STORAGE = 'pulso_sponsor_demo_tier'
+export const SPONSOR_DEMO_CHANGE_EVENT = 'bbx-sponsor-demo-change'
+
+function notifySponsorDemoChange() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(SPONSOR_DEMO_CHANGE_EVENT))
+  }
+}
 
 export function persistSponsorDemoTier(tier: SponsorAdTierId) {
   if (typeof window === 'undefined') return
   sessionStorage.setItem(SPONSOR_DEMO_TIER_STORAGE, tier)
+  notifySponsorDemoChange()
 }
 
 export function readSponsorDemoTier(): SponsorAdTierId | null {
@@ -178,6 +186,7 @@ export function readSponsorDemoTier(): SponsorAdTierId | null {
 export function clearSponsorDemoTier() {
   if (typeof window === 'undefined') return
   sessionStorage.removeItem(SPONSOR_DEMO_TIER_STORAGE)
+  notifySponsorDemoChange()
 }
 
 export function appPathForTierDemo(): string {

@@ -1,14 +1,23 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { clearSponsorDemoTier, getTierPreview, readSponsorDemoTier, type SponsorAdTierId } from '@/lib/sponsorAdTiers'
+import {
+  clearSponsorDemoTier,
+  getTierPreview,
+  readSponsorDemoTier,
+  SPONSOR_DEMO_CHANGE_EVENT,
+  type SponsorAdTierId,
+} from '@/lib/sponsorAdTiers'
 import { RADIO_AD } from '@/lib/radioAdBranding'
 
 export function SponsorDemoBar() {
   const [tier, setTier] = useState<SponsorAdTierId | null>(null)
 
   useEffect(() => {
-    setTier(readSponsorDemoTier())
+    const sync = () => setTier(readSponsorDemoTier())
+    sync()
+    window.addEventListener(SPONSOR_DEMO_CHANGE_EVENT, sync)
+    return () => window.removeEventListener(SPONSOR_DEMO_CHANGE_EVENT, sync)
   }, [])
 
   if (!tier) return null

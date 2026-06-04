@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { TabPanelSkeleton } from '@/components/ui/TabPanelSkeleton'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
+import { PremiumAdInline } from '@/components/ads/PremiumAdBanner'
 import { SaludosHero } from '@/components/engagement/SaludosHero'
 
 const SaludoForm = dynamic(
@@ -16,6 +17,7 @@ export function SaludosScreen() {
     <AppMenuScreen scroll className="saludos-route w-full min-w-0 max-w-full">
       <div className="saludos-shell w-full min-w-0">
         <SaludosHero />
+        <PremiumAdInline />
         <SaludoForm compact />
         <RotatingBanner
           position="bottom"

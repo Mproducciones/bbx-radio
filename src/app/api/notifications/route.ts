@@ -11,21 +11,19 @@ export async function GET(req: NextRequest) {
 
   try {
     const { items, dbReady, dbError } = await listAppNotifications(40)
+    const isProd = process.env.NODE_ENV === 'production'
     return NextResponse.json({
       items,
       dbReady,
-      dbError,
-      hint: !dbReady
+      ...(isProd ? {} : { dbError }),
+      hint: !dbReady && !isProd
         ? 'Ejecuta supabase-app-notifications.sql en Supabase y redeploy.'
         : undefined,
     })
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Error'
+  } catch {
     return NextResponse.json({
       items: [],
       dbReady: false,
-      dbError: msg,
-      hint: 'Revisa SUPABASE_SERVICE_KEY en Vercel.',
     })
   }
 }

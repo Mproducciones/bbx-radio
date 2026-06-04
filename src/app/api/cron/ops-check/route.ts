@@ -7,9 +7,7 @@ function authorizeCron(req: NextRequest): boolean {
   const secret = process.env.BBX_OPS_CRON_SECRET?.trim()
   if (!secret) return false
   const auth = req.headers.get('authorization')
-  if (auth === `Bearer ${secret}`) return true
-  const q = req.nextUrl.searchParams.get('secret')
-  return q === secret
+  return auth === `Bearer ${secret}`
 }
 
 export async function GET(req: NextRequest) {
