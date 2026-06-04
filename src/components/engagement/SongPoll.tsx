@@ -82,10 +82,18 @@ function VoteBurst({ active }: { active: boolean }) {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-20" />
 }
 
-function VinylDisc({ color, spinning }: { color: string; spinning: boolean }) {
+function VinylDisc({
+  color,
+  spinning,
+  compact,
+}: {
+  color: string
+  spinning: boolean
+  compact?: boolean
+}) {
   return (
     <motion.div
-      className="w-10 h-10 rounded-full shrink-0 relative mx-auto mb-2"
+      className={`participa-vinyl rounded-full shrink-0 relative mx-auto ${compact ? 'w-7 h-7 mb-1' : 'w-10 h-10 mb-2'}`}
       style={{
         background: `conic-gradient(from 0deg, ${color}44, #07070e 40%, ${color}22 70%, #07070e)`,
         border: `2px solid ${color}66`,
@@ -267,11 +275,13 @@ export function SongPoll({
           )}
         </div>
 
-        <p className={`text-white font-display leading-tight ${compact ? 'text-base mb-3' : 'text-lg mb-4'}`}>
+        <p className={`text-white font-display leading-tight ${compact ? 'text-sm mb-2 line-clamp-2' : 'text-lg mb-4'}`}>
           {poll.question}
         </p>
 
-        <div className={`flex-1 min-h-0 grid grid-cols-[1fr_auto_1fr] items-stretch ${compact ? 'gap-1' : 'gap-2'}`}>
+        <div
+          className={`participa-battle-grid flex-1 min-h-0 grid grid-cols-[1fr_auto_1fr] ${compact ? 'gap-0.5 items-center' : 'gap-2 items-stretch'}`}
+        >
           {([a, b] as const).map((opt, idx) => {
             const pv = opt.id === a.id ? pA : pB
             const isWinner = winner === opt.id
@@ -286,7 +296,7 @@ export function SongPoll({
                 whileTap={voted ? {} : { scale: 0.94 }}
                 onClick={() => castVote(opt.id)}
                 disabled={voted || voting}
-                className={`participa-vote-card ${gridCol} row-start-1 relative overflow-hidden text-center flex flex-col justify-end ${compact ? 'p-2 pt-2.5' : 'p-3 min-h-[8.5rem]'}`}
+                className={`participa-vote-card ${gridCol} row-start-1 relative overflow-hidden text-center flex flex-col ${compact ? 'p-1.5 justify-center min-h-0' : 'p-3 min-h-[8.5rem] justify-end'}`}
                 style={{
                   background: isMine
                     ? `linear-gradient(180deg, ${accent}28 0%, rgba(7,7,14,0.9) 100%)`
@@ -309,18 +319,27 @@ export function SongPoll({
                   />
                 )}
 
-                <div className="relative z-[1]">
-                  <VinylDisc color={accent} spinning={!voted && !voting} />
-                  <p className="text-white font-bold text-xs leading-tight line-clamp-2">{opt.title}</p>
-                  <p className="text-white/45 text-[10px] mt-0.5 truncate">{opt.artist}</p>
+                <div className="relative z-[1] min-w-0 w-full">
+                  <VinylDisc color={accent} spinning={!voted && !voting} compact={compact} />
+                  <p
+                    className={`text-white font-bold leading-tight line-clamp-2 ${compact ? 'text-[10px]' : 'text-xs'}`}
+                  >
+                    {opt.title}
+                  </p>
+                  <p className={`text-white/45 truncate ${compact ? 'text-[9px] mt-0' : 'text-[10px] mt-0.5'}`}>
+                    {opt.artist}
+                  </p>
 
                   {voted ? (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="mt-2 flex flex-col items-center gap-0.5"
+                      className={`flex flex-col items-center gap-0.5 ${compact ? 'mt-1' : 'mt-2'}`}
                     >
-                      <span className="font-display text-2xl leading-none" style={{ color: accent }}>
+                      <span
+                        className={`font-display leading-none ${compact ? 'text-lg' : 'text-2xl'}`}
+                        style={{ color: accent }}
+                      >
                         {pv}%
                       </span>
                       {isWinner && (
@@ -332,7 +351,7 @@ export function SongPoll({
                     </motion.div>
                   ) : (
                     <motion.p
-                      className="text-[8px] font-bold mt-2 uppercase tracking-wide"
+                      className={`text-[8px] font-bold uppercase tracking-wide ${compact ? 'mt-1' : 'mt-2'}`}
                       style={{ color: accent }}
                       animate={{ opacity: [0.5, 1, 0.5] }}
                       transition={{ duration: 1.8, repeat: Infinity }}
@@ -346,15 +365,15 @@ export function SongPoll({
           })}
 
           <div
-            className="col-start-2 row-start-1 flex items-center justify-center self-center shrink-0 w-10 pointer-events-none z-[2]"
+            className={`participa-battle-vs-wrap col-start-2 row-start-1 flex items-center justify-center self-center shrink-0 pointer-events-none z-[2] ${compact ? 'w-7' : 'w-10'}`}
             aria-hidden
           >
             <motion.div
-              className="w-9 h-9 rounded-full flex items-center justify-center font-black text-[10px] text-white"
+              className={`participa-battle-vs rounded-full flex items-center justify-center font-black text-white ${compact ? 'w-6 h-6 text-[8px] border' : 'w-9 h-9 text-[10px] border-2'}`}
               style={{
                 background: '#07070e',
-                border: '2px solid rgba(255,255,255,0.2)',
-                boxShadow: '0 0 16px rgba(219,137,24,0.35)',
+                borderColor: 'rgba(255,255,255,0.2)',
+                boxShadow: compact ? '0 0 10px rgba(219,137,24,0.3)' : '0 0 16px rgba(219,137,24,0.35)',
               }}
               animate={!voted ? { scale: [1, 1.06, 1] } : { scale: 1 }}
               transition={{ duration: 1.5, repeat: voted ? 0 : Infinity }}
