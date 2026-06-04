@@ -37,13 +37,41 @@ SUPABASE_SERVICE_KEY=eyJ...          # service_role — solo servidor, nunca en 
 
 `SUPABASE_SERVICE_KEY` es **obligatoria** en producción. La app no usa la anon key como fallback en el servidor.
 
-## Push notifications (opcional)
+## Push a oyentes — admin de la radio (requerido para avisos desde `/admin`)
+
+El locutor puede pedir en vivo que abran la app; el admin envía desde **Panel → Comunicación (Push)**.
+
+### 1. Tabla en Supabase
+
+Ejecuta en el SQL Editor del proyecto de la radio:
+
+```text
+supabase-push.sql
+```
+
+### 2. Claves VAPID en Vercel
+
+Generar par (una sola vez):
 
 ```bash
-NEXT_PUBLIC_VAPID_PUBLIC_KEY=
-VAPID_PRIVATE_KEY=
+npx web-push generate-vapid-keys
+```
+
+Variables:
+
+```bash
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=   # clave pública
+VAPID_PRIVATE_KEY=              # clave privada — solo servidor
 VAPID_EMAIL=mailto:admin@tudominio.com
 ```
+
+Redeploy. En `/admin` → **Comunicación** debe decir “listo” (sin banner rojo) y mostrar cantidad de suscriptores.
+
+### 3. Uso en cabina
+
+1. En vivo: “Descarguen/abran la app y activen notificaciones”.
+2. Admin entra a `/admin` → **Comunicación** → plantilla (Participa, Sorteo, Saludos, Grilla) → **Enviar**.
+3. El oyente recibe el push y al tocar abre la pantalla elegida.
 
 ## Sanity CMS
 

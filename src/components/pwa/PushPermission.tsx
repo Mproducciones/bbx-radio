@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim() ?? ''
 
 function urlBase64ToUint8Array(base64: string) {
   const pad = '='.repeat((4 - (base64.length % 4)) % 4)
@@ -17,6 +17,7 @@ export function PushPermission() {
   const [done, setDone]   = useState(false)
 
   useEffect(() => {
+    if (!VAPID_PUBLIC) return
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
     if (Notification.permission !== 'default') return
     const seen = localStorage.getItem('push_prompt_seen')

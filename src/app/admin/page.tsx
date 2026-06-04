@@ -14,7 +14,7 @@ type PageState = 'login' | 'dashboard'
 export default function AdminPage() {
   const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('login')
-  const [section, setSection] = useState<AdminSection>('commercial')
+  const [section, setSection] = useState<AdminSection>('comms')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'error'>('idle')

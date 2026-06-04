@@ -10,6 +10,8 @@ export function adminLoginErrorMessage(status: number, body?: { code?: string; e
     }
     return 'Panel no configurado en el servidor. Revisa variables en Vercel y vuelve a desplegar.'
   }
-  if (status === 401) return 'Credenciales inválidas'
+  if (status === 401) {
+    return 'Usuario o contraseña incorrectos. En /admin usa ADMIN_USERNAME y ADMIN_PASSWORD de Vercel (mín. 12 caracteres). Las de super admin son solo para /bbx-admin.'
+  }
   return 'No se pudo iniciar sesión'
 }

@@ -1,28 +1,81 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { AdminCard, AdminCardHeader, AdminIcons } from './adminUi'
 
 type SendState = 'idle' | 'sending' | 'done' | 'error'
 
-export function NotificacionPanel() {
-  const [title, setTitle]   = useState('')
-  const [body, setBody]     = useState('')
-  const [url, setUrl]       = useState('/')
-  const [state, setState]   = useState<SendState>('idle')
-  const [result, setResult] = useState<{ sent: number; failed: number } | null>(null)
-  const [subs, setSubs]     = useState<number | null>(null)
+type PushStatus = {
+  configured: boolean
+  dbReady: boolean
+  ready: boolean
+  count: number
+  hint?: string
+  dbError?: string
+}
 
-  useEffect(() => {
-    fetch('/api/push/count', { credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(d => d && setSubs(d.count))
+const DESTINOS: { url: string; label: string }[] = [
+  { url: '/', label: 'Inicio' },
+  { url: '/participa', label: 'Participa' },
+  { url: '/saludos', label: 'Saludos' },
+  { url: '/programacion', label: 'Grilla' },
+  { url: '/tv', label: 'TV' },
+]
+
+const PLANTILLAS_LOCUTOR = [
+  {
+    title: 'Pide tu canción',
+    body: 'Entra a la app y manda tu tema al locutor en vivo.',
+    url: '/participa',
+  },
+  {
+    title: 'Sorteo en la app',
+    body: 'Participa en el sorteo desde tu celular — el locutor te espera.',
+    url: '/participa',
+  },
+  {
+    title: 'Saludo al aire',
+    body: 'Manda un saludo a quien quieras; lo leemos en cabina.',
+    url: '/saludos',
+  },
+  {
+    title: 'Grilla de hoy',
+    body: 'Mira qué programa viene en Radio Bienvenida 93.3.',
+    url: '/programacion',
+  },
+] as const
+
+export function NotificacionPanel() {
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
+  const [url, setUrl] = useState('/participa')
+  const [state, setState] = useState<SendState>('idle')
+  const [result, setResult] = useState<{ sent: number; failed: number; total?: number } | null>(null)
+  const [status, setStatus] = useState<PushStatus | null>(null)
+  const [sendError, setSendError] = useState<string | null>(null)
+
+  const loadStatus = useCallback(() => {
+    fetch('/api/push/status', { credentials: 'include' })
+      .then(r => (r.ok ? r.json() : null))
+      .then((d: PushStatus | null) => d && setStatus(d))
       .catch(() => {})
   }, [])
 
+  useEffect(() => { loadStatus() }, [loadStatus])
+
+  function applyPlantilla(p: (typeof PLANTILLAS_LOCUTOR)[number]) {
+    setTitle(p.title)
+    setBody(p.body)
+    setUrl(p.url)
+    setState('idle')
+    setSendError(null)
+  }
+
   async function send(e: React.FormEvent) {
     e.preventDefault()
+    if (!status?.ready) return
     setState('sending')
+    setSendError(null)
     try {
       const res = await fetch('/api/push/send', {
         method: 'POST',
@@ -31,44 +84,132 @@ export function NotificacionPanel() {
         body: JSON.stringify({ title, body, url }),
       })
       const data = await res.json()
-      if (!res.ok) { setState('error'); return }
-      setResult({ sent: data.sent, failed: data.failed })
+      if (!res.ok) {
+        const extra = data.hint ? ` ${data.hint}` : data.missing?.length ? ` (${data.missing.join(', ')})` : ''
+        setSendError(`${data.error ?? 'No se pudo enviar'}${extra}`)
+        setState('error')
+        if (res.status === 401) loadStatus()
+        return
+      }
+      setResult({ sent: data.sent, failed: data.failed, total: data.total })
       setState('done')
-      setTitle(''); setBody(''); setUrl('/')
-    } catch { setState('error') }
+      setTitle('')
+      setBody('')
+      setUrl('/participa')
+      loadStatus()
+    } catch {
+      setSendError('Error de conexión')
+      setState('error')
+    }
   }
 
+  const subs = status?.count ?? null
+
   return (
-    <AdminCard accent="#db8918">
+    <AdminCard accent="#7D59B5">
       <AdminCardHeader
-        title="Enviar notificación"
+        title="Avisar a la audiencia"
         icon={<AdminIcons.bell />}
         action={subs !== null ? (
-          <span className="text-white/35 text-xs">{subs} suscriptor{subs !== 1 ? 'es' : ''}</span>
+          <span className="text-white/35 text-xs">
+            {subs} suscriptor{subs !== 1 ? 'es' : ''}
+          </span>
         ) : undefined}
       />
 
       <div className="admin-card-body">
-        {state === 'done' && result && (
-          <div className="mb-4 rounded-xl p-3 flex items-center gap-3"
-            style={{ background: 'rgba(0,217,160,0.08)', border: '1px solid rgba(0,217,160,0.2)' }}>
-            <span className="text-xl">✅</span>
-            <div>
-              <p className="text-[#00D9A0] font-bold text-sm">¡Enviada!</p>
-              <p className="text-white/40 text-xs">{result.sent} recibidas · {result.failed} fallaron</p>
-            </div>
-            <button onClick={() => setState('idle')} className="ml-auto text-white/30 text-xs underline">Nueva</button>
+        <p className="text-white/45 text-xs leading-relaxed mb-4">
+          Para que el locutor mande gente a la app: elige una plantilla, ajusta el texto y envía.
+          Llega al celular de quien activó notificaciones en la PWA.
+        </p>
+
+        {status && !status.ready && (
+          <div
+            className="mb-4 rounded-xl p-3 text-xs leading-relaxed"
+            style={{ background: 'rgba(255,56,96,0.08)', border: '1px solid rgba(255,56,96,0.25)' }}
+          >
+            <p className="text-[#FF3860] font-bold text-sm mb-1">Push no listo en producción</p>
+            {!status.configured && (
+              <p className="text-white/50">Configura en Vercel: <code className="text-white/70">NEXT_PUBLIC_VAPID_PUBLIC_KEY</code>, <code className="text-white/70">VAPID_PRIVATE_KEY</code>, <code className="text-white/70">VAPID_EMAIL</code>.</p>
+            )}
+            {status.configured && !status.dbReady && (
+              <p className="text-white/50 mt-1">En Supabase ejecuta el archivo <code className="text-white/70">supabase-push.sql</code>.</p>
+            )}
+            {status.dbError && (
+              <p className="text-white/30 mt-1 font-mono text-[10px] break-all">{status.dbError}</p>
+            )}
+            {status.hint && <p className="text-white/40 mt-2">{status.hint}</p>}
           </div>
+        )}
+
+        {status?.ready && subs === 0 && (
+          <div
+            className="mb-4 rounded-xl p-3 text-xs"
+            style={{ background: 'rgba(219,137,24,0.08)', border: '1px solid rgba(219,137,24,0.22)' }}
+          >
+            <p className="text-[#db8918] font-semibold">Aún sin suscriptores</p>
+            <p className="text-white/45 mt-1">
+              Pide en vivo que abran la app y pulsen <strong className="text-white/70">Activar</strong> cuando salga el aviso de notificaciones.
+            </p>
+          </div>
+        )}
+
+        <div className="mb-4">
+          <p className="text-[#666690] text-[10px] font-bold uppercase tracking-wider mb-2">Plantillas para locutor</p>
+          <div className="flex flex-wrap gap-2">
+            {PLANTILLAS_LOCUTOR.map(p => (
+              <button
+                key={p.title}
+                type="button"
+                onClick={() => applyPlantilla(p)}
+                className="text-[11px] px-2.5 py-1.5 rounded-lg font-semibold transition-colors"
+                style={{
+                  background: 'rgba(125,89,181,0.15)',
+                  color: '#c4b5fd',
+                  border: '1px solid rgba(125,89,181,0.28)',
+                }}
+              >
+                {p.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {state === 'done' && result && (
+          <div
+            className="mb-4 rounded-xl p-3 flex items-center gap-3"
+            style={{ background: 'rgba(0,217,160,0.08)', border: '1px solid rgba(0,217,160,0.2)' }}
+          >
+            <span className="text-[#00D9A0] text-lg font-bold" aria-hidden>✓</span>
+            <div>
+              <p className="text-[#00D9A0] font-bold text-sm">Enviada</p>
+              <p className="text-white/40 text-xs">
+                {result.sent} de {result.total ?? result.sent + result.failed} dispositivos
+                {result.failed > 0 ? ` · ${result.failed} fallaron` : ''}
+              </p>
+            </div>
+            <button type="button" onClick={() => setState('idle')} className="ml-auto text-white/30 text-xs underline">
+              Nueva
+            </button>
+          </div>
+        )}
+
+        {state === 'error' && sendError && (
+          <div className="mb-4 rounded-xl p-3 text-red-400/90 text-sm">{sendError}</div>
         )}
 
         {state !== 'done' && (
           <form onSubmit={send} className="flex flex-col gap-3">
             <label className="flex flex-col gap-1.5">
               <span className="text-[#666690] text-xs font-medium">Título</span>
-              <input value={title} onChange={e => setTitle(e.target.value)}
+              <input
+                value={title}
+                onChange={e => setTitle(e.target.value)}
                 placeholder="ej: ¡Concurso esta noche!"
-                maxLength={80} required
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/15"
+                maxLength={80}
+                required
+                disabled={!status?.ready}
+                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#7D59B5] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors placeholder-white/15 disabled:opacity-40"
               />
             </label>
 
@@ -77,39 +218,60 @@ export function NotificacionPanel() {
                 <span className="text-[#666690] text-xs font-medium">Mensaje</span>
                 <span className="text-[#333355] text-xs">{body.length}/160</span>
               </div>
-              <textarea value={body} onChange={e => setBody(e.target.value.slice(0, 160))}
-                placeholder="ej: Llama al 93.3 y gana 2 entradas al show"
-                rows={2} required
-                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors resize-none placeholder-white/15"
+              <textarea
+                value={body}
+                onChange={e => setBody(e.target.value.slice(0, 160))}
+                placeholder="ej: Entra a la app y participa en el sorteo"
+                rows={3}
+                required
+                disabled={!status?.ready}
+                className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#7D59B5] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors resize-none placeholder-white/15 disabled:opacity-40"
               />
             </label>
 
             <label className="flex flex-col gap-1.5">
-              <span className="text-[#666690] text-xs font-medium">Destino al tocar <span className="text-[#333355]">(opcional)</span></span>
-              <div className="flex gap-2">
-                {['/', '/saludos', '/tv', '/anunciate'].map(u => (
-                  <button key={u} type="button" onClick={() => setUrl(u)}
-                    className="text-[10px] px-2 py-1 rounded-lg transition-colors"
-                    style={url === u
-                      ? { background: 'rgba(219,137,24,0.2)', color: '#db8918', border: '1px solid rgba(219,137,24,0.3)' }
-                      : { background: 'rgba(255,255,255,0.04)', color: '#444468', border: '1px solid rgba(255,255,255,0.06)' }
-                    }>
-                    {u === '/' ? 'Inicio' : u.replace('/', '')}
+              <span className="text-[#666690] text-xs font-medium">Al tocar, abre</span>
+              <div className="flex flex-wrap gap-2">
+                {DESTINOS.map(d => (
+                  <button
+                    key={d.url}
+                    type="button"
+                    disabled={!status?.ready}
+                    onClick={() => setUrl(d.url)}
+                    className="text-[10px] px-2 py-1 rounded-lg transition-colors disabled:opacity-40"
+                    style={
+                      url === d.url
+                        ? { background: 'rgba(125,89,181,0.25)', color: '#c4b5fd', border: '1px solid rgba(125,89,181,0.4)' }
+                        : { background: 'rgba(255,255,255,0.04)', color: '#444468', border: '1px solid rgba(255,255,255,0.06)' }
+                    }
+                  >
+                    {d.label}
                   </button>
                 ))}
               </div>
             </label>
 
-            <button type="submit" disabled={state === 'sending' || !title || !body}
-              className="w-full py-3 rounded-xl font-bold text-sm text-[#07070E] disabled:opacity-40 transition-opacity flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #db8918, #a86611)' }}>
-              {state === 'sending'
-                ? <><div className="w-4 h-4 border-2 border-[#07070E] border-t-transparent rounded-full animate-spin" /> Enviando...</>
-                : <>Enviar a {subs ?? '...'} oyentes</>
-              }
+            <button
+              type="submit"
+              disabled={state === 'sending' || !title || !body || !status?.ready}
+              className="w-full py-3 rounded-xl font-bold text-sm text-white disabled:opacity-40 transition-opacity flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #7D59B5, #FF006E)' }}
+            >
+              {state === 'sending' ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Enviando…
+                </>
+              ) : (
+                <>Enviar a {subs ?? '…'} oyentes</>
+              )}
             </button>
           </form>
         )}
+
+        <p className="text-white/20 text-[9px] text-center mt-3 leading-relaxed">
+          Solo oyentes que aceptaron notificaciones. Ideal para decirlo en vivo antes de enviar.
+        </p>
       </div>
     </AdminCard>
   )

@@ -152,7 +152,7 @@ export function ProgramSchedule({
           transition={{ duration: 0.2, ease: EASE_OUT }}
           className={cn(
             'flex flex-col gap-1.5 max-md:gap-1',
-            fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain max-md:pb-[calc(var(--app-mini-player-total)+0.25rem)]',
+            fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain max-md:pb-[calc(var(--app-nav-total)+var(--app-mini-player-total)+0.75rem)]',
           )}
         >
           {filtered.length === 0 ? (
