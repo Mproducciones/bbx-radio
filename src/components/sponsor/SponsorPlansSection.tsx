@@ -109,7 +109,7 @@ function PlanCard({ plan, onSelect, index }: {
 
         {/* CTA button */}
         <div
-          className="w-full py-2.5 rounded-xl text-center text-xs font-bold"
+          className="w-full min-w-0 py-2.5 px-2 rounded-xl text-center text-xs font-bold truncate"
           style={
             plan.popular
               ? {

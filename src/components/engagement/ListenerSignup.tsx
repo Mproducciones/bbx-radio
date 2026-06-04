@@ -192,16 +192,16 @@ function SorteoPrizeHeader({ contest }: { contest: ActiveContest }) {
   }, [contest.id])
 
   return (
-    <header ref={ref} className="sorteo-prize relative z-[1]">
+    <header ref={ref} className="sorteo-prize relative z-[1] min-w-0">
       <div className="sorteo-prize__shimmer" aria-hidden />
       <span className="sorteo-prize__badge">
         <span className="sorteo-prize__badge-dot" aria-hidden />
         Sorteo en vivo
       </span>
-      <h3 className="sorteo-prize__title">{contest.title}</h3>
-      <p className="sorteo-prize__reward">{contest.prize}</p>
+      <h3 className="sorteo-prize__title break-words">{contest.title}</h3>
+      <p className="sorteo-prize__reward break-words">{contest.prize}</p>
       {contest.sponsorName && (
-        <p className="sorteo-prize__sponsor">Auspicia · {contest.sponsorName}</p>
+        <p className="sorteo-prize__sponsor truncate">Auspicia · {contest.sponsorName}</p>
       )}
     </header>
   )
@@ -233,7 +233,13 @@ function PositionCounter({ value }: { value: number }) {
 }
 
 /** Panel Sorteo — experiencia inmersiva (Participa). */
-export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}) {
+export function ListenerSignup({
+  playful: _playful,
+  className,
+}: {
+  playful?: boolean
+  className?: string
+} = {}) {
   const [contest, setContest] = useState<ActiveContest | null>(null)
   const [loading, setLoading] = useState(true)
   const [phase, setPhase] = useState<Phase>('nombre')
@@ -308,7 +314,9 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
   if (!contest) return <SorteoEmpty />
 
   return (
-    <div className="sorteo-panel participa-panel relative flex flex-col flex-1 min-h-0">
+    <div
+      className={`sorteo-panel participa-panel participa-sorteo-panel relative flex flex-col flex-1 min-h-0 min-w-0 max-w-full w-full ${className ?? ''}`}
+    >
       <div className="sorteo-panel__mesh" aria-hidden />
       <motion.div
         className="absolute -top-8 -right-8 w-28 h-28 rounded-full pointer-events-none blur-3xl"
@@ -320,7 +328,7 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
 
       <SorteoPrizeHeader contest={contest} />
 
-      <div ref={bodyRef} className="sorteo-body relative z-[1]">
+      <div ref={bodyRef} className="sorteo-body relative z-[1] w-full min-w-0">
         {!['sending', 'done', 'error'].includes(phase) && (
           <div className="sorteo-progress" role="progressbar" aria-valuenow={stepIndex + 1} aria-valuemin={1} aria-valuemax={2}>
             {STEPS.map((s, i) => (
@@ -345,9 +353,9 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
               animate="center"
               exit="exit"
               transition={springSnappy}
-              className="flex flex-col flex-1 min-h-0 gap-3"
+              className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="sorteo-step-title">Paso 1 de 2</p>
                 <h4 className="sorteo-step-heading">¿Cómo te llamas?</h4>
               </div>
@@ -365,7 +373,7 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
                 </p>
               )}
 
-              <label data-sorteo-field className="flex flex-col">
+              <label data-sorteo-field className="flex flex-col min-w-0 w-full">
                 <span className="sorteo-label">Tu nombre</span>
                 <input
                   value={name}
@@ -405,10 +413,10 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
               exit="exit"
               transition={springSnappy}
               onSubmit={submit}
-              className="flex flex-col flex-1 min-h-0 gap-3"
+              className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
               style={{ '--input-accent': ACCENT } as CSSProperties}
             >
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2 min-w-0 w-full">
                 <button
                   type="button"
                   onClick={() => setPhase('nombre')}
@@ -419,15 +427,18 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
                     <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="sorteo-step-title">Paso 2 de 2</p>
-                  <h4 className="sorteo-step-heading">
-                    Hola, <span style={{ color: ACCENT }}>{name.trim()}</span>
+                  <h4 className="sorteo-step-heading min-w-0">
+                    Hola,{' '}
+                    <span className="inline-block max-w-full truncate align-bottom" style={{ color: ACCENT }}>
+                      {name.trim()}
+                    </span>
                   </h4>
                 </div>
               </div>
 
-              <motion.label variants={staggerItem} data-sorteo-field className="flex flex-col">
+              <motion.label variants={staggerItem} data-sorteo-field className="flex flex-col min-w-0 w-full">
                 <span className="sorteo-label">WhatsApp o teléfono</span>
                 <input
                   value={phone}
@@ -441,7 +452,7 @@ export function ListenerSignup({ playful: _playful }: { playful?: boolean } = {}
 
               <motion.div
                 data-sorteo-field
-                className="rounded-xl px-3.5 py-3 text-xs leading-relaxed"
+                className="rounded-xl px-3 py-2.5 text-[11px] leading-relaxed min-w-0 w-full box-border"
                 style={{
                   background: 'rgba(125,89,181,0.08)',
                   border: '1px solid rgba(125,89,181,0.22)',

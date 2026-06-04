@@ -31,7 +31,7 @@ export function ParticipaHero() {
   }, [])
 
   return (
-    <header className="participa-hero shrink-0 overflow-visible">
+    <header className="participa-hero shrink-0 overflow-hidden w-full min-w-0 max-w-full">
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden

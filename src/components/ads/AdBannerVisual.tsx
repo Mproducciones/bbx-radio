@@ -41,7 +41,10 @@ function FallbackBanner({
 
   return (
     <div
-      className={cn('relative w-full overflow-hidden rounded-xl flex items-center px-4 gap-3', className)}
+      className={cn(
+        'relative w-full min-w-0 max-w-full overflow-hidden rounded-xl flex flex-wrap items-center px-3 max-md:px-2.5 gap-2 max-md:gap-1.5',
+        className,
+      )}
       style={{
         minHeight,
         maxHeight,
@@ -62,19 +65,19 @@ function FallbackBanner({
       >
         {title.charAt(0)}
       </div>
-      <div className="min-w-0 flex-1 py-3">
-        <p className="text-white font-bold text-sm truncate">{title}</p>
-        {ad.tagline && <p className="text-white/55 text-xs truncate mt-0.5">{ad.tagline}</p>}
+      <div className="min-w-0 flex-1 basis-[calc(100%-3.5rem)] py-2 max-md:py-1.5">
+        <p className="text-white font-bold text-sm max-md:text-xs truncate">{title}</p>
+        {ad.tagline && <p className="text-white/55 text-xs max-md:text-[10px] truncate mt-0.5">{ad.tagline}</p>}
       </div>
       {ad.cta && (
         <span
-          className="text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0"
+          className="text-[10px] max-md:text-[9px] font-bold px-2 max-md:px-1.5 py-1 max-md:py-0.5 rounded-lg shrink-0 ml-auto"
           style={{ background: accent, color: '#07070e' }}
         >
           {ad.cta}
         </span>
       )}
-      <p className="absolute bottom-1.5 left-3 right-3 text-[7px] text-white/35 truncate pointer-events-none">
+      <p className="absolute bottom-1 left-2.5 right-2.5 max-md:bottom-0.5 text-[7px] text-white/35 truncate pointer-events-none w-full">
         {RADIO_AD.stamp} · {RADIO_AD.adLabel}
       </p>
     </div>

@@ -34,7 +34,7 @@ function PreviewBrandBanner({ tier }: { tier: ReturnType<typeof getTierPreview> 
 
   return (
     <div
-      className="relative rounded-xl overflow-hidden px-2.5 py-2 flex items-center gap-2 min-h-[52px]"
+      className="sponsor-preview-ad-banner relative rounded-xl overflow-hidden px-2 py-1.5 flex items-center gap-1.5 min-h-[48px] min-w-0"
       style={{
         background: isExclusive || isHero
           ? `linear-gradient(120deg, color-mix(in srgb, ${tier.color} 28%, #07070e) 0%, #0c0c14 55%, color-mix(in srgb, ${tier.color} 14%, #07070e) 100%)`
@@ -52,7 +52,7 @@ function PreviewBrandBanner({ tier }: { tier: ReturnType<typeof getTierPreview> 
         style={{ background: `linear-gradient(90deg, ${tier.color}, transparent)` }}
       />
       <div
-        className="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center font-display text-base font-bold"
+        className="w-8 h-8 max-md:w-7 max-md:h-7 rounded-lg shrink-0 flex items-center justify-center font-display text-sm font-bold"
         style={{
           background: `color-mix(in srgb, ${tier.color} 32%, transparent)`,
           color: tier.color,
@@ -74,27 +74,29 @@ function PreviewBrandBanner({ tier }: { tier: ReturnType<typeof getTierPreview> 
         <p className="text-[10px] font-bold text-white truncate leading-tight">{tier.cliente}</p>
         <p className="text-[7px] text-white/50 truncate mt-0.5">{tier.taglineAd}</p>
       </div>
-      {isExclusive && (
-        <span
-          className="text-[6px] font-black uppercase px-1.5 py-1 rounded-md shrink-0"
-          style={{ background: tier.color, color: '#07070e' }}
-        >
-          Exclusivo
-        </span>
-      )}
-      {isHero && !isExclusive && (
-        <span
-          className="text-[6px] font-black uppercase px-1.5 py-1 rounded-md shrink-0"
-          style={{ background: tier.color, color: '#07070e' }}
-        >
-          Destacado
-        </span>
-      )}
-      {tier.showRotationBadge && (
-        <span className="text-[6px] font-bold px-1.5 py-1 rounded-md shrink-0 bg-black/50 text-white/65 border border-white/10">
-          Rota
-        </span>
-      )}
+      <div className="flex flex-wrap items-center justify-end gap-0.5 shrink-0 max-w-[42%]">
+        {isExclusive && (
+          <span
+            className="text-[6px] font-black uppercase px-1 py-0.5 rounded-md"
+            style={{ background: tier.color, color: '#07070e' }}
+          >
+            Exclusivo
+          </span>
+        )}
+        {isHero && !isExclusive && (
+          <span
+            className="text-[6px] font-black uppercase px-1 py-0.5 rounded-md"
+            style={{ background: tier.color, color: '#07070e' }}
+          >
+            Destacado
+          </span>
+        )}
+        {tier.showRotationBadge && (
+          <span className="text-[6px] font-bold px-1 py-0.5 rounded-md bg-black/50 text-white/65 border border-white/10">
+            Rota
+          </span>
+        )}
+      </div>
     </div>
   )
 }
@@ -121,13 +123,13 @@ function FloatingAd({ tier }: { tier: ReturnType<typeof getTierPreview> }) {
       style={{ border: `1px solid ${tier.color}40`, boxShadow: `0 6px 20px ${tier.color}25`, borderRadius: '0.75rem' }}
     >
       <div
-        className="rounded-xl px-2.5 py-2 flex items-center gap-2 min-h-[52px]"
+        className="sponsor-preview-ad-banner rounded-xl px-2 py-1.5 flex items-center gap-1.5 min-h-[48px] min-w-0"
         style={{
           background: `linear-gradient(120deg, color-mix(in srgb, ${tier.color} 22%, #07070e), #0a0a12)`,
         }}
       >
         <div
-          className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center text-sm font-bold"
+          className="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center text-xs font-bold"
           style={{ background: `${tier.color}30`, color: tier.color }}
           aria-hidden
         >
@@ -144,7 +146,7 @@ function FloatingAd({ tier }: { tier: ReturnType<typeof getTierPreview> }) {
           <p className="text-[7px] text-white/50 truncate">{tier.floatingTagline || RADIO_AD.stamp}</p>
         </div>
         <span
-          className="text-[7px] font-bold px-2 py-1 rounded-lg shrink-0"
+          className="text-[6px] font-bold px-1.5 py-0.5 rounded-md shrink-0 max-w-[4.5rem] truncate"
           style={{ background: tier.color, color: '#07070e' }}
         >
           {tier.cta}
@@ -167,8 +169,8 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
   }
 
   return (
-    <div className="w-full max-w-[min(100%,320px)] mx-auto">
-      <div className="relative mx-auto w-full max-w-[280px]">
+    <div className="sponsor-preview-root w-full min-w-0 max-w-full mx-auto">
+      <div className="sponsor-preview-device relative mx-auto w-full max-w-[min(100%,17.5rem)]">
         <style>{`
           @keyframes sponsor-bar-pulse {
             0%, 100% { transform: rotate(var(--bar-rot)) scaleY(0.45) }
@@ -187,7 +189,10 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
             boxShadow: `0 32px 80px rgba(0,0,0,0.7), 0 0 40px ${tier.color}18`,
           }}
         >
-          <div className="rounded-[1.5rem] overflow-hidden flex flex-col" style={{ background: '#07070e', minHeight: 340 }}>
+          <div
+            className="sponsor-preview-screen rounded-[1.5rem] overflow-hidden flex flex-col min-w-0"
+            style={{ background: '#07070e', minHeight: 'min(340px, 72vw)' }}
+          >
             <div className="flex items-center justify-between px-4 pt-3 pb-1 shrink-0">
               <span className="text-[9px] text-white/40 font-mono">9:41</span>
               <div className="w-16 h-4 rounded-full bg-black/80" />
@@ -208,8 +213,8 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
             </p>
 
             <div
-              className="mx-3 rounded-2xl overflow-hidden shrink-0 relative"
-              style={{ height: 140, background: `linear-gradient(170deg, ${tier.color}22 0%, #07070e 72%)` }}
+              className="mx-2.5 max-md:mx-2 rounded-2xl overflow-hidden shrink-0 relative"
+              style={{ height: 'clamp(7.5rem, 38vw, 8.75rem)', background: `linear-gradient(170deg, ${tier.color}22 0%, #07070e 72%)` }}
             >
               <div className="relative h-full flex items-center justify-center">
                 <div className="relative w-16 h-16">
@@ -259,15 +264,15 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-auto flex border-t border-white/5 shrink-0">
+            <div className="mt-auto flex border-t border-white/5 shrink-0 min-w-0 overflow-hidden">
               {NAV_TABS.map(tab => (
-                <div key={tab.label} className="flex-1 flex flex-col items-center py-2">
+                <div key={tab.label} className="flex-1 min-w-0 flex flex-col items-center py-1.5 px-0.5">
                   <div
-                    className="w-3.5 h-3.5 rounded mb-0.5"
+                    className="w-3 h-3 rounded mb-0.5 shrink-0"
                     style={{ background: tab.active ? `${tier.color}40` : 'rgba(255,255,255,0.06)' }}
                   />
                   <span
-                    className="text-[5px] font-semibold truncate max-w-full px-0.5"
+                    className="text-[5px] font-semibold truncate w-full text-center leading-none"
                     style={{ color: tab.active ? tier.color : 'rgba(255,255,255,0.3)' }}
                   >
                     {tab.label}
@@ -286,11 +291,11 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
           animate={{ opacity: 1 }}
           className="mt-3 px-1 text-center"
         >
-          <p className="text-[11px] font-bold" style={{ color: tier.color }}>
+          <p className="text-[11px] max-md:text-[10px] font-bold leading-snug px-1" style={{ color: tier.color }}>
             Plan {tier.nombre} · ${tier.precio} CLP/mes
           </p>
-          <p className="text-[10px] text-white/45 mt-1 leading-snug">{tier.tagline}</p>
-          <ul className="flex flex-wrap justify-center gap-1.5 mt-2">
+          <p className="text-[10px] max-md:text-[9px] text-white/45 mt-1 leading-snug px-2">{tier.tagline}</p>
+          <ul className="flex flex-wrap justify-center gap-1.5 mt-2 px-1">
             {tier.incluyeHighlight.map(h => (
               <li
                 key={h}
@@ -307,7 +312,7 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
       <button
         type="button"
         onClick={openInApp}
-        className="w-full mt-4 inline-flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold text-[#07070e] transition-transform active:scale-[0.98]"
+        className="sponsor-preview-cta w-full max-w-full min-w-0 mt-4 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs max-md:text-[11px] font-bold text-[#07070e] transition-transform active:scale-[0.98]"
         style={{
           background: `linear-gradient(135deg, ${tier.color}, color-mix(in srgb, ${tier.color} 70%, #fff))`,
           boxShadow: `0 8px 28px -6px ${tier.color}60`,

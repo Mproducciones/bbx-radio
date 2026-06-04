@@ -938,6 +938,116 @@ body {
   );
 }
 
+.pro-plan-card__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 0.75rem 0.875rem;
+}
+
+.pro-plan-card__info {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.pro-plan-card__price {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.pro-plan-card__cta {
+  min-height: 2.75rem;
+}
+
+.sponsor-plan-chip {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sponsor-preview-root,
+.sponsor-preview-device,
+.sponsor-preview-screen {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sponsor-preview-ad-banner {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .anunciate-route .pro-hero-panel--sales {
+    padding: 1.25rem 1rem 1.15rem;
+  }
+
+  .anunciate-route .pro-stat-cell {
+    flex: 1 1 33%;
+    min-width: 0;
+    padding: 0.65rem 0.5rem;
+  }
+
+  .anunciate-route .pro-stat-cell .font-display {
+    font-size: 1.35rem;
+  }
+
+  .pro-plan-card__head {
+    grid-template-columns: auto 1fr;
+    gap: 0.625rem 0.75rem;
+  }
+
+  .pro-plan-card__price {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    width: 100%;
+    padding-top: 0.125rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .pro-plan-card__price p:last-child {
+    margin-top: 0;
+  }
+
+  .anunciate-preview-section {
+    border-radius: 1.15rem;
+  }
+
+  .sponsor-preview-cta span,
+  .sponsor-preview-cta {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+  }
+}
+
+@media (max-width: 380px) {
+  .pro-plan-card__head {
+    grid-template-columns: auto 1fr;
+  }
+
+  .pro-plan-card__info {
+    grid-column: 2;
+  }
+
+  .pro-plan-card__price {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 0.375rem;
+  }
+
+  .sponsor-plan-chip {
+    font-size: 0.6875rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
 .pro-icon-tile {
   width: 2.75rem;
   height: 2.75rem;
@@ -1026,12 +1136,8 @@ body {
 
 /* ── Participa — encaje en pantalla, formas orgánicas ─────────────────── */
 @media (max-width: 767px) {
-  .participa-route.app-mobile-page {
+  .participa-route {
     padding-top: max(12px, var(--app-safe-top), var(--app-content-pad-y));
-  }
-
-  .participa-route.app-mobile-page > div {
-    padding-bottom: calc(var(--app-nav-total) + 0.65rem);
   }
 }
 
@@ -1132,20 +1238,32 @@ body {
 .participa-content {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
+.participa-tab-panel,
+.participa-pedir-panel,
+.participa-sorteo-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .participa-panel {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   border-radius: 1.35rem;
   overflow: hidden;
 }
 
 .participa-input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 2.75rem;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
@@ -1164,6 +1282,9 @@ body {
 
 .participa-btn-primary {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 2.75rem;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
@@ -1193,6 +1314,57 @@ body {
 }
 
 @media (max-width: 767px) {
+  .participa-route .participa-content {
+    flex: none;
+    overflow: visible;
+    min-height: min(22rem, 58dvh);
+  }
+
+  .participa-route .participa-tab-panel,
+  .participa-route .participa-pedir-panel,
+  .participa-route .participa-sorteo-panel,
+  .participa-route .sorteo-panel {
+    min-height: min(22rem, 58dvh);
+  }
+
+  .participa-hero__inner {
+    padding: 0.7rem 0.85rem 0.75rem;
+  }
+
+  .participa-hero .font-display {
+    font-size: 1.35rem;
+  }
+
+  .participa-demo-chip {
+    font-size: 0.5625rem;
+    padding: 0.3rem 0.55rem;
+  }
+
+  .participa-pedir-panel .participa-input,
+  .participa-sorteo-panel .sorteo-input {
+    font-size: 16px;
+    min-height: 2.65rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .participa-btn-primary,
+  .sorteo-btn {
+    min-height: 2.85rem;
+    font-size: 0.8125rem;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .participa-pedir-submit {
+    display: block;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .participa-pedir-queue-num {
+    font-size: clamp(2rem, 11vw, 2.5rem);
+  }
+
   .participa-battle-grid {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   }
@@ -1208,6 +1380,46 @@ body {
 
   .participa-battle-vs {
     line-height: 1;
+  }
+
+  .sorteo-prize {
+    padding: 0.65rem 0.85rem 0.6rem;
+  }
+
+  .sorteo-prize__title {
+    font-size: 1.05rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sorteo-prize__reward {
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+
+  .sorteo-step-heading {
+    font-size: 1.05rem;
+    word-break: break-word;
+  }
+
+  .sorteo-body {
+    padding: 0.6rem 0.75rem 0.75rem;
+  }
+
+  .sorteo-desc {
+    font-size: 0.6875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .sorteo-success-num {
+    font-size: clamp(2.25rem, 12vw, 3rem);
+  }
+
+  .sorteo-empty {
+    padding: 1.25rem 1rem;
+    min-height: 14rem;
   }
 }
 
@@ -1819,6 +2031,9 @@ body {
 
 .sorteo-input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 3rem;
   padding: 0.8rem 1rem;
   border-radius: 0.95rem;
@@ -1849,6 +2064,9 @@ body {
 
 .sorteo-btn {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 3.1rem;
   margin-top: auto;
   padding: 0.85rem 1rem;
@@ -1859,6 +2077,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
   transition: transform 0.15s, opacity 0.2s;
 }
 

@@ -42,18 +42,18 @@ function PlanCard({
     >
       <div className="pro-plan-stripe" />
 
-      <div className="p-5">
-        <div className="flex items-start gap-3.5 mb-4">
+      <div className="p-4 max-md:p-3.5">
+        <div className="pro-plan-card__head mb-3 max-md:mb-2.5">
           <div className="pro-icon-tile" style={{ '--plan-accent': plan.color } as React.CSSProperties}>
             <SponsorPlanIcon planId={plan.id} className="w-5 h-5" />
           </div>
 
-          <div className="min-w-0 flex-1 overflow-hidden">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
+          <div className="pro-plan-card__info min-w-0">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-0.5">
               <span className="text-white font-semibold text-base max-md:text-[15px] tracking-tight">{plan.nombre}</span>
               {plan.popular && (
                 <span
-                  className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                  className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0"
                   style={{
                     background: `color-mix(in srgb, ${plan.color} 22%, transparent)`,
                     color: plan.color,
@@ -67,14 +67,14 @@ function PlanCard({
             <p className="text-white/45 text-xs leading-relaxed">{plan.tagline}</p>
           </div>
 
-          <div className="shrink-0 text-right pl-1 max-w-[38%]">
+          <div className="pro-plan-card__price shrink-0 text-right">
             <p
-              className="font-display text-2xl max-md:text-xl leading-none tabular-nums tracking-wide truncate"
+              className="font-display text-2xl max-md:text-lg leading-none tabular-nums tracking-wide"
               style={{ color: plan.color }}
             >
               ${plan.precio}
             </p>
-            <p className="text-white/30 text-[10px] mt-1 font-medium">CLP / mes</p>
+            <p className="text-white/30 text-[10px] mt-0.5 font-medium">CLP / mes</p>
           </div>
         </div>
 
@@ -101,11 +101,11 @@ function PlanCard({
         </ul>
 
         <div
-          className="flex items-center justify-between gap-2 pt-3 border-t border-white/[0.06] text-xs font-semibold"
+          className="pro-plan-card__cta flex items-center justify-center gap-2 w-full min-w-0 pt-3 border-t border-white/[0.06] text-xs font-semibold"
           style={{ color: plan.color }}
         >
-          <span>Ver pantallas del plan</span>
-          <ChevronRight className="w-4 h-4 opacity-80" strokeWidth={2.5} aria-hidden />
+          <span className="truncate">Ver pantallas del plan</span>
+          <ChevronRight className="w-4 h-4 opacity-80 shrink-0" strokeWidth={2.5} aria-hidden />
         </div>
       </div>
     </motion.button>
@@ -185,7 +185,7 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
   ]
 
   return (
-    <div className="app-gutter-x relative w-full min-w-0 max-w-full overflow-x-hidden pb-4">
+    <div className="anunciate-route app-gutter-x relative w-full min-w-0 max-w-full overflow-x-hidden pb-4">
 
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -244,12 +244,48 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
         </div>
       </motion.div>
 
-      <section className="mb-8 rounded-2xl p-4 md:p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <section
+        className="anunciate-preview-section mb-8 rounded-2xl p-3 max-md:p-2.5 md:p-5 min-w-0 overflow-hidden"
+        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+      >
         <p className="pro-eyebrow text-center mb-1">Vista en el celular</p>
         <h2 className="text-center text-white font-semibold text-sm mb-1">Así se ve tu publicidad en la app</h2>
-        <p className="text-center text-white/40 text-xs mb-4 max-w-xs mx-auto">
-          Toca un plan abajo para cambiar la vista · Empresarial es la campaña más completa
+        <p className="text-center text-white/40 text-xs mb-3 max-w-xs mx-auto px-1">
+          Elige un plan para ver la vista · Empresarial es la campaña más completa
         </p>
+
+        <div
+          className="sponsor-plan-chips flex gap-2 mb-4 overflow-x-auto pb-1 -mx-0.5 px-0.5 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          aria-label="Planes de publicidad"
+        >
+          {SPONSOR_PLANS.map(plan => {
+            const active = previewTier === plan.id
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => selectPlan(plan.id)}
+                className={`sponsor-plan-chip snap-start shrink-0 min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition-transform active:scale-[0.98] ${active ? 'is-active' : ''}`}
+                style={
+                  active
+                    ? {
+                        background: `color-mix(in srgb, ${plan.color} 28%, transparent)`,
+                        color: plan.color,
+                        border: `1.5px solid color-mix(in srgb, ${plan.color} 55%, transparent)`,
+                        boxShadow: `0 6px 20px -8px color-mix(in srgb, ${plan.color} 40%, transparent)`,
+                      }
+                    : undefined
+                }
+              >
+                {plan.nombre}
+              </button>
+            )
+          })}
+        </div>
+
         <SponsorAdPreview tierId={previewTier} />
       </section>
 

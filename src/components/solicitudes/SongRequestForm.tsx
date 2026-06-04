@@ -11,7 +11,15 @@ interface SuccessState {
   position: number
 }
 
-export function SongRequestForm({ compact, playful }: { compact?: boolean; playful?: boolean } = {}) {
+export function SongRequestForm({
+  compact,
+  playful,
+  className,
+}: {
+  compact?: boolean
+  playful?: boolean
+  className?: string
+} = {}) {
   const [phase, setPhase]         = useState<Phase>('form')
   const [song, setSong]           = useState('')
   const [artist, setArtist]       = useState('')
@@ -49,7 +57,7 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
 
   return (
     <div
-      className="participa-panel overflow-hidden h-full flex flex-col relative"
+      className={`participa-panel participa-pedir-panel overflow-hidden h-full flex flex-col relative min-w-0 max-w-full w-full ${className ?? ''}`}
       style={{
         background: playful
           ? 'linear-gradient(165deg, rgba(64,185,191,0.1) 0%, #0F0F1A 45%, #07070e 100%)'
@@ -65,12 +73,12 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
         />
       )}
       <div
-        className={compact ? 'px-3.5 pt-2.5 pb-2' : 'px-5 pt-5 pb-4'}
+        className={`participa-pedir-header shrink-0 ${compact ? 'px-3 pt-2 pb-2' : 'px-5 pt-5 pb-4'}`}
         style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
           <motion.div
-            className={`rounded-xl flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-11 h-11'}`}
+            className={`rounded-xl flex items-center justify-center shrink-0 ${compact ? 'w-9 h-9' : 'w-11 h-11'}`}
             style={{
               background: playful
                 ? 'linear-gradient(135deg, rgba(64,185,191,0.35), rgba(219,137,24,0.25))'
@@ -83,11 +91,13 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
               🎙️
             </span>
           </motion.div>
-          <div>
-            <p className={`text-white font-display leading-tight ${compact ? 'text-base' : 'text-lg'}`}>
+          <div className="min-w-0 flex-1">
+            <p
+              className={`text-white font-display leading-tight line-clamp-2 ${compact ? 'text-[15px]' : 'text-lg'}`}
+            >
               {playful ? '¡Al aire con tu tema!' : 'Pide tu canción'}
             </p>
-            <p className="text-white/40 text-[10px]">
+            <p className="text-white/40 text-[10px] truncate">
               {playful ? 'El locutor lo recibe en vivo' : 'Al aire en tu próximo turno'}
             </p>
           </div>
@@ -107,8 +117,8 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
             onSubmit={handleSubmit}
             className={
               compact
-                ? 'px-3.5 py-2.5 flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto overscroll-contain'
-                : 'px-5 py-4 flex flex-col gap-3.5 flex-1 min-h-0 overflow-y-auto'
+                ? 'participa-pedir-body px-3 py-2.5 flex flex-col gap-2 flex-1 min-h-0 min-w-0 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]'
+                : 'participa-pedir-body px-5 py-4 flex flex-col gap-3.5 flex-1 min-h-0 min-w-0 overflow-y-auto overscroll-contain'
             }
           >
             <FieldInput
@@ -153,7 +163,9 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
                   style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)' }}
                 />
               )}
-              <span className="relative">{playful ? 'Mandar al locutor 🎵' : 'Enviar solicitud ♪'}</span>
+              <span className="relative participa-pedir-submit">
+                {playful ? 'Mandar al locutor 🎵' : 'Enviar solicitud ♪'}
+              </span>
             </motion.button>
           </motion.form>
         )}
@@ -185,7 +197,7 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
             key="success"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 px-5 py-6 flex flex-col items-center gap-4 text-center"
+            className="flex-1 min-w-0 px-4 max-md:px-3 py-5 max-md:py-4 flex flex-col items-center gap-3 text-center overflow-y-auto overscroll-contain"
           >
             <motion.div
               initial={{ scale: 0, rotate: -20 }}
@@ -233,11 +245,11 @@ export function SongRequestForm({ compact, playful }: { compact?: boolean; playf
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="rounded-2xl px-5 py-3.5 w-full"
+                className="rounded-2xl px-4 py-3 w-full min-w-0 max-w-full box-border"
                 style={{ background: 'rgba(219,137,24,0.08)', border: '1px solid rgba(219,137,24,0.25)' }}
               >
                 <p className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Tu posición en la cola</p>
-                <p className="text-white font-display text-4xl leading-none mt-1">#{success.position}</p>
+                <p className="participa-pedir-queue-num text-white font-display leading-none mt-1">#{success.position}</p>
                 <p className="text-white/40 text-xs mt-1">
                   {success.position === 1
                     ? '¡Eres el primero!'
@@ -289,7 +301,7 @@ function FieldInput({
   placeholder: string; icon: string; required?: boolean; optional?: boolean; compact?: boolean
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <label className="flex flex-col gap-1.5 min-w-0 w-full">
       <div className="flex items-center justify-between">
         <span className="text-white/50 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
           <span>{icon}</span> {label}

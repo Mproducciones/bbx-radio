@@ -122,14 +122,14 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                       key={`${plan.id}-${img.id}-${i}`}
                       type="button"
                       onClick={() => setActiveIdx(i)}
-                      className="w-full flex items-center justify-between gap-2 min-h-[44px] px-3 py-2.5 rounded-xl text-left text-xs font-semibold"
+                      className="w-full flex items-center justify-between gap-2 min-h-[44px] min-w-0 px-3 py-2.5 rounded-xl text-left text-xs font-semibold"
                       style={{
                         background: activeIdx === i ? `${plan.color}22` : 'rgba(255,255,255,0.04)',
                         border: activeIdx === i ? `1.5px solid ${plan.color}` : '1px solid rgba(255,255,255,0.07)',
                         color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.55)',
                       }}
                     >
-                      <span>{img.caption}</span>
+                      <span className="min-w-0 truncate">{img.caption}</span>
                       <span className="text-[10px] shrink-0" style={{ color: activeIdx === i ? plan.color : 'rgba(255,255,255,0.25)' }}>
                         {activeIdx === i ? '●' : '○'}
                       </span>

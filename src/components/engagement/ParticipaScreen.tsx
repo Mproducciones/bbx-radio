@@ -51,13 +51,13 @@ export function ParticipaScreen() {
   }
 
   return (
-    <AppMenuScreen className="participa-route">
-      <div className="participa-shell relative">
+    <AppMenuScreen scroll className="participa-route w-full min-w-0 max-w-full">
+      <div className="participa-shell relative w-full min-w-0">
         <ParticipaHero />
         <SponsorDemoBar />
         <ParticipaActionTabs tabs={tabs} active={tab} onChange={selectTab} />
 
-        <div className="participa-content">
+        <div className="participa-content w-full min-w-0">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
               key={tab}
@@ -67,14 +67,14 @@ export function ParticipaScreen() {
               animate="center"
               exit="exit"
               transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-              className="participa-panel flex flex-col"
+              className="participa-panel participa-tab-panel flex flex-col w-full min-w-0 max-w-full"
             >
               {tab === 'votar' ? (
-                <SongPoll compact className="flex-1 min-h-0" onEmpty={() => selectTab('pedir')} />
+                <SongPoll compact className="flex-1 min-h-0 w-full min-w-0" onEmpty={() => selectTab('pedir')} />
               ) : tab === 'pedir' ? (
-                <SongRequestForm compact playful />
+                <SongRequestForm compact playful className="flex-1 min-h-0" />
               ) : (
-                <ListenerSignup />
+                <ListenerSignup className="flex-1 min-h-0" />
               )}
             </motion.div>
           </AnimatePresence>

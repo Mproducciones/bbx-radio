@@ -17,7 +17,7 @@ export function SponsorDemoBar() {
 
   return (
     <div
-      className="participa-demo-chip shrink-0"
+      className="participa-demo-chip shrink-0 w-full min-w-0 max-w-full box-border"
       style={{
         color: p.color,
         background: `color-mix(in srgb, ${p.color} 12%, transparent)`,

@@ -17,7 +17,7 @@ export function ParticipaActionTabs({
   onChange: (id: ParticipaTab) => void
 }) {
   return (
-    <div className="participa-segment" role="tablist" aria-label="Formas de participar">
+    <div className="participa-segment w-full min-w-0 max-w-full" role="tablist" aria-label="Formas de participar">
       {tabs.map(({ id, label }) => {
         const meta = PARTICIPA_ACTIONS[id]
         const isActive = active === id
