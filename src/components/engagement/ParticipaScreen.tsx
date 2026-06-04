@@ -74,7 +74,7 @@ export function ParticipaScreen() {
               ) : tab === 'pedir' ? (
                 <SongRequestForm compact playful />
               ) : (
-                <ListenerSignup playful />
+                <ListenerSignup />
               )}
             </motion.div>
           </AnimatePresence>
