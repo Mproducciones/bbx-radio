@@ -3417,11 +3417,6 @@ body {
 }
 
 /* Campanita fija en header En Vivo */
-.app-notif-inbox {
-  position: relative;
-  flex-shrink: 0;
-}
-
 .app-notif-inbox__btn {
   position: relative;
   display: flex;
@@ -3466,25 +3461,43 @@ body {
 .app-notif-inbox__backdrop {
   position: fixed;
   inset: 0;
-  z-index: 180;
-  background: rgba(0, 0, 0, 0.45);
+  z-index: 1180;
+  background: rgba(0, 0, 0, 0.55);
   border: none;
 }
 
 .app-notif-inbox__panel {
-  position: absolute;
-  top: calc(100% + 0.45rem);
-  right: 0;
-  z-index: 190;
-  width: min(20rem, calc(100vw - 2rem));
-  max-height: min(70dvh, 28rem);
+  position: fixed;
+  z-index: 1181;
+  left: 0.5rem;
+  right: 0.5rem;
+  margin-inline: auto;
+  top: auto;
+  bottom: calc(var(--app-nav-total, 4.5rem) + env(safe-area-inset-bottom, 0px) + 0.65rem);
+  width: min(22rem, calc(100vw - 1rem));
+  max-height: min(
+    68dvh,
+    calc(100dvh - var(--app-nav-total, 4.5rem) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 3.5rem)
+  );
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border-radius: 1rem;
   background: linear-gradient(180deg, #12121c 0%, #0a0a12 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 56px -12px rgba(0, 0, 0, 0.75);
+}
+
+@media (min-width: 768px) {
+  .app-notif-inbox__panel {
+    left: auto;
+    right: var(--inbox-panel-right, 1rem);
+    margin-inline: 0;
+    bottom: auto;
+    top: var(--inbox-panel-top, 4rem);
+    width: min(20rem, calc(100vw - 2rem));
+    max-height: min(70dvh, 28rem);
+  }
 }
 
 .app-notif-inbox__close {
@@ -3500,8 +3513,12 @@ body {
 
 .app-notif-inbox__panel .app-notif-panel__list {
   padding: 0 0.65rem 0.75rem;
-  max-height: min(55dvh, 22rem);
+  flex: 1;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .app-notif-panel__hint--inbox {
