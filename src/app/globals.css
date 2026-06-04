@@ -188,8 +188,8 @@
   --app-shell-pad-right: var(--app-gutter-inline);
   --app-nav-h: 62px;
   --app-nav-total: calc(var(--app-nav-h) + env(safe-area-inset-bottom, 0px));
-  --app-mini-player-h: 48px;
-  --app-mini-player-total: calc(var(--app-mini-player-h) + 6px);
+  --app-mini-player-h: 0px;
+  --app-mini-player-total: 0px;
   --app-screen-h: calc(100dvh - var(--app-nav-total));
   --app-ad-banner-h: 88px;
   --app-content-h: calc(var(--app-screen-h) - var(--app-ad-banner-h));
@@ -743,6 +743,96 @@ body {
   box-shadow:
     0 24px 56px -28px rgba(0, 0, 0, 0.75),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.pro-hero-panel--sales {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 1.5rem 1.125rem 1.35rem;
+  border-color: rgba(219, 137, 24, 0.22);
+  box-shadow:
+    0 28px 64px -24px rgba(0, 0, 0, 0.8),
+    0 0 48px -20px rgba(219, 137, 24, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.pro-hero-panel--sales::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-mag-400),
+    var(--color-cyn-400),
+    var(--color-mag-400),
+    transparent
+  );
+  opacity: 0.85;
+}
+
+.pro-hero-glow {
+  position: absolute;
+  inset: -30% -15% auto;
+  height: 75%;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(219, 137, 24, 0.2) 0%,
+    rgba(64, 185, 191, 0.1) 42%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.pro-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mag-400);
+  background: rgba(219, 137, 24, 0.12);
+  border: 1px solid rgba(219, 137, 24, 0.38);
+  box-shadow: 0 0 20px rgba(219, 137, 24, 0.15);
+}
+
+.pro-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-mag-400);
+  box-shadow: 0 0 8px var(--color-mag-400);
+  animation: pro-live-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pro-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.pro-trust-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pro-stat-strip--center .pro-stat-cell {
+  text-align: center;
 }
 
 .pro-stat-strip {

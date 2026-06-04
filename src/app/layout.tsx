@@ -5,7 +5,6 @@ import { AdminAccessButton } from '@/components/admin/AdminAccessButton'
 import { RadioPlayerProvider } from '@/hooks/RadioPlayerContext'
 import { WelcomeAnimation } from '@/components/WelcomeAnimation'
 import { InstallBanner } from '@/components/pwa/InstallBanner'
-import { MiniPlayer } from '@/components/player/MiniPlayer'
 import { SwipeLayout } from '@/components/layout/SwipeLayout'
 import { AppMainArea } from '@/components/layout/AppMainArea'
 import { AppMobileInset } from '@/components/layout/AppMobileInset'
@@ -99,7 +98,6 @@ export default function RootLayout({
               <ClientBottomNav />
             </AppMobileInset>
           </div>
-          <MiniPlayer />
           <PushPermission />
           <PremiumAdBanner />
           <InstallBanner />

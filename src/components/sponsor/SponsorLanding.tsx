@@ -151,10 +151,17 @@ function FaqAccordion() {
   )
 }
 
-export function SponsorLanding({ initialListeners: _initialListeners }: { initialListeners?: number }) {
+const TRUST_PILLS = ['Desde $80.000', 'Sin permanencia', 'Activo en 48h']
+
+export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: number }) {
   const [selectedId, setSelectedId] = useState<SponsorPlanId | null>(null)
   const selectedPlan = selectedId ? SPONSOR_PLANS.find(p => p.id === selectedId) ?? null : null
   const waLink = sponsorWaLink()
+
+  const listenerProof =
+    initialListeners > 0
+      ? `${initialListeners}+ oyentes conectados`
+      : 'Audiencia local en vivo'
 
   const stats = [
     { v: '+15K', l: 'alcance/mes', c: 'var(--color-mag-400)' },
@@ -169,35 +176,61 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
-        className="pro-hero-panel mb-6"
+        className="pro-hero-panel pro-hero-panel--sales mb-6"
       >
-        <p className="pro-eyebrow mb-3">
-          Publicidad · {RADIO.name}
-        </p>
+        <div className="pro-hero-glow" aria-hidden />
 
-        <h1 className="font-display text-[clamp(1.65rem,7vw,2rem)] text-white leading-[1.05] tracking-wide mb-3">
-          Llega a quien te escucha
-          <span className="block text-gradient-gold mt-0.5">y a quien mira el celular</span>
-        </h1>
+        <div className="relative z-[1] flex flex-col items-center">
+          <span className="pro-live-badge mb-3">
+            <span className="pro-live-dot" aria-hidden />
+            {listenerProof}
+          </span>
 
-        <p className="text-white/50 text-sm leading-relaxed mb-5 max-w-md">
-          Spots en {RADIO.frequency} + banner en la app. Audiencia real en {RADIO.city}.
-        </p>
+          <p className="pro-eyebrow mb-3">
+            Publicidad · {RADIO.name} {RADIO.frequency}
+          </p>
 
-        <div className="pro-stat-strip">
-          {stats.map(s => (
-            <div key={s.l} className="pro-stat-cell">
-              <p className="font-display text-2xl leading-none tabular-nums" style={{ color: s.c }}>
-                {s.v}
-              </p>
-              <p className="text-white/35 text-[10px] mt-1 font-medium uppercase tracking-wide">{s.l}</p>
-            </div>
-          ))}
+          <h1 className="font-display text-[clamp(1.75rem,7.5vw,2.15rem)] text-white leading-[1.04] tracking-wide mb-3 max-w-[18rem] sm:max-w-md mx-auto">
+            Tu negocio donde
+            <span className="block text-gradient-gold mt-1">te escuchan y te ven</span>
+          </h1>
+
+          <p className="text-white/55 text-sm leading-relaxed mb-4 max-w-sm mx-auto">
+            Spots en FM + banner en la app. Llega a quien ya consume {RADIO.name} en {RADIO.city}.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-2 mb-5">
+            {TRUST_PILLS.map(pill => (
+              <span key={pill} className="pro-trust-pill">
+                {pill}
+              </span>
+            ))}
+          </div>
+
+          <div className="pro-stat-strip pro-stat-strip--center w-full max-w-md mb-5">
+            {stats.map(s => (
+              <div key={s.l} className="pro-stat-cell">
+                <p className="font-display text-2xl leading-none tabular-nums" style={{ color: s.c }}>
+                  {s.v}
+                </p>
+                <p className="text-white/35 text-[10px] mt-1 font-medium uppercase tracking-wide">{s.l}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="w-full max-w-sm">
+            <ProWaButton href={waLink} className="btn-shimmer">
+              Quiero cotizar ahora
+            </ProWaButton>
+            <p className="text-white/35 text-[11px] mt-2.5 font-medium">
+              Respondemos en menos de 2 horas · Sin compromiso
+            </p>
+          </div>
         </div>
       </motion.div>
 
       <div className="mb-6">
-        <p className="pro-eyebrow text-white/35 mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <p className="pro-eyebrow text-center mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
           Elige tu plan
         </p>
         <div className="space-y-3">
@@ -208,14 +241,14 @@ export function SponsorLanding({ initialListeners: _initialListeners }: { initia
       </div>
 
       <div className="mb-8 w-full min-w-0 box-border">
-        <ProWaButton href={waLink}>Cotizar por WhatsApp</ProWaButton>
+        <ProWaButton href={waLink}>Hablar por WhatsApp</ProWaButton>
         <p className="text-center text-white/30 text-xs mt-3 font-medium">
-          Respondemos en menos de 2 horas · Sin compromiso
+          Te armamos la propuesta según tu rubro y presupuesto
         </p>
       </div>
 
       <div className="mb-6">
-        <p className="pro-eyebrow mb-3" style={{ color: 'rgba(255,255,255,0.32)' }}>
+        <p className="pro-eyebrow text-center mb-3" style={{ color: 'rgba(255,255,255,0.32)' }}>
           Preguntas frecuentes
         </p>
         <FaqAccordion />
