@@ -30,6 +30,11 @@ export interface NowPlaying {
   isLive: boolean
 }
 
+export interface ProgramSponsor {
+  cliente: string
+  colorAccent?: string
+}
+
 export interface Program {
   id: string
   name: string
@@ -40,6 +45,8 @@ export interface Program {
   description?: string
   imageUrl?: string
   isLive?: boolean
+  /** Plan Empresarial — auspicio visible en /programacion */
+  sponsor?: ProgramSponsor
 }
 
 export interface SongRequest {

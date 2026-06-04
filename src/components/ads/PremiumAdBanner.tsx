@@ -5,7 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
 import { getDemoAds } from '@/lib/demoCampaigns'
+import { demoAdsForSponsorTier, readSponsorDemoTier } from '@/lib/sponsorAdTiers'
 import { sanitizeAdLink } from '@/lib/safeUrl'
+import { RADIO_AD } from '@/lib/radioAdBranding'
+import { isExclusiveCampaign } from '@/lib/adExclusivity'
 
 interface PremiumAd {
   _id: string
@@ -16,6 +19,9 @@ interface PremiumAd {
   colorAccent?: string
   imagenUrl?: string
   enlace?: string
+  planContratado?: string
+  exclusivoApp?: boolean
+  prioridad?: number
 }
 
 /** En Vivo el play queda abajo — el banner fijo lo tapaba */
@@ -38,7 +44,9 @@ const DISMISS_KEY = 'premium_ad_dismissed'
 const DISMISS_MINUTES = 30
 
 function defaultPremiumAd(): PremiumAd {
-  const demo = getDemoAds('banner_premium')[0]
+  const tier = readSponsorDemoTier()
+  const overrides = tier ? demoAdsForSponsorTier(tier) : undefined
+  const demo = getDemoAds('banner_premium', overrides)[0]
   if (demo) {
     return {
       _id: demo._id,
@@ -53,9 +61,9 @@ function defaultPremiumAd(): PremiumAd {
   }
   return {
     _id: 'demo',
-    nombre: 'Tu negocio aquí',
-    cliente: 'Tu Empresa · Rancagua',
-    tagline: 'Llega a miles de oyentes en O\'Higgins',
+    nombre: RADIO_AD.stationName,
+    cliente: RADIO_AD.stationName,
+    tagline: RADIO_AD.pautaTagline,
     cta: 'Anunciate',
     colorAccent: '#db8918',
     enlace: '/anunciate',
@@ -66,22 +74,35 @@ export function PremiumAdBanner() {
   const pathname = usePathname()
   const [ad, setAd]           = useState<PremiumAd>(defaultPremiumAd)
   const [visible, setVisible] = useState(false)
+  const [imgFailed, setImgFailed] = useState(false)
 
   useEffect(() => {
-    if (EXCLUDED.some(p => (p === '/' ? pathname === '/' : pathname.startsWith(p)))) {
+    const tier = readSponsorDemoTier()
+    const showForTierDemo = tier === 'premium' || tier === 'empresarial'
+    const excluded = showForTierDemo
+      ? EXCLUDED.filter(p => p !== '/participa' && p !== '/saludos' && p !== '/programacion')
+      : EXCLUDED
+
+    if (excluded.some(p => (p === '/' ? pathname === '/' : pathname.startsWith(p)))) {
       setVisible(false)
       return
     }
 
-    const dismissed = sessionStorage.getItem(DISMISS_KEY)
-    if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_MINUTES * 60_000) return
+    if (!showForTierDemo) {
+      const dismissed = sessionStorage.getItem(DISMISS_KEY)
+      if (dismissed && Date.now() - parseInt(dismissed, 10) < DISMISS_MINUTES * 60_000) return
+    }
 
     setVisible(true)
+    setImgFailed(false)
 
     fetch('/api/ads?tipo=banner_premium')
       .then(r => r.ok ? r.json() : [])
       .then((ads: PremiumAd[]) => {
-        if (ads.length > 0) setAd(ads[0])
+        if (ads.length > 0) {
+          setAd(ads[0])
+          setImgFailed(false)
+        }
       })
       .catch(() => {})
   }, [pathname])
@@ -93,6 +114,9 @@ export function PremiumAdBanner() {
 
   const accent = ad.colorAccent ?? '#db8918'
   const link = sanitizeAdLink(ad.enlace)
+  const title = ad.cliente ?? ad.nombre
+  const showImg = Boolean(ad.imagenUrl) && !imgFailed
+  const sponsorLabel = isExclusiveCampaign(ad) ? 'EXCLUSIVO' : 'PATROCINADOR'
 
   return (
     <AnimatePresence>
@@ -118,18 +142,41 @@ export function PremiumAdBanner() {
             className="relative block rounded-2xl overflow-hidden shadow-2xl"
             style={{ boxShadow: `0 8px 32px ${accent}30, 0 2px 8px rgba(0,0,0,0.5)` }}
           >
-            <div className="relative h-20 w-full">
-              {ad.imagenUrl && (
-                <img src={ad.imagenUrl} alt={ad.nombre} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <div
+              className="relative h-20 w-full"
+              style={{
+                background: showImg
+                  ? undefined
+                  : `linear-gradient(120deg, color-mix(in srgb, ${accent} 24%, #07070e), #0c0c14)`,
+              }}
+            >
+              {showImg && (
+                <img
+                  src={ad.imagenUrl}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                  onError={() => setImgFailed(true)}
+                />
               )}
               <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,7,14,0.92) 0%, rgba(7,7,14,0.75) 50%, rgba(7,7,14,0.4) 100%)' }} />
               <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
 
               <div className="absolute inset-0 flex items-center px-4 gap-3">
+                {!showImg && (
+                  <div
+                    className="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center font-display text-lg font-bold"
+                    style={{ background: `${accent}28`, color: accent, border: `1px solid ${accent}40` }}
+                    aria-hidden
+                  >
+                    {title.charAt(0)}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full"
                     style={{ color: accent, background: `${accent}25`, border: `1px solid ${accent}40` }}>
-                    PATROCINADOR
+                    {sponsorLabel}
                   </span>
                   <p className="text-white font-bold text-sm leading-tight truncate mt-0.5">{ad.cliente ?? ad.nombre}</p>
                   {ad.tagline && <p className="text-white/60 text-xs truncate">{ad.tagline}</p>}
@@ -160,16 +207,24 @@ export function PremiumAdBanner() {
 
 export function PremiumAdSidebar() {
   const [ad, setAd] = useState<PremiumAd>(defaultPremiumAd)
+  const [imgFailed, setImgFailed] = useState(false)
 
   useEffect(() => {
     fetch('/api/ads?tipo=banner_premium')
       .then(r => r.ok ? r.json() : [])
-      .then((ads: PremiumAd[]) => { if (ads.length > 0) setAd(ads[0]) })
+      .then((ads: PremiumAd[]) => {
+        if (ads.length > 0) {
+          setAd(ads[0])
+          setImgFailed(false)
+        }
+      })
       .catch(() => {})
   }, [])
 
   const accent = ad.colorAccent ?? '#db8918'
   const link = sanitizeAdLink(ad.enlace)
+  const title = ad.cliente ?? ad.nombre
+  const showImg = Boolean(ad.imagenUrl) && !imgFailed
 
   return (
     <AdTrackView adId={ad._id} adTipo="banner_premium" placement="premium_sidebar">
@@ -179,11 +234,35 @@ export function PremiumAdSidebar() {
       onClick={() => trackAdClick(ad._id, 'banner_premium', 'premium_sidebar')}
       className="block relative rounded-xl overflow-hidden mx-4 mb-4"
       style={{ border: `1px solid ${accent}30` }}>
-      <div className="relative h-16">
-        {ad.imagenUrl && <img src={ad.imagenUrl} alt={ad.nombre} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />}
+      <div
+        className="relative h-16"
+        style={{
+          background: showImg
+            ? undefined
+            : `linear-gradient(120deg, color-mix(in srgb, ${accent} 22%, #07070e), #0a0a12)`,
+        }}
+      >
+        {showImg && (
+          <img
+            src={ad.imagenUrl}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            onError={() => setImgFailed(true)}
+          />
+        )}
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,7,14,0.9) 0%, rgba(7,7,14,0.6) 100%)' }} />
         <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }} />
         <div className="absolute inset-0 flex items-center px-3 gap-2">
+          {!showImg && (
+            <span
+              className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center text-sm font-bold"
+              style={{ background: `${accent}28`, color: accent }}
+              aria-hidden
+            >
+              {title.charAt(0)}
+            </span>
+          )}
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-bold truncate">{ad.cliente ?? ad.nombre}</p>
             {ad.tagline && <p className="text-white/50 text-[10px] truncate">{ad.tagline}</p>}

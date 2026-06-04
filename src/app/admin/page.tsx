@@ -7,17 +7,25 @@ import { AdminPageBackground } from '@/components/admin/adminUi'
 import { AdminLoginScreen } from '@/components/admin/AdminLoginScreen'
 import { AdminSidebarNav, AdminMobileNav, type AdminSection, ADMIN_SECTIONS } from '@/components/admin/AdminNav'
 import { AdminSectionContent } from '@/components/admin/AdminSectionContent'
+import { adminLoginErrorMessage } from '@/lib/adminLoginErrors'
 
 type PageState = 'login' | 'dashboard'
 
 export default function AdminPage() {
   const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('login')
-  const [section, setSection] = useState<AdminSection>('overview')
+  const [section, setSection] = useState<AdminSection>('commercial')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [loginError, setLoginError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('section')
+    if (q === 'overview' || q === 'live' || q === 'commercial' || q === 'comms' || q === 'content') {
+      setSection(q)
+    }
+  }, [])
 
   useEffect(() => {
     fetch('/api/admin/me', { credentials: 'include' })
@@ -44,8 +52,9 @@ export default function AdminPage() {
         credentials: 'include',
       })
       if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
         setLoginState('error')
-        setLoginError('Credenciales inválidas')
+        setLoginError(adminLoginErrorMessage(res.status, body))
         return
       }
       const me = await fetch('/api/admin/me', { credentials: 'include' }).then(r => r.json())
@@ -71,11 +80,11 @@ export default function AdminPage() {
   if (pageState === 'login') {
     return (
       <AdminLoginScreen
-        eyebrow="Studio · Radio"
+        eyebrow="Panel operativo"
         title="Radio Bienvenida"
-        subtitle="Panel de control · 93.3 FM"
+        subtitle="Publicidad, en vivo y contenido · 93.3 FM"
       >
-        <form onSubmit={onLogin} className="flex flex-col gap-4 p-6">
+        <form onSubmit={onLogin} className="flex flex-col gap-5 p-7 sm:p-8">
           <label className="flex flex-col gap-1.5">
             <span className="admin-eyebrow">Usuario</span>
             <input
@@ -100,7 +109,7 @@ export default function AdminPage() {
             />
           </label>
           {loginState === 'error' && loginError && (
-            <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-lg py-2 border border-red-500/20">
+            <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl py-3 px-3 border border-red-500/20">
               {loginError}
             </p>
           )}
@@ -117,30 +126,25 @@ export default function AdminPage() {
       <AdminPageBackground />
 
       <header className="sticky top-0 z-50 admin-topbar">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="max-w-7xl mx-auto px-4 py-3.5 sm:py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className="admin-brand-mark shrink-0">
               <div className="admin-brand-mark__inner">
-                <Image src="/icons/icon-512.png" alt="" width={40} height={40} className="w-full h-full object-contain" />
+                <Image src="/icons/icon-512.png" alt="" width={48} height={48} className="w-full h-full object-contain" />
               </div>
             </div>
             <div className="min-w-0">
-              <p className="text-white font-bold text-sm leading-none truncate">Radio Bienvenida</p>
-              <p className="text-white/45 text-xs mt-0.5 truncate">
-                {sectionMeta?.label ?? 'Panel de control'} · Studio
+              <p className="text-white font-display text-lg sm:text-xl leading-none truncate tracking-wide">Radio Bienvenida</p>
+              <p className="text-white/50 text-sm sm:text-base mt-1 truncate">
+                {sectionMeta?.label ?? 'Panel'} · 93.3 FM
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <a href="/" className="admin-btn-ghost hidden sm:inline-flex items-center gap-1">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <a href="/" className="admin-btn-ghost hidden sm:inline-flex">
               Ver app <span aria-hidden>→</span>
             </a>
-            <button
-              type="button"
-              onClick={onLogout}
-              className="text-xs rounded-xl px-3 py-2 font-semibold transition-colors active:scale-95"
-              style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171' }}
-            >
+            <button type="button" onClick={onLogout} className="admin-btn-danger">
               Salir
             </button>
           </div>
@@ -148,11 +152,11 @@ export default function AdminPage() {
       </header>
 
       <AdminMobileNav active={section} onChange={setSection} />
-      <div className="max-w-7xl mx-auto px-4 py-5 pb-10 flex gap-6 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 pb-12 flex gap-6 lg:gap-8">
         <AdminSidebarNav active={section} onChange={setSection} />
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 admin-section-enter">
           <AdminSectionContent section={section} />
-          <p className="mt-10 text-center text-white/20 text-[10px] tracking-[0.18em] uppercase">
+          <p className="mt-10 text-center text-white/25 text-xs tracking-[0.14em] uppercase">
             Powered by BBX Radio System
           </p>
         </main>

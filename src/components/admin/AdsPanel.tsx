@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { studioStructurePath } from '@/lib/studioStructure'
+import { isTipoAllowedForPlan, planLabel, AD_TIPO_LABELS } from '@/lib/adPlanRules'
+import type { SponsorPlanId } from '@/lib/sponsorPlans'
 import { AdminBadge, AdminCard, AdminCardHeader, AdminGhostButton, AdminIcons, AdminSpinner } from './adminUi'
 
 const STUDIO_PUBLICIDAD = studioStructurePath('publicidad')
@@ -11,6 +13,7 @@ interface Ad {
   nombre: string
   cliente?: string
   tipo: string
+  planContratado?: SponsorPlanId
   activo: boolean
   fechaInicio: string
   fechaFin: string
@@ -23,10 +26,10 @@ interface Ad {
 type AdMetric = { adId: string; adTipo: string; impressions: number; clicks: number; ctr: number }
 
 const TIPO_LABEL: Record<string, string> = {
-  banner_premium:     '⭐ Premium',
-  banner_superior:    '↑ Superior',
-  banner_intermedio:  '↔ Intermedio',
-  banner_inferior:    '↓ Inferior',
+  banner_premium: AD_TIPO_LABELS.banner_premium,
+  banner_superior: AD_TIPO_LABELS.banner_superior,
+  banner_intermedio: AD_TIPO_LABELS.banner_intermedio,
+  banner_inferior: AD_TIPO_LABELS.banner_inferior,
 }
 
 function isExpired(fechaFin: string) {
@@ -99,10 +102,18 @@ export function AdsPanel() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-white text-xs font-semibold truncate">{ad.cliente ?? ad.nombre}</span>
+                      {ad.planContratado && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0 bg-white/[0.06] text-white/55">
+                          {planLabel(ad.planContratado)}
+                        </span>
+                      )}
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0"
                         style={{ background: `${accent}15`, color: accent }}>
                         {TIPO_LABEL[ad.tipo] ?? ad.tipo}
                       </span>
+                      {ad.planContratado && !isTipoAllowedForPlan(ad.tipo, ad.planContratado) && (
+                        <span className="text-[9px] text-[#FFB300] font-semibold">⚠ tipo no coincide con plan</span>
+                      )}
                     </div>
                     <p className="text-[#444468] text-[10px] mt-0.5">
                       Vence {new Date(ad.fechaFin).toLocaleDateString('es-CL')} ·{' '}

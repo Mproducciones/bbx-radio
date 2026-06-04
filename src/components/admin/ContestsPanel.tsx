@@ -91,7 +91,7 @@ export function ContestsPanel() {
       />
 
       {mode === 'create' ? (
-        <form onSubmit={create} className="p-4 space-y-3">
+        <form onSubmit={create} className="admin-card-body space-y-4">
           <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Título del sorteo *" required
             className="w-full rounded-xl px-3 py-2.5 text-white text-sm bg-[#0A0A12] border border-[#1A1A2E]" />
           <input value={prize} onChange={e => setPrize(e.target.value)} placeholder="Premio *" required
@@ -120,7 +120,7 @@ export function ContestsPanel() {
           {loading ? (
             <AdminSpinner />
           ) : contests.length === 0 ? (
-            <p className="py-8 text-center text-[#444468] text-xs">Sin sorteos. Crea uno para la pestaña Participá.</p>
+            <p className="py-8 text-center text-[#444468] text-xs">Sin sorteos. Crea uno para la pestaña Participa.</p>
           ) : (
             contests.map(c => (
               <div key={c.id} className="px-4 py-3 flex items-start gap-3">

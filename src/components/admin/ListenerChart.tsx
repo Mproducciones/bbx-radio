@@ -87,7 +87,7 @@ export function ListenerChart() {
   return (
     <AdminCard accent="#db8918">
       <AdminCardHeader title="Tendencia de oyentes" icon={<AdminIcons.chart />} accent="#db8918" />
-      <div className="p-4 pt-3">
+      <div className="admin-card-body !pt-4">
       <div className="flex items-center justify-between mb-3 gap-3">
         <div className="min-w-0">
           {peak > 0 && (

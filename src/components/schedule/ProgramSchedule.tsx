@@ -252,6 +252,14 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
             </span>
           )}
         </div>
+        {program.sponsor && (
+          <p
+            className="text-[9px] font-bold uppercase tracking-wide mt-0.5 truncate"
+            style={{ color: program.sponsor.colorAccent ?? '#7D59B5' }}
+          >
+            Presenta: {program.sponsor.cliente}
+          </p>
+        )}
         {program.host && program.host !== 'Por confirmar' && (
           <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {hostLabel}

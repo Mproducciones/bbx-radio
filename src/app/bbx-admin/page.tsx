@@ -6,6 +6,7 @@ import { Shield } from 'lucide-react'
 import { AdminPageBackground, AdminGhostButton } from '@/components/admin/adminUi'
 import { AdminLoginScreen } from '@/components/admin/AdminLoginScreen'
 import { BillingPanel } from '@/components/admin/BillingPanel'
+import { adminLoginErrorMessage } from '@/lib/adminLoginErrors'
 
 type PageState = 'login' | 'dashboard'
 
@@ -39,8 +40,9 @@ export default function BbxAdminPage() {
         credentials: 'include',
       })
       if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
         setLoginState('error')
-        setLoginError('Credenciales de super admin inválidas')
+        setLoginError(adminLoginErrorMessage(res.status, body))
         return
       }
       setPageState('dashboard')

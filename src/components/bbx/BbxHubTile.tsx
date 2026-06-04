@@ -35,7 +35,7 @@ export function BbxHubTile({
 
   const ariaLabel = isExternal
     ? `${label}. ${subtitle ?? ''} ${ctaText}`
-    : `${label}. ${subtitle ?? ''}. Tocá para ver detalle`
+    : `${label}. ${subtitle ?? ''}. Toca para ver detalle`
 
   const motionProps = {
     whileTap: { scale: 0.985 },

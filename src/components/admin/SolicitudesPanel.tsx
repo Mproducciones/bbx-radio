@@ -68,7 +68,7 @@ export function SolicitudesPanel() {
         ) : undefined}
       />
 
-      <div className="p-4 pt-2">
+      <div className="admin-card-body !pt-4">
       {loading && <AdminSpinner />}
 
       {!loading && queue.length === 0 && (

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" fill="none">
+  <rect width="800" height="120" rx="12" fill="#071018"/>
+  <rect width="800" height="120" rx="12" fill="url(#g)" opacity="0.95"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="800" y2="120">
+      <stop stop-color="#0a2a2e"/>
+      <stop offset="0.55" stop-color="#134e55"/>
+      <stop offset="1" stop-color="#40B9BF"/>
+    </linearGradient>
+  </defs>
+  <circle cx="680" cy="60" r="52" fill="#40B9BF" opacity="0.12"/>
+  <circle cx="720" cy="40" r="28" fill="#40B9BF" opacity="0.18"/>
+  <path d="M620 78h120l-14-28H634l-14 28zM648 58h44l8 16h-60l8-16z" fill="#40B9BF" opacity="0.35"/>
+  <text x="36" y="52" fill="#fff" font-family="system-ui,sans-serif" font-size="28" font-weight="800">AutoMundo Rancagua</text>
+  <text x="36" y="82" fill="#b8ecef" font-family="system-ui,sans-serif" font-size="16" font-weight="600">Tu pr�ximo auto te est� esperando � Financiamiento directo</text>
+  <rect x="36" y="92" width="88" height="4" rx="2" fill="#40B9BF"/>
+</svg>

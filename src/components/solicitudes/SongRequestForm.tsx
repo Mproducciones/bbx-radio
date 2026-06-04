@@ -11,7 +11,7 @@ interface SuccessState {
   position: number
 }
 
-export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
+export function SongRequestForm({ compact, playful }: { compact?: boolean; playful?: boolean } = {}) {
   const [phase, setPhase]         = useState<Phase>('form')
   const [song, setSong]           = useState('')
   const [artist, setArtist]       = useState('')
@@ -49,24 +49,47 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
 
   return (
     <div
-      className="rounded-2xl overflow-hidden h-full flex flex-col"
-      style={{ background: '#0F0F1A', border: '1px solid rgba(219,137,24,0.18)' }}
+      className="participa-panel overflow-hidden h-full flex flex-col relative"
+      style={{
+        background: playful
+          ? 'linear-gradient(165deg, rgba(64,185,191,0.1) 0%, #0F0F1A 45%, #07070e 100%)'
+          : '#0F0F1A',
+        border: playful ? '1px solid rgba(64,185,191,0.3)' : '1px solid rgba(219,137,24,0.18)',
+        boxShadow: playful ? '0 12px 36px -14px rgba(64,185,191,0.35)' : undefined,
+      }}
     >
-      {/* Header */}
+      {playful && (
+        <div
+          className="absolute top-0 left-0 right-0 h-0.5"
+          style={{ background: 'linear-gradient(90deg, #40B9BF, #db8918, transparent)' }}
+        />
+      )}
       <div
-        className={compact ? 'px-4 pt-3 pb-2.5' : 'px-5 pt-5 pb-4'}
+        className={compact ? 'px-3.5 pt-2.5 pb-2' : 'px-5 pt-5 pb-4'}
         style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
         <div className="flex items-center gap-3">
-          <div
-            className={`rounded-xl flex items-center justify-center ${compact ? 'w-8 h-8' : 'w-10 h-10'}`}
-            style={{ background: 'linear-gradient(135deg, rgba(219,137,24,0.25), rgba(123,47,255,0.2))' }}
+          <motion.div
+            className={`rounded-xl flex items-center justify-center ${compact ? 'w-9 h-9' : 'w-11 h-11'}`}
+            style={{
+              background: playful
+                ? 'linear-gradient(135deg, rgba(64,185,191,0.35), rgba(219,137,24,0.25))'
+                : 'linear-gradient(135deg, rgba(219,137,24,0.25), rgba(123,47,255,0.2))',
+            }}
+            animate={playful ? { scale: [1, 1.06, 1] } : undefined}
+            transition={{ duration: 2, repeat: Infinity }}
           >
-            <MicIcon className={compact ? 'w-4 h-4 text-[#db8918]' : 'w-5 h-5 text-[#db8918]'} />
-          </div>
+            <span className={compact ? 'text-lg' : 'text-xl'} aria-hidden>
+              🎙️
+            </span>
+          </motion.div>
           <div>
-            <p className={`text-white font-bold ${compact ? 'text-sm' : 'text-base'}`}>Pide tu canción</p>
-            <p className="text-white/35 text-[10px]">Al aire en tu próximo turno</p>
+            <p className={`text-white font-display leading-tight ${compact ? 'text-base' : 'text-lg'}`}>
+              {playful ? '¡Al aire con tu tema!' : 'Pide tu canción'}
+            </p>
+            <p className="text-white/40 text-[10px]">
+              {playful ? 'El locutor lo recibe en vivo' : 'Al aire en tu próximo turno'}
+            </p>
           </div>
         </div>
       </div>
@@ -82,7 +105,11 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
             onSubmit={handleSubmit}
-            className={compact ? 'px-4 py-3 flex flex-col gap-2.5 flex-1' : 'px-5 py-4 flex flex-col gap-3.5'}
+            className={
+              compact
+                ? 'px-3.5 py-2.5 flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto overscroll-contain'
+                : 'px-5 py-4 flex flex-col gap-3.5 flex-1 min-h-0 overflow-y-auto'
+            }
           >
             <FieldInput
               label="Canción"
@@ -116,7 +143,7 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
               whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={!canSubmit}
-              className="w-full py-3 rounded-xl font-bold text-sm text-white mt-auto disabled:opacity-35 transition-opacity relative overflow-hidden"
+              className="participa-btn-primary mt-auto disabled:opacity-35 text-white relative overflow-hidden"
               style={{ background: canSubmit ? 'linear-gradient(135deg, #db8918, #7B2FFF)' : 'rgba(255,255,255,0.06)' }}
             >
               {canSubmit && (
@@ -127,7 +154,7 @@ export function SongRequestForm({ compact }: { compact?: boolean } = {}) {
                   style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)' }}
                 />
               )}
-              <span className="relative">Enviar solicitud ♪</span>
+              <span className="relative">{playful ? 'Mandar al locutor 🎵' : 'Enviar solicitud ♪'}</span>
             </motion.button>
           </motion.form>
         )}
@@ -277,17 +304,10 @@ function FieldInput({
         placeholder={placeholder}
         required={required}
         maxLength={required ? 120 : 200}
-        className={`bg-white/[0.04] border border-white/[0.08] focus:border-[#db8918]/50 focus:bg-white/[0.06] rounded-xl px-3 text-white text-sm outline-none transition-all placeholder-white/20 ${compact ? 'py-2' : 'py-2.5'}`}
-        style={{ caretColor: '#db8918' }}
+        className="participa-input"
+        style={{ caretColor: '#db8918', '--input-accent': '#db8918' } as React.CSSProperties}
       />
     </label>
   )
 }
 
-function MicIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 15.2 14.47 17 12 17s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V21c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
-    </svg>
-  )
-}

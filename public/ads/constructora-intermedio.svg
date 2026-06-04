@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" fill="none">
+  <rect width="800" height="120" rx="12" fill="#120f08"/>
+  <rect width="800" height="120" rx="12" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="120" x2="800" y2="0">
+      <stop stop-color="#1a1408"/>
+      <stop offset="1" stop-color="#8a5518"/>
+    </linearGradient>
+  </defs>
+  <path d="M650 88V52l40-24 40 24v36H650z" fill="#db8918" opacity="0.25"/>
+  <path d="M670 88V60h20v28" fill="#db8918" opacity="0.45"/>
+  <text x="36" y="50" fill="#fff" font-family="system-ui,sans-serif" font-size="26" font-weight="800">Constructora Del Valle</text>
+  <text x="36" y="80" fill="#e8c896" font-family="system-ui,sans-serif" font-size="15" font-weight="600">Tu casa so�ada en O&apos;Higgins � Proyectos desde UF 1.800</text>
+</svg>

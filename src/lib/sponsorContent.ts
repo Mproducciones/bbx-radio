@@ -39,7 +39,7 @@ export type SponsorValueLine = {
 
 export const SPONSOR_VALUE = {
   title: 'Qué obtiene tu negocio',
-  intro: 'No comprás solo “un spot”: comprás presencia en la radio que la gente de la región escucha todos los días, más visibilidad digital mientras usan la app.',
+  intro: 'No compras solo “un spot”: compras presencia en la radio que la gente de la región escucha todos los días, más visibilidad digital mientras usan la app.',
   lines: [
     {
       id: 'fm',
@@ -62,14 +62,14 @@ export const SPONSOR_VALUE = {
       color: '#40B9BF',
       hook: 'Visible mientras escuchan en vivo.',
       image: '/sponsor/app.png',
-      benefit: 'Tu logo y oferta junto al reproductor — no en una web que nadie abre. El anunciante ve dónde aparece antes de contratar.',
+      benefit: 'Banners en En Vivo (bajo el play), Participa, Noticias, Saludos y Grilla — según el plan. Sin prometer pantallas que no existen.',
       breakdown: [
-        { label: 'Plan Básico', value: 'Banner estándar rotativo' },
-        { label: 'Plan Premium', value: 'Banner destacado En Vivo' },
-        { label: 'Plan Empresarial', value: 'Semanas exclusivas' },
+        { label: 'Plan Básico', value: 'Banner rotativo + En Vivo' },
+        { label: 'Plan Premium', value: 'Destacado En Vivo + flotante' },
+        { label: 'Plan Empresarial', value: 'Exclusivo + badge grilla' },
         { label: 'Arte', value: 'Plantilla incluida si no tienes diseño' },
       ],
-      tip: 'Pedí ver ejemplos en cada plan: mostramos mockups reales de la app.',
+      tip: 'Pide ver ejemplos en cada plan: mostramos mockups reales de la app.',
     },
     {
       id: 'region',
@@ -77,21 +77,21 @@ export const SPONSOR_VALUE = {
       color: '#7D59B5',
       hook: 'Gente local con intención de compra.',
       image: '/sponsor/region.png',
-      benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegás a quien vive y trabaja en la zona, no a clics genéricos.',
+      benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegas a quien vive y trabaja en la zona, no a clics genéricos.',
       breakdown: [
         { label: 'Ciudad foco', value: RADIO.city },
         { label: 'Alcance referencial', value: '+15.000 / mes' },
         { label: 'Medio', value: 'FM + PWA instalable' },
         { label: 'Reporte', value: 'Impresiones estimadas / mes' },
       ],
-      tip: 'Combiná radio + app para campañas de apertura o promociones de temporada.',
+      tip: 'Combina radio + app para campañas de apertura o promociones de temporada.',
     },
   ] satisfies SponsorValueLine[],
 }
 
 export const SPONSOR_CHANNELS = [
   { id: 'radio', title: 'Al aire', desc: 'FM en auto, trabajo y casa.', accent: '#db8918' },
-  { id: 'app', title: 'En la app', desc: 'Banner junto al play en vivo.', accent: '#40B9BF' },
+  { id: 'app', title: 'En la app', desc: 'Banners verificables en la PWA.', accent: '#40B9BF' },
   { id: 'region', title: 'Local', desc: 'Audiencia de la región.', accent: '#7D59B5' },
 ] as const
 
@@ -108,14 +108,17 @@ export const SPONSOR_FAQ = [
   { q: '¿Hay permanencia?', a: 'Mes a mes. Recomendamos 2 meses para medir resultados.' },
   {
     q: '¿Qué funciones puedo probar ya en la app?',
-    a: 'Banners con impresiones/clics (En Vivo y Participá), sorteos en Participá → Sorteo, reporte mensual en /admin, y patrocinadores en /patrocinadores. Los spots FM los coordina cabina al contratar.',
+    a: 'En la app: banners en En Vivo, Participa, Grilla, etc.; patrocinadores en /patrocinadores; badge de programa en /programacion (Empresarial). Reporte y spots FM son gestión comercial (/admin y cabina), no pantallas públicas.',
   },
 ] as const
 
 export const SPONSOR_LIVE = [
-  { label: 'Banner en En Vivo', href: '/', status: 'En app', note: 'Banners rotativos bajo el play' },
+  { label: 'En Vivo (bajo el play)', href: '/', status: 'En app', note: 'Básico rotativo · Premium destacado · Empresarial exclusivo' },
+  { label: 'Banner premium flotante', href: '/participa', status: 'En app', note: 'Premium y Empresarial · no tapa el play' },
+  { label: 'Banners rotativos', href: '/programacion', status: 'En app', note: 'Grilla, Noticias, Participa, Saludos' },
+  { label: 'Patrocinio en grilla', href: '/programacion', status: 'En app', note: '“Presenta: …” en Studio o campaña Empresarial' },
   { label: 'Sorteo patrocinado', href: '/participa', status: 'En app', note: 'Tab Sorteo · registros reales' },
+  { label: 'Patrocinadores', href: '/patrocinadores', status: 'En app', note: 'Marcas con campaña activa de ejemplo' },
   { label: 'Reporte mensual', href: '/admin', status: 'Panel admin', note: 'CSV + WhatsApp anunciante' },
-  { label: 'Patrocinadores', href: '/patrocinadores', status: 'En app', note: 'Marcas con campaña activa' },
   { label: 'Spots FM 93.3', href: null, status: 'Cabina', note: 'Se activa al cerrar venta' },
 ] as const

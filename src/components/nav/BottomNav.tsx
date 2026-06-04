@@ -11,7 +11,7 @@ const TAB_META: Record<
 > = {
   '/':             { label: 'En Vivo',   icon: LiveIcon },
   '/programacion': { label: 'Grilla',    icon: ScheduleIcon },
-  '/participa':    { label: 'Participá', icon: ParticipaIcon },
+  '/participa':    { label: 'Participa', icon: ParticipaIcon },
   '/saludos':      { label: 'Saludos',   icon: SaludosIcon },
   '/replay':       { label: 'Replay',    icon: ReplayIcon },
   '/tv':           { label: 'TV',        icon: TvIcon },

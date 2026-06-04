@@ -1,5 +1,8 @@
+import { redirect } from 'next/navigation'
 import { fetchNoticias, fetchLanzamientos } from '@/lib/api'
 import { NoticiasContent } from '@/components/news/NoticiasContent'
+import { RotatingBanner } from '@/components/ads/RotatingBanner'
+import { FEATURES } from '@/lib/plan'
 import type { Metadata } from 'next'
 
 export const revalidate = 1800
@@ -10,6 +13,10 @@ export const metadata: Metadata = {
 }
 
 export default async function NoticiasPage() {
+  if (!FEATURES.noticias) {
+    redirect('/')
+  }
+
   const [articles, releases] = await Promise.all([
     fetchNoticias(),
     fetchLanzamientos(),
@@ -21,6 +28,8 @@ export default async function NoticiasPage() {
         <h1 className="font-display text-3xl text-white leading-none">Noticias</h1>
         <p className="text-[var(--color-ink-400)] text-xs mt-1">Lo último de Bienvenida, música y lanzamientos</p>
       </header>
+
+      <RotatingBanner position="top" compact interval={7} />
 
       <NoticiasContent articles={articles} releases={releases} />
     </main>

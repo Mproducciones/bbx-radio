@@ -9,15 +9,20 @@ import { sponsorWaLink } from '@/lib/sponsorContent'
 import { SponsorPlanIcon } from '@/components/shared/SponsorPlanIcon'
 import { ProWaButton } from '@/components/shared/ProWaButton'
 import { PlanDetailSheet } from './PlanDetailSheet'
+import { SponsorLiveSection } from './SponsorLiveSection'
+import { SponsorAdPreview } from './SponsorAdPreview'
+import type { SponsorAdTierId } from '@/lib/sponsorAdTiers'
 
 function PlanCard({
   plan,
   onSelect,
   index,
+  active,
 }: {
   plan: (typeof SPONSOR_PLANS)[number]
   onSelect: () => void
   index: number
+  active?: boolean
 }) {
   return (
     <motion.button
@@ -27,8 +32,13 @@ function PlanCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       whileTap={{ scale: 0.99 }}
-      className={`pro-plan-card w-full min-w-0 max-w-full text-left overflow-hidden ${plan.popular ? 'pro-plan-card--featured' : ''}`}
-      style={{ '--plan-accent': plan.color } as React.CSSProperties}
+      className={`pro-plan-card w-full min-w-0 max-w-full text-left overflow-hidden ${plan.popular ? 'pro-plan-card--featured' : ''} ${active ? 'ring-2 ring-offset-2 ring-offset-[#07070e]' : ''}`}
+      style={
+        {
+          '--plan-accent': plan.color,
+          ...(active ? { ringColor: plan.color } : {}),
+        } as React.CSSProperties
+      }
     >
       <div className="pro-plan-stripe" />
 
@@ -153,8 +163,14 @@ function FaqAccordion() {
 const TRUST_PILLS = ['Desde $80.000', 'Sin permanencia', 'Activo en 48h']
 
 export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: number }) {
+  const [previewTier, setPreviewTier] = useState<SponsorAdTierId>('empresarial')
   const [selectedId, setSelectedId] = useState<SponsorPlanId | null>(null)
   const selectedPlan = selectedId ? SPONSOR_PLANS.find(p => p.id === selectedId) ?? null : null
+
+  function selectPlan(id: SponsorPlanId) {
+    setPreviewTier(id)
+    setSelectedId(id)
+  }
   const waLink = sponsorWaLink()
 
   const listenerProof =
@@ -228,13 +244,28 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
         </div>
       </motion.div>
 
+      <section className="mb-8 rounded-2xl p-4 md:p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <p className="pro-eyebrow text-center mb-1">Vista en el celular</p>
+        <h2 className="text-center text-white font-semibold text-sm mb-1">Así se ve tu publicidad en la app</h2>
+        <p className="text-center text-white/40 text-xs mb-4 max-w-xs mx-auto">
+          Toca un plan abajo para cambiar la vista · Empresarial es la campaña más completa
+        </p>
+        <SponsorAdPreview tierId={previewTier} />
+      </section>
+
       <div className="mb-6">
         <p className="pro-eyebrow text-center mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
           Elige tu plan
         </p>
         <div className="space-y-3">
           {SPONSOR_PLANS.map((plan, i) => (
-            <PlanCard key={plan.id} plan={plan} index={i} onSelect={() => setSelectedId(plan.id)} />
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              index={i}
+              active={previewTier === plan.id}
+              onSelect={() => selectPlan(plan.id)}
+            />
           ))}
         </div>
       </div>
@@ -252,6 +283,8 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
         </p>
         <FaqAccordion />
       </div>
+
+      <SponsorLiveSection />
 
       <PlanDetailSheet plan={selectedPlan} onClose={() => setSelectedId(null)} />
     </div>

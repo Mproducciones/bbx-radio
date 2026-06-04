@@ -18,6 +18,20 @@ export const publicidadSchema = defineType({
       description: 'Nombre del negocio que paga la publicidad',
     }),
     defineField({
+      name: 'planContratado',
+      title: 'Plan contratado',
+      type: 'string',
+      description: 'Plan de venta asociado (para control interno; la app filtra por tipo y prioridad).',
+      options: {
+        list: [
+          { title: 'Básico ($80.000)', value: 'basico' },
+          { title: 'Premium ($150.000)', value: 'premium' },
+          { title: 'Empresarial ($250.000)', value: 'empresarial' },
+        ],
+        layout: 'radio',
+      },
+    }),
+    defineField({
       name: 'tipo',
       title: 'Tipo de banner',
       type: 'string',
@@ -70,6 +84,24 @@ export const publicidadSchema = defineType({
       description: 'URL o WhatsApp del anunciante',
     }),
     defineField({
+      name: 'duracionCampana',
+      title: 'Duración acordada',
+      type: 'string',
+      description: 'Referencia comercial. Las fechas reales son inicio/fin.',
+      options: {
+        list: [
+          { title: '1 mes estándar (30 días)', value: 'mes_estandar' },
+          { title: 'Mes calendario', value: 'mes_calendario' },
+          { title: '15 días', value: 'quincena' },
+          { title: '1 semana', value: 'semana' },
+          { title: 'Fin de semana (3 días)', value: 'finde' },
+          { title: 'Personalizado (ver fechas)', value: 'personalizado' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'mes_estandar',
+    }),
+    defineField({
       name: 'fechaInicio',
       title: 'Fecha de inicio',
       type: 'datetime',
@@ -82,6 +114,14 @@ export const publicidadSchema = defineType({
       validation: (Rule) => Rule.required().min(Rule.valueOfField('fechaInicio')),
     }),
     defineField({
+      name: 'exclusivoApp',
+      title: 'Exclusivo en la app (sin rotación)',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        'Plan Empresarial: solo esta campaña en su tipo de banner. Si hay varias exclusivas, gana la de mayor prioridad.',
+    }),
+    defineField({
       name: 'activo',
       title: 'Activo',
       type: 'boolean',
@@ -92,23 +132,38 @@ export const publicidadSchema = defineType({
       name: 'prioridad',
       title: 'Prioridad',
       type: 'number',
-      description: 'Mayor número = se muestra primero si hay varios del mismo tipo',
+      description:
+        'Mayor número = se muestra primero. Guía: Básico 1–5 · Premium 6–9 (premium ≥8) · Empresarial 10+',
       initialValue: 1,
     }),
   ],
   preview: {
-    select: { title: 'nombre', cliente: 'cliente', tipo: 'tipo', imagen: 'imagen', activo: 'activo', fechaFin: 'fechaFin' },
-    prepare({ title, cliente, tipo, imagen, activo, fechaFin }) {
+    select: {
+      title: 'nombre',
+      cliente: 'cliente',
+      tipo: 'tipo',
+      plan: 'planContratado',
+      imagen: 'imagen',
+      activo: 'activo',
+      fechaFin: 'fechaFin',
+    },
+    prepare({ title, cliente, tipo, plan, imagen, activo, fechaFin }) {
       const tipoLabel: Record<string, string> = {
         banner_premium: '⭐ Premium',
         banner_superior: '↑ Superior',
         banner_intermedio: '↔ Intermedio',
         banner_inferior: '↓ Inferior',
       }
+      const planLabel: Record<string, string> = {
+        basico: 'Básico',
+        premium: 'Premium',
+        empresarial: 'Empresarial',
+      }
       const vence = fechaFin ? new Date(fechaFin).toLocaleDateString('es-CL') : '—'
+      const planTxt = plan ? planLabel[plan] ?? plan : '—'
       return {
         title: title,
-        subtitle: `${tipoLabel[tipo] ?? tipo} · ${cliente ?? '—'} · Vence ${vence} · ${activo ? '✅ Activo' : '⏸ Pausado'}`,
+        subtitle: `${planTxt} · ${tipoLabel[tipo] ?? tipo} · ${cliente ?? '—'} · Vence ${vence} · ${activo ? '✅' : '⏸'}`,
         media: imagen,
       }
     },

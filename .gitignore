@@ -68,3 +68,4 @@ agents/brief.yaml
 agents/out/CURRENT-TASK.md
 agents/reports/*.json
 agents/reports/screenshots/
+.env*.local

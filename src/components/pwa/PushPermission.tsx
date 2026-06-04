@@ -75,9 +75,9 @@ export function PushPermission() {
                 <div className="flex items-start gap-3 mb-3">
                   <span className="text-2xl flex-shrink-0">📻</span>
                   <div>
-                    <p className="text-white font-bold text-sm leading-tight">¿Querés enterarte primero?</p>
+                    <p className="text-white font-bold text-sm leading-tight">¿Quieres enterarte primero?</p>
                     <p className="text-white/50 text-xs mt-0.5 leading-relaxed">
-                      Activá las notificaciones y te avisamos de concursos, shows en vivo y noticias de la radio.
+                      Activa las notificaciones y te avisamos de concursos, shows en vivo y noticias de la radio.
                     </p>
                   </div>
                 </div>

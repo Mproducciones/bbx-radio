@@ -46,7 +46,17 @@ export function SponsorsGrid({
               </div>
             )}
             <div className="p-4">
-              <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: accent }}>Patrocinador</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: accent }}>
+                {s.destacado ? 'Patrocinador exclusivo' : 'Patrocinador'}
+              </p>
+              {s.destacado && (
+                <span
+                  className="inline-block text-[8px] font-black uppercase px-1.5 py-0.5 rounded mb-1"
+                  style={{ background: `${accent}25`, color: accent, border: `1px solid ${accent}40` }}
+                >
+                  Plan Empresarial
+                </span>
+              )}
               <h3 className="text-white font-semibold text-sm">{s.cliente}</h3>
               {s.tagline && <p className="text-white/45 text-xs mt-1 leading-snug">{s.tagline}</p>}
               <p className="text-white/25 text-[10px] mt-2">{s.tipos.length} espacio{s.tipos.length > 1 ? 's' : ''} activo{s.tipos.length > 1 ? 's' : ''}</p>

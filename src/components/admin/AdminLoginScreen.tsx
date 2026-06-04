@@ -24,8 +24,8 @@ export function AdminLoginScreen({
   return (
     <main className="relative min-h-screen flex items-center justify-center px-4 admin-mesh">
       <AdminPageBackground />
-      <section className="w-full max-w-sm relative">
-        <div className="text-center mb-8">
+      <section className="w-full max-w-md relative admin-section-enter">
+        <div className="text-center mb-10">
           <div
             className="admin-brand-mark mx-auto mb-5"
             style={
@@ -51,8 +51,8 @@ export function AdminLoginScreen({
             </div>
           </div>
           <p className="pro-eyebrow mb-2">{eyebrow}</p>
-          <h1 className="text-white font-display text-3xl leading-none tracking-wide">{title}</h1>
-          <p className="text-white/45 text-sm mt-2">{subtitle}</p>
+          <h1 className="text-white font-display text-4xl leading-none tracking-wide">{title}</h1>
+          <p className="text-white/50 text-base mt-3">{subtitle}</p>
         </div>
         <div className="admin-login-card">
           <div
@@ -66,7 +66,7 @@ export function AdminLoginScreen({
           />
           {children}
         </div>
-        <p className="text-white/20 text-[10px] text-center mt-5 tracking-wide">{footer}</p>
+        <p className="text-white/25 text-xs text-center mt-6 tracking-wide">{footer}</p>
       </section>
     </main>
   )

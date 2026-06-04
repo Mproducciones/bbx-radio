@@ -147,9 +147,9 @@ export const BBX_REVENUE = {
       title: 'Banners digitales',
       amountLabel: '$200.000',
       color: '#db8918',
-      hook: '4 espacios en la app — vendés por posición, no por pantalla infinita.',
+      hook: '4 espacios en la app — vendes por posición, no por pantalla infinita.',
       ownerBenefit:
-        'La app tiene hasta 4 posiciones (superior, intermedio, inferior y En Vivo). Cada una se vende aparte: exclusiva ~$50.000/mes o compartida ~$30.000/mes (2 marcas rotando). No son 8 productos distintos: son 4 slots que llenás bien.',
+        'La app tiene hasta 4 posiciones (superior, intermedio, inferior y En Vivo). Cada una se vende aparte: exclusiva ~$50.000/mes o compartida ~$30.000/mes (2 marcas rotando). No son 8 productos distintos: son 4 slots que llenas bien.',
       breakdown: [
         { label: 'Posiciones en app (máx.)', value: '4' },
         { label: 'Precio posición exclusiva', value: '$50.000/mes' },
@@ -157,7 +157,7 @@ export const BBX_REVENUE = {
         { label: 'Ejemplo: 4 slots exclusivos', value: '$200.000/mes' },
       ],
       howToSell:
-        'Mostrá la app: “Acá arriba, acá en En Vivo, acá abajo”. Un comercio compra UNA posición. Si el slot está lleno, ofrecé rotación más barata o lista de espera — no vendas 8 banners como si fueran 8 pantallas.',
+        'Muestra la app: “Aquí arriba, aquí en En Vivo, aquí abajo”. Un comercio compra UNA posición. Si el slot está lleno, ofrece rotación más barata o lista de espera — no vendas 8 banners como si fueran 8 pantallas.',
     },
     {
       id: 'sorteos',
@@ -191,7 +191,7 @@ export const BBX_REVENUE = {
         { label: 'Subtotal estimado', value: '$30.000' },
       ],
       howToSell:
-        'No se vende puerta a puerta: se activa en panel y complementa mientras escalás banners propios.',
+        'No se vende puerta a puerta: se activa en panel y complementa mientras escalas banners propios.',
     },
   ] satisfies BbxRevenueLine[],
 }
@@ -220,7 +220,7 @@ export const BBX_PRICING_LAYERS = {
         { label: 'Plan Pro', value: '$120.000/mes + setup' },
         { label: 'Plan Premium', value: '$160.000/mes + setup' },
       ],
-      note: 'Costo SaaS: app, panel, módulos y soporte. No incluye venderle nada a un anunciante — eso lo hacés vos.',
+      note: 'Costo SaaS: app, panel, módulos y soporte. No incluye venderle nada a un anunciante — eso lo lo haces tú.',
     },
     {
       id: 'radio-anunciante',
@@ -296,7 +296,7 @@ export const BBX_PLANS: BbxPlan[] = [
         caption: 'Instalar en celular',
         callouts: ['Sin tienda', 'Icono en home', 'iOS + Android'],
         visualNote:
-          'El oyente entra a tu URL, toca “Añadir a inicio” y queda un icono como app nativa. No pasás por App Store ni Play Store — listo en minutos tras el setup.',
+          'El oyente entra a tu URL, toca “Añadir a inicio” y queda un icono como app nativa. No pasas por App Store ni Play Store — listo en minutos tras el setup.',
       },
       {
         id: 'player',
@@ -310,7 +310,7 @@ export const BBX_PLANS: BbxPlan[] = [
         caption: 'Módulo saludos',
         callouts: ['Formulario oyente', 'Llega a cabina', 'Tiempo real'],
         visualNote:
-          'Desde el menú Participá el oyente escribe un saludo; en cabina aparece al instante para que el locutor lo lea en vivo. Fideliza sin WhatsApp caótico.',
+          'Desde el menú Participa el oyente escribe un saludo; en cabina aparece al instante para que el locutor lo lea en vivo. Fideliza sin WhatsApp caótico.',
       },
     ],
   },
@@ -321,7 +321,7 @@ export const BBX_PLANS: BbxPlan[] = [
     setup: '150.000',
     color: '#db8918',
     popular: true,
-    tagline: 'Monetizá con banners, sorteos y datos.',
+    tagline: 'Monetiza con banners, sorteos y datos.',
     ideal: 'La opción que ofreces hoy a tus radios (PWA + panel comercial).',
     detalle:
       'Producto listo para vender: PWA instalable, banners medibles, sorteos con leads, reporte mensual y panel admin. Sin Play Store ni dominio propio — eso es upgrade Premium.',
@@ -339,14 +339,14 @@ export const BBX_PLANS: BbxPlan[] = [
         caption: 'Venta de banners',
         callouts: ['Hasta 4 slots', 'Impresiones', 'Rotación'],
         visualNote:
-          'Cuatro slots reales en la app (coinciden con el panel de publicidad). Vendés cada posición por separado; dentro de un slot pueden rotar 2 marcas si es plan compartido.',
+          'Cuatro slots reales en la app (coinciden con el panel de publicidad). Vendes cada posición por separado; dentro de un slot pueden rotar 2 marcas si es plan compartido.',
       },
       {
         id: 'sorteos',
         caption: 'Sorteo patrocinado',
         callouts: ['Captura WhatsApp', 'Marca auspicia', 'Leads exportables'],
         visualNote:
-          'La marca paga el sorteo; el oyente deja contacto en la app. Vos entregás registros al auspiciador y facturás el espacio digital + activación en vivo.',
+          'La marca paga el sorteo; el oyente deja contacto en la app. Entregas registros al auspiciador y facturas el espacio digital + activación en vivo.',
       },
       {
         id: 'analytics',
@@ -414,11 +414,11 @@ export const BBX_PLAN_COMPARE = [
 export const BBX_FAQ = [
   {
     q: '¿Es lo mismo el precio BBX y lo que cobro por un banner?',
-    a: 'No. BBX (Capa 1) es lo que tu radio paga por la plataforma — desde $80.000/mes según plan. Lo que cobrás a un comercio por un slot en la app (Capa 2) lo defines vos: referencia $30.000–$50.000/mes por posición. Un paquete FM + app al anunciante final ($80.000–$250.000) es otro producto, no un banner suelto.',
+    a: 'No. BBX (Capa 1) es lo que tu radio paga por la plataforma — desde $80.000/mes según plan. Lo que cobras a un comercio por un slot en la app (Capa 2) lo defines tú: referencia $30.000–$50.000/mes por posición. Un paquete FM + app al anunciante final ($80.000–$250.000) es otro producto, no un banner suelto.',
   },
   {
     q: '¿Necesito publicar en App Store o Google Play?',
-    a: 'No con Pro: la PWA se instala desde el navegador y ya incluye monetización. Si el cliente quiere APK en Play Store y dominio propio, vendés el upgrade Premium y BBX hace el build y la publicación.',
+    a: 'No con Pro: la PWA se instala desde el navegador y ya incluye monetización. Si el cliente quiere APK en Play Store y dominio propio, vendes el upgrade Premium y BBX hace el build y la publicación.',
   },
   {
     q: '¿Puedo vender Pro y después pasar a Premium?',

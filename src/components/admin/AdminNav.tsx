@@ -16,7 +16,7 @@ export const ADMIN_SECTIONS: {
   { id: 'live', label: 'En vivo', short: 'Vivo', icon: <AdminIcons.wave />, color: '#FF3860' },
   { id: 'commercial', label: 'Comercial', short: 'Ads', icon: <AdminIcons.megaphone />, color: '#db8918' },
   { id: 'comms', label: 'Comunicación', short: 'Push', icon: <AdminIcons.bell />, color: '#7D59B5' },
-  { id: 'content', label: 'Panel de contenido', short: 'CMS', icon: <AdminIcons.music />, color: '#FF006E' },
+  { id: 'content', label: 'Editor de contenido', short: 'Editor', icon: <AdminIcons.music />, color: '#FF006E' },
 ]
 
 function SidebarNavItem({
@@ -40,7 +40,7 @@ function SidebarNavItem({
       style={{ '--nav-accent': color } as React.CSSProperties}
     >
       <span className="admin-nav-item__icon">{icon}</span>
-      <span className="font-semibold text-sm truncate">{label}</span>
+      <span className="font-bold text-base truncate">{label}</span>
     </button>
   )
 }
@@ -53,9 +53,9 @@ export function AdminSidebarNav({
   onChange: (s: AdminSection) => void
 }) {
   return (
-    <aside className="hidden lg:flex flex-col w-52 xl:w-56 shrink-0 sticky top-[57px] self-start max-h-[calc(100vh-57px)] py-4 pr-2">
+    <aside className="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 sticky top-[65px] self-start max-h-[calc(100vh-65px)] py-4 pr-2">
       <div className="admin-sidebar-panel flex flex-col gap-1 min-h-[min(32rem,calc(100vh-8rem))]">
-        <p className="admin-eyebrow px-2 mb-1">Studio</p>
+        <p className="admin-eyebrow px-2 mb-1">Radio Bienvenida</p>
         <nav className="flex flex-col gap-0.5">
           {ADMIN_SECTIONS.map(s => (
             <SidebarNavItem
@@ -90,7 +90,7 @@ export function AdminMobileNav({
   onChange: (s: AdminSection) => void
 }) {
   return (
-    <div className="lg:hidden sticky top-[57px] z-40 admin-nav-rail">
+    <div className="lg:hidden sticky top-[65px] z-40 admin-nav-rail">
       <nav className="admin-nav-rail__inner" aria-label="Secciones del panel">
         {ADMIN_SECTIONS.map(s => (
           <button

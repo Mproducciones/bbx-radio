@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" fill="none">
+  <rect width="800" height="120" rx="12" fill="#061418"/>
+  <rect width="800" height="120" rx="12" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="700" y2="120">
+      <stop stop-color="#0a2228"/>
+      <stop offset="1" stop-color="#40B9BF"/>
+    </linearGradient>
+  </defs>
+  <rect x="648" y="28" width="64" height="64" rx="32" fill="#40B9BF" opacity="0.18"/>
+  <path d="M680 44v56M652 72h56" stroke="#40B9BF" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  <text x="36" y="50" fill="#fff" font-family="system-ui,sans-serif" font-size="26" font-weight="800">Farmacia Cruz Verde</text>
+  <text x="36" y="80" fill="#b8ecef" font-family="system-ui,sans-serif" font-size="15" font-weight="600">Medicamentos y perfumer�a � Cerca de ti</text>
+</svg>

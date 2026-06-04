@@ -9,6 +9,7 @@ export const programaSchema = defineType({
       name: 'name',
       title: 'Nombre del programa',
       type: 'string',
+      description: 'Aparece en la app en /programacion (grilla). Si no hay documentos, la app usa la parrilla de respaldo.',
       validation: (R) => R.required(),
     }),
     defineField({
@@ -60,6 +61,18 @@ export const programaSchema = defineType({
       title: 'Foto del conductor',
       type: 'image',
       options: { hotspot: true },
+    }),
+    defineField({
+      name: 'patrocinadorCliente',
+      title: 'Patrocinador del bloque (plan Empresarial)',
+      type: 'string',
+      description: 'Ej: Hotel Casino Plaza → en la app se ve “Presenta: …” en /programacion.',
+    }),
+    defineField({
+      name: 'patrocinadorColor',
+      title: 'Color del patrocinador (hex)',
+      type: 'string',
+      initialValue: '#7D59B5',
     }),
   ],
   preview: {

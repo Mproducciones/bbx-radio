@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { RotatingBanner } from '@/components/ads/RotatingBanner'
 
 interface Article {
   _id: string
@@ -26,17 +27,6 @@ interface Release {
   externalLink?: string
 }
 
-const DEMO_ARTICLES: Article[] = [
-  { _id: 'd1', title: 'Los 10 éxitos más escuchados este mes en la radio',     slug: { current: 'exitos-mes' },      category: 'Música',          excerpt: 'Repasamos los temas que más sonaron en nuestra programación este mes. ¿Está tu favorito?',                                        publishedAt: '2026-05-17T10:00:00Z', image: 'https://picsum.photos/seed/news1/800/400' },
-  { _id: 'd2', title: 'Agenda cultural: lo que no te puedes perder este finde', slug: { current: 'agenda-cultural' }, category: 'Entretenimiento', excerpt: 'Conciertos, ferias y actividades familiares para disfrutar en la región durante el fin de semana.',                               publishedAt: '2026-05-16T10:00:00Z', image: 'https://picsum.photos/seed/news2/800/400' },
-  { _id: 'd3', title: 'Nuevo programa se suma a la grilla esta temporada',      slug: { current: 'nuevo-programa' },  category: 'Radio',           excerpt: 'Estamos emocionados de presentar un nuevo espacio lleno de música y entretenimiento para toda la familia.',                       publishedAt: '2026-05-14T10:00:00Z', image: 'https://picsum.photos/seed/news3/800/400' },
-  { _id: 'd4', title: 'Entrevista exclusiva: el artista habla de su nuevo álbum', slug: { current: 'entrevista' },   category: 'Entrevistas',    excerpt: 'Conversamos con uno de los artistas más destacados sobre su proceso creativo y próximos proyectos.',                              publishedAt: '2026-05-12T10:00:00Z', image: 'https://picsum.photos/seed/news4/800/400' },
-]
-
-const DEMO_RELEASES: Release[] = [
-  { _id: 'r1', title: 'Ya suena: el nuevo hit del verano', slug: { current: 'hit-verano' }, artist: 'Artista Nacional', album: 'Nuevo Sencillo', publishedAt: '2026-05-15T10:00:00Z', image: 'https://picsum.photos/seed/release1/400/400' },
-]
-
 const CATEGORY_COLORS: Record<string, string> = {
   'Música':         '#db8918',
   'Entretenimiento': '#40B9BF',
@@ -53,8 +43,8 @@ const FILTERS = ['Todo', 'Música', 'Radio', 'Entretenimiento', 'Entrevistas', '
 
 export function NoticiasContent({ articles, releases }: { articles: Article[]; releases: Release[] }) {
   const [filter, setFilter] = useState('Todo')
-  const displayArticles = articles.length > 0 ? articles : DEMO_ARTICLES
-  const displayReleases = releases.length > 0 ? releases : DEMO_RELEASES
+  const displayArticles = articles
+  const displayReleases = releases
 
   const all = [
     ...displayArticles.map(a => ({ ...a, type: 'article' as const })),
@@ -63,6 +53,16 @@ export function NoticiasContent({ articles, releases }: { articles: Article[]; r
 
   const filtered = filter === 'Todo' ? all : all.filter(i => i.category === filter)
   const [hero, ...rest] = filtered
+
+  if (all.length === 0) {
+    return (
+      <div className="rounded-2xl border border-dashed border-white/10 py-14 px-6 text-center">
+        <p className="text-white/55 text-sm leading-relaxed max-w-xs mx-auto">
+          No hay noticias publicadas en la app. Cuando el equipo suba contenido en el editor, aparecerá acá.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -97,6 +97,8 @@ export function NoticiasContent({ articles, releases }: { articles: Article[]; r
           {hero && (
             <HeroCard item={hero} />
           )}
+
+          <RotatingBanner position="middle" compact interval={8} />
 
           {/* Grid */}
           {rest.length > 0 && (

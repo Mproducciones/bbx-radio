@@ -53,7 +53,9 @@ export async function fetchProgramas() {
     endTime,
     days,
     description,
-    "imageUrl": image.asset->url
+    "imageUrl": image.asset->url,
+    patrocinadorCliente,
+    patrocinadorColor
   }`
 
   return sanityClient.fetch(query)

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" fill="none">
+  <rect width="800" height="120" rx="12" fill="#0c0818"/>
+  <rect width="800" height="120" rx="12" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="800" y2="120">
+      <stop stop-color="#1a1030"/>
+      <stop offset="0.5" stop-color="#4a3070"/>
+      <stop offset="1" stop-color="#7D59B5"/>
+    </linearGradient>
+  </defs>
+  <rect x="620" y="20" width="140" height="80" rx="12" fill="#7D59B5" opacity="0.15"/>
+  <text x="650" y="58" fill="#c9b8e8" font-family="system-ui,sans-serif" font-size="14" font-weight="800">OFERTA</text>
+  <text x="650" y="78" fill="#fff" font-family="system-ui,sans-serif" font-size="22" font-weight="900">2�1</text>
+  <text x="36" y="48" fill="#fff" font-family="system-ui,sans-serif" font-size="26" font-weight="800">Supermercado El Ahorro</text>
+  <text x="36" y="78" fill="#ddd0f0" font-family="system-ui,sans-serif" font-size="16" font-weight="600">Las mejores ofertas en Rancagua � Esta semana</text>
+  <rect x="36" y="90" width="120" height="22" rx="11" fill="#7D59B5"/>
+  <text x="52" y="105" fill="#07070e" font-family="system-ui,sans-serif" font-size="11" font-weight="800">VER OFERTA</text>
+</svg>

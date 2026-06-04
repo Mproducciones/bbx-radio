@@ -20,7 +20,7 @@ import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
 const ALL_NAV_ITEMS = [
   { href: '/',              label: 'En Vivo',       icon: LiveIcon,      show: true },
   { href: '/programacion',  label: 'Programación',  icon: ScheduleIcon,  show: true },
-  { href: '/participa',     label: 'Participá',       icon: ParticipaIcon, show: true },
+  { href: '/participa',     label: 'Participa',       icon: ParticipaIcon, show: true },
   { href: '/saludos',       label: 'Saludos',         icon: SaludosIcon,   show: true },
   { href: '/tv',            label: 'TV',              icon: TvIcon,        show: true },
   { href: '/noticias',      label: 'Noticias',        icon: NewsIcon,      show: FEATURES.noticias },

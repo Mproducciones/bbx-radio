@@ -73,7 +73,7 @@ export function SaludosPanel() {
         {loading ? (
           <AdminSpinner />
         ) : filtered.length === 0 ? (
-          <p className="py-8 text-center text-[#444468] text-xs">
+          <p className="py-10 text-center admin-body">
             {filter === 'pending' ? 'Sin saludos pendientes' : 'Nada aquí aún'}
           </p>
         ) : (
@@ -85,17 +85,17 @@ export function SaludosPanel() {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
-                className="px-4 py-3"
+                className="px-5 py-4"
               >
                 <div className="flex gap-3">
                   <span className="text-2xl flex-shrink-0 mt-0.5">{MOTIVO_EMOJI[s.motivo] ?? '👋'}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-1.5 flex-wrap">
-                      <span className="text-white font-semibold text-sm">{s.para}</span>
-                      <span className="text-[#444468] text-xs">de {s.de}</span>
+                      <span className="text-white font-bold text-base">{s.para}</span>
+                      <span className="admin-hint">de {s.de}</span>
                     </div>
                     {s.mensaje && (
-                      <p className="text-[#AAAACC] text-xs mt-0.5 leading-relaxed">"{s.mensaje}"</p>
+                      <p className="text-[#AAAACC] text-sm mt-1 leading-relaxed">"{s.mensaje}"</p>
                     )}
                     <p className="text-[#333355] text-[10px] mt-1">
                       {new Date(s.submitted_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}

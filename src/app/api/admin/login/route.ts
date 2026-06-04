@@ -38,14 +38,17 @@ export async function POST(req: Request) {
     const password = (body?.password?.toString() ?? '').slice(0, 256)
     const scope = body?.scope === 'bbx' ? 'bbx' : 'radio'
 
-    const superUsername = process.env.SUPER_ADMIN_USERNAME
-    const superPassword = process.env.SUPER_ADMIN_PASSWORD
-    const allowedUsername = process.env.ADMIN_USERNAME
-    const allowedPassword = process.env.ADMIN_PASSWORD
+    const superUsername = process.env.SUPER_ADMIN_USERNAME?.trim()
+    const superPassword = process.env.SUPER_ADMIN_PASSWORD?.trim()
+    const allowedUsername = process.env.ADMIN_USERNAME?.trim()
+    const allowedPassword = process.env.ADMIN_PASSWORD?.trim()
 
     if (scope === 'bbx') {
-      if (!superUsername || !superPassword || superPassword.length < 12) {
-        return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+      if (!superUsername || !superPassword) {
+        return NextResponse.json({ error: 'Server misconfigured', code: 'missing_env' }, { status: 500 })
+      }
+      if (superPassword.length < 12) {
+        return NextResponse.json({ error: 'Server misconfigured', code: 'password_too_short' }, { status: 500 })
       }
       const [superUserOk, superPassOk] = await Promise.all([
         constantTimeEqual(username, superUsername),
@@ -62,11 +65,11 @@ export async function POST(req: Request) {
     }
 
     if (!allowedUsername || !allowedPassword) {
-      return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+      return NextResponse.json({ error: 'Server misconfigured', code: 'missing_env' }, { status: 500 })
     }
 
     if (allowedPassword.length < 12) {
-      return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+      return NextResponse.json({ error: 'Server misconfigured', code: 'password_too_short' }, { status: 500 })
     }
 
     const [userOk, passOk] = await Promise.all([

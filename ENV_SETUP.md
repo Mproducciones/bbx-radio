@@ -102,6 +102,8 @@ VALUES ('bienvenida-933', 'active', 'pro', now() + interval '30 days', 'admin@ra
 ```bash
 TENANT_ID=bienvenida-933
 SUBSCRIPTION_GRACE_DAYS=7          # días de gracia tras vencimiento
+# Noticias en la app: false si nadie publica/depura en Studio (recomendado Bienvenida)
+NEXT_PUBLIC_ENABLE_NOTICIAS=false
 # Emergencia — corta sin Supabase:
 # SUBSCRIPTION_STATUS=suspended
 ```

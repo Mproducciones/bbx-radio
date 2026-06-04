@@ -23,12 +23,12 @@ export interface StudioContentItem {
   group: StudioContentGroup
 }
 
-export const STUDIO_PANEL_TITLE = 'Panel de contenido'
+export const STUDIO_PANEL_TITLE = 'Editor de contenido'
 
 export const STUDIO_CONTENT_GROUPS: { id: StudioContentGroup; title: string }[] = [
-  { id: 'editorial', title: 'Contenido editorial' },
-  { id: 'radio', title: 'Radio' },
-  { id: 'publicidad', title: 'Publicidad' },
+  { id: 'publicidad', title: 'Publicidad (campañas en la app)' },
+  { id: 'radio', title: 'Grilla y audio' },
+  { id: 'editorial', title: 'Noticias y eventos' },
 ]
 
 /** Espejo de `sanity.config.ts` → structureTool items (orden y tipos). */
@@ -55,9 +55,9 @@ export const STUDIO_CONTENT_ITEMS: StudioContentItem[] = [
   },
   {
     schemaType: 'programa',
-    title: 'Programas',
+    title: 'Grilla · Programas',
     emoji: '🎙️',
-    description: 'Parrilla y programas de la emisora',
+    description: 'Lo que ve el oyente en /programacion (+ patrocinador del bloque)',
     appRoute: '/programacion',
     feature: null,
     color: '#FF006E',
@@ -85,9 +85,9 @@ export const STUDIO_CONTENT_ITEMS: StudioContentItem[] = [
   },
   {
     schemaType: 'publicidad',
-    title: 'Publicidad (banners)',
+    title: 'Campañas publicitarias',
     emoji: '📢',
-    description: 'Banners y campañas visibles en la app',
+    description: 'Arte y fechas de banners — ordénalo también en /admin → Comercial',
     appRoute: null,
     feature: 'publicidad',
     color: '#db8918',
@@ -95,9 +95,9 @@ export const STUDIO_CONTENT_ITEMS: StudioContentItem[] = [
   },
   {
     schemaType: 'paquetesPublicitarios',
-    title: 'Paquetes Publicitarios',
+    title: 'Textos Anunciate',
     emoji: '💼',
-    description: 'Tarifas y paquetes de la página Anúnciate',
+    description: 'Precios de venta en /anunciate (no es lo que ve el oyente al escuchar)',
     appRoute: '/anunciate',
     feature: 'publicidad',
     color: '#e8a840',
@@ -107,6 +107,16 @@ export const STUDIO_CONTENT_ITEMS: StudioContentItem[] = [
 
 export function studioStructurePath(schemaType: string): string {
   return `/studio/structure/${schemaType}`
+}
+
+/** Abrir un documento existente en Studio. */
+export function studioEditDocument(schemaType: string, documentId: string): string {
+  return `/studio/intent/edit/id=${documentId};type=${schemaType}`
+}
+
+/** Crear documento nuevo en Studio. */
+export function studioCreateDocument(schemaType: string): string {
+  return `/studio/intent/create?type=${schemaType}`
 }
 
 export function isStudioFeatureEnabled(feature: StudioFeatureKey): boolean {

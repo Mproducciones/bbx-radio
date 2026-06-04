@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import {
   STUDIO_CONTENT_GROUPS,
   STUDIO_PANEL_TITLE,
@@ -14,16 +15,16 @@ import { AdminBadge, AdminSectionTitle } from '@/components/admin/adminUi'
 function StudioContentCard({ item }: { item: StudioContentItem }) {
   const planBadge = studioFeatureBadge(item.feature)
   const appEnabled = item.appRoute && isStudioFeatureEnabled(item.feature)
-  const studioHref = studioStructurePath(item.schemaType)
+  const editorHref = studioStructurePath(item.schemaType)
 
   return (
     <div
       className="admin-studio-card relative flex flex-col"
       style={{ '--studio-accent': item.color } as React.CSSProperties}
     >
-      <div className="p-4 flex gap-3 flex-1">
+      <div className="p-5 flex gap-4 flex-1">
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+          className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0"
           style={{
             background: `color-mix(in srgb, ${item.color} 16%, transparent)`,
             border: `1px solid color-mix(in srgb, ${item.color} 30%, transparent)`,
@@ -33,24 +34,24 @@ function StudioContentCard({ item }: { item: StudioContentItem }) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-white text-sm font-bold">{item.title}</p>
+            <p className="text-white text-base font-bold">{item.title}</p>
             {planBadge && <AdminBadge color="#FFB300">{planBadge}</AdminBadge>}
           </div>
-          <p className="text-white/35 text-xs mt-1 leading-relaxed">{item.description}</p>
+          <p className="admin-hint mt-1.5">{item.description}</p>
         </div>
       </div>
       <div
-        className="flex border-t border-white/[0.06] text-xs font-semibold"
+        className="flex border-t border-white/[0.06] text-sm font-bold"
         style={{ background: 'rgba(0,0,0,0.2)' }}
       >
         <a
-          href={studioHref}
+          href={editorHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-2.5 text-center transition-colors hover:text-white"
+          className="flex-1 py-3.5 text-center transition-colors hover:text-white"
           style={{ color: item.color }}
         >
-          Editar en Studio →
+          Abrir editor →
         </a>
         {item.appRoute ? (
           <>
@@ -60,12 +61,12 @@ function StudioContentCard({ item }: { item: StudioContentItem }) {
                 href={item.appRoute}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-2.5 text-center text-white/45 hover:text-white/80 transition-colors"
+                className="flex-1 py-3.5 text-center text-white/45 hover:text-white/80 transition-colors"
               >
                 Ver en app →
               </a>
             ) : (
-              <span className="flex-1 py-2.5 text-center text-white/20 cursor-not-allowed" title={`Requiere plan ${planBadge}`}>
+              <span className="flex-1 py-3.5 text-center text-white/20 cursor-not-allowed" title={`Requiere plan ${planBadge}`}>
                 Ver en app
               </span>
             )}
@@ -79,11 +80,26 @@ function StudioContentCard({ item }: { item: StudioContentItem }) {
 export function StudioContentPanel() {
   return (
     <div className="flex flex-col gap-6">
+      <div
+        className="admin-callout flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+      >
+        <div>
+          <p className="admin-label text-[#db8918]">Día a día</p>
+          <p className="admin-body mt-1">
+            Publicidad, clientes y en vivo → pestaña <strong className="text-white">Comercial</strong> o <strong className="text-white">En vivo</strong>.
+          </p>
+        </div>
+        <Link href="/admin?section=commercial" className="admin-btn-ghost shrink-0 !text-[#db8918] !border-[#db8918]/30">
+          Ir a Comercial
+        </Link>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <AdminSectionTitle>{STUDIO_PANEL_TITLE}</AdminSectionTitle>
-          <p className="text-white/30 text-xs mt-1">
-            Mismas secciones que Sanity Studio — edita contenido y previsualiza en la PWA.
+          <p className="admin-hint mt-2 max-w-xl">
+            Formularios para noticias, grilla y campañas. No reemplaza el panel operativo: es el “cargador” de
+            textos e imágenes que la app muestra después.
           </p>
         </div>
         <a
@@ -92,7 +108,7 @@ export function StudioContentPanel() {
           rel="noopener noreferrer"
           className="admin-btn-primary shrink-0 !w-auto inline-flex px-5 py-2.5"
         >
-          Abrir Studio completo
+          Abrir editor completo
         </a>
       </div>
 

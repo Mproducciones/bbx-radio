@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   const ads = await sanityClient.fetch(
     `*[_type == "publicidad"] | order(activo desc, prioridad desc, fechaFin asc) {
-      _id, nombre, cliente, tipo, activo, fechaInicio, fechaFin, prioridad, tagline, cta, colorAccent
+      _id, nombre, cliente, tipo, planContratado, duracionCampana, exclusivoApp, activo, fechaInicio, fechaFin, prioridad, tagline, cta, colorAccent
     }`
   )
 

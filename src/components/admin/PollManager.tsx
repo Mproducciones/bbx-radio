@@ -82,7 +82,7 @@ export function PollManager() {
         }
       />
 
-      <div className="p-4 pt-2">
+      <div className="admin-card-body !pt-4">
       <AnimatePresence mode="wait">
         {mode === 'view' ? (
           <motion.div key="view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

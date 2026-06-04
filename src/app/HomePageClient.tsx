@@ -9,6 +9,8 @@ import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { EASE_OUT } from '@/lib/motion/framer'
+import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
+import { FEATURES } from '@/lib/plan'
 
 export function HomePageClient() {
   const { isPlaying, isLoading, hasError, analyser, toggle } = useRadioPlayerContext()
@@ -78,6 +80,12 @@ export function HomePageClient() {
             />
           </ClientOnly>
         </div>
+
+        {FEATURES.publicidad && (
+          <ClientOnly>
+            <EnVivoAdSlot />
+          </ClientOnly>
+        )}
       </div>
 
       {/* Desktop: panel central inmersivo */}
@@ -133,7 +141,9 @@ export function HomePageClient() {
             { href: '/programacion', label: '📋 Grilla',        accent: '#db8918' },
             { href: '/participa',    label: '🎵 Votar',          accent: '#40B9BF' },
             { href: '/saludos',      label: '💬 Mandar saludo',  accent: '#7D59B5' },
-            { href: '/noticias',     label: '📰 Noticias',       accent: '#00D9A0' },
+            ...(FEATURES.noticias
+              ? [{ href: '/noticias', label: '📰 Noticias', accent: '#00D9A0' }]
+              : []),
           ].map(({ href, label, accent }) => (
             <a
               key={href}

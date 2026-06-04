@@ -103,7 +103,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
     <div className="relative flex flex-1 flex-col min-h-0 w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden">
       <AnimatePresence
         initial={false}
-        mode={mobileTransition ? 'wait' : 'popLayout'}
+        mode="popLayout"
         custom={dir}
       >
         <motion.div
@@ -115,7 +115,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
           exit="exit"
           transition={
             mobileTransition
-              ? { duration: 0.2, ease: 'easeOut' }
+              ? { duration: 0.1, ease: 'easeOut' }
               : { type: 'spring', stiffness: 380, damping: 36, mass: 0.75 }
           }
           className="app-mobile-page md:min-h-0 w-full max-w-full min-w-0 overflow-x-hidden"

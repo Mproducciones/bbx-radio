@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" fill="none">
+  <rect width="800" height="120" rx="12" fill="#07070e"/>
+  <rect width="800" height="120" rx="12" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="800" y2="0">
+      <stop stop-color="#1a1208"/>
+      <stop offset="0.5" stop-color="#3a2810"/>
+      <stop offset="1" stop-color="#db8918"/>
+    </linearGradient>
+  </defs>
+  <circle cx="700" cy="60" r="36" fill="#db8918" opacity="0.2"/>
+  <text x="668" y="68" fill="#db8918" font-family="system-ui,sans-serif" font-size="22" font-weight="900">FM</text>
+  <text x="36" y="44" fill="#fff" font-family="system-ui,sans-serif" font-size="24" font-weight="800">Radio Bienvenida</text>
+  <text x="36" y="68" fill="#db8918" font-family="system-ui,sans-serif" font-size="18" font-weight="700">93.3 FM · Rancagua</text>
+  <text x="36" y="92" fill="#f5d4a8" font-family="system-ui,sans-serif" font-size="14" font-weight="600">Pauta en FM + banner en la app · Desde $80.000/mes</text>
+  <rect x="620" y="78" width="120" height="28" rx="14" fill="#db8918"/>
+  <text x="638" y="97" fill="#07070e" font-family="system-ui,sans-serif" font-size="12" font-weight="800">ANUNCIATE</text>
+</svg>

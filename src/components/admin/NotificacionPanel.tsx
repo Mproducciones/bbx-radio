@@ -48,7 +48,7 @@ export function NotificacionPanel() {
         ) : undefined}
       />
 
-      <div className="p-4">
+      <div className="admin-card-body">
         {state === 'done' && result && (
           <div className="mb-4 rounded-xl p-3 flex items-center gap-3"
             style={{ background: 'rgba(0,217,160,0.08)', border: '1px solid rgba(0,217,160,0.2)' }}>
@@ -78,7 +78,7 @@ export function NotificacionPanel() {
                 <span className="text-[#333355] text-xs">{body.length}/160</span>
               </div>
               <textarea value={body} onChange={e => setBody(e.target.value.slice(0, 160))}
-                placeholder="ej: Llamá al 93.3 y ganás 2 entradas al show"
+                placeholder="ej: Llama al 93.3 y gana 2 entradas al show"
                 rows={2} required
                 className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#db8918] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors resize-none placeholder-white/15"
               />

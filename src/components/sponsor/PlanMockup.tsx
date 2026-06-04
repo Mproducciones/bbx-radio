@@ -1,6 +1,9 @@
 'use client'
 
 import type { SponsorPlanId, PlanMockupKind } from '@/lib/sponsorPlans'
+import { RADIO } from '@/lib/radioConfig'
+import { RADIO_AD, demoSpotScript, programPatrocinioLabel } from '@/lib/radioAdBranding'
+import { getTierPreview } from '@/lib/sponsorAdTiers'
 
 export type { PlanMockupKind }
 
@@ -36,27 +39,38 @@ function PhoneFrame({ children, badge, compact, large }: { children: React.React
 function EnVivoScreen({
   accent,
   bannerVariant,
+  planId,
 }: {
   accent: string
   bannerVariant: 'standard' | 'hero' | 'exclusive'
+  planId?: SponsorPlanId
 }) {
   const isHero = bannerVariant === 'hero'
   const isExclusive = bannerVariant === 'exclusive'
+  const tier = planId ? getTierPreview(planId) : null
+  const brandTitle = tier?.cliente ?? 'Tu negocio'
+  const brandTagline = tier?.taglineAd ?? 'Tu promoción aquí'
+  const brandInitial = tier?.brandInitial ?? 'T'
 
   return (
     <>
-      <div className="px-3 py-2.5 border-b border-white/[0.06] flex justify-between items-center bg-white/[0.02]">
-        <span className="font-display text-sm text-white tracking-wide">RADIO BIENVENIDA</span>
-        <span
-          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
-          style={{
-            color: accent,
-            background: `color-mix(in srgb, ${accent} 14%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${accent} 35%, transparent)`,
-          }}
-        >
-          93.3 FM
-        </span>
+      <div className="px-3 py-2 border-b border-white/[0.06] bg-white/[0.02]">
+        <div className="flex justify-between items-center">
+          <span className="font-display text-sm text-white tracking-wide truncate">{RADIO.name}</span>
+          <span
+            className="text-[9px] font-bold px-2 py-0.5 rounded-full shrink-0"
+            style={{
+              color: accent,
+              background: `color-mix(in srgb, ${accent} 14%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${accent} 35%, transparent)`,
+            }}
+          >
+            {RADIO.frequency}
+          </span>
+        </div>
+        <p className="text-[8px] text-white/40 mt-0.5 truncate">
+          {RADIO.slogan} · {RADIO.city}
+        </p>
       </div>
 
       <div
@@ -80,8 +94,8 @@ function EnVivoScreen({
       {/* Banner — posición según plan */}
       <div className="px-3 pb-3 pt-2">
         {isExclusive && (
-          <p className="text-[8px] text-center text-[#7D59B5] font-bold uppercase tracking-wider mb-1.5">
-            Semana exclusiva · sin rotación
+          <p className="text-[8px] text-center font-bold uppercase tracking-wider mb-1.5" style={{ color: accent }}>
+            {tier?.programBadge ?? programPatrocinioLabel()} · {RADIO_AD.frequency}
           </p>
         )}
         <div
@@ -104,20 +118,22 @@ function EnVivoScreen({
             </div>
           )}
           <div className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center text-lg font-bold" style={{ background: `${accent}35`, color: accent }}>
-            T
+            {brandInitial}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold text-white truncate">Tu Negocio · Rancagua</p>
-            <p className="text-[9px] text-white/50 truncate">
-              {isHero ? '2×1 en almuerzos · Esta semana' : isExclusive ? 'Patrocinador oficial del mes' : 'Tu promoción aquí'}
-            </p>
+            <p className="text-[11px] font-bold text-white truncate">{brandTitle}</p>
+            <p className="text-[9px] text-white/50 truncate">{brandTagline}</p>
           </div>
           {!isHero && !isExclusive && (
             <span className="text-[7px] text-white/30 shrink-0">Rota</span>
           )}
         </div>
         <p className="text-[8px] text-white/30 text-center mt-1.5">
-          {isHero ? 'Banner fijo en pantalla En Vivo' : isExclusive ? 'Solo tu marca esta semana' : 'Banner compartido con otros anuncios'}
+          {isHero
+            ? `Banner destacado · ${RADIO_AD.stamp}`
+            : isExclusive
+              ? `${RADIO_AD.featuredProgramName} · semana sin rotación`
+              : `Banner rotativo · ${RADIO_AD.stamp}`}
         </p>
       </div>
     </>
@@ -145,7 +161,7 @@ export function PlanMockup({
     return (
       <PhoneFrame badge={PLAN_LABEL[planId]} compact={frameCompact} large={large}>
         <div style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}>
-          <EnVivoScreen accent={accent} bannerVariant="standard" />
+          <EnVivoScreen accent={accent} bannerVariant="standard" planId={planId} />
         </div>
       </PhoneFrame>
     )
@@ -155,33 +171,33 @@ export function PlanMockup({
     return (
       <PhoneFrame badge={compact && !large ? 'Vista en app' : 'Premium · Banner destacado'} compact={frameCompact} large={large}>
         <div style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}>
-          <EnVivoScreen accent={accent} bannerVariant="hero" />
+          <EnVivoScreen accent={accent} bannerVariant="hero" planId={planId} />
         </div>
       </PhoneFrame>
     )
   }
 
   if (kind === 'spot') {
+    const tier = getTierPreview(planId)
+    const spotLine = demoSpotScript(tier.cliente, tier.taglineAd.split('·')[0]?.trim() ?? 'tenemos la promo de la semana')
+
     return (
-      <PhoneFrame badge="Spot 30s al aire" large={large}>
+      <PhoneFrame badge={`Spot 30s · ${RADIO.frequency}`} large={large}>
         <div className="relative">
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             <img src="/sponsor/fm.png" alt="" className="w-full h-full object-cover" />
           </div>
           <div className="relative p-3 space-y-2">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-red-400 uppercase">En vivo · Locutor</span>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+              <span className="text-[10px] font-bold text-red-400 uppercase truncate">En vivo · {RADIO.name}</span>
+            </div>
+            <span className="text-[8px] text-white/40 shrink-0">{RADIO.city}</span>
           </div>
           <div className="rounded-xl p-3" style={{ background: `${accent}12`, border: `1px solid ${accent}35` }}>
-            <p className="text-[9px] text-white/40 uppercase mb-1">Script spot — Plan Básico</p>
-            <p className="text-xs text-white leading-relaxed">
-              “En{' '}
-              <span className="font-bold" style={{ color: accent }}>
-                Tu Restaurante
-              </span>{' '}
-              tenemos 2×1 los martes… Pásate por Av. Freire 1230, Rancagua.”
-            </p>
+            <p className="text-[9px] text-white/40 uppercase mb-1">Guión spot · {PLAN_LABEL[planId]}</p>
+            <p className="text-xs text-white leading-relaxed">{spotLine}</p>
           </div>
           <div className="flex items-end justify-center gap-0.5 h-8">
             {[3, 6, 4, 8, 5, 7, 4, 6, 3].map((h, i) => (
@@ -204,9 +220,10 @@ export function PlanMockup({
 
   if (kind === 'peak') {
     return (
-      <PhoneFrame badge="Premium · Horario peak" large={large}>
+      <PhoneFrame badge={`Premium · ${RADIO.frequency}`} large={large}>
         <div className="p-3">
-          <p className="text-[10px] text-white/50 mb-2">Spots cuando hay más oyentes</p>
+          <p className="text-[10px] text-white/50 mb-1">{RADIO_AD.audience}</p>
+          <p className="text-[10px] text-white/50 mb-2">Spots en horario peak ({RADIO_AD.featuredProgramName}, tarde y noche)</p>
           <div className="grid grid-cols-3 gap-1 mb-3">
             {[
               { h: '07–10', n: 2, hot: true },

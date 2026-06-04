@@ -11,6 +11,7 @@ import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
 import { SheetPortal } from '@/components/shared/SheetPortal'
 import { AccentButton } from '@/components/shared/AccentButton'
 import { PlanIncludesDisclosure } from '@/components/shared/PlanIncludesDisclosure'
+import { PlanDeliverablesChecklist } from '@/components/sponsor/PlanDeliverablesChecklist'
 
 interface PlanDetailSheetProps {
   plan: SponsorPlan | null
@@ -162,6 +163,8 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                <PlanDeliverablesChecklist planId={plan.id} color={plan.color} />
 
                 <PlanIncludesDisclosure
                   items={plan.incluye}

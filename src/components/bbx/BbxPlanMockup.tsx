@@ -85,7 +85,7 @@ export function BbxPlanMockup({
           </div>
         </div>
         <div className="flex justify-around py-2 border-t border-white/5">
-          {['En vivo', 'Grilla', 'Participá'].map((l, i) => (
+          {['En vivo', 'Grilla', 'Participa'].map((l, i) => (
             <span key={l} className="text-[7px] font-semibold" style={{ color: i === 0 ? accent : 'rgba(255,255,255,0.3)' }}>{l}</span>
           ))}
         </div>

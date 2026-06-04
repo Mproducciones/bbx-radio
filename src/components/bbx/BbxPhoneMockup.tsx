@@ -8,7 +8,7 @@ import { FEATURES } from '@/lib/plan'
 const NAV_TABS = [
   { label: 'En Vivo', active: true },
   { label: 'Grilla', active: false },
-  { label: 'Participá', active: false },
+  { label: 'Participa', active: false },
   { label: 'Saludos', active: false },
   ...(FEATURES.replay ? [{ label: 'Replay', active: false }] : []),
   { label: 'TV', active: false },

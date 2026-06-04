@@ -73,7 +73,7 @@ export function ReportsPanel() {
       ) : !report ? (
         <p className="py-8 text-center text-[#444468] text-xs">No se pudo cargar el reporte.</p>
       ) : (
-        <div className="p-4 space-y-4">
+        <div className="admin-card-body space-y-5">
           <div className="grid grid-cols-2 gap-2">
             {[
               { label: 'Oyentes prom.', value: report.listeners.avg, accent: '#40B9BF' },

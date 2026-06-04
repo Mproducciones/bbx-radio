@@ -80,7 +80,7 @@ export function BbxPlansSection({ embedded }: { embedded?: boolean } = {}) {
           <h2 className="font-display text-2xl md:text-4xl text-white leading-none">Planes BBX</h2>
           <p className="text-white/40 text-xs mt-1">Mensual + setup único · sin permanencia</p>
           <p className="text-white/30 text-[10px] mt-2 leading-relaxed max-w-xl">
-            Vendés <span className="text-[#db8918] font-semibold">Pro</span> como producto estándar (PWA + ingresos digitales).{' '}
+            Vendes <span className="text-[#db8918] font-semibold">Pro</span> como producto estándar (PWA + ingresos digitales).{' '}
             <span className="text-[#7D59B5] font-semibold">Premium</span> es upgrade: dominio, APK y Play Store los hace BBX.{' '}
             Precios Capa 1 (radio → BBX) —{' '}
             <a href="#precios-capas" className="text-[#40B9BF] hover:underline">ver las dos capas</a>.

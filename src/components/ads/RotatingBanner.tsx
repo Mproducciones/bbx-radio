@@ -5,18 +5,28 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/lib/sanity'
 import { cn } from '@/lib/utils'
 import { getDemoAds } from '@/lib/demoCampaigns'
+import { demoAdsForSponsorTier, readSponsorDemoTier } from '@/lib/sponsorAdTiers'
 import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
+import { AdBannerVisual } from '@/components/ads/AdBannerVisual'
+import { AdRadioStamp } from '@/components/ads/AdRadioStamp'
 import { sanitizeAdLink } from '@/lib/safeUrl'
+import { isExclusiveCampaign } from '@/lib/adExclusivity'
 
 interface Ad {
   _id: string
   nombre: string
+  cliente?: string
   tipo: string
+  tagline?: string
+  cta?: string
+  colorAccent?: string
   imagen?: any
   imagenUrl?: string
   enlace?: string
   activo: boolean
   prioridad: number
+  planContratado?: string
+  exclusivoApp?: boolean
 }
 
 interface RotatingBannerProps {
@@ -24,6 +34,7 @@ interface RotatingBannerProps {
   position?: 'top' | 'middle' | 'bottom'
   refreshInterval?: number
   className?: string
+  compact?: boolean
 }
 
 const TIPO_BY_POSITION = {
@@ -33,10 +44,16 @@ const TIPO_BY_POSITION = {
 } as const
 
 function demoAdsForPosition(position: 'top' | 'middle' | 'bottom'): Ad[] {
-  return getDemoAds(TIPO_BY_POSITION[position]).map(d => ({
+  const tier = readSponsorDemoTier()
+  const overrides = tier ? demoAdsForSponsorTier(tier) : undefined
+  return getDemoAds(TIPO_BY_POSITION[position], overrides).map(d => ({
     _id: d._id,
     nombre: d.nombre,
+    cliente: d.cliente,
     tipo: d.tipo,
+    tagline: d.tagline,
+    cta: d.cta,
+    colorAccent: d.colorAccent,
     imagenUrl: d.imagenUrl,
     enlace: d.enlace,
     activo: d.activo,
@@ -44,7 +61,13 @@ function demoAdsForPosition(position: 'top' | 'middle' | 'bottom'): Ad[] {
   }))
 }
 
-export function RotatingBanner({ interval = 6, position = 'top', refreshInterval = 30, className }: RotatingBannerProps) {
+export function RotatingBanner({
+  interval = 6,
+  position = 'top',
+  refreshInterval = 30,
+  className,
+  compact = false,
+}: RotatingBannerProps) {
   const initialAds = useMemo(() => demoAdsForPosition(position), [position])
   const [ads, setAds] = useState<Ad[]>(initialAds)
   const [index, setIndex] = useState(0)
@@ -61,7 +84,10 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
         const res = await fetch(`/api/ads?tipo=${encodeURIComponent(tipo)}`)
         if (res.ok) {
           const data = await res.json()
-          if (Array.isArray(data) && data.length > 0) setAds(data)
+          if (Array.isArray(data) && data.length > 0) {
+            const hasImage = data.some((a: Ad) => a.imagenUrl || a.imagen)
+            if (hasImage) setAds(data)
+          }
         }
       } catch {}
     }
@@ -71,22 +97,26 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
   }, [position, refreshInterval])
 
   const total = ads.length
+  const noRotation = total <= 1 || ads.some(a => isExclusiveCampaign(a))
 
   useEffect(() => {
-    if (total <= 1) return
+    if (noRotation) return
     const t = setInterval(() => setIndex(p => (p + 1) % total), interval * 1000)
     return () => clearInterval(t)
-  }, [total, interval])
+  }, [noRotation, total, interval])
 
   if (total === 0) return null
 
   const ad = ads[index % total]
-  const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : '')
+  const showExclusiveBadge = isExclusiveCampaign(ad)
+  const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : undefined)
   const placement = `rotating_${position}`
   const link = sanitizeAdLink(ad.enlace)
+  const minH = compact ? 64 : 80
+  const maxH = compact ? 120 : 180
 
   return (
-    <AdTrackView adId={ad._id} adTipo={ad.tipo} placement={placement} className={cn('w-full', className)}>
+    <AdTrackView adId={ad._id} adTipo={ad.tipo} placement={placement} className={cn('w-full shrink-0', className)}>
       <AnimatePresence mode="wait">
         <motion.a
           key={ad._id}
@@ -100,11 +130,23 @@ export function RotatingBanner({ interval = 6, position = 'top', refreshInterval
           transition={{ duration: 0.4 }}
           className="relative block overflow-hidden rounded-xl"
         >
-          {imageUrl
-            ? <img src={imageUrl} alt={ad.nombre} className="w-full object-cover rounded-xl" style={{ maxHeight: 180, minHeight: 80 }} />
-            : <div className="w-full h-24 flex items-center justify-center bg-[#0F0F1A] rounded-xl"><span className="text-white text-sm">{ad.nombre}</span></div>
-          }
-          <div className="absolute bottom-2 right-2 text-[9px] text-white/50 bg-black/60 px-2 py-0.5 rounded-full">Publicidad</div>
+          {showExclusiveBadge && (
+            <span
+              className="absolute top-1.5 right-1.5 z-10 text-[7px] font-black uppercase px-1.5 py-0.5 rounded-md"
+              style={{
+                background: ad.colorAccent ?? '#7D59B5',
+                color: '#07070e',
+              }}
+            >
+              Exclusivo
+            </span>
+          )}
+          <AdBannerVisual
+            ad={{ ...ad, imagenUrl: imageUrl }}
+            minHeight={minH}
+            maxHeight={maxH}
+          />
+          <AdRadioStamp compact={compact} />
         </motion.a>
       </AnimatePresence>
     </AdTrackView>

@@ -63,7 +63,7 @@ export function SponsorLiveSection() {
       <div ref={headerRef} className="mb-4 opacity-0">
         <h2 className="text-base font-semibold text-white">Prueba en vivo</h2>
         <p className="text-white/55 text-sm mt-1 leading-relaxed">
-          Tocá cada función para verla en la app. Los spots FM se activan al contratar.
+          Toca cada función para verla en la app. Los spots FM se activan al contratar.
         </p>
       </div>
 

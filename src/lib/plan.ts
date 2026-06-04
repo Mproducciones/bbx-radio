@@ -14,8 +14,16 @@ export const PLAN_LABELS: Record<Plan, string> = {
   premium: 'Premium',
 }
 
+/** Override explícito: muchas radios no curan noticias (contenido viejo en web/CMS). */
+function featureNoticias(): boolean {
+  const flag = process.env.NEXT_PUBLIC_ENABLE_NOTICIAS
+  if (flag === 'true') return true
+  if (flag === 'false') return false
+  return CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium'
+}
+
 export const FEATURES = {
-  noticias:     CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
+  noticias:     featureNoticias(),
   eventos:      CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
   replay:       CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',
   publicidad:   CURRENT_PLAN === 'pro' || CURRENT_PLAN === 'premium',

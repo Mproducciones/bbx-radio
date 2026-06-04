@@ -53,8 +53,8 @@ export function AdminCardHeader({
       <div className="flex items-center gap-2.5 min-w-0">
         {icon ? <div className="admin-card-header__icon">{icon}</div> : null}
         <div className="min-w-0">
-          <p className="text-white font-semibold text-sm truncate">{title}</p>
-          {badges ? <div className="flex flex-wrap gap-1.5 mt-1">{badges}</div> : null}
+          <p className="admin-card-title truncate">{title}</p>
+          {badges ? <div className="flex flex-wrap gap-2 mt-1.5">{badges}</div> : null}
         </div>
       </div>
       {action}
@@ -89,8 +89,8 @@ export function AdminKpi({
   return (
     <div className="admin-kpi" style={{ '--kpi-accent': color } as CSSProperties}>
       <div className="admin-kpi__icon">{icon}</div>
-      <p className="font-display text-xl sm:text-2xl text-white leading-none tabular-nums">{value}</p>
-      <p className="text-[8px] sm:text-[10px] mt-1 leading-tight font-semibold uppercase tracking-wide" style={{ color: `${color}cc` }}>
+      <p className="font-display text-2xl sm:text-3xl text-white leading-none tabular-nums">{value}</p>
+      <p className="text-[11px] sm:text-xs mt-1.5 leading-tight font-bold uppercase tracking-wide" style={{ color: `${color}cc` }}>
         {sub}
       </p>
     </div>
@@ -188,11 +188,38 @@ export function AdminSegment({
   )
 }
 
+export function AdminAccentButton({
+  children,
+  onClick,
+  accent = '#db8918',
+  disabled,
+}: {
+  children: ReactNode
+  onClick?: () => void
+  accent?: string
+  disabled?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="admin-btn-accent disabled:opacity-50"
+      style={{
+        background: `linear-gradient(135deg, ${accent}, color-mix(in srgb, ${accent} 75%, white))`,
+        boxShadow: `0 8px 24px -8px ${accent}66`,
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
 export function AdminSpinner({ color = '#db8918' }: { color?: string }) {
   return (
-    <div className="py-8 flex justify-center">
+    <div className="py-10 flex justify-center">
       <div
-        className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
+        className="w-7 h-7 border-2 border-t-transparent rounded-full animate-spin"
         style={{ borderColor: `${color}55`, borderTopColor: 'transparent' }}
       />
     </div>
@@ -201,7 +228,7 @@ export function AdminSpinner({ color = '#db8918' }: { color?: string }) {
 
 function IconBase(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" {...props} />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5" {...props} />
   )
 }
 

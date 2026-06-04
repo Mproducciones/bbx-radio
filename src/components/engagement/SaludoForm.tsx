@@ -249,7 +249,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
               <textarea
                 value={mensaje}
                 onChange={e => setMensaje(e.target.value.slice(0, 120))}
-                placeholder="ej: Te queremos mucho, sos lo mejor de nuestra vida"
+                placeholder="ej: Te queremos mucho, eres lo mejor de nuestra vida"
                 rows={2}
                 className="bg-white/[0.03] border border-white/[0.07] focus:border-[#db8918]/40 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors resize-none placeholder-white/15"
               />
