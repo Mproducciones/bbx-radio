@@ -5,7 +5,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react'
 import { accentTileStyle } from '@/lib/accentUi'
 import { springSnappy } from '@/lib/motion/framer'
 
-const TILE_MIN_H = 'min-h-[8.5rem]'
+const TILE_MIN_H = 'min-h-[6.75rem]'
 
 type BbxHubTileProps = {
   value: string
@@ -36,7 +36,7 @@ export function BbxHubTile({
   const ctaText = actionLabel ?? (isExternal ? 'Abrir WhatsApp' : 'Ver más info')
 
   const className = [
-    'group relative w-full rounded-2xl px-3 py-3 text-left overflow-hidden',
+    'group relative w-full rounded-xl px-2.5 py-2 text-left overflow-hidden',
     'flex flex-col items-stretch',
     TILE_MIN_H,
     'ring-1 ring-inset ring-white/[0.06]',
@@ -63,7 +63,7 @@ export function BbxHubTile({
       />
 
       <span
-        className="absolute top-2.5 right-2.5 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md"
+        className="absolute top-2 right-2 text-[7px] font-bold uppercase tracking-wider px-1 py-0.5 rounded"
         style={{
           background: `${accent}20`,
           color: accent,
@@ -73,17 +73,17 @@ export function BbxHubTile({
         Tocable
       </span>
 
-      <div className="relative h-9 flex items-end shrink-0 pr-14">
+      <div className="relative h-7 flex items-end shrink-0 pr-12">
         {emphasis === 'stat' ? (
           <p
-            className="font-display text-2xl leading-none tabular-nums tracking-wide"
+            className="font-display text-xl leading-none tabular-nums tracking-wide"
             style={{ color: accent }}
           >
             {value}
           </p>
         ) : (
           <span
-            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md leading-none"
+            className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded leading-none"
             style={{ background: `${accent}22`, color: accent, border: `1px solid ${accent}45` }}
           >
             {value}
@@ -91,24 +91,24 @@ export function BbxHubTile({
         )}
       </div>
 
-      <p className="relative text-sm font-semibold text-white leading-snug mt-1.5 line-clamp-1 pr-2">{label}</p>
-      <p className="relative text-xs text-white/55 leading-snug mt-0.5 line-clamp-1">{subtitle ?? '\u00A0'}</p>
+      <p className="relative text-xs font-semibold text-white leading-snug mt-1 line-clamp-1 pr-1">{label}</p>
+      <p className="relative text-[10px] text-white/55 leading-snug mt-0.5 line-clamp-1">{subtitle ?? '\u00A0'}</p>
       {hint ? (
-        <p className="relative text-[10px] text-white/35 mt-1 line-clamp-1">{hint}</p>
+        <p className="relative text-[9px] text-white/35 mt-0.5 line-clamp-1">{hint}</p>
       ) : null}
 
       <div
-        className="relative mt-auto pt-2 flex items-center justify-between gap-2 rounded-xl px-2.5 py-2 transition-colors group-hover:brightness-110"
+        className="relative mt-auto pt-1.5 flex items-center justify-between gap-1.5 rounded-lg px-2 py-1.5 transition-colors group-hover:brightness-110"
         style={{
           background: `color-mix(in srgb, ${accent} 14%, transparent)`,
           border: `1px solid color-mix(in srgb, ${accent} 32%, transparent)`,
         }}
       >
-        <span className="text-[10px] font-bold text-white/80 leading-tight">{ctaText}</span>
+        <span className="text-[9px] font-bold text-white/80 leading-tight">{ctaText}</span>
         {isExternal ? (
-          <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-90" style={{ color: accent }} aria-hidden />
+          <ExternalLink className="w-3 h-3 shrink-0 opacity-90" style={{ color: accent }} aria-hidden />
         ) : (
-          <ChevronRight className="w-4 h-4 shrink-0 opacity-90 group-hover:translate-x-0.5 transition-transform" style={{ color: accent }} aria-hidden />
+          <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-90 group-hover:translate-x-0.5 transition-transform" style={{ color: accent }} aria-hidden />
         )}
       </div>
     </>

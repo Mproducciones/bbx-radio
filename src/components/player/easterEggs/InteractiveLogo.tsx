@@ -264,10 +264,14 @@ export function InteractiveLogo({
                 priority
                 draggable={false}
                 unoptimized={artSrc.startsWith('http')}
+                className="rounded-full"
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'contain',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  transform: 'scale(1.18)',
+                  transformOrigin: 'center',
                   pointerEvents: 'none',
                   filter: isPlaying
                     ? `drop-shadow(0 0 14px ${primary}) drop-shadow(0 0 28px ${primary}60)`

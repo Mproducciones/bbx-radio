@@ -44,8 +44,25 @@ export function VinylDiscFrame({
           background: `conic-gradient(from 0deg, ${accent}12, transparent 25%, ${accent}08, transparent 50%, ${accent}10, transparent 75%, ${accent}08)`,
         }}
       />
-      <div className="relative z-[2]" style={{ width: size, height: size }}>
+      <div className="relative z-[2] rounded-full overflow-hidden" style={{ width: size, height: size }}>
         {children}
+        <div
+          className="absolute inset-[18%] rounded-full pointer-events-none z-[4]"
+          style={{
+            boxShadow: `inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 0 16px rgba(0,0,0,0.35)`,
+          }}
+          aria-hidden
+        />
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full z-[30] pointer-events-none"
+          style={{
+            width: size * 0.09,
+            height: size * 0.09,
+            background: 'radial-gradient(circle, #1a1a24 0%, #050508 100%)',
+            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.9), 0 0 0 2px rgba(255,255,255,0.06)',
+          }}
+          aria-hidden
+        />
       </div>
     </div>
   )

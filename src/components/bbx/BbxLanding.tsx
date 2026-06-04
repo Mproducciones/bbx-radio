@@ -49,13 +49,13 @@ function LiveDemoBar() {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 border border-[#db8918]/30"
+      className="w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 border border-[#db8918]/30"
       style={{ background: 'linear-gradient(90deg, rgba(219,137,24,0.12) 0%, rgba(255,255,255,0.03) 100%)' }}
       role="region"
       aria-label="Demo de radio en vivo"
     >
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
         style={{ background: 'rgba(219,137,24,0.18)', color: '#db8918' }}
       >
         <Radio className="w-5 h-5" strokeWidth={2.5} aria-hidden />
@@ -70,7 +70,7 @@ function LiveDemoBar() {
       <button
         type="button"
         onClick={toggle}
-        className="shrink-0 inline-flex items-center gap-1.5 rounded-xl px-3 py-2.5 min-h-[44px] text-xs font-bold text-white transition-colors"
+        className="shrink-0 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-bold text-white transition-colors"
         style={{
           background: 'rgba(255,255,255,0.08)',
           border: '1px solid rgba(255,255,255,0.14)',
@@ -209,32 +209,32 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
         Demo gratis · sin permanencia · soporte incluido
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+      <div className="flex flex-col sm:flex-row gap-2 justify-center items-stretch sm:items-center max-w-md mx-auto">
         <a
           href={demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm w-full sm:w-auto"
+          className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg font-bold text-xs sm:flex-1"
           style={{
             background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
             color: 'var(--color-ink-900)',
             boxShadow: '0 8px 32px -6px rgba(219,137,24,0.55)',
           }}
         >
-          <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
-          Agendar demo ahora
+          <Rocket className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
+          Agendar demo
         </a>
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm w-full sm:w-auto text-white/75 hover:text-white transition-colors min-h-[44px]"
+          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg font-semibold text-[11px] sm:flex-1 text-white/75 hover:text-white transition-colors"
           style={{
             background: 'rgba(255,255,255,0.06)',
             border: '1px solid rgba(255,255,255,0.12)',
           }}
         >
-          <ChevronLeft className="w-4 h-4 shrink-0" strokeWidth={2.5} aria-hidden />
-          Volver a Radio Bienvenida
+          <ChevronLeft className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
+          Volver a la radio
         </button>
       </div>
     </motion.div>
@@ -306,7 +306,7 @@ export function BbxLanding() {
         <div className="app-gutter-x w-full min-h-12 py-2 flex items-center justify-between gap-2 md:max-w-5xl md:mx-auto md:px-4">
           <Link
             href="/"
-            className="shrink-0 inline-flex items-center gap-2 rounded-xl px-2.5 py-2 min-h-[44px] transition-colors hover:bg-white/[0.08]"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/[0.08]"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
             aria-label="Volver a Radio Bienvenida en vivo"
           >
@@ -331,7 +331,7 @@ export function BbxLanding() {
             href={demoHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-shimmer shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl text-[11px] font-bold px-3 py-1.5 whitespace-nowrap"
+            className="btn-shimmer shrink-0 inline-flex items-center justify-center gap-1 rounded-lg text-[10px] font-bold px-2.5 py-1.5 whitespace-nowrap"
             style={{
               background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
               color: 'var(--color-ink-900)',
@@ -376,25 +376,25 @@ export function BbxLanding() {
                 <span className="text-[#00D9A0] text-[11px] font-semibold">{BBX_HERO.proof}</span>
               </div>
 
-              <div data-hero className="flex flex-col sm:flex-row gap-3 pt-1 opacity-0">
+              <div data-hero className="flex flex-col sm:flex-row gap-2 pt-1 opacity-0">
                 <a
                   href={bbxWhatsApp('Hola Bryan, quiero demo BBX.')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm"
+                  className="btn-shimmer glow-amber-pulse inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg font-bold text-xs w-fit"
                   style={{
                     background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
                     color: 'var(--color-ink-900)',
                     boxShadow: '0 6px 28px -6px rgba(219,137,24,0.6)',
                   }}
                 >
-                  <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+                  <Rocket className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
                   Demo gratuito
                 </a>
                 <button
                   type="button"
                   onClick={() => openSection('planes')}
-                  className="glass inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-bold text-sm text-white/80 hover:text-white transition-colors"
+                  className="glass inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg font-semibold text-[11px] text-white/80 hover:text-white transition-colors w-fit"
                 >
                   Ver planes →
                 </button>
@@ -457,7 +457,7 @@ export function BbxLanding() {
               Cada tarjeta abre el detalle completo — tocá para ver módulos, planes, proceso y preguntas frecuentes.
             </p>
           </div>
-          <div ref={hubRef} className="grid grid-cols-2 md:grid-cols-3 gap-3 min-w-0">
+          <div ref={hubRef} className="grid grid-cols-2 md:grid-cols-3 gap-2 min-w-0">
             {BBX_HUB_SECTIONS.map(tile => (
               <div key={tile.id} className="flex min-w-0" data-hub-tile>
                 <BbxHubTile
@@ -499,25 +499,25 @@ export function BbxLanding() {
       </footer>
 
       <div
-        className="relative z-[1] shrink-0 md:hidden sticky bottom-0 border-t border-white/[0.08] backdrop-blur-xl pt-3 app-gutter-x"
+        className="relative z-[1] shrink-0 md:hidden sticky bottom-0 border-t border-white/[0.08] backdrop-blur-xl pt-2 app-gutter-x"
         style={{
           background: 'rgba(7,7,14,0.97)',
-          paddingBottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
+          paddingBottom: 'max(8px, env(safe-area-inset-bottom, 0px))',
         }}
       >
         <a
           href={demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-shimmer glow-amber-pulse flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm"
+          className="btn-shimmer glow-amber-pulse flex items-center justify-center gap-1.5 w-full max-w-sm mx-auto py-2 rounded-lg font-bold text-xs"
           style={{
             background: 'linear-gradient(135deg, var(--color-mag-400), var(--color-mag-200))',
             color: 'var(--color-ink-900)',
             boxShadow: '0 6px 28px -6px rgba(219,137,24,0.6)',
           }}
         >
-          <Rocket className="w-4 h-4" strokeWidth={2.5} aria-hidden />
-          Agendar demo gratis
+          <Rocket className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
+          Agendar demo
         </a>
       </div>
     </div>

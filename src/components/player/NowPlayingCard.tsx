@@ -199,30 +199,30 @@ export function NowPlayingCard({
   if (immersive && !showZeno) {
     const metaTitle = hasRealSong ? (nowPlaying.title ?? radio.name) : radio.name
     const metaSub = hasRealSong ? (nowPlaying.artist ?? '') : radio.slogan
-    const visualSize = 188
+    const vinylOuter = CV + 56
 
     return (
       <>
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
         <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full overflow-hidden">
-          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-0.5">
+          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1 overflow-visible">
             <div
-              className="relative shrink-0 flex items-center justify-center w-full max-w-[min(188px,58vw)] aspect-square overflow-hidden"
-              style={{ width: visualSize, height: visualSize }}
+              className="relative shrink-0 flex items-center justify-center overflow-visible origin-center scale-[0.68] min-[380px]:scale-[0.74] sm:scale-[0.82]"
+              style={{ width: vinylOuter, height: vinylOuter }}
             >
               <div
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+                className="absolute inset-0 m-auto rounded-full pointer-events-none"
                 style={{
-                  width: '92%',
-                  height: '92%',
+                  width: '94%',
+                  height: '94%',
                   background: `radial-gradient(circle, ${primary}42 0%, ${primary}18 42%, ${secondary}08 58%, transparent 72%)`,
                   filter: 'blur(22px)',
                 }}
                 aria-hidden
               />
               <div
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full overflow-hidden opacity-50 pointer-events-none"
-                style={{ width: '86%', height: '86%' }}
+                className="absolute inset-0 m-auto rounded-full overflow-hidden opacity-45 pointer-events-none"
+                style={{ width: '88%', height: '88%' }}
                 aria-hidden
               >
                 <DotGridVisualizer
@@ -233,26 +233,24 @@ export function NowPlayingCard({
                   className="w-full h-full"
                 />
               </div>
-              <div className="relative scale-[0.88] sm:scale-[0.92] origin-center z-[1]">
-                <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
-                  <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
-                  <InteractiveLogo
-                    artSrc={artSrc}
-                    title={title ?? radio.name}
-                    frequency={radio.frequency}
-                    isPlaying={isPlaying}
-                    primary={primary}
-                    secondary={secondary}
-                    logoDigital={secrets.logoDigital}
-                    logoBurst={secrets.logoBurst}
-                    logoHold={secrets.logoHold}
-                    onHoldStart={secrets.startLogoHold}
-                    onHoldEnd={secrets.endLogoHold}
-                    onTouchEnd={secrets.onLogoTouchEnd}
-                    onTap={secrets.onLogoTap}
-                  />
-                </VinylDiscFrame>
-              </div>
+              <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
+                <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
+                <InteractiveLogo
+                  artSrc={artSrc}
+                  title={title ?? radio.name}
+                  frequency={radio.frequency}
+                  isPlaying={isPlaying}
+                  primary={primary}
+                  secondary={secondary}
+                  logoDigital={secrets.logoDigital}
+                  logoBurst={secrets.logoBurst}
+                  logoHold={secrets.logoHold}
+                  onHoldStart={secrets.startLogoHold}
+                  onHoldEnd={secrets.endLogoHold}
+                  onTouchEnd={secrets.onLogoTouchEnd}
+                  onTap={secrets.onLogoTap}
+                />
+              </VinylDiscFrame>
             </div>
           </div>
 
