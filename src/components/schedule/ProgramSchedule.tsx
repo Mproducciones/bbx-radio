@@ -55,7 +55,7 @@ export function ProgramSchedule({
       aria-labelledby="programacion-heading"
       className={cn(
         'relative flex flex-col gap-3 max-md:gap-2 rounded-3xl p-3 max-md:p-3 md:p-4',
-        fill && 'flex-1 min-h-0',
+        fill && 'md:flex-1 md:min-h-0',
         className,
       )}
       style={{
@@ -151,8 +151,8 @@ export function ProgramSchedule({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: EASE_OUT }}
           className={cn(
-            'flex flex-col gap-1.5 max-md:gap-1',
-            fill && 'flex-1 min-h-0 overflow-y-auto overscroll-contain max-md:pb-[calc(var(--app-nav-total)+var(--app-mini-player-total)+0.75rem)]',
+            'flex flex-col gap-1.5 max-md:gap-1 max-md:pb-1',
+            fill && 'md:flex-1 md:min-h-0 md:overflow-y-auto md:overscroll-contain md:pb-2',
           )}
         >
           {filtered.length === 0 ? (

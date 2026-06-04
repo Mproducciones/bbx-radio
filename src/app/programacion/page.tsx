@@ -17,11 +17,11 @@ export default async function ProgramacionPage() {
   const initialDay = getTodayInTimezone('America/Santiago')
 
   return (
-    <AppMenuScreen>
-      <div className="flex flex-col flex-1 min-h-0 max-md:gap-2 md:gap-5">
-        <RotatingBanner position="top" compact className="shrink-0 max-md:mb-1" />
-        <ProgramSchedule programs={programs} initialDay={initialDay} fill />
-        <RotatingBanner position="bottom" compact className="shrink-0 max-md:mt-1" />
+    <AppMenuScreen scroll className="programacion-route w-full min-w-0">
+      <div className="flex flex-col gap-2 md:gap-5 max-md:pb-3 md:min-h-0 md:flex-1 md:flex md:flex-col">
+        <RotatingBanner position="top" compact className="shrink-0" />
+        <ProgramSchedule programs={programs} initialDay={initialDay} fill className="max-md:shrink-0" />
+        <RotatingBanner position="bottom" compact className="shrink-0 hidden md:block" />
       </div>
     </AppMenuScreen>
   )

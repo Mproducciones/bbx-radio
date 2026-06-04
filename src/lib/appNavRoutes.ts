@@ -20,7 +20,15 @@ export function appNavIndex(path: string): number {
 }
 
 /** Rutas con scroll propio — sin animación swipe del shell */
-export const APP_SCROLL_ROUTES = ['/bbx', '/anunciate', '/admin', '/studio', '/patrocinadores', '/lanzamientos'] as const
+export const APP_SCROLL_ROUTES = [
+  '/programacion',
+  '/bbx',
+  '/anunciate',
+  '/admin',
+  '/studio',
+  '/patrocinadores',
+  '/lanzamientos',
+] as const
 
 export function isAppScrollRoute(path: string): boolean {
   return APP_SCROLL_ROUTES.some(r => path.startsWith(r))

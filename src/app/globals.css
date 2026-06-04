@@ -411,6 +411,15 @@ body {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
+
+  /* Grilla — scroll de página; todos los bloques visibles al deslizar */
+  .programacion-route {
+    max-width: 100%;
+  }
+
+  .programacion-route > div {
+    padding-bottom: calc(var(--app-nav-total) + 0.5rem);
+  }
 }
 
 /* Sin contain:paint — recortaba bordes redondeados y dejaba esquinas “cortadas” */

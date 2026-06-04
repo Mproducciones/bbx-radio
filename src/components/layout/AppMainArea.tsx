@@ -2,12 +2,11 @@
 
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-
-const SCROLL_ROUTES = ['/bbx', '/anunciate', '/admin', '/studio', '/patrocinadores', '/lanzamientos'] as const
+import { isAppScrollRoute } from '@/lib/appNavRoutes'
 
 export function AppMainArea({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const scrollOnMobile = SCROLL_ROUTES.some(r => pathname.startsWith(r))
+  const scrollOnMobile = isAppScrollRoute(pathname)
 
   return (
     <div
