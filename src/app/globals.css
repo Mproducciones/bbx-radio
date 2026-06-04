@@ -2196,14 +2196,59 @@ body {
   opacity: 0.75;
 }
 
-/* ── Campanita — bandeja de avisos in-app ─────────────────────────────── */
-.app-notif-bell {
+/* ── Campanita — bandeja de avisos in-app (arrastrable) ───────────────── */
+.app-notif-fab {
   position: fixed;
   z-index: 221;
-  top: calc(var(--app-safe-top) + 10px);
-  right: calc(var(--app-gutter-right) + 4px);
-  width: 2.5rem;
-  height: 2.5rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app-notif-fab.is-dragging {
+  cursor: grabbing;
+}
+
+.app-notif-fab.is-dragging .app-notif-bell {
+  box-shadow: 0 12px 32px -6px rgba(219, 137, 24, 0.45);
+  border-color: rgba(219, 137, 24, 0.35);
+}
+
+.app-notif-fab__minimize {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  z-index: 2;
+  width: 1.15rem;
+  height: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(7, 7, 14, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  touch-action: manipulation;
+}
+
+.app-notif-fab__minimize:active {
+  transform: scale(0.92);
+}
+
+.app-notif-fab.is-minimized .app-notif-bell {
+  border-radius: 9999px;
+}
+
+.app-notif-fab.is-minimized .app-notif-bell__icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.app-notif-bell {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2214,13 +2259,12 @@ body {
   box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  touch-action: manipulation;
 }
 
-@media (min-width: 768px) {
-  .app-notif-bell {
-    top: 14px;
-    right: 18px;
-  }
+.app-notif-bell__icon {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .app-notif-bell__badge {
@@ -2252,12 +2296,7 @@ body {
 .app-notif-panel {
   position: fixed;
   z-index: 220;
-  top: calc(var(--app-safe-top) + 3.25rem);
-  left: var(--app-gutter-left);
-  right: var(--app-gutter-right);
   max-width: 22rem;
-  margin-left: auto;
-  margin-right: 0;
   max-height: min(70dvh, 28rem);
   display: flex;
   flex-direction: column;
@@ -2266,6 +2305,31 @@ body {
   background: linear-gradient(165deg, rgba(18, 18, 30, 0.98) 0%, rgba(7, 7, 14, 0.96) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 20px 50px -16px rgba(0, 0, 0, 0.65);
+}
+
+.app-notif-panel__hint {
+  padding: 0 1rem 0.5rem;
+  font-size: 0.5625rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.app-notif-panel__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.app-notif-panel__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .app-notif-panel__head {
