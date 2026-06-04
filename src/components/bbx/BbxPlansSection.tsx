@@ -39,11 +39,16 @@ function PlanCard({ plan, onExamples, index }: { plan: BbxPlan; onExamples: () =
         <h3 className="font-display text-2xl text-white leading-none">{plan.nombre}</h3>
         <p className="text-white/45 text-xs mt-1 leading-snug">{plan.tagline}</p>
 
-        <div className="mt-2.5 flex items-baseline gap-0.5">
-          <span className="text-white/35 text-sm">$</span>
-          <span className="text-2xl font-bold text-white tabular-nums">{plan.precio}</span>
-          <span className="text-white/35 text-xs ml-0.5">/mes</span>
-          <span className="text-white/25 text-[10px] ml-auto">setup ${plan.setup}</span>
+        <div className="mt-2.5">
+          <div className="flex items-baseline gap-0.5">
+            <span className="text-white/35 text-sm">$</span>
+            <span className="text-2xl font-bold text-white tabular-nums">{plan.precio}</span>
+            <span className="text-white/35 text-xs ml-0.5">/mes</span>
+            <span className="text-white/25 text-[10px] ml-auto">setup ${plan.setup}</span>
+          </div>
+          <p className="text-[10px] mt-1 leading-snug" style={{ color: `${plan.color}99` }}>
+            Anual ${plan.precioAnual} · {plan.ahorroAnual}
+          </p>
         </div>
 
         <BbxPlanPreviewThumb planId={plan.id} color={plan.color} />
@@ -78,7 +83,7 @@ export function BbxPlansSection({ embedded }: { embedded?: boolean } = {}) {
         <div className="mb-4 md:mb-6">
           <p className="text-[#db8918] text-[9px] font-bold uppercase tracking-[0.18em] mb-1">Precios claros</p>
           <h2 className="font-display text-2xl md:text-4xl text-white leading-none">Planes BBX</h2>
-          <p className="text-white/40 text-xs mt-1">Mensual + setup único · sin permanencia</p>
+          <p className="text-white/40 text-xs mt-1">Mensual o anual (2 meses gratis) + setup único</p>
           <p className="text-white/30 text-[10px] mt-2 leading-relaxed max-w-xl">
             Vendes <span className="text-[#db8918] font-semibold">Pro</span> como producto estándar (PWA + ingresos digitales).{' '}
             <span className="text-[#7D59B5] font-semibold">Premium</span> es upgrade: dominio, APK y Play Store los hace BBX.{' '}

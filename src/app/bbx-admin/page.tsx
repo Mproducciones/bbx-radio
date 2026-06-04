@@ -6,6 +6,7 @@ import { Shield } from 'lucide-react'
 import { AdminPageBackground, AdminGhostButton } from '@/components/admin/adminUi'
 import { AdminLoginScreen } from '@/components/admin/AdminLoginScreen'
 import { BillingPanel } from '@/components/admin/BillingPanel'
+import { BbxOpsCenter } from '@/components/admin/BbxOpsCenter'
 import { adminLoginErrorMessage } from '@/lib/adminLoginErrors'
 
 type PageState = 'login' | 'dashboard'
@@ -132,7 +133,7 @@ export default function BbxAdminPage() {
                   Super admin
                 </span>
               </p>
-              <p className="text-white/45 text-xs mt-0.5 truncate">Suscripciones · todas las radios</p>
+              <p className="text-white/45 text-xs mt-0.5 truncate">Ops · suscripciones · alertas</p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -149,10 +150,11 @@ export default function BbxAdminPage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-6 pb-12">
+      <main className="max-w-3xl mx-auto px-4 py-6 pb-12 space-y-6">
+        <BbxOpsCenter />
         <BillingPanel />
-        <p className="mt-10 text-center text-white/20 text-[10px] tracking-[0.18em] uppercase">
-          BBX Radio System · Panel de suscripciones
+        <p className="mt-4 text-center text-white/20 text-[10px] tracking-[0.18em] uppercase">
+          BBX Radio System · Super admin
         </p>
       </main>
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { bbxWhatsApp, BBX_CONTACT } from '@/lib/bbxContent'
 
 export function SubscriptionGraceBannerClient({
@@ -11,20 +12,8 @@ export function SubscriptionGraceBannerClient({
   daysRemaining: number | null
 }) {
   const [dismissed, setDismissed] = useState(false)
-  const [paying, setPaying] = useState(false)
 
   if (dismissed) return null
-
-  async function payNow() {
-    setPaying(true)
-    try {
-      const res = await fetch('/api/billing/checkout', { method: 'POST' })
-      const data = await res.json()
-      if (data.url) window.location.href = data.url
-    } finally {
-      setPaying(false)
-    }
-  }
 
   return (
     <div
@@ -41,14 +30,12 @@ export function SubscriptionGraceBannerClient({
         {daysRemaining != null ? ` · ${daysRemaining} día${daysRemaining !== 1 ? 's' : ''} de gracia` : ''}
         {reason ? ` — ${reason}` : ''}
       </span>
-      <button
-        type="button"
-        onClick={payNow}
-        disabled={paying}
-        className="px-3 py-1 rounded-lg font-bold bg-[#07070e]/90 text-[#db8918] text-xs disabled:opacity-60"
+      <Link
+        href="/suspended"
+        className="px-3 py-1 rounded-lg font-bold bg-[#07070e]/90 text-[#db8918] text-xs"
       >
-        {paying ? '…' : 'Pagar ahora'}
-      </button>
+        Regularizar pago
+      </Link>
       <a
         href={bbxWhatsApp(`Hola ${BBX_CONTACT.name}, quiero regularizar el pago de mi radio BBX.`)}
         className="underline font-medium opacity-90"

@@ -33,12 +33,16 @@ export async function PATCH(req: NextRequest) {
 
   switch (body.action) {
     case 'mark_paid': {
+      const billingCycle = body.billingCycle === 'annual' ? 'annual' : 'monthly'
       const result = await markPaymentReceived({
         tenantId,
         plan: body.plan ? String(body.plan) : undefined,
         billingEmail: body.billingEmail ? String(body.billingEmail) : undefined,
         amountClp: body.amountClp ? Number(body.amountClp) : undefined,
-        notes: body.notes ? String(body.notes) : 'Pago registrado manualmente desde panel BBX',
+        billingCycle,
+        notes: body.notes
+          ? String(body.notes)
+          : `Pago manual (${billingCycle === 'annual' ? 'anual' : 'mensual'}) desde panel BBX`,
       })
       if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 })
       break

@@ -1,6 +1,12 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { RADIO } from '@/lib/radioConfig'
 import { CURRENT_PLAN } from '@/lib/plan'
+import {
+  amountForPlan,
+  periodDaysForCycle,
+  type BillingCycle,
+  type BbxSubscriptionPlanId,
+} from '@/lib/bbxSubscriptionPlans'
 
 export type SubscriptionStatus = 'active' | 'grace' | 'suspended' | 'trial'
 
@@ -213,6 +219,10 @@ export function isRouteAllowedWhenSuspended(pathname: string): boolean {
   if (pathname.startsWith('/admin')) return true
   if (pathname.startsWith('/bbx-admin')) return true
   if (pathname.startsWith('/api/admin/billing')) return true
+  if (pathname.startsWith('/api/admin/ops')) return true
+  if (pathname.startsWith('/api/admin/login')) return true
+  if (pathname.startsWith('/api/admin/me')) return true
+  if (pathname.startsWith('/api/admin/logout')) return true
   if (pathname.startsWith('/api/billing/')) return true
   if (pathname.startsWith('/_next')) return true
   if (pathname.startsWith('/icons')) return true
@@ -232,29 +242,38 @@ export async function upsertTenantSubscription(
   return { ok: true }
 }
 
-/** Marca pago recibido — extiende 30 días desde hoy */
+/** Marca pago recibido — extiende periodo según ciclo (30 d mensual / 365 d anual) */
 export async function markPaymentReceived(opts: {
   tenantId?: string
   plan?: string
   billingEmail?: string
   amountClp?: number
   notes?: string
+  billingCycle?: BillingCycle
 }): Promise<{ ok: boolean; error?: string }> {
   const tenantId = opts.tenantId ?? getTenantId()
+  const cycle = opts.billingCycle ?? 'monthly'
+  const planId = (opts.plan ?? CURRENT_PLAN) as BbxSubscriptionPlanId
   const now = new Date()
   const periodEnd = new Date(now)
-  periodEnd.setDate(periodEnd.getDate() + 30)
+  periodEnd.setDate(periodEnd.getDate() + periodDaysForCycle(cycle))
+
+  const amount =
+    opts.amountClp ??
+    amountForPlan(planId, cycle)
+
+  const cycleNote = cycle === 'annual' ? ' · plan anual' : ' · plan mensual'
 
   return upsertTenantSubscription({
     tenant_id: tenantId,
     status: 'active',
-    plan: opts.plan ?? CURRENT_PLAN,
+    plan: planId,
     current_period_start: now.toISOString(),
     current_period_end: periodEnd.toISOString(),
     last_payment_at: now.toISOString(),
     billing_email: opts.billingEmail ?? undefined,
-    amount_clp: opts.amountClp ?? undefined,
-    notes: opts.notes ?? undefined,
+    amount_clp: amount,
+    notes: opts.notes ?? `Pago registrado${cycleNote}`,
   })
 }
 

@@ -15,6 +15,10 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next()
   }
 
+  if (pathname.startsWith('/api/cron/')) {
+    return NextResponse.next()
+  }
+
   if (pathname.startsWith('/api/') && req.method === 'POST') {
     if (!(await rateLimitByIp(req, 'apiGlobal'))) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })

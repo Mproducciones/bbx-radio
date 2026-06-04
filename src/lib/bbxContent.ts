@@ -1,3 +1,11 @@
+import {
+  BBX_SUBSCRIPTION_PLANS,
+  annualSavingsClp,
+  annualTotalClp,
+  formatClp,
+  type BbxSubscriptionPlanId,
+} from '@/lib/bbxSubscriptionPlans'
+
 export const BBX_CONTACT = {
   name: 'Bryan',
   phone: '56922105555',
@@ -239,7 +247,17 @@ export const BBX_PRICING_LAYERS = {
     'Los $390.000 del ejemplo de ingresos extra son plata que entra a la radio por vender Capa 2, después de pagar Capa 1.',
 } as const
 
-export type BbxPlanId = 'esencial' | 'pro' | 'premium'
+export type BbxPlanId = BbxSubscriptionPlanId
+
+function bbxPlanPricing(id: BbxPlanId) {
+  const s = BBX_SUBSCRIPTION_PLANS.find(p => p.id === id)!
+  return {
+    precio: formatClp(s.monthlyClp),
+    setup: formatClp(s.setupClp),
+    precioAnual: formatClp(annualTotalClp(s)),
+    ahorroAnual: `2 meses gratis · ahorras $${formatClp(annualSavingsClp(s))}`,
+  }
+}
 
 export type BbxMockupKind =
   | 'pwa'
@@ -263,6 +281,8 @@ export type BbxPlan = {
   id: BbxPlanId
   nombre: string
   precio: string
+  precioAnual: string
+  ahorroAnual: string
   setup: string
   color: string
   popular?: boolean
@@ -277,8 +297,7 @@ export const BBX_PLANS: BbxPlan[] = [
   {
     id: 'esencial',
     nombre: 'Esencial',
-    precio: '80.000',
-    setup: '100.000',
+    ...bbxPlanPricing('esencial'),
     color: '#40B9BF',
     tagline: 'App propia en 48 h, sin complejidad.',
     ideal: 'Radios que quieren presencia digital profesional ya.',
@@ -317,8 +336,7 @@ export const BBX_PLANS: BbxPlan[] = [
   {
     id: 'pro',
     nombre: 'Pro',
-    precio: '120.000',
-    setup: '150.000',
+    ...bbxPlanPricing('pro'),
     color: '#db8918',
     popular: true,
     tagline: 'Monetiza con banners, sorteos y datos.',
@@ -360,8 +378,7 @@ export const BBX_PLANS: BbxPlan[] = [
   {
     id: 'premium',
     nombre: 'Premium',
-    precio: '160.000',
-    setup: '200.000',
+    ...bbxPlanPricing('premium'),
     color: '#7D59B5',
     tagline: 'Upgrade: dominio, APK y Play Store.',
     ideal: 'Cuando el cliente ya tiene Pro y quiere app en la tienda.',
@@ -435,5 +452,9 @@ export const BBX_FAQ = [
   {
     q: '¿Hay demo antes de contratar?',
     a: 'Sí. Configuramos una versión con tu logo y stream en 24 horas sin compromiso.',
+  },
+  {
+    q: '¿Puedo pagar anual en lugar de mensual?',
+    a: 'Sí. Pagas 10 meses y tienes 12 meses de servicio (2 meses gratis). El setup inicial se cobra aparte, una sola vez.',
   },
 ] as const

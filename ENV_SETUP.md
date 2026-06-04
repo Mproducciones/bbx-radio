@@ -117,13 +117,25 @@ NEXT_PUBLIC_ENABLE_NOTICIAS=false
 
 Son **logins separados** en **URLs distintas**. El equipo de la radio no ve suscripciones ni conoce `/bbx-admin`.
 
-### 3. Pago manual (transferencia / efectivo)
+### 3. Precios y planes (fuente única)
 
-**Super admin BBX:** entra a **`/bbx-admin`** → **Pagado (+30 d)** por radio/tenant.
+Ver **`docs/BBX_SUSCRIPCION.md`** y código `src/lib/bbxSubscriptionPlans.ts`.
+
+| Plan | Mensual | Anual (10× mensual) | Setup |
+|------|---------|---------------------|-------|
+| Esencial | $80.000 | $800.000 | $100.000 |
+| Pro | $120.000 | $1.200.000 | $150.000 |
+| Premium | $160.000 | $1.600.000 | $200.000 |
+
+Plantillas WhatsApp/email: `src/lib/bbxBillingTemplates.ts` · panel `/bbx-admin`.
+
+### 4. Pago manual (transferencia / efectivo)
+
+**Super admin BBX:** entra a **`/bbx-admin`** → **Pagado mes (+30 d)** o **Pagado año (+365 d)**.
 
 El panel `/admin` de la radio **no incluye** gestión de suscripciones.
 
-### 4. Pago automático con Stripe (opcional)
+### 5. Pago automático con Stripe (opcional)
 
 ```bash
 STRIPE_SECRET_KEY=sk_live_...
@@ -132,6 +144,54 @@ STRIPE_WEBHOOK_SECRET=whsec_...    # webhook → /api/billing/webhook
 ```
 
 Eventos webhook: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`.
+
+Checkout unificado: `POST /api/billing/checkout` con `{ plan: "pro", cycle: "monthly"|"annual" }`.
+
+### 6. Mercado Pago (listo para conectar — stub en código)
+
+Cuando tengas credenciales de producción:
+
+```bash
+MERCADOPAGO_ACCESS_TOKEN=APP_USR-...
+NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY=APP_USR-...
+# MERCADOPAGO_WEBHOOK_SECRET=...   # validación firma (recomendado)
+```
+
+Implementar en `src/lib/mercadoPagoBilling.ts` + webhook `POST /api/billing/webhook-mp` (pendiente).
+
+Hasta entonces: botón “Mercado Pago (próximamente)” en `/suspended` y pago manual en `/bbx-admin`.
+
+### Centro de operaciones BBX (alertas al super admin)
+
+**Panel:** `/bbx-admin` → **Centro de operaciones** (arriba de suscripciones).
+
+**SQL:** ejecutar `supabase-bbx-ops.sql` en Supabase.
+
+**Notificaciones automáticas** (elige una o más):
+
+1. **ntfy (recomendado, gratis, llega al celular)**  
+   - Instala [ntfy](https://ntfy.sh) en el teléfono y suscríbete a un topic privado, ej. `bbx-ops-tu-nombre`.  
+   - En Vercel:
+   ```bash
+   BBX_OPS_WEBHOOK_URL=https://ntfy.sh/bbx-ops-tu-nombre
+   BBX_OPS_NOTIFY_PHONE=56922105555
+   BBX_OPS_CRON_SECRET=genera-un-secreto-largo
+   ```
+   - Cron Vercel cada 6 h (`vercel.json`) llama a `/api/cron/ops-check` con `Authorization: Bearer <secreto>`.
+
+2. **WhatsApp manual** — botón “WhatsApp resumen” en el panel (abre wa.me con todas las alertas).
+
+3. **SMS Twilio (opcional, solo críticos)**  
+   ```bash
+   TWILIO_ACCOUNT_SID=
+   TWILIO_AUTH_TOKEN=
+   TWILIO_SMS_FROM=+1...
+   BBX_OPS_NOTIFY_PHONE=56922105555
+   ```
+
+**Qué detecta:** radio suspendida, gracia de pago, vence en 3/7 días, cola de pedidos de tema, variables de entorno faltantes.
+
+**Probar:** en `/bbx-admin` → “Probar notificación” o `GET /api/cron/ops-check` con el Bearer secret.
 
 ### Flujo de estados
 

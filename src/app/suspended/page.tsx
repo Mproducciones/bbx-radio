@@ -28,7 +28,7 @@ export default async function SuspendedPage() {
         {sub.reason ? ` ${sub.reason}` : ' Regulariza el pago para reactivar la app.'}
       </p>
 
-      <SuspendedPayActions billingEmail={sub.billingEmail} />
+      <SuspendedPayActions billingEmail={sub.billingEmail} currentPlan={sub.plan} />
 
       <div className="mt-8 flex flex-col sm:flex-row gap-3 w-full max-w-sm">
         <a

@@ -47,7 +47,9 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
                 <h3 className="font-display text-lg text-white leading-none">
                   {plan.nombre} · <span className="text-white/50">${plan.precio}/mes</span>
                 </h3>
-                <p className="text-[10px] text-white/40 mt-0.5">Esquema de producto · setup ${plan.setup}</p>
+                <p className="text-[10px] text-white/40 mt-0.5">
+                  Esquema de producto · setup ${plan.setup} · anual ${plan.precioAnual}
+                </p>
               </div>
               <button type="button" onClick={onClose} className="shrink-0 text-white/35 text-xs px-2 py-1">✕</button>
             </div>

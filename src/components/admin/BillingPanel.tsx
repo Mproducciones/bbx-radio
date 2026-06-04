@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Shield } from 'lucide-react'
 import { AdminCard, AdminCardHeader, AdminIcons, AdminBadge } from '@/components/admin/adminUi'
+import { BillingTemplatesPanel } from '@/components/admin/BillingTemplatesPanel'
+import type { BbxSubscriptionPlanId } from '@/lib/bbxSubscriptionPlans'
 
 interface BillingState {
   tenantId: string
@@ -212,10 +214,26 @@ export function BillingPanel() {
 
           <div className="grid grid-cols-2 gap-2 max-w-md">
             <ActionBtn
-              label="✓ Pagado (+30 d)"
+              label="✓ Pagado mes (+30 d)"
               accent="#00D9A0"
               disabled={acting}
-              onClick={() => action('mark_paid')}
+              onClick={() =>
+                action('mark_paid', {
+                  plan: sub.plan as BbxSubscriptionPlanId,
+                  billingCycle: 'monthly',
+                })
+              }
+            />
+            <ActionBtn
+              label="✓ Pagado año (+365 d)"
+              accent="#40B9BF"
+              disabled={acting}
+              onClick={() =>
+                action('mark_paid', {
+                  plan: sub.plan as BbxSubscriptionPlanId,
+                  billingCycle: 'annual',
+                })
+              }
             />
             <ActionBtn
               label="Gracia manual"
@@ -261,6 +279,16 @@ export function BillingPanel() {
             Sin pago: gracia {process.env.NEXT_PUBLIC_SUBSCRIPTION_GRACE_DAYS ?? 7} días → la radio cae a /suspended.
             Override emergencia: SUBSCRIPTION_STATUS=suspended en Vercel del deploy.
           </p>
+        </div>
+      )}
+
+      {sub && (
+        <div className="px-4 pb-4">
+          <BillingTemplatesPanel
+            tenantId={sub.tenantId}
+            plan={sub.plan}
+            periodEnd={sub.currentPeriodEnd}
+          />
         </div>
       )}
     </AdminCard>
