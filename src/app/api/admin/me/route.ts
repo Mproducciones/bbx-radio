@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ authorized: false, superAdmin: false }, { status: 429 })
   }
   const session = await getAdminSessionFromRequest(req)
-  const authorized = await isAdminRequestAuthorized(req)
   const superAdmin = session ? isSuperAdminSession(session) : false
-  return NextResponse.json({ authorized, superAdmin })
+  const radioAdmin = session ? session.role === 'admin' : false
+  const authorized = await isAdminRequestAuthorized(req)
+  return NextResponse.json({ authorized, superAdmin, radioAdmin })
 }

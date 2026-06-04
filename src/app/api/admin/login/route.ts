@@ -33,27 +33,32 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = (await req.json()) as { username?: string; password?: string }
+    const body = (await req.json()) as { username?: string; password?: string; scope?: string }
     const username = (body?.username?.toString() ?? '').slice(0, 256)
     const password = (body?.password?.toString() ?? '').slice(0, 256)
+    const scope = body?.scope === 'bbx' ? 'bbx' : 'radio'
 
     const superUsername = process.env.SUPER_ADMIN_USERNAME
     const superPassword = process.env.SUPER_ADMIN_PASSWORD
     const allowedUsername = process.env.ADMIN_USERNAME
     const allowedPassword = process.env.ADMIN_PASSWORD
 
-    if (superUsername && superPassword && superPassword.length >= 12) {
+    if (scope === 'bbx') {
+      if (!superUsername || !superPassword || superPassword.length < 12) {
+        return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+      }
       const [superUserOk, superPassOk] = await Promise.all([
         constantTimeEqual(username, superUsername),
         constantTimeEqual(password, superPassword),
       ])
-      if (superUserOk && superPassOk) {
-        return await createSignedAdminSessionCookie({
-          username,
-          role: 'super_admin',
-          maxAgeSeconds: SESSION_MAX_AGE,
-        })
+      if (!superUserOk || !superPassOk) {
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
       }
+      return await createSignedAdminSessionCookie({
+        username,
+        role: 'super_admin',
+        maxAgeSeconds: SESSION_MAX_AGE,
+      })
     }
 
     if (!allowedUsername || !allowedPassword) {

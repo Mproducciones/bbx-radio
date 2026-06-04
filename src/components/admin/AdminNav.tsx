@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import { AdminIcons } from './adminUi'
 
-export type AdminSection = 'overview' | 'live' | 'commercial' | 'comms' | 'billing' | 'content'
+export type AdminSection = 'overview' | 'live' | 'commercial' | 'comms' | 'content'
 
 export const ADMIN_SECTIONS: {
   id: AdminSection
@@ -11,19 +11,13 @@ export const ADMIN_SECTIONS: {
   short: string
   icon: ReactNode
   color: string
-  superAdminOnly?: boolean
 }[] = [
   { id: 'overview', label: 'Resumen', short: 'Resumen', icon: <AdminIcons.chart />, color: '#40B9BF' },
   { id: 'live', label: 'En vivo', short: 'Vivo', icon: <AdminIcons.wave />, color: '#FF3860' },
   { id: 'commercial', label: 'Comercial', short: 'Ads', icon: <AdminIcons.megaphone />, color: '#db8918' },
   { id: 'comms', label: 'Comunicación', short: 'Push', icon: <AdminIcons.bell />, color: '#7D59B5' },
-  { id: 'billing', label: 'Suscripciones', short: 'BBX', icon: <AdminIcons.gift />, color: '#00D9A0', superAdminOnly: true },
   { id: 'content', label: 'Panel de contenido', short: 'CMS', icon: <AdminIcons.music />, color: '#FF006E' },
 ]
-
-export function getAdminSections(superAdmin: boolean) {
-  return ADMIN_SECTIONS.filter(s => !s.superAdminOnly || superAdmin)
-}
 
 function SidebarNavItem({
   active,
@@ -54,19 +48,16 @@ function SidebarNavItem({
 export function AdminSidebarNav({
   active,
   onChange,
-  superAdmin = false,
 }: {
   active: AdminSection
   onChange: (s: AdminSection) => void
-  superAdmin?: boolean
 }) {
-  const sections = getAdminSections(superAdmin)
   return (
     <aside className="hidden lg:flex flex-col w-52 xl:w-56 shrink-0 sticky top-[57px] self-start max-h-[calc(100vh-57px)] py-4 pr-2">
       <div className="admin-sidebar-panel flex flex-col gap-1 min-h-[min(32rem,calc(100vh-8rem))]">
         <p className="admin-eyebrow px-2 mb-1">Studio</p>
         <nav className="flex flex-col gap-0.5">
-          {sections.map(s => (
+          {ADMIN_SECTIONS.map(s => (
             <SidebarNavItem
               key={s.id}
               active={active === s.id}
@@ -94,17 +85,14 @@ export function AdminSidebarNav({
 export function AdminMobileNav({
   active,
   onChange,
-  superAdmin = false,
 }: {
   active: AdminSection
   onChange: (s: AdminSection) => void
-  superAdmin?: boolean
 }) {
-  const sections = getAdminSections(superAdmin)
   return (
     <div className="lg:hidden sticky top-[57px] z-40 admin-nav-rail">
       <nav className="admin-nav-rail__inner" aria-label="Secciones del panel">
-        {sections.map(s => (
+        {ADMIN_SECTIONS.map(s => (
           <button
             key={s.id}
             type="button"

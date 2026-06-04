@@ -28,7 +28,7 @@ export async function createCheckoutSession(opts: {
     mode: 'subscription',
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${opts.origin}/admin?billing=success`,
+    success_url: `${opts.origin}/bbx-admin?billing=success`,
     cancel_url: `${opts.origin}/suspended?billing=cancelled`,
     customer_email: opts.billingEmail,
     metadata: { tenant_id: tenantId, plan: CURRENT_PLAN },

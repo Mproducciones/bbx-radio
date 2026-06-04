@@ -2,18 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { AdminPageBackground } from '@/components/admin/adminUi'
+import { Shield } from 'lucide-react'
+import { AdminPageBackground, AdminGhostButton } from '@/components/admin/adminUi'
 import { AdminLoginScreen } from '@/components/admin/AdminLoginScreen'
-import { AdminSidebarNav, AdminMobileNav, type AdminSection, ADMIN_SECTIONS } from '@/components/admin/AdminNav'
-import { AdminSectionContent } from '@/components/admin/AdminSectionContent'
+import { BillingPanel } from '@/components/admin/BillingPanel'
 
 type PageState = 'login' | 'dashboard'
 
-export default function AdminPage() {
+export default function BbxAdminPage() {
   const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('login')
-  const [section, setSection] = useState<AdminSection>('overview')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginState, setLoginState] = useState<'idle' | 'loading' | 'error'>('idle')
@@ -23,11 +21,8 @@ export default function AdminPage() {
     fetch('/api/admin/me', { credentials: 'include' })
       .then(r => r.json())
       .then(d => {
-        if (d.superAdmin && !d.radioAdmin) {
-          router.replace('/bbx-admin')
-          return
-        }
-        if (d.radioAdmin) setPageState('dashboard')
+        if (d.superAdmin) setPageState('dashboard')
+        else if (d.radioAdmin) router.replace('/admin')
       })
       .catch(() => {})
   }, [router])
@@ -40,17 +35,12 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, scope: 'radio' }),
+        body: JSON.stringify({ username, password, scope: 'bbx' }),
         credentials: 'include',
       })
       if (!res.ok) {
         setLoginState('error')
-        setLoginError('Credenciales inválidas')
-        return
-      }
-      const me = await fetch('/api/admin/me', { credentials: 'include' }).then(r => r.json())
-      if (me.superAdmin && !me.radioAdmin) {
-        router.replace('/bbx-admin')
+        setLoginError('Credenciales de super admin inválidas')
         return
       }
       setPageState('dashboard')
@@ -63,21 +53,23 @@ export default function AdminPage() {
 
   async function onLogout() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' })
-    router.push('/')
+    setPageState('login')
+    setUsername('')
+    setPassword('')
   }
-
-  const sectionMeta = ADMIN_SECTIONS.find(s => s.id === section)
 
   if (pageState === 'login') {
     return (
       <AdminLoginScreen
-        eyebrow="Studio · Radio"
-        title="Radio Bienvenida"
-        subtitle="Panel de control · 93.3 FM"
+        eyebrow="BBX · Super admin"
+        title="Suscripciones"
+        subtitle="Gestión de pagos de todas las radios"
+        accentBar="bbx"
+        footer="Acceso restringido · No compartir este enlace"
       >
         <form onSubmit={onLogin} className="flex flex-col gap-4 p-6">
           <label className="flex flex-col gap-1.5">
-            <span className="admin-eyebrow">Usuario</span>
+            <span className="admin-eyebrow">Usuario BBX</span>
             <input
               value={username}
               onChange={e => setUsername(e.target.value)}
@@ -105,7 +97,7 @@ export default function AdminPage() {
             </p>
           )}
           <button type="submit" disabled={loginState === 'loading'} className="admin-btn-primary mt-1">
-            {loginState === 'loading' ? 'Verificando…' : 'Entrar al panel'}
+            {loginState === 'loading' ? 'Verificando…' : 'Entrar a suscripciones'}
           </button>
         </form>
       </AdminLoginScreen>
@@ -117,24 +109,32 @@ export default function AdminPage() {
       <AdminPageBackground />
 
       <header className="sticky top-0 z-50 admin-topbar">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="admin-brand-mark shrink-0">
-              <div className="admin-brand-mark__inner">
-                <Image src="/icons/icon-512.png" alt="" width={40} height={40} className="w-full h-full object-contain" />
+            <div
+              className="admin-brand-mark shrink-0"
+              style={{ background: 'linear-gradient(135deg, #00D9A0, #40B9BF)' }}
+            >
+              <div className="admin-brand-mark__inner flex items-center justify-center font-display text-sm text-[#00D9A0]">
+                BBX
               </div>
             </div>
             <div className="min-w-0">
-              <p className="text-white font-bold text-sm leading-none truncate">Radio Bienvenida</p>
-              <p className="text-white/45 text-xs mt-0.5 truncate">
-                {sectionMeta?.label ?? 'Panel de control'} · Studio
+              <p className="text-white font-bold text-sm leading-none truncate flex items-center gap-1.5">
+                BBX Radio System
+                <span
+                  className="inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                  style={{ background: 'rgba(0,217,160,0.12)', color: '#00D9A0', border: '1px solid rgba(0,217,160,0.28)' }}
+                >
+                  <Shield className="w-3 h-3" aria-hidden />
+                  Super admin
+                </span>
               </p>
+              <p className="text-white/45 text-xs mt-0.5 truncate">Suscripciones · todas las radios</p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <a href="/" className="admin-btn-ghost hidden sm:inline-flex items-center gap-1">
-              Ver app <span aria-hidden>→</span>
-            </a>
+            <AdminGhostButton href="/">Ver app</AdminGhostButton>
             <button
               type="button"
               onClick={onLogout}
@@ -147,16 +147,12 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <AdminMobileNav active={section} onChange={setSection} />
-      <div className="max-w-7xl mx-auto px-4 py-5 pb-10 flex gap-6 lg:gap-8">
-        <AdminSidebarNav active={section} onChange={setSection} />
-        <main className="flex-1 min-w-0">
-          <AdminSectionContent section={section} />
-          <p className="mt-10 text-center text-white/20 text-[10px] tracking-[0.18em] uppercase">
-            Powered by BBX Radio System
-          </p>
-        </main>
-      </div>
+      <main className="max-w-3xl mx-auto px-4 py-6 pb-12">
+        <BillingPanel />
+        <p className="mt-10 text-center text-white/20 text-[10px] tracking-[0.18em] uppercase">
+          BBX Radio System · Panel de suscripciones
+        </p>
+      </main>
     </div>
   )
 }

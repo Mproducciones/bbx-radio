@@ -211,6 +211,7 @@ export function isGrace(status: SubscriptionStatus): boolean {
 export function isRouteAllowedWhenSuspended(pathname: string): boolean {
   if (pathname === '/suspended') return true
   if (pathname.startsWith('/admin')) return true
+  if (pathname.startsWith('/bbx-admin')) return true
   if (pathname.startsWith('/api/admin/billing')) return true
   if (pathname.startsWith('/api/billing/')) return true
   if (pathname.startsWith('/_next')) return true

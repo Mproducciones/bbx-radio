@@ -10,13 +10,12 @@ import { PollManager } from '@/components/admin/PollManager'
 import { NotificacionPanel } from '@/components/admin/NotificacionPanel'
 import { ContestsPanel } from '@/components/admin/ContestsPanel'
 import { ReportsPanel } from '@/components/admin/ReportsPanel'
-import { BillingPanel } from '@/components/admin/BillingPanel'
 import { StudioContentPanel } from '@/components/admin/StudioContentPanel'
 import { StudioPublicidadLinks } from '@/components/admin/StudioPublicidadLinks'
 import { AdminSectionTitle } from '@/components/admin/adminUi'
 import type { AdminSection } from '@/components/admin/AdminNav'
 
-export function AdminSectionContent({ section, superAdmin = false }: { section: AdminSection; superAdmin?: boolean }) {
+export function AdminSectionContent({ section }: { section: AdminSection }) {
   switch (section) {
     case 'overview':
       return (
@@ -58,14 +57,6 @@ export function AdminSectionContent({ section, superAdmin = false }: { section: 
       return (
         <div className="max-w-2xl">
           <NotificacionPanel />
-        </div>
-      )
-
-    case 'billing':
-      if (!superAdmin) return null
-      return (
-        <div className="max-w-lg">
-          <BillingPanel />
         </div>
       )
 

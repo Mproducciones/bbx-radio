@@ -106,11 +106,20 @@ SUBSCRIPTION_GRACE_DAYS=7          # días de gracia tras vencimiento
 # SUBSCRIPTION_STATUS=suspended
 ```
 
+### Acceso al panel
+
+| Rol | URL | Credenciales |
+|-----|-----|--------------|
+| **Equipo de la radio** | `/admin` | `ADMIN_USERNAME` + `ADMIN_PASSWORD` |
+| **Super admin BBX (tú)** | `/bbx-admin` | `SUPER_ADMIN_USERNAME` + `SUPER_ADMIN_PASSWORD` |
+
+Son **logins separados** en **URLs distintas**. El equipo de la radio no ve suscripciones ni conoce `/bbx-admin`.
+
 ### 3. Pago manual (transferencia / efectivo)
 
-**Solo super admin BBX** (`SUPER_ADMIN_*`): `/admin` → pestaña **Suscripciones BBX** → **Pagado (+30 d)**.
+**Super admin BBX:** entra a **`/bbx-admin`** → **Pagado (+30 d)** por radio/tenant.
 
-El admin de la radio (credenciales `ADMIN_*`) **no ve** esta sección.
+El panel `/admin` de la radio **no incluye** gestión de suscripciones.
 
 ### 4. Pago automático con Stripe (opcional)
 
