@@ -18,6 +18,14 @@ export function ServiceWorkerRegister() {
     function onSwMessage(e: MessageEvent) {
       if (e.data?.type === 'BBX_PUSH') {
         window.dispatchEvent(new CustomEvent('bbx-notifications-refresh'))
+        window.dispatchEvent(new CustomEvent('bbx-push-toast', {
+          detail: {
+            id: e.data.id || `push-${Date.now()}`,
+            title: e.data.title,
+            body: e.data.body || '',
+            url: e.data.url || '/',
+          },
+        }))
       }
     }
     navigator.serviceWorker.addEventListener('message', onSwMessage)

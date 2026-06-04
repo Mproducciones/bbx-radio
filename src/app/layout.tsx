@@ -13,6 +13,7 @@ import { AtmosphereWrapper } from '@/components/layout/AtmosphereWrapper'
 import { AuroraBackground } from '@/components/layout/AuroraBackground'
 import { PushPermission } from '@/components/pwa/PushPermission'
 import { NotificationsBell } from '@/components/notifications/NotificationsBell'
+import { InAppNotificationToast } from '@/components/notifications/InAppNotificationToast'
 import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister'
 import { SubscriptionGraceBanner } from '@/components/billing/SubscriptionGraceBanner'
@@ -101,6 +102,7 @@ export default function RootLayout({
           </div>
           <PushPermission />
           <NotificationsBell />
+          <InAppNotificationToast />
           <PremiumAdBanner />
           <InstallBanner />
           <AdminAccessButton />
