@@ -12,6 +12,7 @@ export type RateLimitPreset =
   | 'listenerCount'
   | 'pushSubscribe'
   | 'pushSend'
+  | 'notificationsList'
   | 'pollVote'
   | 'adEvents'
   | 'apiGlobal'
@@ -26,6 +27,7 @@ const PRESETS: Record<RateLimitPreset, { max: number; window: `${number} ${'s' |
   listenerCount:       { max: 60,   window: '1 m' },
   pushSubscribe:       { max: 5,    window: '1 h' },
   pushSend:            { max: 10,   window: '1 h' },
+  notificationsList:   { max: 60,   window: '1 m' },
   pollVote:            { max: 10,   window: '10 m' },
   adEvents:            { max: 120,  window: '1 m' },
   apiGlobal:           { max: 200,  window: '1 m' },

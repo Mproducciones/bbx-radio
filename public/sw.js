@@ -1,7 +1,7 @@
 'use strict'
 
-const STATIC_CACHE  = 'radio-bienvenida-static-v24'
-const IMAGE_CACHE   = 'radio-bienvenida-images-v24'
+const STATIC_CACHE  = 'radio-bienvenida-static-v25'
+const IMAGE_CACHE   = 'radio-bienvenida-images-v25'
 
 const STATIC_FILES = [
   '/manifest.json',
@@ -76,22 +76,42 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim()
 })
 
+function notifyClients(payload) {
+  return clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+    list.forEach(function(client) {
+      try { client.postMessage({ type: 'BBX_PUSH', ...payload }) } catch (e) {}
+    })
+  })
+}
+
 // ── Push notifications ────────────────────────────────────────────────────────
 self.addEventListener('push', function(event) {
   var data = {}
   try { data = event.data ? event.data.json() : {} } catch(e) {}
   var title   = data.title || 'Radio Bienvenida'
-  var body    = data.body  || ''
+  var body    = data.body  || 'Nuevo aviso de la radio'
   var url     = safeNotificationUrl(data.url || '/')
+  var origin  = self.location.origin
+  var tag     = data.id ? 'bbx-' + data.id : 'bbx-radio-alert'
   var options = {
-    body:    body,
-    icon:    '/icons/icon-192.png',
-    badge:   '/icons/icon-72.png',
-    vibrate: [100, 50, 100],
-    data:    { url: url },
-    actions: [{ action: 'open', title: 'Ver ahora' }],
+    body: body,
+    icon: origin + '/icons/icon-192.png',
+    badge: origin + '/icons/icon-72.png',
+    image: origin + '/icons/icon-512.png',
+    tag: tag,
+    renotify: true,
+    vibrate: [120, 60, 120],
+    data: { url: url, id: data.id || null },
+    actions: body ? [{ action: 'open', title: 'Abrir en la app' }] : [],
+    requireInteraction: false,
+    silent: false,
   }
-  event.waitUntil(self.registration.showNotification(title, options))
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(title, options),
+      notifyClients({ title: title, body: body, url: url, id: data.id }),
+    ])
+  )
 })
 
 self.addEventListener('notificationclick', function(event) {

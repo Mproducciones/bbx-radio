@@ -15,6 +15,13 @@ export function ServiceWorkerRegister() {
       window.setInterval(() => reg.update(), 30 * 60 * 1000)
     }).catch(() => {})
 
+    function onSwMessage(e: MessageEvent) {
+      if (e.data?.type === 'BBX_PUSH') {
+        window.dispatchEvent(new CustomEvent('bbx-notifications-refresh'))
+      }
+    }
+    navigator.serviceWorker.addEventListener('message', onSwMessage)
+
     function onVisible() {
       if (document.visibilityState === 'visible') regRef.current?.update()
     }
@@ -28,7 +35,10 @@ export function ServiceWorkerRegister() {
       }
     })
 
-    return () => document.removeEventListener('visibilitychange', onVisible)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible)
+      navigator.serviceWorker.removeEventListener('message', onSwMessage)
+    }
   }, [])
 
   return null

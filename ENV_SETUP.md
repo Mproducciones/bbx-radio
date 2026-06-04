@@ -41,12 +41,13 @@ SUPABASE_SERVICE_KEY=eyJ...          # service_role — solo servidor, nunca en 
 
 El locutor puede pedir en vivo que abran la app; el admin envía desde **Panel → Comunicación (Push)**.
 
-### 1. Tabla en Supabase
+### 1. Tablas en Supabase
 
 Ejecuta en el SQL Editor del proyecto de la radio:
 
 ```text
-supabase-push.sql
+supabase-app-notifications.sql   ← campanita in-app (todos leen aquí)
+supabase-push.sql                ← push al celular (opcional pero recomendado)
 ```
 
 ### 2. Claves VAPID en Vercel

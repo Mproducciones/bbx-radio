@@ -3,6 +3,7 @@ import { isAdminRequestAuthorized, getAdminSessionFromRequest } from '@/lib/admi
 import { supabaseAdmin } from '@/lib/supabase'
 import { sanitizePushUrl } from '@/lib/safeUrl'
 import { checkRateLimit } from '@/lib/rateLimit'
+import { createAppNotification } from '@/lib/appNotificationsStore'
 import webpush from 'web-push'
 
 export const runtime = 'nodejs'
@@ -54,6 +55,12 @@ export async function POST(req: NextRequest) {
   const siteOrigin = req.nextUrl.origin
   const safeUrl = sanitizePushUrl(typeof url === 'string' ? url : undefined, siteOrigin)
 
+  const inApp = await createAppNotification({
+    title: title.slice(0, 120),
+    body: body.slice(0, 240),
+    url: safeUrl,
+  })
+
   const { data: subs, error: dbError } = await supabaseAdmin
     .from('push_subscriptions')
     .select('endpoint, p256dh, auth')
@@ -63,21 +70,41 @@ export async function POST(req: NextRequest) {
       ? 'Ejecuta supabase-push.sql en el SQL Editor de Supabase.'
       : dbError.message
     return NextResponse.json({
-      error: 'Base de datos no lista para push',
-      code: 'db_error',
+      ok: true,
+      sent: 0,
+      failed: 0,
+      total: 0,
+      inApp: Boolean(inApp),
+      notificationId: inApp?.id,
+      pushSkipped: true,
+      message: inApp
+        ? 'Aviso guardado en la campanita. Push no disponible (revisa supabase-push.sql).'
+        : 'Ejecuta supabase-app-notifications.sql y supabase-push.sql en Supabase.',
       hint,
-    }, { status: 503 })
-  }
-
-  if (!subs || subs.length === 0) {
-    return NextResponse.json({ ok: true, sent: 0, failed: 0, total: 0, message: 'Sin suscriptores aún', url: safeUrl })
+      code: 'db_error',
+      url: safeUrl,
+    })
   }
 
   const payload = JSON.stringify({
     title: title.slice(0, 120),
     body: body.slice(0, 240),
     url: safeUrl,
+    id: inApp?.id,
   })
+
+  if (!subs || subs.length === 0) {
+    return NextResponse.json({
+      ok: true,
+      sent: 0,
+      failed: 0,
+      total: 0,
+      inApp: true,
+      notificationId: inApp?.id,
+      message: 'Guardado en la campanita de la app. Sin suscriptores push aún.',
+      url: safeUrl,
+    })
+  }
   let sent = 0
   let failed = 0
 
@@ -98,5 +125,13 @@ export async function POST(req: NextRequest) {
     }),
   )
 
-  return NextResponse.json({ ok: true, sent, failed, total: subs.length, url: safeUrl })
+  return NextResponse.json({
+    ok: true,
+    sent,
+    failed,
+    total: subs.length,
+    inApp: true,
+    notificationId: inApp?.id,
+    url: safeUrl,
+  })
 }

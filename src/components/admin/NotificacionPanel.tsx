@@ -119,8 +119,8 @@ export function NotificacionPanel() {
 
       <div className="admin-card-body">
         <p className="text-white/45 text-xs leading-relaxed mb-4">
-          Para que el locutor mande gente a la app: elige una plantilla, ajusta el texto y envía.
-          Llega al celular de quien activó notificaciones en la PWA.
+          Cada envío se guarda en la <strong className="text-white/65">campanita</strong> de la app (todos la ven)
+          y además hace push al celular de quien activó notificaciones.
         </p>
 
         {status && !status.ready && (
@@ -130,10 +130,10 @@ export function NotificacionPanel() {
           >
             <p className="text-[#FF3860] font-bold text-sm mb-1">Push no listo en producción</p>
             {!status.configured && (
-              <p className="text-white/50">Configura en Vercel: <code className="text-white/70">NEXT_PUBLIC_VAPID_PUBLIC_KEY</code>, <code className="text-white/70">VAPID_PRIVATE_KEY</code>, <code className="text-white/70">VAPID_EMAIL</code>.</p>
+              <p className="text-white/50">Configura en Vercel: <code className="text-white/70">NEXT_PUBLIC_VAPID_PUBLIC_KEY</code>, <code className="text-white/70">VAPID_PRIVATE_KEY</code>, <code className="text-white/70">VAPID_EMAIL</code>. Sin VAPID igual se guarda en la campanita si existe la tabla de avisos.</p>
             )}
             {status.configured && !status.dbReady && (
-              <p className="text-white/50 mt-1">En Supabase ejecuta el archivo <code className="text-white/70">supabase-push.sql</code>.</p>
+              <p className="text-white/50 mt-1">En Supabase: <code className="text-white/70">supabase-app-notifications.sql</code> y <code className="text-white/70">supabase-push.sql</code>.</p>
             )}
             {status.dbError && (
               <p className="text-white/30 mt-1 font-mono text-[10px] break-all">{status.dbError}</p>
@@ -184,8 +184,10 @@ export function NotificacionPanel() {
             <div>
               <p className="text-[#00D9A0] font-bold text-sm">Enviada</p>
               <p className="text-white/40 text-xs">
-                {result.sent} de {result.total ?? result.sent + result.failed} dispositivos
-                {result.failed > 0 ? ` · ${result.failed} fallaron` : ''}
+                Visible en la campanita de la app.
+                {result.total != null && result.total > 0
+                  ? ` Push: ${result.sent} de ${result.total}${result.failed > 0 ? ` (${result.failed} fallaron)` : ''}.`
+                  : ' Sin push activo en celulares aún.'}
               </p>
             </div>
             <button type="button" onClick={() => setState('idle')} className="ml-auto text-white/30 text-xs underline">
