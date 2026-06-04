@@ -31,14 +31,43 @@ export const BBX_HUB_SECTIONS: {
   value: string
   label: string
   subtitle: string
-  hint: string
   accent: string
 }[] = [
-  { id: 'producto', value: '6+', label: 'Módulos', subtitle: 'Plataforma completa', hint: 'Player, ads, panel…', accent: '#db8918' },
-  { id: 'negocio', value: '+390K', label: 'Ingresos extra', subtitle: 'Modelo de negocio', hint: 'Cómo monetizar', accent: '#00D9A0' },
-  { id: 'planes', value: '3', label: 'Planes', subtitle: 'Desde $80.000/mes', hint: 'Comparar precios', accent: '#7D59B5' },
-  { id: 'proceso', value: '48h', label: 'Implementación', subtitle: 'Cómo trabajamos', hint: 'Paso a paso', accent: '#40B9BF' },
-  { id: 'faq', value: 'FAQ', label: 'Preguntas', subtitle: 'Respuestas rápidas', hint: 'Dudas frecuentes', accent: '#db8918' },
+  {
+    id: 'producto',
+    value: '6+',
+    label: 'Módulos',
+    subtitle: 'Player, saludos, TV y monetización',
+    accent: '#db8918',
+  },
+  {
+    id: 'negocio',
+    value: '+390K',
+    label: 'Ingresos extra',
+    subtitle: 'Cuánto puedes facturar al mes',
+    accent: '#00D9A0',
+  },
+  {
+    id: 'planes',
+    value: '3',
+    label: 'Planes',
+    subtitle: 'Esencial, Pro y Premium',
+    accent: '#7D59B5',
+  },
+  {
+    id: 'proceso',
+    value: '48h',
+    label: 'Implementación',
+    subtitle: 'Diagnóstico, diseño y lanzamiento',
+    accent: '#40B9BF',
+  },
+  {
+    id: 'faq',
+    value: 'FAQ',
+    label: 'Preguntas',
+    subtitle: 'Contratos, soporte y tiempos',
+    accent: '#db8918',
+  },
 ]
 
 export const BBX_FEATURES = [

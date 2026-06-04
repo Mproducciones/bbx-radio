@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import {
   BarChart3,
   ChevronLeft,
+  CircleHelp,
+  Layers,
   Megaphone,
   MessageCircle,
   Mic2,
@@ -14,6 +16,9 @@ import {
   Radio,
   Rocket,
   Settings2,
+  Tag,
+  Timer,
+  TrendingUp,
   Tv,
   Vote,
   type LucideIcon,
@@ -40,6 +45,14 @@ import { BbxSectionPage } from './BbxSectionPage'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 const FEATURE_ICONS: LucideIcon[] = [Mic2, MessageCircle, Megaphone, Tv, Vote, Settings2]
+
+const HUB_ICONS: Record<BbxHubSectionId, LucideIcon> = {
+  producto: Layers,
+  negocio: TrendingUp,
+  planes: Tag,
+  proceso: Timer,
+  faq: CircleHelp,
+}
 
 // ── Live bar ─────────────────────────────────────────────────────────────────
 function LiveDemoBar() {
@@ -447,37 +460,42 @@ export function BbxLanding() {
 
         {/* ── HUB ───────────────────────────────────────────────────────────── */}
         <section className="pb-10">
-          <div className="mb-4">
-            <p className="text-[10px] font-black uppercase tracking-widest text-white/35 mb-1.5">Explorar</p>
-            <h2 className="font-display text-white leading-none"
-              style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)' }}>
-              Todo lo que hacemos
+          <div className="mb-5 text-center max-w-sm mx-auto">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#40B9BF] mb-2">
+              Explorar
+            </p>
+            <h2
+              className="font-display text-white leading-[1.05]"
+              style={{ fontSize: 'clamp(1.45rem, 5vw, 2rem)' }}
+            >
+              Todo lo que{' '}
+              <span className="text-gradient-gold">hacemos</span>
             </h2>
-            <p className="text-white/45 text-xs mt-3 leading-relaxed max-w-md">
-              Cada tarjeta abre el detalle completo — tocá para ver módulos, planes, proceso y preguntas frecuentes.
+            <p className="text-white/45 text-xs mt-2.5 leading-relaxed">
+              Cada bloque abre el detalle completo — módulos, ingresos, planes y proceso.
             </p>
           </div>
-          <div ref={hubRef} className="grid grid-cols-2 md:grid-cols-3 gap-2 min-w-0">
+          <div ref={hubRef} className="grid grid-cols-2 md:grid-cols-3 gap-2.5 min-w-0">
             {BBX_HUB_SECTIONS.map(tile => (
               <div key={tile.id} className="flex min-w-0" data-hub-tile>
                 <BbxHubTile
+                  icon={HUB_ICONS[tile.id]}
                   value={tile.value}
                   label={tile.label}
                   subtitle={tile.subtitle}
-                  hint={tile.hint}
                   accent={tile.accent}
                   animate={false}
                   onClick={() => openSection(tile.id)}
                 />
               </div>
             ))}
-            <div className="flex min-w-0" data-hub-tile>
+            <div className="flex min-w-0 col-span-2 md:col-span-3" data-hub-tile>
               <BbxHubTile
-                value="24h"
-                emphasis="action"
-                label="Agendar demo"
-                subtitle="WhatsApp directo con Bryan"
-                hint="Respuesta en minutos"
+                variant="featured"
+                icon={MessageCircle}
+                value="Gratis"
+                label="Agendar demo con Bryan"
+                subtitle="WhatsApp directo · respuesta en minutos"
                 accent="#128C7E"
                 actionLabel="Abrir WhatsApp"
                 animate={false}

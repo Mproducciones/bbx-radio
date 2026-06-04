@@ -1,19 +1,16 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ChevronRight, ExternalLink } from 'lucide-react'
-import { accentTileStyle } from '@/lib/accentUi'
+import { ChevronRight, ExternalLink, type LucideIcon } from 'lucide-react'
 import { springSnappy } from '@/lib/motion/framer'
-
-const TILE_MIN_H = 'min-h-[6.75rem]'
 
 type BbxHubTileProps = {
   value: string
   label: string
   subtitle?: string
-  hint?: string
   accent: string
-  emphasis?: 'stat' | 'action'
+  icon?: LucideIcon
+  variant?: 'default' | 'featured'
   actionLabel?: string
   onClick?: () => void
   href?: string
@@ -24,95 +21,145 @@ export function BbxHubTile({
   value,
   label,
   subtitle,
-  hint,
   accent,
-  emphasis = 'stat',
+  icon: Icon,
+  variant = 'default',
   actionLabel,
   onClick,
   href,
   animate = true,
 }: BbxHubTileProps) {
   const isExternal = Boolean(href)
-  const ctaText = actionLabel ?? (isExternal ? 'Abrir WhatsApp' : 'Ver más info')
-
-  const className = [
-    'group relative w-full rounded-xl px-2.5 py-2 text-left overflow-hidden',
-    'flex flex-col items-stretch',
-    TILE_MIN_H,
-    'ring-1 ring-inset ring-white/[0.06]',
-    'active:ring-2',
-  ].join(' ')
-
-  const dataAttrs = animate ? { 'data-animate': 'tile' as const } : {}
-  const style = accentTileStyle(accent)
-  const motionProps = {
-    whileTap: { scale: 0.98 },
-    whileHover: { y: -2 },
-    transition: springSnappy,
-  }
+  const isFeatured = variant === 'featured'
+  const ctaText = actionLabel ?? (isExternal ? 'Abrir WhatsApp' : 'Ver detalle')
 
   const ariaLabel = isExternal
     ? `${label}. ${subtitle ?? ''} ${ctaText}`
-    : `${label}. ${subtitle ?? ''}. Tocá para ${ctaText.toLowerCase()}`
+    : `${label}. ${subtitle ?? ''}. Tocá para ver detalle`
 
-  const inner = (
+  const motionProps = {
+    whileTap: { scale: 0.985 },
+    whileHover: { y: isFeatured ? 0 : -2 },
+    transition: springSnappy,
+  }
+
+  const dataAttrs = animate ? { 'data-animate': 'tile' as const } : {}
+
+  const featuredStyle = {
+    background:
+      'linear-gradient(135deg, rgba(18,140,126,0.2) 0%, rgba(34,197,94,0.08) 42%, rgba(7,7,14,0.94) 100%)',
+    border: '1px solid rgba(37,211,102,0.32)',
+    boxShadow:
+      '0 14px 44px -18px rgba(34,197,94,0.38), inset 0 1px 0 rgba(255,255,255,0.08)',
+  } as const
+
+  const defaultStyle = {
+    background:
+      'linear-gradient(165deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 40%, rgba(7,7,14,0.72) 100%)',
+    border: `1px solid color-mix(in srgb, ${accent} 26%, rgba(255,255,255,0.07))`,
+    boxShadow: `0 12px 36px -20px color-mix(in srgb, ${accent} 32%, transparent), inset 0 1px 0 rgba(255,255,255,0.06)`,
+  } as const
+
+  const className = [
+    'group relative w-full overflow-hidden text-left bbx-hub-tile',
+    'ring-1 ring-inset ring-white/[0.05] active:ring-white/[0.1]',
+    isFeatured
+      ? 'bbx-hub-tile--featured rounded-2xl px-3.5 py-3 flex flex-row items-center gap-3 min-h-[4.25rem]'
+      : 'rounded-2xl px-3 py-3 flex flex-col min-h-[7.25rem]',
+  ].join(' ')
+
+  const defaultInner = (
     <>
       <div
-        className="absolute inset-x-0 top-0 h-[2px]"
-        style={{ background: `linear-gradient(90deg, ${accent}, transparent 88%)` }}
+        className="absolute inset-x-0 top-0 h-px pointer-events-none"
+        style={{ background: `linear-gradient(90deg, transparent 8%, ${accent}70, transparent 92%)` }}
+        aria-hidden
       />
 
-      <span
-        className="absolute top-2 right-2 text-[7px] font-bold uppercase tracking-wider px-1 py-0.5 rounded"
+      <div className="flex items-start justify-between gap-2 mb-2">
+        {Icon ? (
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+            style={{
+              background: `color-mix(in srgb, ${accent} 14%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${accent} 28%, transparent)`,
+              color: accent,
+            }}
+          >
+            <Icon className="w-4 h-4" strokeWidth={2.25} aria-hidden />
+          </div>
+        ) : null}
+        <ChevronRight
+          className="w-4 h-4 shrink-0 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all ml-auto"
+          strokeWidth={2.5}
+          aria-hidden
+        />
+      </div>
+
+      <p
+        className="font-display text-[1.35rem] leading-none tabular-nums tracking-wide"
+        style={{ color: accent }}
+      >
+        {value}
+      </p>
+      <p className="text-[13px] font-semibold text-white mt-1.5 leading-tight">{label}</p>
+      {subtitle ? (
+        <p className="text-[10px] text-white/42 mt-1 leading-snug line-clamp-2">{subtitle}</p>
+      ) : null}
+    </>
+  )
+
+  const featuredInner = (
+    <>
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
         style={{
-          background: `${accent}20`,
-          color: accent,
-          border: `1px solid ${accent}35`,
+          background: 'rgba(37,211,102,0.16)',
+          border: '1px solid rgba(37,211,102,0.35)',
+          color: '#25D366',
         }}
       >
-        Tocable
-      </span>
+        {Icon ? <Icon className="w-5 h-5" strokeWidth={2.25} aria-hidden /> : null}
+      </div>
 
-      <div className="relative h-7 flex items-end shrink-0 pr-12">
-        {emphasis === 'stat' ? (
-          <p
-            className="font-display text-xl leading-none tabular-nums tracking-wide"
-            style={{ color: accent }}
-          >
-            {value}
-          </p>
-        ) : (
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-sm font-bold text-white leading-tight">{label}</p>
           <span
-            className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded leading-none"
-            style={{ background: `${accent}22`, color: accent, border: `1px solid ${accent}45` }}
+            className="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full"
+            style={{
+              background: 'rgba(37,211,102,0.14)',
+              color: '#4ade80',
+              border: '1px solid rgba(37,211,102,0.28)',
+            }}
           >
             {value}
           </span>
-        )}
+        </div>
+        {subtitle ? (
+          <p className="text-[11px] text-white/50 mt-0.5 leading-snug line-clamp-1">{subtitle}</p>
+        ) : null}
       </div>
 
-      <p className="relative text-xs font-semibold text-white leading-snug mt-1 line-clamp-1 pr-1">{label}</p>
-      <p className="relative text-[10px] text-white/55 leading-snug mt-0.5 line-clamp-1">{subtitle ?? '\u00A0'}</p>
-      {hint ? (
-        <p className="relative text-[9px] text-white/35 mt-0.5 line-clamp-1">{hint}</p>
-      ) : null}
-
       <div
-        className="relative mt-auto pt-1.5 flex items-center justify-between gap-1.5 rounded-lg px-2 py-1.5 transition-colors group-hover:brightness-110"
+        className="shrink-0 inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-white/90"
         style={{
-          background: `color-mix(in srgb, ${accent} 14%, transparent)`,
-          border: `1px solid color-mix(in srgb, ${accent} 32%, transparent)`,
+          background: 'rgba(37,211,102,0.18)',
+          border: '1px solid rgba(37,211,102,0.32)',
         }}
       >
-        <span className="text-[9px] font-bold text-white/80 leading-tight">{ctaText}</span>
+        {ctaText}
         {isExternal ? (
-          <ExternalLink className="w-3 h-3 shrink-0 opacity-90" style={{ color: accent }} aria-hidden />
+          <ExternalLink className="w-3 h-3 opacity-90" aria-hidden />
         ) : (
-          <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-90 group-hover:translate-x-0.5 transition-transform" style={{ color: accent }} aria-hidden />
+          <ChevronRight className="w-3.5 h-3.5 opacity-90" aria-hidden />
         )}
       </div>
     </>
   )
+
+  const inner = isFeatured ? featuredInner : defaultInner
+  const style = isFeatured ? featuredStyle : defaultStyle
 
   if (href) {
     return (
@@ -137,7 +184,7 @@ export function BbxHubTile({
       onClick={onClick}
       aria-label={ariaLabel}
       className={className}
-      style={{ ...style, ['--tw-ring-color' as string]: `${accent}55` }}
+      style={{ ...style, ['--tw-ring-color' as string]: `${accent}44` }}
       {...motionProps}
       {...dataAttrs}
     >

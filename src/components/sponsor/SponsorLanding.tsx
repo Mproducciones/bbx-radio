@@ -9,7 +9,6 @@ import { sponsorWaLink } from '@/lib/sponsorContent'
 import { SponsorPlanIcon } from '@/components/shared/SponsorPlanIcon'
 import { ProWaButton } from '@/components/shared/ProWaButton'
 import { PlanDetailSheet } from './PlanDetailSheet'
-import { SponsorStickyWaBar } from './SponsorStickyWaBar'
 
 function PlanCard({
   plan,
@@ -253,10 +252,6 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
         </p>
         <FaqAccordion />
       </div>
-
-      <div className="h-24 md:hidden" aria-hidden />
-
-      <SponsorStickyWaBar href={waLink} />
 
       <PlanDetailSheet plan={selectedPlan} onClose={() => setSelectedId(null)} />
     </div>
