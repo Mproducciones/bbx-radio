@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { listAppNotifications } from '@/lib/appNotificationsStore'
+import { getDefaultVisibleHours } from '@/lib/notificationSettings'
 import { rateLimitByIp } from '@/lib/rateLimit'
 
 export const runtime = 'nodejs'
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       items,
       dbReady,
+      visibleHoursDefault: getDefaultVisibleHours(),
       ...(isProd ? {} : { dbError }),
       hint: !dbReady && !isProd
         ? 'Ejecuta supabase-app-notifications.sql en Supabase y redeploy.'

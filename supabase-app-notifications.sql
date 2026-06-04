@@ -6,8 +6,14 @@ CREATE TABLE IF NOT EXISTS app_notifications (
   title      TEXT NOT NULL,
   body       TEXT NOT NULL,
   url        TEXT NOT NULL DEFAULT '/',
+  visible_hours INT,
+  expires_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Si ya existía la tabla sin TTL:
+ALTER TABLE app_notifications ADD COLUMN IF NOT EXISTS visible_hours INT;
+ALTER TABLE app_notifications ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
 
 CREATE INDEX IF NOT EXISTS idx_app_notifications_created ON app_notifications (created_at DESC);
 

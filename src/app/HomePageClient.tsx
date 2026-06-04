@@ -10,6 +10,7 @@ import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { EASE_OUT } from '@/lib/motion/framer'
 import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
+import { NotificationsInbox } from '@/components/notifications/NotificationsInbox'
 import { FEATURES } from '@/lib/plan'
 
 export function HomePageClient() {
@@ -33,17 +34,20 @@ export function HomePageClient() {
             </h1>
             <p className="text-white/40 text-[11px] mt-1 font-medium truncate">{RADIO.slogan}</p>
           </div>
-          <BbxFrequencyGate
-            className="font-display text-sm leading-none px-2.5 py-1.5 rounded-full shrink-0 active:scale-95 transition-transform"
-            style={{
-              color: 'var(--color-mag-400)',
-              background: 'color-mix(in srgb, var(--color-mag-400) 12%, transparent)',
-              border: '1px solid color-mix(in srgb, var(--color-mag-400) 38%, transparent)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
-            }}
-          >
-            {RADIO.frequency}
-          </BbxFrequencyGate>
+          <div className="flex items-center gap-2 shrink-0">
+            <NotificationsInbox />
+            <BbxFrequencyGate
+              className="font-display text-sm leading-none px-2.5 py-1.5 rounded-full shrink-0 active:scale-95 transition-transform"
+              style={{
+                color: 'var(--color-mag-400)',
+                background: 'color-mix(in srgb, var(--color-mag-400) 12%, transparent)',
+                border: '1px solid color-mix(in srgb, var(--color-mag-400) 38%, transparent)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+              }}
+            >
+              {RADIO.frequency}
+            </BbxFrequencyGate>
+          </div>
         </motion.div>
 
         <ClientOnly
@@ -126,6 +130,9 @@ export function HomePageClient() {
         >
           <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
           <span className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Transmitiendo en vivo</span>
+          <span className="ml-2 border-l border-white/10 pl-2">
+            <NotificationsInbox />
+          </span>
         </div>
 
         <h2 className="font-display text-gradient-gold leading-none mb-2 tracking-wide"

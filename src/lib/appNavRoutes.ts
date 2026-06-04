@@ -30,6 +30,7 @@ export const APP_SCROLL_ROUTES = [
   '/studio',
   '/patrocinadores',
   '/lanzamientos',
+  '/replay',
 ] as const
 
 export function isAppScrollRoute(path: string): boolean {

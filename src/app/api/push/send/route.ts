@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Demasiados envíos. Espera un momento.', code: 'rate_limit' }, { status: 429 })
   }
 
-  const { title, body, url } = await req.json().catch(() => ({}))
+  const { title, body, url, visibleHours } = await req.json().catch(() => ({}))
   if (!title || !body || typeof title !== 'string' || typeof body !== 'string') {
     return NextResponse.json({ error: 'title y body son requeridos', code: 'bad_request' }, { status: 400 })
   }
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
     title: title.slice(0, 120),
     body: body.slice(0, 240),
     url: safeUrl,
+    visibleHours: visibleHours,
   })
 
   if (!inApp) {

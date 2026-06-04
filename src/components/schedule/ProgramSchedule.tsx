@@ -19,8 +19,6 @@ const DAYS: { key: DayKey; label: string; full: string }[] = [
   { key: 'sun', label: 'Dom', full: 'Domingo' },
 ]
 
-const LIVE_BG = 'rgba(219,137,24,0.08)'
-const LIVE_BORDER = 'rgba(219,137,24,0.28)'
 const LIVE_ACCENT = 'var(--color-mag-400)'
 
 export function ProgramSchedule({
@@ -54,27 +52,17 @@ export function ProgramSchedule({
     <section
       aria-labelledby="programacion-heading"
       className={cn(
-        'relative flex flex-col gap-3 max-md:gap-2 rounded-3xl p-3 max-md:p-3 md:p-4',
+        'prog-schedule',
         fill && 'md:flex-1 md:min-h-0',
         className,
       )}
-      style={{
-        background: 'rgba(7,7,14,0.92)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
-      }}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(219,137,24,0.12)' }}
-          >
-            <Radio className="w-4 h-4" style={{ color: LIVE_ACCENT }} aria-hidden />
+      <div className="prog-schedule__header">
+        <div className="prog-schedule__title-row">
+          <div className="prog-schedule__icon" aria-hidden>
+            <Radio className="w-3.5 h-3.5 md:w-4 md:h-4" style={{ color: LIVE_ACCENT }} />
           </div>
-          <h2 id="programacion-heading" className="font-display text-xl max-md:text-lg md:text-2xl text-white leading-none">
+          <h2 id="programacion-heading" className="prog-schedule__title">
             Programación
           </h2>
         </div>
@@ -84,8 +72,7 @@ export function ProgramSchedule({
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
-            className="text-sm font-semibold px-2.5 py-1 rounded-full"
-            style={{ background: 'rgba(255,255,255,0.08)', color: '#fff' }}
+            className="prog-schedule__day-pill"
           >
             {selectedFull}
           </motion.span>
@@ -95,8 +82,7 @@ export function ProgramSchedule({
       <div
         role="tablist"
         aria-label="Día de la semana"
-        className="flex items-center p-1 rounded-2xl gap-0.5"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+        className="prog-schedule__days"
         suppressHydrationWarning
       >
         {hydrated && DAYS.map(d => {
@@ -111,72 +97,60 @@ export function ProgramSchedule({
               aria-label={`${d.full}${isToday ? ', hoy' : ''}`}
               onClick={() => setSelectedDay(d.key)}
               whileTap={{ scale: 0.92 }}
-              className="relative flex-1 flex flex-col items-center justify-center min-w-0 py-2 rounded-xl text-[11px] sm:text-xs font-extrabold tracking-wide transition-colors"
-              style={
-                isActive
-                  ? { background: LIVE_ACCENT, color: '#fff', boxShadow: '0 2px 12px rgba(219,137,24,0.35)' }
-                  : { color: 'rgba(255,255,255,0.88)', background: 'rgba(255,255,255,0.04)' }
-              }
+              className={cn('prog-schedule__day', isActive && 'is-active')}
             >
               {isToday && !isActive && (
-                <span
-                  className="absolute top-1 right-1.5 w-1.5 h-1.5 rounded-full"
-                  style={{ background: LIVE_ACCENT }}
-                  aria-hidden
-                />
+                <span className="prog-schedule__today-dot" aria-hidden />
               )}
               {d.label}
             </motion.button>
           )
         })}
         {!hydrated && (
-          <div className="flex-1 py-2 text-center text-[10px] text-white/20">Cargando…</div>
+          <div className="flex-1 py-1.5 text-center text-[10px] text-white/20">Cargando…</div>
         )}
       </div>
 
       {!hydrated ? (
-        <div className="flex flex-col gap-2">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-14 rounded-2xl bg-white/5 animate-pulse" />
+        <div className="prog-schedule__list">
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="prog-schedule__skeleton" />
           ))}
         </div>
       ) : (
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={selectedDay}
-          role="tabpanel"
-          aria-label={`Programas del ${selectedFull.toLowerCase()}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: EASE_OUT }}
-          className={cn(
-            'flex flex-col gap-1.5 max-md:gap-1 max-md:pb-1',
-            fill && 'md:flex-1 md:min-h-0 md:overflow-y-auto md:overscroll-contain md:pb-2',
-          )}
-        >
-          {filtered.length === 0 ? (
-            <div className="flex flex-col items-center py-10 gap-3">
-              <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{ background: 'rgba(255,255,255,0.04)' }}
-              >
-                <CalendarOff className="w-6 h-6 text-white/20" aria-hidden />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={selectedDay}
+            role="tabpanel"
+            aria-label={`Programas del ${selectedFull.toLowerCase()}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: EASE_OUT }}
+            className={cn(
+              'prog-schedule__list',
+              fill && 'md:flex-1 md:min-h-0 md:overflow-y-auto md:overscroll-contain',
+            )}
+          >
+            {filtered.length === 0 ? (
+              <div className="prog-schedule__empty">
+                <div className="prog-schedule__empty-icon">
+                  <CalendarOff className="w-5 h-5 text-white/20" aria-hidden />
+                </div>
+                <p className="text-white/30 text-sm">Sin programas para {selectedFull.toLowerCase()}</p>
               </div>
-              <p className="text-white/30 text-sm">Sin programas para {selectedFull.toLowerCase()}</p>
-            </div>
-          ) : (
-            filtered.map((program, i) => (
-              <ProgramRow
-                key={program.id}
-                program={program}
-                isLive={program.id === liveProgram?.id}
-                index={i}
-              />
-            ))
-          )}
-        </motion.div>
-      </AnimatePresence>
+            ) : (
+              filtered.map((program, i) => (
+                <ProgramRow
+                  key={program.id}
+                  program={program}
+                  isLive={program.id === liveProgram?.id}
+                  index={i}
+                />
+              ))
+            )}
+          </motion.div>
+        </AnimatePresence>
       )}
     </section>
   )
@@ -190,92 +164,58 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={staggerDelay(index, 0.04, 0.05)}
-      className="relative flex items-center gap-2.5 max-md:gap-2 p-3 max-md:p-2.5 rounded-2xl overflow-hidden"
-      style={
-        isLive
-          ? { background: LIVE_BG, border: `1px solid ${LIVE_BORDER}` }
-          : { background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)' }
-      }
+      transition={staggerDelay(index, 0.03, 0.04)}
+      className={cn('prog-schedule__row', isLive && 'is-live')}
       aria-current={isLive ? 'true' : undefined}
     >
-      {isLive && (
-        <div
-          className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full"
-          style={{ background: LIVE_ACCENT }}
-          aria-hidden
-        />
-      )}
+      {isLive && <div className="prog-schedule__live-bar" aria-hidden />}
 
-      <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
-        style={
-          isLive
-            ? { background: 'rgba(219,137,24,0.15)' }
-            : { background: 'rgba(255,255,255,0.05)' }
-        }
-      >
+      <div className="prog-schedule__thumb">
         {program.imageUrl ? (
           <Image
             src={program.imageUrl}
             alt=""
-            width={36}
-            height={36}
+            width={32}
+            height={32}
             className="w-full h-full object-cover"
           />
         ) : (
           <Mic2
-            className="w-4 h-4"
+            className="w-3.5 h-3.5"
             style={{ color: isLive ? LIVE_ACCENT : 'rgba(255,255,255,0.3)' }}
             aria-hidden
           />
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p
-            className="font-bold text-sm truncate"
-            style={{ color: isLive ? '#fff' : 'rgba(255,255,255,0.8)' }}
-          >
-            {program.name}
-          </p>
+      <div className="prog-schedule__info min-w-0 flex-1">
+        <div className="prog-schedule__name-row">
+          <p className="prog-schedule__name">{program.name}</p>
           {isLive && (
-            <span
-              className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest flex-shrink-0 px-1.5 py-0.5 rounded-full"
-              style={{ background: LIVE_ACCENT, color: '#fff' }}
-            >
-              <span className="w-1 h-1 rounded-full bg-white animate-pulse" aria-hidden />
+            <span className="prog-schedule__live-badge">
+              <span className="prog-schedule__live-dot" aria-hidden />
               EN VIVO
             </span>
           )}
         </div>
         {program.sponsor && (
           <p
-            className="text-[9px] font-bold uppercase tracking-wide mt-0.5 truncate"
+            className="prog-schedule__sponsor"
             style={{ color: program.sponsor.colorAccent ?? '#7D59B5' }}
           >
             Presenta: {program.sponsor.cliente}
           </p>
         )}
         {program.host && program.host !== 'Por confirmar' && (
-          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {hostLabel}
-          </p>
+          <p className="prog-schedule__host">{hostLabel}</p>
         )}
       </div>
 
-      <div className="flex flex-col items-end flex-shrink-0 text-right">
-        <span
-          className="text-xs font-semibold tabular-nums"
-          style={{ color: isLive ? LIVE_ACCENT : 'rgba(255,255,255,0.4)' }}
-        >
-          {program.startTime}
-        </span>
-        <span className="text-[10px] tabular-nums" style={{ color: 'rgba(255,255,255,0.2)' }}>
-          {program.endTime}
+      <div className="prog-schedule__time">
+        <span className="prog-schedule__time-range">
+          {program.startTime} – {program.endTime}
         </span>
       </div>
     </motion.article>

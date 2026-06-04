@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { ChevronLeft, Home } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import type { SponsorPlan } from '@/lib/sponsorPlans'
 import { PlanMockup } from './PlanMockup'
 import { sponsorWaLink } from '@/lib/sponsorContent'
@@ -55,7 +56,7 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
             <motion.button
               type="button"
               aria-label="Cerrar"
-              className="fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm"
+              className="plan-detail-sheet__backdrop fixed inset-0 z-[1100] bg-black/85 backdrop-blur-sm max-md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -67,29 +68,22 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
               role="dialog"
               aria-modal="true"
               aria-labelledby="plan-detail-title"
-              className="fixed z-[1101] bottom-0 left-1/2 flex flex-col min-h-0 min-w-0 -translate-x-1/2 w-[min(32rem,calc(100vw-var(--app-gutter-left)-var(--app-gutter-right)))] max-w-full rounded-t-[1.35rem] overflow-hidden"
-              style={{
-                maxHeight: 'min(92dvh, calc(100dvh - env(safe-area-inset-top, 0px) - 0.5rem))',
-                background: 'linear-gradient(180deg, #12121c 0%, var(--color-ink-900) 100%)',
-                border: `1px solid color-mix(in srgb, ${plan.color} 42%, rgba(255,255,255,0.08))`,
-                borderBottom: 'none',
-                boxShadow: `0 -20px 64px -12px color-mix(in srgb, ${plan.color} 28%, transparent)`,
-              }}
+              className="plan-detail-sheet fixed z-[1101] flex flex-col min-h-0 min-w-0 overflow-hidden"
+              style={{ '--plan-accent': plan.color } as React.CSSProperties}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 320 }}
             >
-              <div className="shrink-0 flex justify-center pt-2.5 pb-0.5">
+              <div className="plan-detail-sheet__handle shrink-0 md:flex justify-center pt-2.5 pb-0.5 hidden" aria-hidden>
                 <div className="w-10 h-1 rounded-full bg-white/25" />
               </div>
 
-              <div className="shrink-0 px-4 pb-1.5 flex items-center justify-between gap-2 min-w-0">
+              <header className="plan-detail-sheet__header shrink-0">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="shrink-0 flex items-center gap-2 rounded-xl px-2.5 py-2 min-h-[44px] transition-colors hover:bg-white/[0.08]"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  className="plan-detail-sheet__nav-btn"
                   aria-label="Volver a los planes"
                 >
                   <ChevronLeft className="w-4 h-4 shrink-0 text-white/80" strokeWidth={2.5} aria-hidden />
@@ -99,46 +93,41 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                   </span>
                 </button>
                 <div className="min-w-0 flex-1 text-center px-1">
-                  <h2 id="plan-detail-title" className="font-display text-base text-white leading-tight truncate">
+                  <h2 id="plan-detail-title" className="font-display text-base md:text-lg text-white leading-tight truncate">
                     {plan.nombre}
                   </h2>
                   <p className="text-[10px] text-white/40">${plan.precio}/mes · vista previa</p>
                 </div>
                 <Link
                   href="/"
-                  className="shrink-0 flex items-center gap-1.5 rounded-xl px-2.5 py-2 min-h-[44px] text-[10px] font-semibold text-[#40B9BF] hover:text-white transition-colors"
-                  style={{ background: 'rgba(64,185,191,0.12)', border: '1px solid rgba(64,185,191,0.22)' }}
+                  className="plan-detail-sheet__live-link shrink-0"
                   aria-label="Ir a la radio en vivo"
                 >
                   <Home className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} aria-hidden />
                   <span className="hidden min-[380px]:inline">En vivo</span>
                 </Link>
+              </header>
+
+              <div
+                className="plan-detail-sheet__tabs shrink-0"
+                role="tablist"
+                aria-label="Pantallas del plan"
+              >
+                {plan.imagenes.map((img, i) => (
+                  <button
+                    key={`${plan.id}-${img.id}-${i}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeIdx === i}
+                    onClick={() => setActiveIdx(i)}
+                    className={cn('plan-detail-sheet__tab', activeIdx === i && 'is-active')}
+                  >
+                    <span className="truncate">{img.caption}</span>
+                  </button>
+                ))}
               </div>
 
-              <div className="shrink-0 px-4 pb-2">
-                <div className="grid grid-cols-1 gap-1.5">
-                  {plan.imagenes.map((img, i) => (
-                    <button
-                      key={`${plan.id}-${img.id}-${i}`}
-                      type="button"
-                      onClick={() => setActiveIdx(i)}
-                      className="w-full flex items-center justify-between gap-2 min-h-[44px] min-w-0 px-3 py-2.5 rounded-xl text-left text-xs font-semibold"
-                      style={{
-                        background: activeIdx === i ? `${plan.color}22` : 'rgba(255,255,255,0.04)',
-                        border: activeIdx === i ? `1.5px solid ${plan.color}` : '1px solid rgba(255,255,255,0.07)',
-                        color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.55)',
-                      }}
-                    >
-                      <span className="min-w-0 truncate">{img.caption}</span>
-                      <span className="text-[10px] shrink-0" style={{ color: activeIdx === i ? plan.color : 'rgba(255,255,255,0.25)' }}>
-                        {activeIdx === i ? '●' : '○'}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4 pb-3 [-webkit-overflow-scrolling:touch]">
+              <div className="plan-detail-sheet__body flex-1 min-h-0 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]">
                 <AnimatePresence mode="wait">
                   {activeImage && (
                     <motion.div
@@ -147,6 +136,7 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.22 }}
+                      className="plan-detail-sheet__preview"
                     >
                       <VisualSchemaFrame
                         callouts={activeImage.callouts}
@@ -164,23 +154,18 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                   )}
                 </AnimatePresence>
 
-                <PlanDeliverablesChecklist planId={plan.id} color={plan.color} />
-
-                <PlanIncludesDisclosure
-                  items={plan.incluye}
-                  accent={plan.color}
-                  showList={showList}
-                  onToggle={() => setShowList(v => !v)}
-                />
+                <div className="plan-detail-sheet__extras">
+                  <PlanDeliverablesChecklist planId={plan.id} color={plan.color} />
+                  <PlanIncludesDisclosure
+                    items={plan.incluye}
+                    accent={plan.color}
+                    showList={showList}
+                    onToggle={() => setShowList(v => !v)}
+                  />
+                </div>
               </div>
 
-              <div
-                className="shrink-0 px-4 pt-3 flex flex-col gap-2.5 border-t border-white/10 min-w-0"
-                style={{
-                  background: '#0a0a12',
-                  paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))',
-                }}
-              >
+              <footer className="plan-detail-sheet__footer shrink-0">
                 <AccentButton
                   href={sponsorWaLink(plan.nombre)}
                   accent={plan.color}
@@ -200,7 +185,7 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
                 >
                   Cerrar
                 </AccentButton>
-              </div>
+              </footer>
             </motion.div>
           </>
         )}

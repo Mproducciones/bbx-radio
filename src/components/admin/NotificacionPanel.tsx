@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { AdminCard, AdminCardHeader, AdminIcons } from './adminUi'
+import { NOTIFICATION_VISIBLE_PRESETS, type NotificationVisibleHours } from '@/lib/notificationSettings'
 
 type SendState = 'idle' | 'sending' | 'done' | 'error'
 
@@ -53,6 +54,7 @@ export function NotificacionPanel() {
   const [result, setResult] = useState<{ sent: number; failed: number; total?: number } | null>(null)
   const [status, setStatus] = useState<PushStatus | null>(null)
   const [sendError, setSendError] = useState<string | null>(null)
+  const [visibleHours, setVisibleHours] = useState<NotificationVisibleHours>(48)
 
   const loadStatus = useCallback(() => {
     fetch('/api/push/status', { credentials: 'include' })
@@ -81,7 +83,7 @@ export function NotificacionPanel() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ title, body, url }),
+        body: JSON.stringify({ title, body, url, visibleHours }),
       })
       const data = await res.json()
       if (!res.ok || data.ok === false) {
@@ -119,8 +121,8 @@ export function NotificacionPanel() {
 
       <div className="admin-card-body">
         <p className="text-white/45 text-xs leading-relaxed mb-4">
-          Cada envío se guarda en la <strong className="text-white/65">campanita</strong> de la app (todos la ven)
-          y además hace push al celular de quien activó notificaciones.
+          Cada envío se guarda en la <strong className="text-white/65">lista de En Vivo</strong> (campanita arriba)
+          y muestra un <strong className="text-white/65">globo</strong> en todas las pantallas. También hace push si hay suscriptores.
         </p>
 
         {status && !status.ready && (
@@ -184,7 +186,7 @@ export function NotificacionPanel() {
             <div>
               <p className="text-[#00D9A0] font-bold text-sm">Enviada</p>
               <p className="text-white/40 text-xs">
-                Visible en la campanita de la app.
+                Visible en En Vivo {visibleHours}h · globo en la app · campanita en inicio.
                 {result.total != null && result.total > 0
                   ? ` Push: ${result.sent} de ${result.total}${result.failed > 0 ? ` (${result.failed} fallaron)` : ''}.`
                   : ' Sin push activo en celulares aún.'}
@@ -229,6 +231,28 @@ export function NotificacionPanel() {
                 disabled={!status?.ready}
                 className="bg-[#07070E] border border-[#1A1A2E] focus:border-[#7D59B5] rounded-xl px-3 py-2.5 text-white text-sm outline-none transition-colors resize-none placeholder-white/15 disabled:opacity-40"
               />
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-[#666690] text-xs font-medium">Visible en En Vivo durante</span>
+              <div className="flex flex-wrap gap-2">
+                {NOTIFICATION_VISIBLE_PRESETS.map(p => (
+                  <button
+                    key={p.hours}
+                    type="button"
+                    disabled={!status?.ready}
+                    onClick={() => setVisibleHours(p.hours)}
+                    className="text-[10px] px-2 py-1 rounded-lg transition-colors disabled:opacity-40"
+                    style={
+                      visibleHours === p.hours
+                        ? { background: 'rgba(125,89,181,0.25)', color: '#c4b5fd', border: '1px solid rgba(125,89,181,0.4)' }
+                        : { background: 'rgba(255,255,255,0.04)', color: '#444468', border: '1px solid rgba(255,255,255,0.06)' }
+                    }
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </label>
 
             <label className="flex flex-col gap-1.5">

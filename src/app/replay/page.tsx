@@ -9,11 +9,10 @@ export default async function ReplayPage() {
   const episodes = await fetchReplay()
 
   return (
-    <AppMenuScreen scroll>
+    <AppMenuScreen scroll className="replay-route w-full min-w-0 max-w-full">
       <SectionHeader compact title="Replay" />
-      <div className="flex-1 min-h-0 md:flex-none">
-        <ReplayList episodes={episodes} compact />
-      </div>
+      <p className="replay-route__sub shrink-0">Programas recientes para escuchar cuando quieras</p>
+      <ReplayList episodes={episodes} />
     </AppMenuScreen>
   )
 }

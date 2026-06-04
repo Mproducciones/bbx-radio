@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MOTIVOS, type MotivoId } from '@/lib/saludoTypes'
 import { SaludoMotivoIcon } from '@/components/engagement/SaludoMotivoIcon'
 import { EASE_OUT, springSnappy, staggerContainer, staggerItem } from '@/lib/motion/framer'
+import { Plus, RotateCcw } from 'lucide-react'
 import { animateStagger } from '@/lib/motion/anime'
 
 type Step = 'motivo' | 'para' | 'de' | 'sending' | 'done' | 'error'
@@ -515,12 +516,14 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
 
             <motion.button
               type="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.85 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.85, ease: EASE_OUT }}
               onClick={reset}
-              className="text-white/30 text-xs underline hover:text-white/55 transition-colors"
+              className="saludos-btn saludos-btn--outline"
+              style={{ '--saludo-accent': accent } as CSSProperties}
             >
+              <Plus className="w-4 h-4 shrink-0" aria-hidden strokeWidth={2.5} />
               Enviar otro saludo
             </motion.button>
           </motion.div>
@@ -543,8 +546,10 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
             <button
               type="button"
               onClick={() => setStep('de')}
-              className="saludos-btn is-disabled max-w-[12rem] !min-h-[2.5rem] hover:text-white/70"
+              className="saludos-btn saludos-btn--outline max-w-[14rem]"
+              style={{ '--saludo-accent': accent } as CSSProperties}
             >
+              <RotateCcw className="w-4 h-4 shrink-0" aria-hidden strokeWidth={2.25} />
               Intentar de nuevo
             </button>
           </motion.div>
