@@ -28,6 +28,9 @@ const RadioPlayerContext = createContext<RadioPlayerContextValue | null>(null)
 
 const STREAM_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 
+/** Siempre null: el stream va directo al altavoz sin Web Audio (mejor calidad en móvil). */
+const DIRECT_PLAYBACK_ANALYSER = null
+
 const listenerSessionReady = { current: false }
 
 function ensureListenerSessionCookie(): Promise<void> {
@@ -57,7 +60,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
-  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null)
   const [isTvOpen, setIsTvOpen] = useState(false)
   const [isConcertMode, setIsConcertMode] = useState(false)
 
@@ -71,53 +73,10 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const ctxRef = useRef<AudioContext | null>(null)
-  const graphReadyRef = useRef(false)
-  /** Web Audio solo tras gesto del usuario — evita warnings en consola */
-  const gestureUnlockedRef = useRef(false)
 
   const wantsPlayRef = useRef(true)
   const userPausedRef = useRef(false)
   const pausedForTvRef = useRef(false)
-
-  const initAudioGraph = useCallback(() => {
-    const audio = audioRef.current
-    if (!audio || graphReadyRef.current) return
-    graphReadyRef.current = true
-
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    const ctx = new AudioCtx({ latencyHint: 'interactive' })
-    ctxRef.current = ctx
-
-    const source = ctx.createMediaElementSource(audio)
-    const node = ctx.createAnalyser()
-    node.fftSize = 256
-    node.smoothingTimeConstant = 0.55
-    node.minDecibels = -90
-    node.maxDecibels = -10
-    source.connect(node)
-    node.connect(ctx.destination)
-    setAnalyser(node)
-  }, [])
-
-  const resumeContextIfNeeded = useCallback(async () => {
-    if (!gestureUnlockedRef.current) return
-    initAudioGraph()
-    const ctx = ctxRef.current
-    if (ctx?.state === 'suspended') {
-      try {
-        await ctx.resume()
-      } catch {
-        /* autoplay policy */
-      }
-    }
-  }, [initAudioGraph])
-
-  const unlockFromGesture = useCallback(() => {
-    if (gestureUnlockedRef.current) return
-    gestureUnlockedRef.current = true
-    void resumeContextIfNeeded()
-  }, [resumeContextIfNeeded])
 
   const startHeartbeat = useCallback(() => {
     if (heartbeatRef.current) return
@@ -148,10 +107,13 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     wantsPlayRef.current = true
     setHasError(false)
 
+    if (!audio.paused) {
+      setIsPlaying(true)
+      startHeartbeat()
+      return
+    }
+
     try {
-      if (gestureUnlockedRef.current) {
-        await resumeContextIfNeeded()
-      }
       setIsLoading(true)
       if (audio.readyState < 2) audio.load()
       await audio.play()
@@ -163,7 +125,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }, [startHeartbeat, resumeContextIfNeeded, shouldAutoPlay])
+  }, [startHeartbeat, shouldAutoPlay])
 
   const playRef = useRef(play)
   playRef.current = play
@@ -195,7 +157,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const audio = new Audio(STREAM_URL)
-    audio.crossOrigin = 'anonymous'
     audio.preload = 'none'
     audio.volume = STREAM_VOLUME
     audio.setAttribute('playsinline', 'true')
@@ -222,16 +183,8 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       stopHeartbeat()
     })
 
-    const onGesture = (e: Event) => {
-      if ('isTrusted' in e && !(e as Event & { isTrusted: boolean }).isTrusted) return
-      unlockFromGesture()
-    }
-    document.addEventListener('touchstart', onGesture, { passive: true })
-    document.addEventListener('pointerdown', onGesture)
-
     const onVisible = () => {
       if (document.visibilityState !== 'visible') return
-      if (!gestureUnlockedRef.current) return
       if (shouldAutoPlay() && audio.paused) void playRef.current()
     }
     document.addEventListener('visibilitychange', onVisible)
@@ -245,15 +198,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('playing', onPlaying)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('canplay', onCanPlay)
-      document.removeEventListener('touchstart', onGesture)
-      document.removeEventListener('pointerdown', onGesture)
       document.removeEventListener('visibilitychange', onVisible)
       audio.pause()
       audio.src = ''
-      void ctxRef.current?.close()
-      ctxRef.current = null
-      graphReadyRef.current = false
-      gestureUnlockedRef.current = false
       stopHeartbeat()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -269,7 +216,6 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [pathname, pauseForTv, resumeAfterTv])
 
   const toggle = useCallback(() => {
-    gestureUnlockedRef.current = true
     if (isPlaying) pause()
     else {
       userPausedRef.current = false
@@ -291,7 +237,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [resumeAfterTv])
 
   return (
-    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, analyser, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>
+    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, analyser: DIRECT_PLAYBACK_ANALYSER, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>
       {children}
       <MilestoneBadge milestone={milestone} />
     </RadioPlayerContext.Provider>
