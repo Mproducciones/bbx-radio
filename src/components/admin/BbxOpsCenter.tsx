@@ -148,7 +148,7 @@ export function BbxOpsCenter() {
             <AdminBadge color="#FFB300">Sin webhook — configura BBX_OPS_WEBHOOK_URL</AdminBadge>
           )}
           {data.config.channels.sms && <AdminBadge color="#40B9BF">SMS Twilio</AdminBadge>}
-          {data.config.cronEnabled && <AdminBadge color="#7D59B5">Cron cada 6 h</AdminBadge>}
+          {data.config.cronEnabled && <AdminBadge color="#7D59B5">Cron diario</AdminBadge>}
           {!data.tableAvailable && (
             <AdminBadge color="#FF3860">Ejecuta supabase-bbx-ops.sql</AdminBadge>
           )}

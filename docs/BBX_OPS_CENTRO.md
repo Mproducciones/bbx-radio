@@ -34,7 +34,7 @@ Botones:
 5. Redeploy.
 6. En `/bbx-admin` → **Probar notificación**.
 
-Vercel ejecutará el chequeo cada **6 horas** automáticamente.
+Vercel ejecutará el chequeo **una vez al día** (14:00 UTC; plan Hobby). En Vercel Pro puedes pasar a cada 6 h.
 
 ## Manual del cron
 

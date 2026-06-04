@@ -177,7 +177,7 @@ Hasta entonces: botón “Mercado Pago (próximamente)” en `/suspended` y pago
    BBX_OPS_NOTIFY_PHONE=56922105555
    BBX_OPS_CRON_SECRET=genera-un-secreto-largo
    ```
-   - Cron Vercel cada 6 h (`vercel.json`) llama a `/api/cron/ops-check` con `Authorization: Bearer <secreto>`.
+   - Cron Vercel **1 vez al día** (14:00 UTC, plan Hobby) → `/api/cron/ops-check` con `Authorization: Bearer <secreto>`. En plan Pro puedes cambiar a cada 6 h en `vercel.json`.
 
 2. **WhatsApp manual** — botón “WhatsApp resumen” en el panel (abre wa.me con todas las alertas).
 
