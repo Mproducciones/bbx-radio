@@ -8,8 +8,8 @@ Estas reglas tienen prioridad sobre sugerencias creativas del modelo.
 
 ## UI / UX
 3. **Bottom nav**: no cambiar layout (centrado `max-w-md`) sin OK del cliente.
-4. **Overflow móvil**: PASS obligatorio en 360px, 390px y 430px en rutas: `/`, `/programacion`, `/participa`, `/saludos`.
-5. **Mini player**: compacto en rutas de lista (`MINI_PLAYER_SLIM_ROUTES`).
+4. **Overflow móvil**: PASS obligatorio en 360px, 390px, 393px y 430px en rutas: `/`, `/programacion`, `/participa`, `/saludos`, `/bbx`, `/anunciate`.
+5. **Reproductor**: solo pantalla completa en `/`; sin mini player global en otras rutas.
 6. Español en copy visible al usuario.
 
 ## Código

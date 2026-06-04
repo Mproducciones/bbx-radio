@@ -29,7 +29,11 @@ export function SubscriptionGraceBannerClient({
   return (
     <div
       className="fixed top-0 left-0 right-0 z-[300] px-3 py-2 md:py-2.5 flex flex-wrap items-center justify-center gap-2 text-center text-xs md:text-sm"
-      style={{ background: 'linear-gradient(90deg, #7a4a00, #db8918)', color: '#07070e' }}
+      style={{
+        background: 'linear-gradient(90deg, #7a4a00, #db8918)',
+        color: '#07070e',
+        paddingTop: 'max(0.5rem, env(safe-area-inset-top, 0px))',
+      }}
       role="alert"
     >
       <span className="font-semibold">

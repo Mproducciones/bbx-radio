@@ -100,7 +100,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
   }
 
   return (
-    <div className="relative flex flex-1 flex-col min-h-0 w-full min-w-0 max-w-full overflow-hidden">
+    <div className="relative flex flex-1 flex-col min-h-0 w-full min-w-0 max-w-full overflow-x-clip overflow-y-hidden">
       <AnimatePresence
         initial={false}
         mode={mobileTransition ? 'wait' : 'popLayout'}

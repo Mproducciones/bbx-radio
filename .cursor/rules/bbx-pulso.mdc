@@ -1,48 +1,75 @@
 ---
-description: BBX Radio / PULSO — reglas obligatorias para agentes (Cursor + Claude)
+description: Radio Bienvenida / pulso-app — reglas obligatorias para Cursor Agent
 globs:
   - src/**/*
   - public/**/*
+  - scripts/**/*
   - agents/**/*
 alwaysApply: true
 ---
 
-# Radio Bienvenida / pulso-app
+# Radio Bienvenida / pulso-app (BBX)
 
 ## Idioma y alcance
-- Responder y documentar en **español**.
+- Responder y documentar en **español** (Chile: Rancagua, 93.3 FM).
 - Cambios **mínimos y focalizados**; no refactorizar fuera del pedido.
+- Reutilizar tokens PULSO en `globals.css` (`--color-mag-400`, `--color-cyn-400`, etc.).
 
 ## Prohibido sin confirmación explícita del usuario
-- Mover, renombrar o rediseñar el **bottom nav** (`BottomNav.tsx`, `max-w-md mx-auto`).
-- Cambiar orden de tabs en menú o swipe sin alinear `appNavRoutes.ts` + `BottomNav.tsx`.
-- `git commit` / `git push` / deploy salvo que el usuario lo pida.
+- Mover, renombrar o rediseñar el **bottom nav** (`BottomNav.tsx`, tabs centrados).
+- Cambiar orden de tabs en menú o swipe sin alinear `src/lib/appNavRoutes.ts` + `BottomNav.tsx`.
+- **`git commit` / `git push` / deploy** salvo que el usuario lo pida (ej. "deploy").
+- Volver a añadir **mini player** global (`MiniPlayer` en `layout.tsx`) sin pedido.
 
-## Mobile / responsive (crítico)
-- Cero **overflow horizontal** a 360px: `document.documentElement.scrollWidth <= window.innerWidth`.
-- No usar `position: fixed` para fondos decorativos; usar `absolute` dentro de `.app-mobile-shell`.
-- No `100vw` en capas animadas; evitar `scale()` grande en aurora en móvil.
-- No `contain: paint` en shell (recorta bordes redondeados).
-- Flex hijos: `min-w-0`, contenedores `max-w-full`, `overflow-x-hidden` donde aplique.
-- Mini player en listas: modo **slim** (`miniPlayerRoutes.ts`), ~48px alto.
+## Mobile / responsive (crítico — iPhone)
+- Variables de layout en `:root` (`globals.css`): `--app-safe-top`, `--app-gutter-left/right`, `--app-nav-total`.
+- `html` y `body`: **`margin: 0; padding: 0; width: 100%`** (evita franja de 8px a la izquierda en iOS).
+- Shell: `.app-mobile-inset` con `padding-top: var(--app-safe-top)`; rutas scroll (`/bbx`, `/anunciate`) usan `.app-mobile-inset--flush` + `.app-gutter-x` dentro del contenido (no doble gutter).
+- Nav inferior: clase `.app-bottom-nav` (full-bleed); contenido interno `.app-bottom-nav__inner`.
+- Cero **overflow horizontal** en 360 / 390 / 393 / 430 px: `scrollWidth <= innerWidth + 1`.
+- No `position: fixed` para fondos decorativos; `absolute` dentro de `.app-mobile-shell`.
+- Evitar `100vw` en sheets; usar `calc(100vw - var(--app-gutter-left) - var(--app-gutter-right))`.
+- No `contain: paint` en shell (recorta bordes).
+- Flex hijos: `min-w-0`, `max-w-full`, `overflow-x-hidden` / `overflow-x-clip` donde aplique.
+- Controles táctiles: ~**44px** mínimo en CTAs principales (Apple HIG). Referencia: `src/lib/mobileViewport.ts`.
+- `viewport-fit=cover` ya está en `layout.tsx`; respetar safe areas en banners `fixed` (ej. gracia de pago).
 
-## Arquitectura nav
-- Una sola fuente de rutas: `src/lib/appNavRoutes.ts`.
-- Swipe móvil: fade, no `x: 100%` (ver `SwipeLayout.tsx`).
+## Arquitectura nav y pantallas
+- Una sola fuente de rutas: `src/lib/appNavRoutes.ts` (`APP_NAV_ROUTES`, `APP_SCROLL_ROUTES`).
+- Swipe entre tabs: fade en móvil (`SwipeLayout.tsx`), no slide `x: 100%`.
+- Reproductor **completo** solo en home inmersivo (`NowPlayingCard` + `HomePageClient`).
+- Anunciate: hero centrado tipo venta; **un** CTA WhatsApp fijo (no `SponsorStickyWaBar`).
 
-## Calidad antes de dar por terminado
-Ejecutar en terminal:
+## Áreas del producto
+| Ruta | Notas |
+|------|--------|
+| `/` | Player inmersivo, vinilo circular (`VinylDiscFrame`, sin cuadro PNG) |
+| `/bbx` | Hub tiles `BbxHubTile`; scroll propio |
+| `/anunciate` | `SponsorLanding`; planes + sheet |
+| `/admin` | Solo radio (`ADMIN_*`) |
+| `/bbx-admin` | Super admin suscripciones (`SUPER_ADMIN_*`) |
+
+## Calidad antes de cerrar tarea
 ```bash
+npm run build
 npm run agent:qa
 ```
-Si falla overflow visual:
+Overflow visual (Playwright):
 ```bash
-pnpm add -D playwright && npx playwright install chromium
-npm run agent:qa:visual
+QA_URL=https://bbx-radio-9k9y.vercel.app node scripts/qa-overflow.mjs --routes /,/participa,/bbx,/anunciate --widths 390,393,430
+```
+Capturas iPhone:
+```bash
+QA_URL=https://bbx-radio-9k9y.vercel.app npm run agent:screenshot
 ```
 
 ## Archivos de referencia
-- Brief: `agents/brief.yaml` (copiar desde `agents/brief.example.yaml`)
+- Brief QA: `agents/brief.yaml` (plantilla `agents/brief.example.yaml`)
 - Reglas motor: `agents/RULES.md`, `docs/MOTOR-AGENTES.md`
-- Playbook Pro: `agents/CURSOR-CLAUDE-PRO.md`
-- Motion / animación: `agents/skills/MOTION.md`, `src/lib/motion/`
+- Motion: `agents/skills/MOTION.md`, `src/lib/motion/`
+
+## Estilo de respuesta (agente)
+- Explicar **qué** cambió y **por qué** en lenguaje claro.
+- Citas de código con formato `startLine:endLine:path`.
+- No inventar features; si algo no existe en el repo, decirlo.
+- Tras deploy, indicar URL Vercel y recarga forzada / PWA si aplica.

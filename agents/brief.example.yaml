@@ -14,7 +14,7 @@ brand:
 goals:
   - pwa_produccion_vercel
   - layout_movil_sin_overflow
-  - mini_player_discreto_en_grilla_y_listas
+  - safe_area_ios_y_gutters_simetricos
   - visuales_premium_sin_recargar_ui
 
 constraints:
@@ -34,9 +34,12 @@ qa_routes:
   - /programacion
   - /participa
   - /saludos
+  - /bbx
+  - /anunciate
 qa_widths:
-  - 360
+  - 375
   - 390
+  - 393
   - 430
 
 variants_to_try: 3

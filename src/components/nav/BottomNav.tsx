@@ -31,15 +31,15 @@ export function BottomNav() {
 
   return (
     <nav
-      className="shrink-0 w-full min-w-0 max-w-full z-[1000] md:hidden border-t border-white/[0.06] overflow-hidden"
+      className="app-bottom-nav shrink-0 w-full min-w-0 z-[1000] md:hidden border-t border-white/[0.06] overflow-hidden"
       style={{
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        paddingBottom: 'var(--app-safe-bottom)',
         background: 'rgba(7,7,14,0.92)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
       }}
     >
-      <div className="max-w-md mx-auto w-full px-1 flex items-center h-[var(--app-nav-h)] overflow-x-hidden min-w-0">
+      <div className="app-bottom-nav__inner px-1 flex items-center h-[var(--app-nav-h)] overflow-x-hidden min-w-0">
         {TABS.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 

@@ -35,7 +35,7 @@ export function BbxPlanDetailSheet({ plan, onClose }: { plan: BbxPlan | null; on
               key={plan.id}
               role="dialog"
               aria-modal
-              className="fixed z-[1101] bottom-0 left-1/2 flex flex-col min-h-0 min-w-0 -translate-x-1/2 w-[min(32rem,calc(100vw-2*var(--app-gutter-inline)))] max-w-full rounded-t-2xl overflow-hidden max-md:max-h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
+              className="fixed z-[1101] bottom-0 left-1/2 flex flex-col min-h-0 min-w-0 -translate-x-1/2 w-[min(32rem,calc(100vw-var(--app-gutter-left)-var(--app-gutter-right)))] max-w-full rounded-t-2xl overflow-hidden max-md:max-h-[min(92dvh,calc(100dvh-env(safe-area-inset-top,0px)-0.5rem))] md:max-h-[min(92dvh,720px)]"
             style={{ background: '#0c0c14', borderTop: `2px solid ${plan.color}`, boxShadow: `0 -12px 48px ${plan.color}20` }}
             initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}

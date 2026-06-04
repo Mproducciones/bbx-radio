@@ -19,7 +19,7 @@ export function HomePageClient() {
       className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)] overflow-x-hidden"
       style={{ zIndex: 1 }}
     >
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-2 pb-2 overflow-x-hidden box-border">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border">
         <motion.div
           className="flex items-center justify-between gap-3 mb-2 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03]"
           initial={{ opacity: 0, y: -6 }}

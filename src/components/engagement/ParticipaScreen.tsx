@@ -53,7 +53,7 @@ export function ParticipaScreen() {
                 role="tab"
                 aria-selected={active}
                 onClick={() => setTab(id)}
-                className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors relative z-[1] flex items-center justify-center gap-1.5"
+                className="flex-1 py-2.5 min-h-[44px] rounded-xl text-xs font-bold transition-colors relative z-[1] flex items-center justify-center gap-1.5"
                 style={{ color: active ? '#07070e' : 'rgba(255,255,255,0.40)' }}
               >
                 {/* Animated pill background */}
