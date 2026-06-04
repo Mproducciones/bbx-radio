@@ -35,7 +35,7 @@ export function SaludosHero() {
   }, [])
 
   return (
-    <header className="saludos-hero shrink-0">
+    <header className="saludos-hero shrink-0 w-full min-w-0 max-w-full overflow-hidden">
       <div className="saludos-hero__mesh" aria-hidden />
       <motion.div
         className="saludos-hero__orb saludos-hero__orb--a"

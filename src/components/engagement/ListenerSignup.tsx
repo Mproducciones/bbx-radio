@@ -135,9 +135,9 @@ function SorteoTicketIcon({ className }: { className?: string }) {
 }
 
 const slideVariants = {
-  enter: { x: '14%', opacity: 0, filter: 'blur(4px)' },
-  center: { x: 0, opacity: 1, filter: 'blur(0px)' },
-  exit: { x: '-10%', opacity: 0, filter: 'blur(3px)' },
+  enter: { opacity: 0, y: 10 },
+  center: { opacity: 1, y: 0, x: 0 },
+  exit: { opacity: 0, y: -6, x: 0 },
 }
 
 function SorteoEmpty() {
@@ -160,8 +160,10 @@ function SorteoEmpty() {
 
   return (
     <div ref={ref} className="sorteo-empty">
-      <div className="sorteo-panel__mesh" aria-hidden />
-      <div className="sorteo-panel__scan" aria-hidden />
+      <div className="sorteo-panel__fx" aria-hidden>
+        <div className="sorteo-panel__mesh" />
+        <div className="sorteo-panel__scan" />
+      </div>
       <div data-sorteo-empty className="sorteo-empty__ring">
         <SorteoTicketIcon className="sorteo-ticket-icon" />
       </div>
@@ -181,14 +183,14 @@ function SorteoPrizeHeader({ contest }: { contest: ActiveContest }) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    void import('animejs').then(({ animate }) => {
-      animate(el, {
-        translateY: [12, 0],
-        opacity: [0, 1],
-        duration: 560,
-        ease: 'out(3)',
-      })
+    el.style.opacity = '0'
+    el.style.transform = 'translateY(10px)'
+    const id = requestAnimationFrame(() => {
+      el.style.transition = 'opacity 0.45s ease-out, transform 0.45s ease-out'
+      el.style.opacity = '1'
+      el.style.transform = 'translateY(0)'
     })
+    return () => cancelAnimationFrame(id)
   }, [contest.id])
 
   return (
@@ -264,10 +266,10 @@ export function ListenerSignup({
     const el = bodyRef.current
     const t = requestAnimationFrame(() => {
       void animateStagger(el, '[data-sorteo-field]', {
-        translateY: [18, 0],
+        translateY: [10, 0],
         opacity: [0, 1],
-        duration: 500,
-        staggerMs: 75,
+        duration: 480,
+        staggerMs: 70,
         ease: 'out(3)',
       })
     })
@@ -317,14 +319,16 @@ export function ListenerSignup({
     <div
       className={`sorteo-panel participa-panel participa-sorteo-panel relative flex flex-col flex-1 min-h-0 min-w-0 max-w-full w-full ${className ?? ''}`}
     >
-      <div className="sorteo-panel__mesh" aria-hidden />
-      <motion.div
-        className="absolute -top-8 -right-8 w-28 h-28 rounded-full pointer-events-none blur-3xl"
-        style={{ background: ACCENT }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.32, 0.15] }}
-        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden
-      />
+      <div className="sorteo-panel__fx" aria-hidden>
+        <div className="sorteo-panel__mesh" />
+        <div className="sorteo-panel__scan" />
+        <motion.div
+          className="sorteo-panel__glow"
+          style={{ background: ACCENT }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.32, 0.15] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
 
       <SorteoPrizeHeader contest={contest} />
 

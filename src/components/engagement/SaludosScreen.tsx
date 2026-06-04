@@ -13,11 +13,16 @@ const SaludoForm = dynamic(
 
 export function SaludosScreen() {
   return (
-    <AppMenuScreen className="saludos-route">
-      <div className="saludos-shell">
+    <AppMenuScreen scroll className="saludos-route w-full min-w-0 max-w-full">
+      <div className="saludos-shell w-full min-w-0">
         <SaludosHero />
         <SaludoForm compact />
-        <RotatingBanner position="bottom" compact className="shrink-0" interval={8} />
+        <RotatingBanner
+          position="bottom"
+          compact
+          className="saludos-sponsor-banner shrink-0 w-full min-w-0 max-w-full"
+          interval={8}
+        />
       </div>
     </AppMenuScreen>
   )

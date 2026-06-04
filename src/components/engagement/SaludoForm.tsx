@@ -111,9 +111,9 @@ function RadioWaves() {
 }
 
 const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? '18%' : '-18%', opacity: 0, filter: 'blur(4px)' }),
-  center: { x: 0, opacity: 1, filter: 'blur(0px)' },
-  exit: (dir: number) => ({ x: dir > 0 ? '-12%' : '12%', opacity: 0, filter: 'blur(3px)' }),
+  enter: { opacity: 0, y: 10 },
+  center: { opacity: 1, y: 0, x: 0 },
+  exit: { opacity: 0, y: -6, x: 0 },
 }
 
 export function SaludoForm({ compact }: { compact?: boolean } = {}) {
@@ -193,10 +193,12 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
   const accent = selected.color
 
   return (
-    <div className={`saludos-form ${compact ? 'saludos-form--compact' : ''}`} style={{ '--input-accent': accent } as CSSProperties}>
-
+    <div
+      className={`saludos-form ${compact ? 'saludos-form--compact' : ''}`}
+      style={{ '--input-accent': accent } as CSSProperties}
+    >
       {!['sending', 'done', 'error'].includes(step) && (
-        <div className="saludos-progress" role="progressbar" aria-valuenow={stepIndex + 1} aria-valuemin={1} aria-valuemax={3}>
+        <div className="saludos-progress shrink-0" role="progressbar" aria-valuenow={stepIndex + 1} aria-valuemin={1} aria-valuemax={3}>
           {STEPS.map((s, i) => (
             <div key={s} className="saludos-progress__seg">
               <motion.div
@@ -210,17 +212,17 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
         </div>
       )}
 
-      <AnimatePresence mode="wait" custom={1}>
+      <div className="saludos-form__steps flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]">
+      <AnimatePresence mode="wait">
         {step === 'motivo' && (
           <motion.div
             key="motivo"
-            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={springSnappy}
-            className="flex flex-col flex-1 min-h-0 gap-3"
+            className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
           >
             <div>
               <p className="saludos-step-title">Paso 1 de 3</p>
@@ -271,15 +273,14 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
         {step === 'para' && (
           <motion.div
             key="para"
-            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={springSnappy}
-            className="flex flex-col flex-1 min-h-0 gap-3"
+            className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
           >
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 min-w-0 w-full">
               <button type="button" onClick={() => setStep('motivo')} className="saludos-back shrink-0" aria-label="Volver">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
                   <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -287,14 +288,14 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
               </button>
               <div className="min-w-0 flex-1">
                 <p className="saludos-step-title">Paso 2 de 3</p>
-                <h2 className="saludos-step-heading flex items-center gap-2">
+                <h2 className="saludos-step-heading flex items-center gap-2 min-w-0">
                   <span
                     className="inline-flex items-center justify-center w-8 h-8 rounded-lg shrink-0"
                     style={{ background: `${accent}18`, color: accent, border: `1px solid ${accent}40` }}
                   >
                     <SaludoMotivoIcon id={motivo} className="w-4 h-4" />
                   </span>
-                  {selected.label}
+                  <span className="min-w-0 truncate">{selected.label}</span>
                 </h2>
               </div>
             </div>
@@ -303,9 +304,9 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
               variants={{ initial: {}, animate: staggerContainer.animate }}
               initial="initial"
               animate="animate"
-              className="flex flex-col gap-3 flex-1"
+              className="flex flex-col gap-3 flex-1 min-w-0 w-full"
             >
-              <motion.label variants={staggerItem} className="flex flex-col gap-1.5">
+              <motion.label variants={staggerItem} className="flex flex-col gap-1.5 min-w-0 w-full">
                 <span className="saludos-label">Para</span>
                 <input
                   value={para}
@@ -321,8 +322,8 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
                 />
               </motion.label>
 
-              <motion.label variants={staggerItem} className="flex flex-col gap-1.5">
-                <div className="flex justify-between items-baseline">
+              <motion.label variants={staggerItem} className="flex flex-col gap-1.5 min-w-0 w-full">
+                <div className="flex justify-between items-baseline gap-2 min-w-0">
                   <span className="saludos-label">
                     Mensaje <span className="normal-case font-semibold text-white/25">(opcional)</span>
                   </span>
@@ -357,27 +358,26 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
         {step === 'de' && (
           <motion.div
             key="de"
-            custom={1}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={springSnappy}
-            className="flex flex-col flex-1 min-h-0 gap-3"
+            className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
           >
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 min-w-0 w-full">
               <button type="button" onClick={() => setStep('para')} className="saludos-back shrink-0" aria-label="Volver">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
                   <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="saludos-step-title">Paso 3 de 3</p>
                 <h2 className="saludos-step-heading">¿De parte de quién?</h2>
               </div>
             </div>
 
-            <label className="flex flex-col gap-1.5">
+            <label className="flex flex-col gap-1.5 min-w-0 w-full">
               <span className="saludos-label">De parte de</span>
               <input
                 value={de}
@@ -550,6 +550,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   )
 }

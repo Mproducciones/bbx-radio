@@ -32,9 +32,9 @@ const BASE_TABS: { id: ParticipaTab; label: string }[] = [
 const TAB_ORDER: ParticipaTab[] = ['votar', 'pedir', 'sorteo']
 
 const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 28 : -28, opacity: 0, scale: 0.98 }),
-  center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -28 : 28, opacity: 0, scale: 0.98 }),
+  enter: { opacity: 0, y: 8 },
+  center: { opacity: 1, y: 0, x: 0, scale: 1 },
+  exit: { opacity: 0, y: -6, x: 0, scale: 0.99 },
 }
 
 export function ParticipaScreen() {
@@ -43,8 +43,6 @@ export function ParticipaScreen() {
     : BASE_TABS
   const [tab, setTab] = useState<ParticipaTab>('votar')
   const prevTab = useRef<ParticipaTab>('votar')
-  const dir = TAB_ORDER.indexOf(tab) >= TAB_ORDER.indexOf(prevTab.current) ? 1 : -1
-
   function selectTab(next: ParticipaTab) {
     prevTab.current = tab
     setTab(next)
@@ -58,16 +56,15 @@ export function ParticipaScreen() {
         <ParticipaActionTabs tabs={tabs} active={tab} onChange={selectTab} />
 
         <div className="participa-content w-full min-w-0">
-          <AnimatePresence mode="wait" custom={dir}>
+          <AnimatePresence mode="wait">
             <motion.div
               key={tab}
-              custom={dir}
               variants={slideVariants}
               initial="enter"
               animate="center"
               exit="exit"
               transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-              className="participa-panel participa-tab-panel flex flex-col w-full min-w-0 max-w-full"
+              className="participa-panel participa-tab-panel flex flex-col w-full min-w-0 max-w-full overflow-x-hidden"
             >
               {tab === 'votar' ? (
                 <SongPoll compact className="flex-1 min-h-0 w-full min-w-0" onEmpty={() => selectTab('pedir')} />

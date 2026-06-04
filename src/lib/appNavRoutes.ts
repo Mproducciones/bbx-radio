@@ -22,6 +22,8 @@ export function appNavIndex(path: string): number {
 /** Rutas con scroll propio — sin animación swipe del shell */
 export const APP_SCROLL_ROUTES = [
   '/programacion',
+  '/participa',
+  '/saludos',
   '/bbx',
   '/anunciate',
   '/admin',

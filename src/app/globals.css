@@ -1405,7 +1405,12 @@ body {
   }
 
   .sorteo-body {
-    padding: 0.6rem 0.75rem 0.75rem;
+    padding: 0.65rem 0.85rem 0.8rem;
+  }
+
+  .participa-route .participa-tab-panel {
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .sorteo-desc {
@@ -1435,12 +1440,8 @@ body {
 
 /* ── Saludos al aire — experiencia inmersiva ───────────────────────────── */
 @media (max-width: 767px) {
-  .saludos-route.app-mobile-page {
+  .saludos-route {
     padding-top: max(10px, var(--app-safe-top), var(--app-content-pad-y));
-  }
-
-  .saludos-route.app-mobile-page > div {
-    padding-bottom: calc(var(--app-nav-total) + 0.5rem);
   }
 }
 
@@ -1449,6 +1450,8 @@ body {
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  max-width: 100%;
   gap: 0.5rem;
 }
 
@@ -1532,13 +1535,21 @@ body {
 .saludos-form {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   border-radius: 1.25rem;
   padding: 0.65rem 0.75rem 0.75rem;
+  overflow: hidden;
   background: linear-gradient(165deg, rgba(14, 14, 24, 0.92) 0%, rgba(7, 7, 14, 0.88) 100%);
   border: 1px solid rgba(255, 255, 255, 0.07);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.saludos-form__steps {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .saludos-progress {
@@ -1574,9 +1585,13 @@ body {
 .saludos-step-heading {
   font-family: var(--font-display, inherit);
   font-size: 1.25rem;
-  line-height: 1.15;
+  line-height: 1.2;
   color: #fff;
   letter-spacing: 0.01em;
+  width: 100%;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .saludos-motivo-grid {
@@ -1696,6 +1711,9 @@ body {
 
 .saludos-input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 2.85rem;
   padding: 0.7rem 0.95rem;
   border-radius: 0.9rem;
@@ -1744,6 +1762,9 @@ body {
 
 .saludos-btn {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   min-height: 3rem;
   padding: 0.8rem 1rem;
   border-radius: 1rem;
@@ -1753,6 +1774,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
   transition:
     transform 0.15s,
     opacity 0.2s,
@@ -1825,6 +1847,73 @@ body {
   height: 2.25rem;
 }
 
+@media (max-width: 767px) {
+  .saludos-route .saludos-form {
+    min-height: min(20rem, 52dvh);
+  }
+
+  .saludos-form--compact {
+    padding: 0.6rem 0.85rem 0.7rem;
+  }
+
+  .saludos-form--compact .saludos-input,
+  .saludos-form--compact .saludos-textarea {
+    font-size: 16px;
+  }
+
+  .saludos-form--compact .saludos-input--line {
+    font-size: 1.0625rem;
+  }
+
+  .saludos-motivo-grid {
+    gap: 0.45rem;
+  }
+
+  .saludos-motivo-card {
+    min-height: 5.25rem;
+    padding: 0.65rem 0.7rem;
+  }
+
+  .saludos-motivo-card__label {
+    font-size: 0.8125rem;
+  }
+
+  .saludos-motivo-card__tag {
+    font-size: 0.5625rem;
+    line-height: 1.25;
+  }
+
+  .saludos-step-heading {
+    font-size: 1.1rem;
+  }
+
+  .saludos-textarea {
+    min-height: 4rem;
+  }
+
+  .saludos-btn {
+    min-height: 2.85rem;
+    font-size: 0.8125rem;
+  }
+
+  .saludos-sponsor-banner {
+    max-width: calc(100% - 2.75rem);
+    margin-right: auto;
+  }
+
+  .saludos-sponsor-banner a {
+    display: block;
+    max-height: 4.75rem;
+    overflow: hidden;
+  }
+
+  .saludos-sponsor-banner img {
+    max-height: 4.75rem !important;
+    min-height: 3rem !important;
+    object-fit: cover;
+  }
+}
+
 @media (min-width: 768px) {
   .saludos-motivo-card {
     min-height: 6.5rem;
@@ -1840,6 +1929,8 @@ body {
 .sorteo-panel {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   border-radius: 1.35rem;
@@ -1850,6 +1941,15 @@ body {
     0 18px 44px -20px rgba(125, 89, 181, 0.45),
     0 0 0 1px rgba(255, 0, 110, 0.06) inset,
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.sorteo-panel__fx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .sorteo-panel__mesh {
@@ -1863,9 +1963,20 @@ body {
 
 .sorteo-panel__scan {
   position: absolute;
-  inset: -40%;
+  inset: -22%;
   background: conic-gradient(from 0deg, transparent, rgba(125, 89, 181, 0.12), transparent 35%);
   animation: sorteo-scan 8s linear infinite;
+  pointer-events: none;
+}
+
+.sorteo-panel__glow {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 50%;
+  filter: blur(3rem);
   pointer-events: none;
 }
 
@@ -1877,9 +1988,14 @@ body {
 
 .sorteo-prize {
   position: relative;
+  z-index: 1;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.85rem 1rem 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .sorteo-prize__badge {
@@ -1964,11 +2080,16 @@ body {
 .sorteo-body {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding: 0.7rem 0.85rem 0.85rem;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sorteo-progress {
@@ -2004,8 +2125,12 @@ body {
   font-family: var(--font-display, inherit);
   font-size: 1.15rem;
   color: #fff;
-  line-height: 1.2;
+  line-height: 1.25;
   margin-top: 0.2rem;
+  width: 100%;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .sorteo-desc {
