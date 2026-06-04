@@ -4,12 +4,26 @@ import type { OpsAlert, OpsAlertRow, OpsNotifyResult } from '@/lib/bbxOpsTypes'
 const NOTIFY_COOLDOWN_MS = 6 * 60 * 60 * 1000
 
 export function getOpsNotifyConfig() {
+  const webhookUrl = process.env.BBX_OPS_WEBHOOK_URL?.trim() || null
+  let ntfyTopic: string | null = null
+  if (webhookUrl) {
+    try {
+      const u = new URL(webhookUrl)
+      if (u.hostname.includes('ntfy.sh')) {
+        ntfyTopic = u.pathname.replace(/^\//, '') || null
+      }
+    } catch {
+      ntfyTopic = null
+    }
+  }
+
   return {
-    webhookUrl: process.env.BBX_OPS_WEBHOOK_URL?.trim() || null,
+    webhookUrl,
+    ntfyTopic,
     notifyPhone: process.env.BBX_OPS_NOTIFY_PHONE?.trim() || BBX_CONTACT.phone,
     cronEnabled: Boolean(process.env.BBX_OPS_CRON_SECRET?.trim()),
     channels: {
-      webhook: Boolean(process.env.BBX_OPS_WEBHOOK_URL?.trim()),
+      webhook: Boolean(webhookUrl),
       whatsappManual: true,
       sms: Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN),
     },

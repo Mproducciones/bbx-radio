@@ -11,6 +11,7 @@ type OpsPayload = {
   tableAvailable: boolean
   config: {
     webhookUrl: string | null
+    ntfyTopic: string | null
     notifyPhone: string
     cronEnabled: boolean
     channels: { webhook: boolean; whatsappManual: boolean; sms: boolean }
@@ -62,7 +63,12 @@ export function BbxOpsCenter() {
       const json = await res.json()
       if (res.ok) {
         if (json.alerts) setData(json)
-        if (action === 'test_notify') setMsg('Notificación de prueba enviada (revisa ntfy/SMS)')
+        if (action === 'test_notify') {
+          const wr = json.results?.find?.((r: { channel: string; ok: boolean; error?: string }) => r.channel === 'webhook')
+          if (wr && !wr.ok) setMsg(wr.error ?? 'Webhook falló — revisa BBX_OPS_WEBHOOK_URL en Vercel')
+          else if (!json.config?.channels?.webhook) setMsg('Vercel no tiene BBX_OPS_WEBHOOK_URL. Agrégala y redeploy.')
+          else setMsg('Enviado. Revisa la app ntfy (topic debe coincidir).')
+        }
         if (action === 'notify_now') setMsg(`Enviadas ${json.notified ?? 0} alerta(s)`)
       } else {
         setMsg(json.error ?? 'Error')
@@ -145,7 +151,10 @@ export function BbxOpsCenter() {
             <AdminBadge color="#00D9A0">Webhook activo</AdminBadge>
           )}
           {!data.config.channels.webhook && (
-            <AdminBadge color="#FFB300">Sin webhook — configura BBX_OPS_WEBHOOK_URL</AdminBadge>
+            <AdminBadge color="#FFB300">Sin webhook en Vercel — falta BBX_OPS_WEBHOOK_URL + redeploy</AdminBadge>
+          )}
+          {data.config.channels.webhook && data.config.ntfyTopic && (
+            <AdminBadge color="#00D9A0">ntfy: {data.config.ntfyTopic}</AdminBadge>
           )}
           {data.config.channels.sms && <AdminBadge color="#40B9BF">SMS Twilio</AdminBadge>}
           {data.config.cronEnabled && <AdminBadge color="#7D59B5">Cron diario</AdminBadge>}

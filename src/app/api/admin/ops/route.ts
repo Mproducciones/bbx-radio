@@ -67,7 +67,8 @@ export async function POST(req: NextRequest) {
       dedupeKey: `test:${Date.now()}`,
     }
     const results = await sendOpsNotification(test)
-    return NextResponse.json({ ok: true, results, config: getOpsNotifyConfig() })
+    const config = getOpsNotifyConfig()
+    return NextResponse.json({ ok: true, results, config })
   }
 
   if (action === 'notify_now') {
