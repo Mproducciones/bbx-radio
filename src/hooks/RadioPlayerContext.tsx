@@ -12,6 +12,8 @@ interface RadioPlayerContextValue {
   isPlaying: boolean
   isLoading: boolean
   hasError: boolean
+  /** iOS/Safari bloqueó autoplay — el oyente debe tocar play */
+  needsTapToPlay: boolean
   analyser: AnalyserNode | null
   isTvOpen: boolean
   isConcertMode: boolean
@@ -60,6 +62,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const [needsTapToPlay, setNeedsTapToPlay] = useState(false)
   const [isTvOpen, setIsTvOpen] = useState(false)
   const [isConcertMode, setIsConcertMode] = useState(false)
 
@@ -109,6 +112,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
     if (!audio.paused) {
       setIsPlaying(true)
+      setNeedsTapToPlay(false)
       startHeartbeat()
       return
     }
@@ -118,10 +122,12 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       if (audio.readyState < 2) audio.load()
       await audio.play()
       setIsPlaying(true)
+      setNeedsTapToPlay(false)
       startHeartbeat()
     } catch {
       setHasError(false)
       setIsPlaying(false)
+      setNeedsTapToPlay(true)
     } finally {
       setIsLoading(false)
     }
@@ -165,6 +171,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
     const onPlaying = () => {
       setIsPlaying(true)
+      setNeedsTapToPlay(false)
       startHeartbeat()
     }
     const onPause = () => setIsPlaying(false)
@@ -237,7 +244,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   }, [resumeAfterTv])
 
   return (
-    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, analyser: DIRECT_PLAYBACK_ANALYSER, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>
+    <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, needsTapToPlay, analyser: DIRECT_PLAYBACK_ANALYSER, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>
       {children}
       <MilestoneBadge milestone={milestone} />
     </RadioPlayerContext.Provider>

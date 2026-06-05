@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { markInstallBannerActive, markInstallBannerSettled } from '@/lib/overlayPrompts'
 
 type Platform = 'ios' | 'android' | 'other'
 
@@ -28,8 +29,14 @@ export function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
 
   useEffect(() => {
-    if (isInStandaloneMode()) return
-    if (localStorage.getItem('pwa-install-dismissed')) return
+    if (isInStandaloneMode()) {
+      markInstallBannerSettled()
+      return
+    }
+    if (localStorage.getItem('pwa-install-dismissed')) {
+      markInstallBannerSettled()
+      return
+    }
 
     const plat = getPlatform()
     setPlatform(plat)
@@ -45,10 +52,16 @@ export function InstallBanner() {
     }
 
     if (plat === 'ios') {
-      // Mostrar banner de instrucciones en iOS
-      setTimeout(() => setShow(true), 3000)
+      setTimeout(() => setShow(true), 8000)
+    } else if (plat === 'other') {
+      markInstallBannerSettled()
     }
   }, [])
+
+  useEffect(() => {
+    if (show) markInstallBannerActive()
+    else markInstallBannerSettled()
+  }, [show])
 
   const handleInstall = async () => {
     if (deferredPrompt) {
@@ -62,6 +75,7 @@ export function InstallBanner() {
   const handleDismiss = () => {
     setShow(false)
     localStorage.setItem('pwa-install-dismissed', '1')
+    markInstallBannerSettled()
   }
 
   if (!show) return null

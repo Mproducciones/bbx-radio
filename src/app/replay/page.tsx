@@ -10,8 +10,8 @@ export default async function ReplayPage() {
 
   return (
     <AppMenuScreen scroll className="replay-route w-full min-w-0 max-w-full">
-      <SectionHeader compact title="Replay" />
-      <p className="replay-route__sub shrink-0">Programas recientes para escuchar cuando quieras</p>
+      <SectionHeader compact title="Archivo" />
+      <p className="replay-route__sub shrink-0">Programas grabados para escuchar cuando quieras</p>
       <ReplayList episodes={episodes} />
     </AppMenuScreen>
   )

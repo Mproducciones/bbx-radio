@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { canShowPushPrompt } from '@/lib/overlayPrompts'
 
 const VAPID_PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim() ?? ''
 
@@ -22,8 +23,9 @@ export function PushPermission() {
     if (Notification.permission !== 'default') return
     const seen = localStorage.getItem('push_prompt_seen')
     if (seen) return
-    // Mostrar después de 20 segundos de uso
-    const t = setTimeout(() => setShow(true), 20_000)
+    const t = setTimeout(() => {
+      if (canShowPushPrompt()) setShow(true)
+    }, 90_000)
     return () => clearTimeout(t)
   }, [])
 

@@ -1,21 +1,34 @@
 import { FEATURES } from '@/lib/plan'
 
-/** Una sola fuente: bottom nav + swipe entre tabs (mismas rutas, mismo orden) */
-export const APP_NAV_ROUTES = [
+/** Bottom nav principal (4 tabs + botón Más) */
+export const APP_PRIMARY_NAV_ROUTES = [
   '/',
   '/programacion',
   '/participa',
   '/saludos',
+] as const
+
+/** Rutas secundarias dentro del menú Más */
+export const APP_MORE_NAV_ROUTES = [
   ...(FEATURES.replay ? (['/replay'] as const) : []),
   '/tv',
   ...(FEATURES.publicidad ? (['/anunciate'] as const) : []),
 ] as const
 
-export type AppNavRoute = (typeof APP_NAV_ROUTES)[number]
+/** Swipe horizontal solo entre tabs principales */
+export const APP_NAV_ROUTES = APP_PRIMARY_NAV_ROUTES
+
+export type AppPrimaryNavRoute = (typeof APP_PRIMARY_NAV_ROUTES)[number]
+export type AppMoreNavRoute = (typeof APP_MORE_NAV_ROUTES)[number]
+export type AppNavRoute = AppPrimaryNavRoute | AppMoreNavRoute
+
+export function isMoreNavRoute(path: string): boolean {
+  return APP_MORE_NAV_ROUTES.some(r => path.startsWith(r))
+}
 
 export function appNavIndex(path: string): number {
   if (path === '/') return 0
-  const i = APP_NAV_ROUTES.findIndex(r => r !== '/' && path.startsWith(r))
+  const i = APP_PRIMARY_NAV_ROUTES.findIndex(r => r !== '/' && path.startsWith(r))
   return i
 }
 
@@ -31,6 +44,7 @@ export const APP_SCROLL_ROUTES = [
   '/patrocinadores',
   '/lanzamientos',
   '/replay',
+  '/tv',
 ] as const
 
 export function isAppScrollRoute(path: string): boolean {
@@ -38,5 +52,5 @@ export function isAppScrollRoute(path: string): boolean {
 }
 
 export function isAppTabRoute(path: string): boolean {
-  return appNavIndex(path) !== -1
+  return appNavIndex(path) !== -1 || isMoreNavRoute(path)
 }

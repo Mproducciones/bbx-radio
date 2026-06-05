@@ -22,47 +22,6 @@ interface Episode {
   spotifyUrl?: string
 }
 
-const DEMO_EPISODES: Episode[] = [
-  {
-    _id: 'ep1',
-    title: 'Matinal Bienvenida — Especial de verano',
-    program: 'Matinal Bienvenida', host: 'Equipo Matinal',
-    date: '2025-01-13', duration: '2h 45min',
-    description: 'El arranque del día con los mejores temas, entrevistas y noticias de la región.',
-    audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-  },
-  {
-    _id: 'ep2',
-    title: 'Mix del Día — Top 40 de la semana',
-    program: 'Mix del Día',
-    date: '2025-01-14', duration: '1h 30min',
-    description: 'Los 40 temas más escuchados de la semana en un solo bloque sin interrupciones.',
-    audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-  },
-  {
-    _id: 'ep3',
-    title: 'Tarde en Rancagua — Entrevista especial',
-    program: 'Tarde en Rancagua',
-    date: '2025-01-15', duration: '55min',
-    description: 'Entrevista exclusiva y los mejores temas de la tarde.',
-  },
-  {
-    _id: 'ep4',
-    title: 'Noche FM — Los clásicos de los 90 y 2000',
-    program: 'Noche FM',
-    date: '2025-01-16', duration: '2h 10min',
-    description: 'Un viaje en el tiempo con los temas que marcaron una generación.',
-  },
-  {
-    _id: 'ep5',
-    title: 'Sábado Mix — Fiesta de verano',
-    program: 'Sábado Mix',
-    date: '2025-01-18', duration: '3h 00min',
-    description: 'El mejor ritmo para tu sábado. Cumbia, pop y reggaeton para el fin de semana.',
-    audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-  },
-]
-
 function formatDateShort(s: string) {
   try {
     return new Date(s).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })
@@ -129,8 +88,20 @@ function ExternalLinks({ ep }: { ep: Episode }) {
 }
 
 export function ReplayList({ episodes }: { episodes: Episode[]; compact?: boolean }) {
-  const display = episodes?.length > 0 ? episodes : DEMO_EPISODES
+  const display = episodes ?? []
   const [activeId, setActiveId] = useState<string | null>(null)
+
+  if (display.length === 0) {
+    return (
+      <div className="replay-empty">
+        <span className="replay-empty__icon" aria-hidden>📻</span>
+        <h2 className="replay-empty__title">Archivo en preparación</h2>
+        <p className="replay-empty__desc">
+          Pronto podrás escuchar programas grabados acá. Mientras tanto, sintoniza en vivo o pide tu canción en Participa.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="replay-list">

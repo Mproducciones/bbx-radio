@@ -161,7 +161,7 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
   const hostLabel =
     program.host && program.host !== 'Por confirmar'
       ? program.host
-      : 'Conductor por confirmar'
+      : 'Equipo Bienvenida'
   const art = getProgramArt(program.name)
   const cover = resolveProgramCover(program.name, program.imageUrl)
 
@@ -206,9 +206,7 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
             Presenta: {program.sponsor.cliente}
           </p>
         )}
-        {program.host && program.host !== 'Por confirmar' && (
-          <p className="prog-schedule__host">{hostLabel}</p>
-        )}
+        <p className="prog-schedule__host">{hostLabel}</p>
       </div>
 
       <div className="prog-schedule__time">

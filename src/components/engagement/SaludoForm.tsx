@@ -487,7 +487,7 @@ export function SaludoForm({ compact }: { compact?: boolean } = {}) {
                 transition={{ delay: 0.25, ease: EASE_OUT }}
                 className="font-display text-3xl text-white leading-none tracking-wide"
               >
-                ¡Al aire!
+                ¡Enviado!
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 10 }}

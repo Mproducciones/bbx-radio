@@ -25,7 +25,7 @@ const ALL_NAV_ITEMS = [
   { href: '/tv',            label: 'TV',              icon: TvIcon,        show: true },
   { href: '/noticias',      label: 'Noticias',        icon: NewsIcon,      show: FEATURES.noticias },
   { href: '/eventos',       label: 'Eventos',         icon: EventsIcon,    show: FEATURES.eventos },
-  { href: '/replay',        label: 'Replay',          icon: ReplayIcon,    show: FEATURES.replay },
+  { href: '/replay',        label: 'Archivo',         icon: ReplayIcon,    show: FEATURES.replay },
   { href: '/anunciate',     label: 'Publicidad',      icon: BusinessIcon,  show: FEATURES.publicidad },
   { href: '/patrocinadores', label: 'Patrocinadores', icon: SponsorsIcon,  show: FEATURES.publicidad },
   { href: '/lanzamientos',  label: 'Lanzamientos',    icon: ReleasesIcon,  show: FEATURES.lanzamientos },
@@ -114,7 +114,7 @@ export function DesktopSidebar() {
       <div className="px-6 py-5 border-t border-[var(--color-ink-700)]">
         <SocialLinks links={SOCIAL} />
         <p className="text-[var(--color-ink-500)] text-[10px] mt-3 text-center">
-          Powered by BBX
+          {RADIO.name} · {RADIO.frequency}
         </p>
       </div>
     </aside>

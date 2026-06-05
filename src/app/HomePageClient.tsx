@@ -11,6 +11,7 @@ import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { EASE_OUT } from '@/lib/motion/framer'
 import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
 import { NotificationsInbox } from '@/components/notifications/NotificationsInbox'
+import { PlayTapHint } from '@/components/player/PlayTapHint'
 import { FEATURES } from '@/lib/plan'
 
 export function HomePageClient() {
@@ -49,6 +50,8 @@ export function HomePageClient() {
             </BbxFrequencyGate>
           </div>
         </motion.div>
+
+        <PlayTapHint />
 
         <ClientOnly
           fallback={
@@ -145,9 +148,9 @@ export function HomePageClient() {
         {/* Quick nav */}
         <div className="flex flex-wrap gap-2 justify-center">
           {[
-            { href: '/programacion', label: '📋 Grilla',        accent: '#db8918' },
-            { href: '/participa',    label: '🎵 Votar',          accent: '#40B9BF' },
-            { href: '/saludos',      label: '💬 Mandar saludo',  accent: '#7D59B5' },
+            { href: '/programacion', label: '📋 Programación', accent: '#db8918' },
+            { href: '/participa',    label: '🎵 Participa',     accent: '#40B9BF' },
+            { href: '/saludos',      label: '💬 Saludos',       accent: '#7D59B5' },
             ...(FEATURES.noticias
               ? [{ href: '/noticias', label: '📰 Noticias', accent: '#00D9A0' }]
               : []),
