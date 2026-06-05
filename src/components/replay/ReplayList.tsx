@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import AudioPlayer from '@/components/ui/audio-player'
 import { cn } from '@/lib/utils'
+import { getProgramArt, resolveProgramCover } from '@/lib/programArt'
 
 interface Episode {
   _id: string
@@ -28,7 +30,6 @@ const DEMO_EPISODES: Episode[] = [
     date: '2025-01-13', duration: '2h 45min',
     description: 'El arranque del día con los mejores temas, entrevistas y noticias de la región.',
     audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-    coverUrl: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&auto=format&fit=crop',
   },
   {
     _id: 'ep2',
@@ -37,7 +38,6 @@ const DEMO_EPISODES: Episode[] = [
     date: '2025-01-14', duration: '1h 30min',
     description: 'Los 40 temas más escuchados de la semana en un solo bloque sin interrupciones.',
     audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-    coverUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&auto=format&fit=crop',
   },
   {
     _id: 'ep3',
@@ -45,7 +45,6 @@ const DEMO_EPISODES: Episode[] = [
     program: 'Tarde en Rancagua',
     date: '2025-01-15', duration: '55min',
     description: 'Entrevista exclusiva y los mejores temas de la tarde.',
-    coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop',
   },
   {
     _id: 'ep4',
@@ -53,7 +52,6 @@ const DEMO_EPISODES: Episode[] = [
     program: 'Noche FM',
     date: '2025-01-16', duration: '2h 10min',
     description: 'Un viaje en el tiempo con los temas que marcaron una generación.',
-    coverUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop',
   },
   {
     _id: 'ep5',
@@ -62,17 +60,8 @@ const DEMO_EPISODES: Episode[] = [
     date: '2025-01-18', duration: '3h 00min',
     description: 'El mejor ritmo para tu sábado. Cumbia, pop y reggaeton para el fin de semana.',
     audioUrl: 'https://ui.webmakers.studio/audio/ncs.mp3',
-    coverUrl: 'https://images.unsplash.com/photo-1501386761578-eaa54b595471?w=400&auto=format&fit=crop',
   },
 ]
-
-const PROGRAM_COLORS: Record<string, string> = {
-  'Matinal Bienvenida': '#FF8C42',
-  'Mix del Día':        '#db8918',
-  'Tarde en Rancagua':  '#40B9BF',
-  'Noche FM':           '#7D59B5',
-  'Sábado Mix':         '#00D9A0',
-}
 
 function formatDateShort(s: string) {
   try {
@@ -82,27 +71,36 @@ function formatDateShort(s: string) {
   }
 }
 
-function EpisodeThumb({ ep, color }: { ep: Episode; color: string }) {
-  const initial = (ep.program ?? ep.title).charAt(0).toUpperCase()
-  if (ep.coverUrl) {
+function EpisodeCover({ ep, color }: { ep: Episode; color: string }) {
+  const [failed, setFailed] = useState(false)
+  const src = resolveProgramCover(ep.program, failed ? null : ep.coverUrl)
+  const art = getProgramArt(ep.program)
+  const label = art.shortLabel ?? (ep.program ?? ep.title).charAt(0).toUpperCase()
+
+  if (!src || failed) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={ep.coverUrl}
-        alt=""
-        className="replay-card__thumb"
-        loading="lazy"
-        decoding="async"
-      />
+      <div
+        className="replay-card__cover replay-card__cover--fallback"
+        style={{ background: `linear-gradient(145deg, ${color}88 0%, ${color}22 55%, rgba(7,7,14,0.9) 100%)` }}
+        aria-hidden
+      >
+        <span className="replay-card__cover-label">{label}</span>
+      </div>
     )
   }
+
   return (
-    <div
-      className="replay-card__thumb replay-card__thumb--fallback"
-      style={{ background: `linear-gradient(135deg, ${color}55, ${color}18)` }}
-      aria-hidden
-    >
-      <span style={{ color }}>{initial}</span>
+    <div className="replay-card__cover" style={{ '--replay-accent': color } as React.CSSProperties}>
+      <Image
+        src={src}
+        alt=""
+        width={112}
+        height={112}
+        className="replay-card__cover-img"
+        unoptimized
+        onError={() => setFailed(true)}
+      />
+      <div className="replay-card__cover-shade" aria-hidden />
     </div>
   )
 }
@@ -141,15 +139,10 @@ export function ReplayList({ episodes }: { episodes: Episode[]; compact?: boolea
       </p>
 
       {display.map((ep, i) => {
-        const color = PROGRAM_COLORS[ep.program ?? ''] ?? '#db8918'
+        const color = getProgramArt(ep.program).color
         const isActive = activeId === ep._id
         const hasAudio = Boolean(ep.audioUrl)
-        const metaParts = [
-          ep.program,
-          ep.date ? formatDateShort(ep.date) : null,
-          ep.duration,
-          hasAudio ? 'Audio' : null,
-        ].filter(Boolean)
+        const displayTitle = ep.title?.trim() || ep.program || 'Programa archivado'
 
         return (
           <motion.article
@@ -166,11 +159,24 @@ export function ReplayList({ episodes }: { episodes: Episode[]; compact?: boolea
               onClick={() => setActiveId(isActive ? null : ep._id)}
               aria-expanded={isActive}
             >
-              <EpisodeThumb ep={ep} color={color} />
+              <EpisodeCover ep={ep} color={color} />
 
               <div className="replay-card__body min-w-0 flex-1">
-                <h2 className="replay-card__title">{ep.title}</h2>
-                <p className="replay-card__meta">{metaParts.join(' · ')}</p>
+                {ep.program && (
+                  <span className="replay-card__program">{ep.program}</span>
+                )}
+                <h2 className="replay-card__title">{displayTitle}</h2>
+                <div className="replay-card__meta-row">
+                  {ep.date && (
+                    <span className="replay-card__chip">{formatDateShort(ep.date)}</span>
+                  )}
+                  {ep.duration && (
+                    <span className="replay-card__chip">{ep.duration}</span>
+                  )}
+                  {hasAudio && (
+                    <span className="replay-card__chip replay-card__chip--audio">Audio</span>
+                  )}
+                </div>
               </div>
 
               <div className="replay-card__action shrink-0" aria-hidden>
@@ -203,8 +209,8 @@ export function ReplayList({ episodes }: { episodes: Episode[]; compact?: boolea
                   {ep.audioUrl ? (
                     <AudioPlayer
                       src={ep.audioUrl}
-                      cover={ep.coverUrl}
-                      title={ep.title}
+                      cover={resolveProgramCover(ep.program, ep.coverUrl)}
+                      title={displayTitle}
                       artist={ep.program}
                     />
                   ) : (

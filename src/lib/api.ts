@@ -70,6 +70,7 @@ export async function fetchReplay() {
     "date": broadcastDate,
     duration,
     description,
+    "coverUrl": image.asset->url,
     youtubeUrl,
     soundcloudUrl,
     spotifyUrl

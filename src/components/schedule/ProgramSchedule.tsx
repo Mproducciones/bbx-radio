@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic2, Radio, CalendarOff } from 'lucide-react'
+import { Radio, CalendarOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { EASE_OUT, staggerDelay } from '@/lib/motion/framer'
 import type { Program } from '@/types/radio'
 import { getLiveProgram, getToday, programsForDay, type DayKey } from '@/lib/programSchedule'
+import { getProgramArt, resolveProgramCover } from '@/lib/programArt'
 
 const DAYS: { key: DayKey; label: string; full: string }[] = [
   { key: 'mon', label: 'Lun', full: 'Lunes' },
@@ -161,6 +162,8 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
     program.host && program.host !== 'Por confirmar'
       ? program.host
       : 'Conductor por confirmar'
+  const art = getProgramArt(program.name)
+  const cover = resolveProgramCover(program.name, program.imageUrl)
 
   return (
     <motion.article
@@ -168,26 +171,21 @@ function ProgramRow({ program, isLive, index }: { program: Program; isLive: bool
       animate={{ opacity: 1, y: 0 }}
       transition={staggerDelay(index, 0.03, 0.04)}
       className={cn('prog-schedule__row', isLive && 'is-live')}
+      style={{ '--prog-accent': art.color } as React.CSSProperties}
       aria-current={isLive ? 'true' : undefined}
     >
       {isLive && <div className="prog-schedule__live-bar" aria-hidden />}
 
       <div className="prog-schedule__thumb">
-        {program.imageUrl ? (
-          <Image
-            src={program.imageUrl}
-            alt=""
-            width={32}
-            height={32}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <Mic2
-            className="w-3.5 h-3.5"
-            style={{ color: isLive ? LIVE_ACCENT : 'rgba(255,255,255,0.3)' }}
-            aria-hidden
-          />
-        )}
+        <Image
+          src={cover}
+          alt=""
+          width={48}
+          height={48}
+          className="prog-schedule__thumb-img"
+          unoptimized
+        />
+        <div className="prog-schedule__thumb-shade" aria-hidden />
       </div>
 
       <div className="prog-schedule__info min-w-0 flex-1">

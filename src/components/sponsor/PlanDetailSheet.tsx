@@ -10,7 +10,7 @@ import { PlanMockup } from './PlanMockup'
 import { sponsorWaLink } from '@/lib/sponsorContent'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
 import { SheetPortal } from '@/components/shared/SheetPortal'
-import { AccentButton } from '@/components/shared/AccentButton'
+import { ProWaButton } from '@/components/shared/ProWaButton'
 import { PlanIncludesDisclosure } from '@/components/shared/PlanIncludesDisclosure'
 import { PlanDeliverablesChecklist } from '@/components/sponsor/PlanDeliverablesChecklist'
 
@@ -166,25 +166,20 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
               </div>
 
               <footer className="plan-detail-sheet__footer shrink-0">
-                <AccentButton
+                <ProWaButton
                   href={sponsorWaLink(plan.nombre)}
-                  accent={plan.color}
-                  fullWidth
-                  className="max-w-full min-w-0"
+                  compact
+                  className="plan-detail-sheet__quote"
                 >
-                  Cotizar plan {plan.nombre}
-                </AccentButton>
-                <AccentButton
+                  Cotizar {plan.nombre} por WhatsApp
+                </ProWaButton>
+                <button
                   type="button"
-                  variant="secondary"
-                  accent={plan.color}
                   onClick={onClose}
-                  fullWidth
-                  shimmer={false}
-                  className="max-w-full min-w-0"
+                  className="plan-detail-sheet__close-btn"
                 >
                   Cerrar
-                </AccentButton>
+                </button>
               </footer>
             </motion.div>
           </>
