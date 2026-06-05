@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Megaphone } from 'lucide-react'
 import { RADIO } from '@/lib/radioConfig'
+import { RADIO_PUBLIC_FACTS } from '@/lib/radioPublicFacts'
 import { FEATURES } from '@/lib/plan'
 
 /** Aviso visible para oyentes: pueden promocionar su negocio en la radio y la app. */
@@ -22,7 +23,7 @@ export function AnunciateDiscoverBanner({ className }: { className?: string }) {
           ¿Tienes un negocio en {RADIO.city}?
         </span>
         <span className="anunciate-discover__sub block text-[10px] text-white/45 mt-0.5 leading-snug">
-          Anunciate en FM + app · ver planes
+          {RADIO_PUBLIC_FACTS.comunasRegion} comunas · FM + app · ver planes
         </span>
       </span>
       <span className="anunciate-discover__cta shrink-0 text-[10px] font-bold uppercase tracking-wide">

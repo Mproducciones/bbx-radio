@@ -1,4 +1,10 @@
 import { RADIO } from '@/lib/radioConfig'
+import {
+  formatThousandsPlus,
+  getYearsOnAir,
+  RADIO_FM_FREQUENCIES_LABEL,
+  RADIO_PUBLIC_FACTS,
+} from '@/lib/radioPublicFacts'
 
 export const SPONSOR_WA = '56950291592'
 
@@ -16,15 +22,46 @@ export function sponsorWaLink(plan?: string) {
 export const SPONSOR_HERO = {
   eyebrow: 'Publicidad · Radio Bienvenida',
   title: 'Llega a quien escucha y a quien mira el celular',
-  subtitle: `Spots en ${RADIO.frequency} + banner en la app. Una sola campaña, dos pantallas: el auto, el trabajo y el bolsillo del oyente en ${RADIO.city}.`,
+  subtitle: `${RADIO_PUBLIC_FACTS.coverageClaim}. Spots en FM + banner en la app: una campaña en antena y en el celular del oyente.`,
 }
 
 export const SPONSOR_STATS = [
-  { value: 'FM', label: 'Spots en cabina', accent: '#db8918' },
-  { value: 'live', label: 'Oyentes en vivo', accent: '#40B9BF', live: true as const },
-  { value: 'App', label: 'Banners medibles', accent: '#7D59B5' },
-  { value: '93.3', label: 'FM · Rancagua', accent: '#00D9A0' },
+  { value: String(RADIO_PUBLIC_FACTS.comunasRegion), label: 'Comunas O\'Higgins', accent: '#db8918' },
+  { value: String(RADIO_PUBLIC_FACTS.fmSignals), label: 'Señales FM', accent: '#40B9BF' },
+  {
+    value: formatThousandsPlus(RADIO_PUBLIC_FACTS.socialFacebookMin),
+    label: 'Comunidad en redes',
+    accent: '#7D59B5',
+  },
+  { value: `${getYearsOnAir()}+`, label: 'Años al aire', accent: '#00D9A0' },
 ] as const
+
+export const SPONSOR_STATS_SOURCE =
+  'Cobertura y trayectoria: El Rancagüino · Comunidad digital: dato publicado por la emisora (2021)'
+
+export function buildAnunciateHeroStats(liveListeners = 0) {
+  const stats = SPONSOR_STATS.map(s => ({
+    v: s.value,
+    l: s.label.toLowerCase(),
+    c:
+      s.accent === '#db8918'
+        ? 'var(--color-mag-400)'
+        : s.accent === '#40B9BF'
+          ? 'var(--color-cyn-400)'
+          : s.accent === '#7D59B5'
+            ? 'var(--color-pur-400)'
+            : 'var(--color-pulso-success)',
+  }))
+
+  if (liveListeners > 0) {
+    return [
+      { v: String(liveListeners), l: 'oyentes en vivo ahora', c: 'var(--color-cyn-400)' },
+      ...stats.slice(0, 3),
+    ]
+  }
+
+  return stats
+}
 
 export type SponsorValueLine = {
   id: string
@@ -77,14 +114,14 @@ export const SPONSOR_VALUE = {
       color: '#7D59B5',
       hook: 'Gente local con intención de compra.',
       image: '/sponsor/region.png',
-      benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegas a quien vive y trabaja en la zona, no a clics genéricos.',
+      benefit: `Cubre las ${RADIO_PUBLIC_FACTS.comunasRegion} comunas con ${RADIO_PUBLIC_FACTS.fmSignals} señales FM. Comunidad digital de ${formatThousandsPlus(RADIO_PUBLIC_FACTS.socialFacebookMin)} seguidores en Facebook (dato publicado en prensa regional) más streaming y app.`,
       breakdown: [
-        { label: 'Ciudad foco', value: RADIO.city },
-        { label: 'Medio', value: 'FM + PWA instalable' },
-        { label: 'Reporte app', value: 'Impresiones y clics reales del banner' },
-        { label: 'Alcance FM', value: 'Según parrilla y cabina (no medido en app)' },
+        { label: 'Cobertura', value: `${RADIO_PUBLIC_FACTS.comunasRegion} comunas por antena` },
+        { label: 'Frecuencias', value: RADIO_FM_FREQUENCIES_LABEL },
+        { label: 'Trayectoria', value: `Desde ${RADIO_PUBLIC_FACTS.foundedYear} · ${getYearsOnAir()}+ años` },
+        { label: 'Contexto Rancagua', value: `~${RADIO_PUBLIC_FACTS.rancaguaDailyRadioReachPct}% escucha radio algún día (Ipsos)` },
       ],
-      tip: 'Combina radio + app para campañas de apertura o promociones de temporada.',
+      tip: 'En la app medimos impresiones y clics del banner. El alcance FM depende de la parrilla acordada en cabina.',
     },
   ] satisfies SponsorValueLine[],
 }
@@ -106,6 +143,10 @@ export const SPONSOR_FAQ = [
   { q: '¿Necesito diseño?', a: 'No es obligatorio. Si no tienes banner, coordinamos una plantilla con el equipo comercial.' },
   { q: '¿Graban el spot?', a: 'Los spots suenan en FM 93.3 (cabina). Podemos coordinar grabación o usar tu audio; no se administra desde la app.' },
   { q: '¿Hay permanencia?', a: 'Mes a mes. Recomendamos 2 meses para medir resultados.' },
+  {
+    q: '¿Cuánta gente llega?',
+    a: `Radio Bienvenida cubre las ${RADIO_PUBLIC_FACTS.comunasRegion} comunas de O'Higgins con ${RADIO_PUBLIC_FACTS.fmSignals} señales FM. La emisora reportó ${formatThousandsPlus(RADIO_PUBLIC_FACTS.socialFacebookMin)} seguidores en Facebook (El Rancagüino, 2021). En la app ves oyentes conectados en vivo; el reporte mensual trae impresiones y clics del banner. No publicamos rating Ipsos por emisora — el equipo comercial coordina pases FM según tu plan.`,
+  },
   {
     q: '¿Qué funciones puedo probar ya en la app?',
     a: 'En la app: banners en En Vivo, Participa, Grilla, etc.; patrocinadores en /patrocinadores; badge de programa en /programacion (Empresarial). Reporte y spots FM son gestión comercial (/admin y cabina), no pantallas públicas.',

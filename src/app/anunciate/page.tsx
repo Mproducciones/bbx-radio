@@ -5,7 +5,8 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Publicidad — Radio Bienvenida 93.3 FM',
-  description: 'Publicidad en FM 93.3 y banners medibles en la app de Radio Bienvenida. Planes desde $80.000/mes. Rancagua.',
+  description:
+    'Publicidad en las 33 comunas de O\'Higgins: 4 señales FM + banners medibles en la app. Planes desde $80.000/mes. Rancagua.',
 }
 
 export default function AnunciatePage() {

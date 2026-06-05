@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { RADIO } from '@/lib/radioConfig'
 import { SPONSOR_PLANS, type SponsorPlanId } from '@/lib/sponsorPlans'
-import { sponsorWaLink } from '@/lib/sponsorContent'
+import { buildAnunciateHeroStats, sponsorWaLink, SPONSOR_HERO, SPONSOR_STATS_SOURCE } from '@/lib/sponsorContent'
+import { RADIO_PUBLIC_FACTS } from '@/lib/radioPublicFacts'
 import { SponsorPlanIcon } from '@/components/shared/SponsorPlanIcon'
 import { ProWaButton } from '@/components/shared/ProWaButton'
 import { PlanDetailSheet } from './PlanDetailSheet'
@@ -114,6 +115,10 @@ function PlanCard({
 
 const FAQ_SHORT = [
   { q: '¿Puedo empezar con el plan Básico?', a: 'Sí. Es ideal para probar. Mes a mes, sin permanencia.' },
+  {
+    q: '¿Cuánta gente llega?',
+    a: `Cubre las ${RADIO_PUBLIC_FACTS.comunasRegion} comunas con ${RADIO_PUBLIC_FACTS.fmSignals} señales FM y comunidad digital de miles de seguidores. En la app ves oyentes en vivo y métricas del banner; los pases FM se coordinan en cabina.`,
+  },
   { q: '¿Necesito diseño o audio?', a: 'No obligatorio. Grabamos el spot y hacemos el banner con plantilla.' },
   { q: '¿Cuánto tarda en activarse?', a: '48 horas hábiles desde que coordinamos el arte y el pago.' },
 ]
@@ -175,14 +180,10 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
 
   const listenerProof =
     initialListeners > 0
-      ? `${initialListeners}+ oyentes conectados`
-      : 'Audiencia local en vivo'
+      ? `${initialListeners} oyentes conectados ahora`
+      : `${RADIO_PUBLIC_FACTS.comunasRegion} comunas · FM + app`
 
-  const stats = [
-    { v: 'FM', l: 'spots en cabina', c: 'var(--color-mag-400)' },
-    { v: 'App', l: 'banners medibles', c: 'var(--color-cyn-400)' },
-    { v: '93.3', l: RADIO.city, c: 'var(--color-pur-400)' },
-  ]
+  const stats = buildAnunciateHeroStats(initialListeners)
 
   return (
     <div className="anunciate-route app-gutter-x relative w-full min-w-0 max-w-full overflow-x-hidden pb-4">
@@ -211,7 +212,7 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
           </h1>
 
           <p className="text-white/55 text-sm leading-relaxed mb-4 max-w-sm mx-auto">
-            Spots en FM + banner en la app. Llega a quien ya consume {RADIO.name} en {RADIO.city}.
+            {SPONSOR_HERO.subtitle}
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 mb-5">
@@ -222,7 +223,7 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
             ))}
           </div>
 
-          <div className="pro-stat-strip pro-stat-strip--center w-full max-w-md mb-5">
+          <div className="pro-stat-strip pro-stat-strip--center w-full max-w-md mb-2">
             {stats.map(s => (
               <div key={s.l} className="pro-stat-cell">
                 <p className="font-display text-2xl leading-none tabular-nums" style={{ color: s.c }}>
@@ -232,6 +233,9 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
               </div>
             ))}
           </div>
+          <p className="text-white/28 text-[10px] leading-relaxed mb-5 max-w-sm mx-auto text-center px-2">
+            {SPONSOR_STATS_SOURCE}
+          </p>
 
           <div className="w-full max-w-sm">
             <ProWaButton href={waLink} className="btn-shimmer">
