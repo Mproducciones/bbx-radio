@@ -12,8 +12,8 @@ export default function TVPage() {
   return (
     <AppMenuScreen scroll className="tv-route w-full min-w-0">
       <SectionHeader compact title="Bienvenida TV" />
-      <p className="tv-route__sub shrink-0">Señal en vivo · la radio se pausa mientras ves TV</p>
-      <BienvenidaTV embedded />
+      <p className="tv-route__sub shrink-0">Señal en vivo · pantalla completa disponible · la radio se pausa</p>
+      <BienvenidaTV variant="embedded" />
     </AppMenuScreen>
   )
 }

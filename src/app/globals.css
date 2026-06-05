@@ -2046,6 +2046,201 @@ body {
   color: rgba(255, 255, 255, 0.42);
 }
 
+/* ── TV en vivo (overlay + embebido) ─────────────────────────── */
+.tv-live-overlay {
+  padding: max(0.5rem, env(safe-area-inset-top, 0px)) max(0.5rem, env(safe-area-inset-right, 0px))
+    max(0.5rem, env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
+}
+
+.tv-live-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.tv-live-overlay__panel {
+  position: relative;
+  z-index: 1;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+  background: #050508;
+}
+
+.tv-player {
+  background: #050508;
+}
+
+.tv-player--embedded {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.tv-player--overlay {
+  height: 100%;
+  min-height: 0;
+}
+
+.tv-player__chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tv-player__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.tv-player__live-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.75);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.tv-player__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tv-player__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.55rem;
+  border-radius: 0.65rem;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.tv-player__btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tv-player__btn--accent {
+  color: var(--color-mag-400);
+  border-color: color-mix(in srgb, var(--color-mag-400) 35%, transparent);
+  background: color-mix(in srgb, var(--color-mag-400) 12%, transparent);
+}
+
+.tv-player__btn-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tv-player__stage {
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.tv-player--overlay .tv-player__stage {
+  flex: 1;
+  aspect-ratio: auto;
+  min-height: 12rem;
+}
+
+.tv-player__video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tv-player__overlay-msg {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8125rem;
+}
+
+.tv-player__overlay-sub {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.tv-player__retry {
+  margin-top: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.65rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tv-player__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tv-player__title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tv-player__sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.tv-player__ads-link {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-mag-400);
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-mag-400) 30%, transparent);
+  background: color-mix(in srgb, var(--color-mag-400) 10%, transparent);
+}
+
+@media (max-width: 420px) {
+  .tv-player__btn-label {
+    display: none;
+  }
+}
+
 .replay-empty {
   display: flex;
   flex-direction: column;

@@ -8,10 +8,8 @@ export const APP_PRIMARY_NAV_ROUTES = [
   '/saludos',
 ] as const
 
-/** Rutas secundarias dentro del menú Más */
+/** Rutas secundarias vinculadas al botón Más (TV se abre como overlay, no como página) */
 export const APP_MORE_NAV_ROUTES = [
-  ...(FEATURES.replay ? (['/replay'] as const) : []),
-  '/tv',
   ...(FEATURES.publicidad ? (['/anunciate'] as const) : []),
 ] as const
 

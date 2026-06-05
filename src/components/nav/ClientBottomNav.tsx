@@ -3,12 +3,11 @@
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { BottomNav } from './BottomNav'
-import { NavMoreSheet } from './NavMoreSheet'
+import { TvLiveOverlay } from '@/components/tv/TvLiveOverlay'
 
 export function ClientBottomNav() {
   const pathname = usePathname()
   const [planSheetOpen, setPlanSheetOpen] = useState(false)
-  const [moreOpen, setMoreOpen] = useState(false)
 
   useEffect(() => {
     const sync = () => setPlanSheetOpen(document.body.dataset.planSheetOpen === 'true')
@@ -24,8 +23,8 @@ export function ClientBottomNav() {
 
   return (
     <>
-      <BottomNav onMoreOpen={() => setMoreOpen(true)} />
-      <NavMoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
+      <BottomNav />
+      <TvLiveOverlay />
     </>
   )
 }

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { APP_PRIMARY_NAV_ROUTES } from '@/lib/appNavRoutes'
-import { useMoreNavActive } from '@/components/nav/NavMoreSheet'
+import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 const TAB_META: Record<
   string,
@@ -22,9 +22,10 @@ const TABS = APP_PRIMARY_NAV_ROUTES.map(href => ({
   icon: TAB_META[href].icon,
 }))
 
-export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
+export function BottomNav() {
   const pathname = usePathname()
-  const moreActive = useMoreNavActive(pathname)
+  const { openTv, isTvOpen } = useRadioPlayerContext()
+  const moreActive = isTvOpen || pathname.startsWith('/anunciate')
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
 
@@ -71,11 +72,12 @@ export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
 
           <button
             type="button"
-            onClick={() => onMoreOpen?.()}
+            onClick={() => openTv()}
             className="flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
             style={{ color: moreActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
-            aria-label="Más opciones"
+            aria-label="Bienvenida TV en vivo"
             aria-haspopup="dialog"
+            aria-expanded={isTvOpen}
           >
             {moreActive && (
               <motion.div
@@ -86,8 +88,8 @@ export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
               />
             )}
             <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-              <MoreIcon className="w-[18px] h-[18px] flex-shrink-0" />
-              <span className="text-[9px] font-semibold leading-none tracking-wide">Más</span>
+              <TvNavIcon className="w-[18px] h-[18px] flex-shrink-0" />
+              <span className="text-[9px] font-semibold leading-none tracking-wide">TV</span>
             </div>
           </button>
         </div>
@@ -96,10 +98,10 @@ export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
   )
 }
 
-function MoreIcon({ className }: { className?: string }) {
+function TvNavIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6 10h4v-4h-4v4zm0-6h4v-4h-4v4zM16 8h4V4h-4v4z" />
+      <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z" />
     </svg>
   )
 }
