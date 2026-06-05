@@ -165,6 +165,10 @@
   @keyframes pulso-spin {
     to { transform: rotate(360deg); }
   }
+
+  @keyframes vinyl-spin {
+    to { transform: rotate(360deg); }
+  }
   @keyframes pulso-toast-in {
     from { opacity: 0; transform: translateX(-50%) translateY(16px); }
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -412,13 +416,27 @@ body {
     overscroll-behavior-y: contain;
   }
 
-  /* Grilla — scroll de página; todos los bloques visibles al deslizar */
+  /* Programación — contenido compacto, sin hueco vacío bajo la grilla */
   .programacion-route {
     max-width: 100%;
+    flex: 0 0 auto;
+    align-self: flex-start;
   }
 
-  .programacion-route > div {
-    padding-bottom: calc(var(--app-nav-total) + 0.35rem);
+  .programacion-route__sub {
+    margin: -0.35rem 0 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .programacion-route__content {
+    width: 100%;
+    padding-bottom: 0.35rem;
+  }
+
+  .app-scroll-route:has(.programacion-route) {
+    align-items: flex-start;
   }
 }
 
@@ -436,6 +454,19 @@ body {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
   width: 100%;
   min-width: 0;
+}
+
+.prog-schedule--embedded {
+  padding-top: 0.45rem;
+}
+
+.prog-schedule__embedded-day {
+  margin: 0 0 0.15rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .prog-schedule__header {
@@ -2072,9 +2103,13 @@ body {
   animation: pulse 1.4s ease-in-out infinite;
 }
 
+.nav-more-sheet__backdrop {
+  bottom: var(--app-nav-total);
+}
+
 .nav-more-sheet {
-  bottom: 0;
-  max-height: min(72dvh, 28rem);
+  bottom: var(--app-nav-total);
+  max-height: min(58dvh, 22rem);
   border-radius: 1.25rem 1.25rem 0 0;
   background: linear-gradient(180deg, #14141e 0%, var(--color-ink-900) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);

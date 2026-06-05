@@ -35,20 +35,10 @@ export function NavMoreSheet({ open, onClose }: NavMoreSheetProps) {
   const pathname = usePathname()
 
   useEffect(() => {
-    if (!open) {
-      delete document.body.dataset.sheetOpen
-      return
-    }
-    document.body.dataset.sheetOpen = 'true'
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    if (!open) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
-    return () => {
-      delete document.body.dataset.sheetOpen
-      document.body.style.overflow = prev
-      window.removeEventListener('keydown', onKey)
-    }
+    return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
   const routes = APP_MORE_NAV_ROUTES.filter(href => {
@@ -65,7 +55,7 @@ export function NavMoreSheet({ open, onClose }: NavMoreSheetProps) {
             <motion.button
               type="button"
               aria-label="Cerrar menú"
-              className="fixed inset-0 z-[1090] bg-black/70 backdrop-blur-sm"
+              className="nav-more-sheet__backdrop fixed inset-x-0 top-0 z-[1090] bg-black/70 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ProgramSchedule } from '@/components/schedule/ProgramSchedule'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
+import { SectionHeader } from '@/components/layout/SectionHeader'
 import { getPrograms } from '@/lib/programs'
 import { getTodayInTimezone } from '@/lib/programSchedule'
 
@@ -18,9 +19,17 @@ export default async function ProgramacionPage() {
 
   return (
     <AppMenuScreen scroll className="programacion-route w-full min-w-0">
-      <div className="flex flex-col gap-1.5 md:gap-5 max-md:pb-2 md:min-h-0 md:flex-1 md:flex md:flex-col">
+      <SectionHeader compact title="Programación" />
+      <p className="programacion-route__sub shrink-0">Horarios de la semana · programa en vivo resaltado</p>
+      <div className="programacion-route__content flex flex-col gap-1.5 md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
         <RotatingBanner position="top" compact className="shrink-0" />
-        <ProgramSchedule programs={programs} initialDay={initialDay} fill className="max-md:shrink-0" />
+        <ProgramSchedule
+          programs={programs}
+          initialDay={initialDay}
+          fill
+          hideHeader
+          className="max-md:shrink-0"
+        />
         <RotatingBanner position="bottom" compact className="shrink-0 hidden md:block" />
       </div>
     </AppMenuScreen>

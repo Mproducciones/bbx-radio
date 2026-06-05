@@ -23,15 +23,15 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
 
   useEffect(() => {
     if (!plan) {
-      delete document.body.dataset.sheetOpen
+      delete document.body.dataset.planSheetOpen
       return
     }
     setActiveIdx(0)
-    document.body.dataset.sheetOpen = 'true'
+    document.body.dataset.planSheetOpen = 'true'
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
-      delete document.body.dataset.sheetOpen
+      delete document.body.dataset.planSheetOpen
       document.body.style.overflow = prev
     }
   }, [plan])

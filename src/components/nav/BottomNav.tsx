@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { APP_PRIMARY_NAV_ROUTES } from '@/lib/appNavRoutes'
-import { NavMoreSheet, useMoreNavActive } from '@/components/nav/NavMoreSheet'
+import { useMoreNavActive } from '@/components/nav/NavMoreSheet'
 
 const TAB_META: Record<
   string,
@@ -23,9 +22,8 @@ const TABS = APP_PRIMARY_NAV_ROUTES.map(href => ({
   icon: TAB_META[href].icon,
 }))
 
-export function BottomNav() {
+export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
   const pathname = usePathname()
-  const [moreOpen, setMoreOpen] = useState(false)
   const moreActive = useMoreNavActive(pathname)
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
@@ -54,7 +52,7 @@ export function BottomNav() {
               >
                 {isActive && (
                   <motion.div
-                    layoutId="nav-pill"
+                    layoutId="nav-tab-pill"
                     className="absolute inset-1 rounded-xl"
                     style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
                     transition={{ type: 'spring', stiffness: 500, damping: 38 }}
@@ -73,15 +71,15 @@ export function BottomNav() {
 
           <button
             type="button"
-            onClick={() => setMoreOpen(true)}
+            onClick={() => onMoreOpen?.()}
             className="flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
             style={{ color: moreActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
             aria-label="Más opciones"
-            aria-expanded={moreOpen}
+            aria-haspopup="dialog"
           >
             {moreActive && (
               <motion.div
-                layoutId="nav-pill"
+                layoutId="nav-more-pill"
                 className="absolute inset-1 rounded-xl"
                 style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
                 transition={{ type: 'spring', stiffness: 500, damping: 38 }}
@@ -94,8 +92,6 @@ export function BottomNav() {
           </button>
         </div>
       </nav>
-
-      <NavMoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
     </>
   )
 }

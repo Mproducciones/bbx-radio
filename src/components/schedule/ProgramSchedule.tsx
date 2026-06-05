@@ -27,12 +27,15 @@ export function ProgramSchedule({
   className,
   initialDay,
   fill,
+  hideHeader,
 }: {
   programs: Program[]
   className?: string
   initialDay?: DayKey
   /** Ocupa el alto disponible; la lista hace scroll interno si hace falta */
   fill?: boolean
+  /** Oculta título interno cuando la página ya tiene SectionHeader */
+  hideHeader?: boolean
 }) {
   const [today, setToday] = useState<DayKey>(initialDay ?? 'mon')
   const [selectedDay, setSelectedDay] = useState<DayKey>(initialDay ?? 'mon')
@@ -51,34 +54,44 @@ export function ProgramSchedule({
 
   return (
     <section
-      aria-labelledby="programacion-heading"
+      aria-label="Programación semanal"
+      aria-labelledby={hideHeader ? undefined : 'programacion-heading'}
       className={cn(
         'prog-schedule',
+        hideHeader && 'prog-schedule--embedded',
         fill && 'md:flex-1 md:min-h-0',
         className,
       )}
     >
-      <div className="prog-schedule__header">
-        <div className="prog-schedule__title-row">
-          <div className="prog-schedule__icon" aria-hidden>
-            <Radio className="w-3.5 h-3.5 md:w-4 md:h-4" style={{ color: LIVE_ACCENT }} />
+      {!hideHeader ? (
+        <div className="prog-schedule__header">
+          <div className="prog-schedule__title-row">
+            <div className="prog-schedule__icon" aria-hidden>
+              <Radio className="w-3.5 h-3.5 md:w-4 md:h-4" style={{ color: LIVE_ACCENT }} />
+            </div>
+            <h2 id="programacion-heading" className="prog-schedule__title">
+              Programación
+            </h2>
           </div>
-          <h2 id="programacion-heading" className="prog-schedule__title">
-            Programación
-          </h2>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={selectedDay}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              className="prog-schedule__day-pill"
+            >
+              {selectedFull}
+            </motion.span>
+          </AnimatePresence>
         </div>
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={selectedDay}
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            className="prog-schedule__day-pill"
-          >
+      ) : (
+        hydrated && (
+          <p className="prog-schedule__embedded-day" aria-live="polite">
             {selectedFull}
-          </motion.span>
-        </AnimatePresence>
-      </div>
+          </p>
+        )
+      )}
 
       <div
         role="tablist"

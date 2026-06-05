@@ -233,7 +233,7 @@ export function NowPlayingCard({
                   className="w-full h-full"
                 />
               </div>
-              <VinylDiscFrame size={CV} isPlaying={isPlaying} accent={primary}>
+              <VinylDiscFrame size={CV} isPlaying={isPlaying} isLoading={isLoading} accent={primary}>
                 <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
                 <InteractiveLogo
                   artSrc={artSrc}

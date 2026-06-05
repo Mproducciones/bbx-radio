@@ -1,29 +1,36 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import type { CSSProperties, ReactNode } from 'react'
 
 /** Disco / vinilo giratorio detrás del artwork — inspirado en music-artwork (21st). */
 export function VinylDiscFrame({
   size,
   isPlaying,
+  isLoading,
   accent,
   children,
 }: {
   size: number
   isPlaying: boolean
+  isLoading?: boolean
   accent: string
   children: ReactNode
 }) {
   const outer = size + 56
+  const spinning = isPlaying || !!isLoading
+
+  const spinTransition = spinning
+    ? { repeat: Infinity, duration: 10, ease: 'linear' as const }
+    : { duration: 0.4 }
 
   return (
     <div className="relative flex items-center justify-center" style={{ width: outer, height: outer }}>
-      <div
-        className="absolute rounded-full"
+      <motion.div
+        className="absolute rounded-full vinyl-disc-ring"
         style={{
           width: outer,
           height: outer,
-          animation: isPlaying ? 'spin-slow 10s linear infinite' : undefined,
           background: `
             radial-gradient(circle at 50% 50%, #050508 0%, #0c0c12 38%, #08080e 100%),
             repeating-radial-gradient(circle at 50% 50%, transparent 0px, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 4px)
@@ -34,15 +41,18 @@ export function VinylDiscFrame({
             0 0 32px ${accent}22
           `,
         }}
+        animate={{ rotate: spinning ? 360 : 0 }}
+        transition={spinTransition}
       />
-      <div
-        className="absolute rounded-full border border-white/[0.04]"
+      <motion.div
+        className="absolute rounded-full border border-white/[0.04] vinyl-disc-ring"
         style={{
           width: size + 28,
           height: size + 28,
-          animation: isPlaying ? 'spin-slow 10s linear infinite' : undefined,
           background: `conic-gradient(from 0deg, ${accent}12, transparent 25%, ${accent}08, transparent 50%, ${accent}10, transparent 75%, ${accent}08)`,
         }}
+        animate={{ rotate: spinning ? 360 : 0 }}
+        transition={spinTransition}
       />
       <div className="relative z-[2] rounded-full overflow-hidden" style={{ width: size, height: size }}>
         {children}

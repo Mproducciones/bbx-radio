@@ -33,6 +33,38 @@ const STREAM_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 /** Siempre null: el stream va directo al altavoz sin Web Audio (mejor calidad en móvil). */
 const DIRECT_PLAYBACK_ANALYSER = null
 
+function isIOSDevice() {
+  if (typeof navigator === 'undefined') return false
+  return (
+    /iPad|iPhone|iPod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  )
+}
+
+/** Safari iOS suele permitir autoplay silenciado y luego desmutear. */
+async function startStreamPlayback(audio: HTMLAudioElement): Promise<boolean> {
+  audio.muted = false
+  if (audio.readyState < 2) audio.load()
+
+  try {
+    await audio.play()
+    audio.muted = false
+    return true
+  } catch {
+    /* primer intento bloqueado — truco muted autoplay (iOS / Safari) */
+  }
+
+  try {
+    audio.muted = true
+    await audio.play()
+    audio.muted = false
+    return true
+  } catch {
+    audio.muted = false
+    return false
+  }
+}
+
 const listenerSessionReady = { current: false }
 
 function ensureListenerSessionCookie(): Promise<void> {
@@ -119,11 +151,16 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true)
-      if (audio.readyState < 2) audio.load()
-      await audio.play()
-      setIsPlaying(true)
-      setNeedsTapToPlay(false)
-      startHeartbeat()
+      const ok = await startStreamPlayback(audio)
+      if (ok) {
+        setIsPlaying(true)
+        setNeedsTapToPlay(false)
+        startHeartbeat()
+      } else {
+        setHasError(false)
+        setIsPlaying(false)
+        setNeedsTapToPlay(true)
+      }
     } catch {
       setHasError(false)
       setIsPlaying(false)
@@ -163,7 +200,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const audio = new Audio(STREAM_URL)
-    audio.preload = 'none'
+    audio.preload = 'auto'
     audio.volume = STREAM_VOLUME
     audio.setAttribute('playsinline', 'true')
     audio.setAttribute('webkit-playsinline', 'true')
@@ -196,12 +233,27 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     }
     document.addEventListener('visibilitychange', onVisible)
 
-    const autoplayTimer = window.setTimeout(() => {
+    const tryAutoplay = () => {
       if (shouldAutoPlay()) void playRef.current()
-    }, 1400)
+    }
+
+    const autoplayDelays = isIOSDevice() ? [0, 400, 1200, 2800] : [0, 800, 2000]
+    const autoplayTimers = autoplayDelays.map(ms => window.setTimeout(tryAutoplay, ms))
+
+    const onGestureUnlock = () => {
+      if (userPausedRef.current || !shouldAutoPlay()) return
+      if (!audio.paused) return
+      void playRef.current()
+    }
+    document.addEventListener('touchstart', onGestureUnlock, { capture: true, passive: true })
+    document.addEventListener('pointerdown', onGestureUnlock, { capture: true, passive: true })
+    document.addEventListener('click', onGestureUnlock, { capture: true, passive: true })
 
     return () => {
-      window.clearTimeout(autoplayTimer)
+      autoplayTimers.forEach(t => window.clearTimeout(t))
+      document.removeEventListener('touchstart', onGestureUnlock, { capture: true })
+      document.removeEventListener('pointerdown', onGestureUnlock, { capture: true })
+      document.removeEventListener('click', onGestureUnlock, { capture: true })
       audio.removeEventListener('playing', onPlaying)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('canplay', onCanPlay)
