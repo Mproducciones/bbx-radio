@@ -20,9 +20,9 @@ export const SPONSOR_HERO = {
 }
 
 export const SPONSOR_STATS = [
-  { value: '+15K', label: 'Alcance mensual', accent: '#db8918' },
+  { value: 'FM', label: 'Spots en cabina', accent: '#db8918' },
   { value: 'live', label: 'Oyentes en vivo', accent: '#40B9BF', live: true as const },
-  { value: '20+', label: 'Años al aire', accent: '#7D59B5' },
+  { value: 'App', label: 'Banners medibles', accent: '#7D59B5' },
   { value: '93.3', label: 'FM · Rancagua', accent: '#00D9A0' },
 ] as const
 
@@ -54,7 +54,7 @@ export const SPONSOR_VALUE = {
         { label: 'Plan Premium', value: '8 pases horario peak' },
         { label: 'Plan Empresarial', value: '12 pases + programa' },
       ],
-      tip: 'Grabamos o usamos tu audio. Te ayudamos con guión si lo necesitas.',
+      tip: 'Los spots se programan en cabina. Podemos coordinar grabación o guión con el equipo comercial.',
     },
     {
       id: 'app',
@@ -67,7 +67,7 @@ export const SPONSOR_VALUE = {
         { label: 'Plan Básico', value: 'Banner rotativo + En Vivo' },
         { label: 'Plan Premium', value: 'Destacado En Vivo + flotante' },
         { label: 'Plan Empresarial', value: 'Exclusivo + badge grilla' },
-        { label: 'Arte', value: 'Plantilla incluida si no tienes diseño' },
+        { label: 'Arte', value: 'Coordinamos banner (plantilla si no tienes diseño)' },
       ],
       tip: 'Pide ver ejemplos en cada plan: mostramos mockups reales de la app.',
     },
@@ -80,9 +80,9 @@ export const SPONSOR_VALUE = {
       benefit: 'Restaurantes, clínicas, retail y servicios que venden en el territorio. Llegas a quien vive y trabaja en la zona, no a clics genéricos.',
       breakdown: [
         { label: 'Ciudad foco', value: RADIO.city },
-        { label: 'Alcance referencial', value: '+15.000 / mes' },
         { label: 'Medio', value: 'FM + PWA instalable' },
-        { label: 'Reporte', value: 'Impresiones estimadas / mes' },
+        { label: 'Reporte app', value: 'Impresiones y clics reales del banner' },
+        { label: 'Alcance FM', value: 'Según parrilla y cabina (no medido en app)' },
       ],
       tip: 'Combina radio + app para campañas de apertura o promociones de temporada.',
     },
@@ -97,14 +97,14 @@ export const SPONSOR_CHANNELS = [
 
 export const SPONSOR_STEPS = [
   { step: '01', title: 'Elige plan', desc: 'Básico, Premium o Empresarial.' },
-  { step: '02', title: 'Arte y spot', desc: 'Te ayudamos con banner y guión.' },
-  { step: '03', title: 'Al aire', desc: 'Radio + app + reporte mensual.' },
+  { step: '02', title: 'Arte y spot', desc: 'Coordinamos banner (app) y audio FM con cabina.' },
+  { step: '03', title: 'Al aire', desc: 'Activamos banners en la app + spots en radio + reporte mensual.' },
 ] as const
 
 export const SPONSOR_FAQ = [
   { q: '¿Puedo empezar pequeño?', a: 'Sí. El plan Básico ($80.000/mes) es ideal para probar.' },
-  { q: '¿Necesito diseño?', a: 'No obligatorio. Usamos plantilla profesional en la primera campaña.' },
-  { q: '¿Graban el spot?', a: 'Podemos grabarlo o usar tu audio revisado por nuestro equipo.' },
+  { q: '¿Necesito diseño?', a: 'No es obligatorio. Si no tienes banner, coordinamos una plantilla con el equipo comercial.' },
+  { q: '¿Graban el spot?', a: 'Los spots suenan en FM 93.3 (cabina). Podemos coordinar grabación o usar tu audio; no se administra desde la app.' },
   { q: '¿Hay permanencia?', a: 'Mes a mes. Recomendamos 2 meses para medir resultados.' },
   {
     q: '¿Qué funciones puedo probar ya en la app?',

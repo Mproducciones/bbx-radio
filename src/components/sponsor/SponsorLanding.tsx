@@ -160,7 +160,7 @@ function FaqAccordion() {
   )
 }
 
-const TRUST_PILLS = ['Desde $80.000', 'Sin permanencia', 'Activo en 48h']
+const TRUST_PILLS = ['Desde $80.000', 'Sin permanencia', 'Activación coordinada']
 
 export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: number }) {
   const [previewTier, setPreviewTier] = useState<SponsorAdTierId>('empresarial')
@@ -179,8 +179,8 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
       : 'Audiencia local en vivo'
 
   const stats = [
-    { v: '+15K', l: 'alcance/mes', c: 'var(--color-mag-400)' },
-    { v: '20+', l: 'años al aire', c: 'var(--color-cyn-400)' },
+    { v: 'FM', l: 'spots en cabina', c: 'var(--color-mag-400)' },
+    { v: 'App', l: 'banners medibles', c: 'var(--color-cyn-400)' },
     { v: '93.3', l: RADIO.city, c: 'var(--color-pur-400)' },
   ]
 
@@ -238,7 +238,7 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
               Quiero cotizar ahora
             </ProWaButton>
             <p className="text-white/35 text-[11px] mt-2.5 font-medium">
-              Respondemos en menos de 2 horas · Sin compromiso
+              Cotizamos por WhatsApp · Sin compromiso
             </p>
           </div>
         </div>

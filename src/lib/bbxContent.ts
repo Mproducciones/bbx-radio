@@ -20,14 +20,14 @@ export const BBX_HERO = {
   eyebrow: 'Plataforma white-label para radios',
   title: 'La app que tu radio merece',
   subtitle:
-    'PWA instalable, reproductor en vivo, monetización digital y panel de control. Tu marca, tu dominio, tu audiencia — sin depender de una app genérica.',
+    'PWA instalable, reproductor en vivo, monetización digital y panel de control. Tu marca y tu audiencia — sin depender de una app genérica.',
   proof: 'Caso en producción: Radio Bienvenida 93.3 FM · Rancagua',
 }
 
 export const BBX_STATS = [
   { value: '48h', label: 'Implementación típica', accent: '#db8918' },
   { value: 'PWA', label: 'iOS y Android sin tienda', accent: '#40B9BF' },
-  { value: '24/7', label: 'Streaming + analytics', accent: '#7D59B5' },
+  { value: '24/7', label: 'Stream + oyentes en vivo', accent: '#7D59B5' },
   { value: '100%', label: 'Marca de tu radio', accent: '#00D9A0' },
 ] as const
 
@@ -50,9 +50,9 @@ export const BBX_HUB_SECTIONS: {
   },
   {
     id: 'negocio',
-    value: '+390K',
+    value: '+360K',
     label: 'Ingresos extra',
-    subtitle: 'Cuánto puedes facturar al mes',
+    subtitle: 'Ejemplo referencial de ingresos Capa 2',
     accent: '#00D9A0',
   },
   {
@@ -94,7 +94,7 @@ export const BBX_FEATURES = [
   {
     id: 'ads',
     title: 'Publicidad digital',
-    desc: 'Banners rotativos, patrocinadores y métricas para vender espacios con datos, no solo intuición.',
+    desc: 'Banners rotativos, patrocinadores y reporte de impresiones/clics para vender espacios con datos reales de la app.',
     accent: '#7D59B5',
   },
   {
@@ -119,7 +119,7 @@ export const BBX_FEATURES = [
 
 export const BBX_PROCESS = [
   { step: '01', title: 'Diagnóstico', desc: 'Revisamos tu stream, marca y objetivos comerciales.' },
-  { step: '02', title: 'Diseño & setup', desc: 'Colores, logo, grilla y módulos activos en menos de 48 horas.' },
+  { step: '02', title: 'Diseño & setup', desc: 'Colores, logo, grilla y módulos activos — habitual 48–72 h con materiales listos.' },
   { step: '03', title: 'Lanzamiento', desc: 'Publicación PWA, capacitación y soporte de arranque.' },
   { step: '04', title: 'Crecimiento', desc: 'Monetización, métricas y mejoras continuas con tu equipo.' },
 ] as const
@@ -145,8 +145,8 @@ export const BBX_REVENUE = {
   subtitle: 'Ejemplo realista para una radio regional que activa ventas digitales',
   ownerIntro:
     'La FM sigue siendo tu core. BBX agrega productos que puedes vender todos los meses: banners con impresiones, sorteos patrocinados y datos para cerrar anunciantes. Esto es lo que un dueño puede facturar extra sin duplicar equipo.',
-  totalLabel: '$390.000',
-  totalNote: 'Referencial · no incluye pauta FM tradicional ni planes Anunciate integrados (radio + app)',
+  totalLabel: '$360.000',
+  totalNote: 'Ejemplo referencial · no es garantía de ingresos. No incluye pauta FM ni paquetes Anunciate integrados.',
   roiNote:
     'Plan Pro cuesta $120.000/mes. Con 3 posiciones vendidas a $50.000 ($150.000) ya cubrís la plataforma; la cuarta posición es margen puro.',
   lines: [
@@ -183,23 +183,6 @@ export const BBX_REVENUE = {
       ],
       howToSell:
         'Vendelo como “activación + datos”: la marca aparece en vivo, en app y se lleva los registros del concurso.',
-    },
-    {
-      id: 'programatico',
-      title: 'Monetización programática',
-      amountLabel: '$30.000',
-      color: '#C4B5FD',
-      hook: 'Ingreso pasivo complementario en la app.',
-      ownerBenefit:
-        'No reemplaza ventas directas, pero suma sin esfuerzo comercial. Entra solo con tráfico en la PWA.',
-      breakdown: [
-        { label: 'Modelo', value: 'CPM / redes display' },
-        { label: 'Tráfico mensual estimado', value: '3.000–8.000 sesiones' },
-        { label: 'Gestión requerida', value: 'Mínima' },
-        { label: 'Subtotal estimado', value: '$30.000' },
-      ],
-      howToSell:
-        'No se vende puerta a puerta: se activa en panel y complementa mientras escalas banners propios.',
     },
   ] satisfies BbxRevenueLine[],
 }
@@ -244,7 +227,7 @@ export const BBX_PRICING_LAYERS = {
     },
   ] satisfies BbxPricingLayer[],
   footnote:
-    'Los $390.000 del ejemplo de ingresos extra son plata que entra a la radio por vender Capa 2, después de pagar Capa 1.',
+    'Los $360.000 del ejemplo son ingresos referenciales por vender Capa 2 (banners + sorteos), después de pagar Capa 1. Varía según tu mercado.',
 } as const
 
 export type BbxPlanId = BbxSubscriptionPlanId
@@ -299,7 +282,7 @@ export const BBX_PLANS: BbxPlan[] = [
     nombre: 'Esencial',
     ...bbxPlanPricing('esencial'),
     color: '#40B9BF',
-    tagline: 'App propia en 48 h, sin complejidad.',
+    tagline: 'App propia en días, sin complejidad.',
     ideal: 'Radios que quieren presencia digital profesional ya.',
     detalle: 'Tu emisora con PWA instalable, reproductor al ritmo de la música y módulos de engagement básicos. Ideal para arrancar sin panel comercial.',
     features: [
@@ -348,7 +331,7 @@ export const BBX_PLANS: BbxPlan[] = [
       'Banners (4 posiciones: superior, intermedio, inferior, En Vivo)',
       'Sorteos con captura de leads',
       'Votación y pedidos de tema',
-      'Analytics en tiempo real',
+      'Oyentes en vivo y reporte de sesiones',
       'Panel admin + CMS',
     ],
     imagenes: [
@@ -371,7 +354,7 @@ export const BBX_PLANS: BbxPlan[] = [
         caption: 'Panel oyentes',
         callouts: ['En vivo ahora', 'Histórico', 'Para ventas'],
         visualNote:
-          'Dashboard con oyentes conectados, sesiones y picos. Ventas lo usa en reuniones: “Así de gente nos escucha en la app” — cierra banners con datos.',
+          'Dashboard con oyentes conectados y sesiones registradas en la app. Ventas lo usa en reuniones con datos reales del panel — no es una suite analytics externa.',
       },
     ],
   },
@@ -383,11 +366,11 @@ export const BBX_PLANS: BbxPlan[] = [
     tagline: 'Upgrade: dominio, APK y Play Store.',
     ideal: 'Cuando el cliente ya tiene Pro y quiere app en la tienda.',
     detalle:
-      'Parte desde Pro. BBX genera el APK con su marca, configura dominio propio y publica en Google Play. Incluye lanzamientos musicales y soporte prioritario. El setup cubre build, firma y puesta en tienda.',
+      'Parte desde Pro. Incluye entrega coordinada de APK firmado, dominio propio y publicación en Play Store por el equipo BBX (no es automático desde el panel). Módulo lanzamientos y soporte prioritario según contrato.',
     features: [
       'Todo Pro (PWA + monetización + admin)',
-      'Generación y publicación APK Play Store',
-      'Dominio personalizado (DNS + SSL)',
+      'APK para Play Store (build y publicación coordinada)',
+      'Dominio propio (DNS + SSL, configuración coordinada)',
       'Módulo lanzamientos musicales',
       'Soporte prioritario',
     ],
@@ -409,9 +392,9 @@ export const BBX_PLANS: BbxPlan[] = [
       {
         id: 'marca',
         caption: 'White-label',
-        callouts: ['Colores', 'Logo', 'Sin BBX visible'],
+        callouts: ['Colores', 'Logo', 'Marca de la radio'],
         visualNote:
-          'Paleta, tipografía e iconografía 100% de tu emisora. El producto no muestra BBX al oyente — parece app hecha a medida para tu radio.',
+          'Paleta, tipografía e iconografía de tu emisora. La app se ve como producto de tu radio; en despliegues Premium se ocultan referencias BBX al oyente final.',
       },
     ],
   },
@@ -423,7 +406,7 @@ export const BBX_PLAN_COMPARE = [
   { label: 'Saludos al aire', esencial: true, pro: true, premium: true },
   { label: 'Banners publicitarios', esencial: false, pro: true, premium: true },
   { label: 'Sorteos + leads', esencial: false, pro: true, premium: true },
-  { label: 'Analytics oyentes', esencial: false, pro: true, premium: true },
+  { label: 'Oyentes en vivo + reportes', esencial: false, pro: true, premium: true },
   { label: 'Dominio propio', esencial: false, pro: false, premium: true },
   { label: 'APK Play Store', esencial: false, pro: false, premium: true },
 ] as const
@@ -435,7 +418,7 @@ export const BBX_FAQ = [
   },
   {
     q: '¿Necesito publicar en App Store o Google Play?',
-    a: 'No con Pro: la PWA se instala desde el navegador y ya incluye monetización. Si el cliente quiere APK en Play Store y dominio propio, vendes el upgrade Premium y BBX hace el build y la publicación.',
+    a: 'No con Pro: la PWA se instala desde el navegador y ya incluye monetización. Si el cliente quiere APK en Play Store y dominio propio, vendes el upgrade Premium y el equipo BBX coordina build, dominio y publicación (entrega manual, no automática en panel).',
   },
   {
     q: '¿Puedo vender Pro y después pasar a Premium?',
@@ -451,7 +434,7 @@ export const BBX_FAQ = [
   },
   {
     q: '¿Hay demo antes de contratar?',
-    a: 'Sí. Configuramos una versión con tu logo y stream en 24 horas sin compromiso.',
+    a: 'Sí. Coordinamos una demo con tu logo y stream; el plazo habitual es 24–48 h según materiales y disponibilidad, sin compromiso de contratación.',
   },
   {
     q: '¿Puedo pagar anual en lugar de mensual?',

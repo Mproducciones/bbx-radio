@@ -274,9 +274,9 @@ export function PlanMockup({
             <div className="absolute bottom-0 left-0 right-0 p-3">
               <div className="grid grid-cols-3 gap-1.5">
                 {[
-                  { v: '+15K', l: 'Alcance' },
-                  { v: '847', l: 'En vivo' },
-                  { v: '12K', l: 'Impresiones' },
+                  { v: '—', l: 'Clics' },
+                  { v: '—', l: 'En vivo' },
+                  { v: '—', l: 'Impresiones' },
                 ].map(s => (
                   <div key={s.l} className="rounded-lg py-1.5 text-center backdrop-blur-sm" style={{ background: 'rgba(7,7,14,0.75)', border: `1px solid ${accent}35` }}>
                     <p className="font-display text-sm leading-none" style={{ color: accent }}>{s.v}</p>
@@ -286,7 +286,7 @@ export function PlanMockup({
               </div>
             </div>
           </div>
-          <p className="text-[8px] text-white/35 text-center py-2 px-3">Mismo reporte descargable en panel admin → Reporte mensual</p>
+          <p className="text-[8px] text-white/35 text-center py-2 px-3">Ejemplo visual · métricas reales en panel admin → Reporte mensual</p>
         </div>
       </PhoneFrame>
     )

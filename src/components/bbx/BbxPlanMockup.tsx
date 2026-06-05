@@ -149,7 +149,7 @@ export function BbxPlanMockup({
             <div className="rounded-lg px-2 py-1.5 bg-white/[0.04] text-[9px] text-white/50">WhatsApp · +56 9 …</div>
             <div className="w-full py-2 rounded-lg text-center text-[10px] font-bold" style={{ background: accent, color: '#07070e' }}>Participar</div>
           </div>
-          <p className="text-[8px] text-center text-[#00D9A0] mt-2 font-semibold">+127 registros capturados</p>
+          <p className="text-[8px] text-center text-[#00D9A0] mt-2 font-semibold">Registros exportables (ejemplo)</p>
         </div>
       </PhoneShell>
     )
@@ -157,11 +157,11 @@ export function BbxPlanMockup({
 
   if (kind === 'analytics') {
     return (
-      <PhoneShell badge={compact ? undefined : 'Analytics'} compact={frameCompact} large={large}>
+      <PhoneShell badge={compact ? undefined : 'Oyentes'} compact={frameCompact} large={large}>
         <div className="p-3">
-          <p className="text-[9px] text-white/40 mb-2">Panel · tiempo real</p>
+          <p className="text-[9px] text-white/40 mb-2">Panel admin · ejemplo visual</p>
           <div className="grid grid-cols-2 gap-1.5 mb-2">
-            {[{ v: '847', l: 'Oyentes' }, { v: '+12%', l: 'vs ayer' }].map(s => (
+            {[{ v: '—', l: 'En vivo' }, { v: '—', l: 'Sesiones' }].map(s => (
               <div key={s.l} className="rounded-lg py-2 text-center bg-white/[0.04]">
                 <p className="font-display text-lg leading-none" style={{ color: accent }}>{s.v}</p>
                 <p className="text-[7px] text-white/35">{s.l}</p>

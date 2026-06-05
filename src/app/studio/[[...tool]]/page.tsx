@@ -100,7 +100,7 @@ function SanitySetupGuide() {
           <p className="text-[#888] text-sm">
             ¿Necesitas ayuda?{' '}
             <a
-              href="https://wa.me/56990776060"
+              href="https://wa.me/56950291592"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#db8918] hover:underline"

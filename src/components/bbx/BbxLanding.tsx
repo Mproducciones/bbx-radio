@@ -216,10 +216,10 @@ function CtaSection({ demoHref, onBack }: { demoHref: string; onBack: () => void
       </p>
       <h2 className="font-display text-gradient-gold leading-tight mb-3"
         style={{ fontSize: 'clamp(1.8rem, 6vw, 3rem)' }}>
-        Tu radio digital en 48h
+        Tu radio digital profesional
       </h2>
       <p className="text-white/45 text-sm mb-6 leading-relaxed max-w-sm mx-auto">
-        Demo gratis · sin permanencia · soporte incluido
+        Implementación típica 48–72 h · demo sin compromiso · soporte incluido
       </p>
 
       <div className="flex flex-col sm:flex-row gap-2 justify-center items-stretch sm:items-center max-w-md mx-auto">

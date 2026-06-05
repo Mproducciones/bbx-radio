@@ -148,7 +148,7 @@ function SectionCta() {
       >
         <h2 className="font-display text-xl md:text-2xl mb-2">¿Digitalizamos tu radio?</h2>
         <p className="text-white/45 text-xs mb-4">
-          {BBX_CONTACT.name} · demo 24h · setup 48h
+          {BBX_CONTACT.name} · demo coordinada · setup habitual 48–72 h
         </p>
         <AccentButton
           href={bbxWhatsApp('Hola Bryan, quiero digitalizar mi radio.')}

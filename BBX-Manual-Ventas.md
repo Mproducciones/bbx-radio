@@ -29,7 +29,7 @@
 → Una web no se instala en el celular ni funciona sin internet. Una app PWA sí. ¿Cuándo actualizaron el sitio por última vez?
 
 **"Es muy caro"**
-→ Una app nativa en App Store cuesta $5–15 millones de desarrollo, más $1.000 USD/año en Apple. Acá pagas $80.000/mes y ya está lista.
+→ Una app nativa en App Store cuesta $5–15 millones de desarrollo, más $1.000 USD/año en Apple. Con BBX el plan Esencial parte en $80.000/mes + setup (ver precios oficiales en `/bbx` y `bbxSubscriptionPlans.ts`).
 
 **"No sabemos manejarlo"**
 → El panel es igual de simple que Facebook. Te capacito y quedo disponible por WhatsApp para cualquier duda.
@@ -41,14 +41,17 @@
 
 ## Planes y precios
 
+> **Fuente oficial:** `src/lib/bbxSubscriptionPlans.ts` y landing `/bbx`. Este manual debe coincidir con esa tabla.
+
 | Plan | Mensual | Setup | Incluye |
 |------|---------|-------|---------|
-| Básico | $60.000 | $80.000 | Reproductor + programación. Sin panel de contenido. |
-| Pro | $80.000 | $100.000 | Todo: noticias, eventos, replay, publicidad, panel admin. |
-| Premium | $120.000 | $150.000 | Pro + lanzamientos musicales + APK Android + dominio propio. |
+| Esencial | $80.000 | $100.000 | PWA, reproductor, programación, saludos, TV. Sin panel comercial (banners/sorteos). |
+| Pro | $120.000 | $150.000 | Todo Esencial + banners (4 posiciones), sorteos, participación, oyentes en vivo, panel admin + CMS. |
+| Premium | $160.000 | $200.000 | Todo Pro + lanzamientos, APK Play Store y dominio propio (entrega coordinada por BBX, no automática en panel). |
 
 > El setup se cobra una sola vez al contratar. El primer mes se paga junto con el setup.
 > Cancelación con 30 días de aviso, sin multa.
+> Plan anual: 10 meses de precio = 12 meses de servicio.
 
 ---
 
@@ -56,12 +59,13 @@
 
 | Radios | Plan | Ingresos | Gastos aprox. | Neto/mes |
 |--------|------|----------|---------------|----------|
-| 3 | Pro | $240.000 | ~$30.000 | **~$210.000** |
-| 5 | Pro | $400.000 | ~$35.000 | **~$365.000** |
-| 8 | Pro | $640.000 | ~$50.000 | **~$590.000** |
-| 10 | Mix | $860.000 | ~$60.000 | **~$800.000** |
+| 3 | Pro | $360.000 | ~$30.000 | **~$330.000** |
+| 5 | Pro | $600.000 | ~$35.000 | **~$565.000** |
+| 8 | Pro | $960.000 | ~$50.000 | **~$910.000** |
+| 10 | Mix | $1.200.000+ | ~$60.000 | **referencial** |
 
-> + Ingresos de setup: $100.000 por cada radio nueva (se cobra una sola vez al contratar)
+> + Ingresos de setup según plan (Esencial $100k, Pro $150k, Premium $200k), una sola vez al contratar.
+> Los ingresos de **Capa 2** (vender banners a comercios locales) son aparte y referenciales — ver `BBX_REVENUE` en la app.
 
 ---
 

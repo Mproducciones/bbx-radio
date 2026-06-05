@@ -40,7 +40,7 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
     precio: '80.000',
     color: '#40B9BF',
     tagline: 'Presencia en la app y spots en la radio',
-    features: ['Banner en la app', '4 spots al día en FM'],
+    features: ['Banner rotativo + En Vivo (inferior)', '4 spots al día en FM (cabina)'],
     idealPara: 'Negocios locales, promociones del mes y marcas que quieren empezar a probar la radio.',
     detalle:
       'Tu banner aparece en secciones clave de la PWA (incluido En Vivo bajo el reproductor) y rota con otras marcas. Los spots suenan al aire en horarios acordados con cabina.',
@@ -69,7 +69,7 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
     color: '#db8918',
     popular: true,
     tagline: 'Banner destacado + presencia flotante en la app',
-    features: ['Destacado en En Vivo', 'Banner flotante', '8 spots peak'],
+    features: ['Destacado en En Vivo', 'Banner flotante', '8 spots peak (cabina)'],
     idealPara: 'Retail, restaurantes, clínicas y campañas que buscan volumen en mañana y tarde.',
     detalle:
       'Banner con borde “Destacado” bajo el play en En Vivo, más banner flotante en Participa, Saludos y Grilla. Spots concentrados en horarios de mayor sintonía.',
@@ -104,7 +104,7 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
     precio: '250.000',
     color: '#7D59B5',
     tagline: 'Patrocinio de programa + exclusividad en app',
-    features: ['Exclusivo en app', 'Badge en grilla', '12 spots FM'],
+    features: ['Exclusivo en app', 'Badge en grilla', '12 spots FM (cabina)'],
     idealPara: 'Marcas consolidadas, cadenas, instituciones y campañas de largo plazo.',
     detalle:
       'Con “Exclusivo en app” activo, solo tu marca aparece en los banners de la PWA. Badge “Presenta: [marca]” en el bloque patrocinado de la grilla (Studio o campaña exclusiva). Spots y menciones FM las programa cabina.',
@@ -129,7 +129,7 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
         caption: 'Cobertura integral',
         callouts: ['FM 12 spots', 'App exclusiva', 'Redes (gestión)'],
         visualNote:
-          'App: banner sin rotación cuando está marcado exclusivo. FM y redes las ejecuta el equipo comercial de la radio.',
+          'En la app: banner sin rotación cuando está marcado exclusivo. Spots FM, menciones locutor y piezas en redes se coordinan con el equipo comercial — no son pantallas de la PWA.',
       },
     ],
   },
