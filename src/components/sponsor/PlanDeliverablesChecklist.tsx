@@ -8,29 +8,27 @@ export function PlanDeliverablesChecklist({ planId, color }: { planId: SponsorPl
   const items = deliverablesForPlan(planId)
 
   return (
-    <div
-      className="rounded-xl p-3 space-y-2"
-      style={{ background: `${color}0c`, border: `1px solid ${color}28` }}
+    <section
+      className="plan-deliverables"
+      style={{ '--plan-accent': color } as React.CSSProperties}
+      aria-labelledby="plan-deliverables-heading"
     >
-      <p className="text-[10px] font-black uppercase tracking-wider" style={{ color }}>
+      <h3 id="plan-deliverables-heading" className="plan-deliverables__title">
         Qué incluye este plan (verificable)
-      </p>
-      <ul className="space-y-2">
+      </h3>
+
+      <ul className="plan-deliverables__list">
         {items.map(d => (
-          <li key={d.id} className="flex gap-2 text-[11px] leading-snug">
-            <span className="shrink-0 w-4 text-center" aria-hidden>
+          <li key={d.id} className="plan-deliverables__item">
+            <span className="plan-deliverables__mark" aria-hidden>
               {d.inApp ? '✓' : '○'}
             </span>
-            <div className="min-w-0 flex-1">
-              <span className="text-white/75">{d.label}</span>
-              <span className="text-white/35 ml-1">· {channelLabel(d.channel)}</span>
-              {d.note && <p className="text-white/30 text-[10px] mt-0.5">{d.note}</p>}
+            <div className="plan-deliverables__copy">
+              <p className="plan-deliverables__label">{d.label}</p>
+              <p className="plan-deliverables__channel">{channelLabel(d.channel)}</p>
+              {d.note && <p className="plan-deliverables__note">{d.note}</p>}
               {d.inApp && d.previewHref && (
-                <Link
-                  href={d.previewHref}
-                  className="inline-block mt-1 text-[10px] font-bold underline"
-                  style={{ color }}
-                >
+                <Link href={d.previewHref} className="plan-deliverables__link">
                   Ver en la app
                 </Link>
               )}
@@ -38,9 +36,10 @@ export function PlanDeliverablesChecklist({ planId, color }: { planId: SponsorPl
           </li>
         ))}
       </ul>
-      <p className="text-[9px] text-white/30 pt-1 border-t border-white/[0.06]">
+
+      <p className="plan-deliverables__legend">
         ✓ = visible en la PWA · ○ = radio o gestión comercial (no es pantalla de la app)
       </p>
-    </div>
+    </section>
   )
 }

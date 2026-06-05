@@ -11,7 +11,6 @@ import { sponsorWaLink } from '@/lib/sponsorContent'
 import { VisualSchemaFrame } from '@/components/shared/VisualSchemaFrame'
 import { SheetPortal } from '@/components/shared/SheetPortal'
 import { ProWaButton } from '@/components/shared/ProWaButton'
-import { PlanIncludesDisclosure } from '@/components/shared/PlanIncludesDisclosure'
 import { PlanDeliverablesChecklist } from '@/components/sponsor/PlanDeliverablesChecklist'
 
 interface PlanDetailSheetProps {
@@ -21,7 +20,6 @@ interface PlanDetailSheetProps {
 
 export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
   const [activeIdx, setActiveIdx] = useState(0)
-  const [showList, setShowList] = useState(false)
 
   useEffect(() => {
     if (!plan) {
@@ -29,7 +27,6 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
       return
     }
     setActiveIdx(0)
-    setShowList(false)
     document.body.dataset.sheetOpen = 'true'
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -156,12 +153,6 @@ export function PlanDetailSheet({ plan, onClose }: PlanDetailSheetProps) {
 
                 <div className="plan-detail-sheet__extras">
                   <PlanDeliverablesChecklist planId={plan.id} color={plan.color} />
-                  <PlanIncludesDisclosure
-                    items={plan.incluye}
-                    accent={plan.color}
-                    showList={showList}
-                    onToggle={() => setShowList(v => !v)}
-                  />
                 </div>
               </div>
 
