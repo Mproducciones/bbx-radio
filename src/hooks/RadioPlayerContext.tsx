@@ -112,6 +112,10 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const wantsPlayRef = useRef(true)
   const userPausedRef = useRef(false)
   const pausedForTvRef = useRef(false)
+  const isTvOpenRef = useRef(false)
+  const onTvPathRef = useRef(false)
+  const wasPlayingBeforeTvRef = useRef(false)
+  const resumeAfterTvTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const startHeartbeat = useCallback(() => {
     if (heartbeatRef.current) return
@@ -127,11 +131,27 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     pingListener('leave')
   }, [])
 
+  const isTvAudioActive = useCallback(() => {
+    return isTvOpenRef.current || onTvPathRef.current
+  }, [])
+
   const shouldAutoPlay = useCallback(() => {
     return wantsPlayRef.current
       && !userPausedRef.current
-      && !isTvPath(pathnameRef.current)
-      && !pausedForTvRef.current
+      && !isTvAudioActive()
+  }, [isTvAudioActive])
+
+  const capturePlayingBeforeTv = useCallback(() => {
+    const audio = audioRef.current
+    wasPlayingBeforeTvRef.current =
+      !userPausedRef.current && !!(audio && !audio.paused)
+  }, [])
+
+  const clearResumeAfterTvTimer = useCallback(() => {
+    if (resumeAfterTvTimerRef.current) {
+      clearTimeout(resumeAfterTvTimerRef.current)
+      resumeAfterTvTimerRef.current = null
+    }
   }, [])
 
   const play = useCallback(async () => {
@@ -173,6 +193,18 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const playRef = useRef(play)
   playRef.current = play
 
+  const scheduleRadioResumeAfterTv = useCallback(() => {
+    clearResumeAfterTvTimer()
+    if (isTvAudioActive() || userPausedRef.current || !wasPlayingBeforeTvRef.current) return
+
+    resumeAfterTvTimerRef.current = setTimeout(() => {
+      resumeAfterTvTimerRef.current = null
+      if (isTvAudioActive() || userPausedRef.current || !wasPlayingBeforeTvRef.current) return
+      pausedForTvRef.current = false
+      if (shouldAutoPlay()) void playRef.current()
+    }, 220)
+  }, [clearResumeAfterTvTimer, isTvAudioActive, shouldAutoPlay])
+
   const pauseStream = useCallback(() => {
     audioRef.current?.pause()
     setIsPlaying(false)
@@ -187,14 +219,9 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   const pauseForTv = useCallback(() => {
     pausedForTvRef.current = true
+    clearResumeAfterTvTimer()
     pauseStream()
-  }, [pauseStream])
-
-  const resumeAfterTv = useCallback(() => {
-    pausedForTvRef.current = false
-    setIsTvOpen(false)
-    if (shouldAutoPlay()) void playRef.current()
-  }, [shouldAutoPlay])
+  }, [pauseStream, clearResumeAfterTvTimer])
 
   const milestone = useListeningMilestone(isPlaying)
 
@@ -258,6 +285,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('canplay', onCanPlay)
       document.removeEventListener('visibilitychange', onVisible)
+      clearResumeAfterTvTimer()
       audio.pause()
       audio.src = ''
       stopHeartbeat()
@@ -267,12 +295,18 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const onTv = isTvPath(pathname)
+    onTvPathRef.current = onTv
+
     if (onTv) {
+      if (!pausedForTvRef.current) capturePlayingBeforeTv()
       pauseForTv()
-    } else if (pausedForTvRef.current) {
-      resumeAfterTv()
+      return
     }
-  }, [pathname, pauseForTv, resumeAfterTv])
+
+    if (pausedForTvRef.current && !isTvOpenRef.current) {
+      scheduleRadioResumeAfterTv()
+    }
+  }, [pathname, pauseForTv, capturePlayingBeforeTv, scheduleRadioResumeAfterTv])
 
   const toggle = useCallback(() => {
     if (isPlaying) pause()
@@ -287,13 +321,17 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const closeConcert = useCallback(() => setIsConcertMode(false), [])
 
   const openTv = useCallback(() => {
-    setIsTvOpen(true)
+    capturePlayingBeforeTv()
     pauseForTv()
-  }, [pauseForTv])
+    isTvOpenRef.current = true
+    setIsTvOpen(true)
+  }, [capturePlayingBeforeTv, pauseForTv])
 
   const closeTv = useCallback(() => {
-    resumeAfterTv()
-  }, [resumeAfterTv])
+    isTvOpenRef.current = false
+    setIsTvOpen(false)
+    if (!onTvPathRef.current) scheduleRadioResumeAfterTv()
+  }, [scheduleRadioResumeAfterTv])
 
   return (
     <RadioPlayerContext.Provider value={{ isPlaying, isLoading, hasError, needsTapToPlay, analyser: DIRECT_PLAYBACK_ANALYSER, isTvOpen, isConcertMode, openTv, closeTv, play, pause, toggle, openConcert, closeConcert }}>

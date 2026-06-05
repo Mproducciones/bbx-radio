@@ -52,8 +52,11 @@ export function useTvHls(shouldPlay = true) {
 
     if (!shouldPlay) {
       video.pause()
+      video.muted = true
       return
     }
+
+    video.muted = muted
 
     const tryPlay = async () => {
       try {
@@ -70,6 +73,11 @@ export function useTvHls(shouldPlay = true) {
     }
 
     void tryPlay()
+
+    return () => {
+      video.pause()
+      video.muted = true
+    }
   }, [shouldPlay, muted])
 
   const toggleMute = () => {

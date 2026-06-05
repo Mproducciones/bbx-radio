@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Maximize2, Volume2, VolumeX, X } from 'lucide-react'
 import { RADIO } from '@/lib/radioConfig'
 import { useTvHls } from '@/hooks/useTvHls'
+import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { FEATURES } from '@/lib/plan'
 
 interface BienvenidaTVProps {
@@ -19,7 +20,9 @@ export function BienvenidaTV({
   onClose,
 }: BienvenidaTVProps) {
   const isOverlay = variant === 'overlay'
-  const { videoRef, state, setState, muted, toggleMute, retry } = useTvHls(shouldPlay)
+  const { isTvOpen } = useRadioPlayerContext()
+  const tvShouldPlay = isOverlay ? isTvOpen : shouldPlay
+  const { videoRef, state, setState, muted, toggleMute, retry } = useTvHls(tvShouldPlay)
 
   const enterFullscreen = useCallback(() => {
     const video = videoRef.current

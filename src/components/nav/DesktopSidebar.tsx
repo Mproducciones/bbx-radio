@@ -50,7 +50,7 @@ export function DesktopSidebar() {
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin')) return null
 
   const handleToggle = () => {
-    if (isTvOpen) { closeTv(); play(); return }
+    if (isTvOpen) { closeTv(); return }
     toggle()
   }
 
