@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
+import type { ComponentType } from 'react'
 import { APP_PRIMARY_NAV_ROUTES } from '@/lib/appNavRoutes'
 import { useAppMoreActive } from '@/components/nav/AppMoreSheet'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
@@ -10,12 +11,12 @@ import { FEATURES } from '@/lib/plan'
 
 const TAB_META: Record<
   string,
-  { label: string; shortLabel?: string; icon: React.ComponentType<{ className?: string }> }
+  { label: string; shortLabel?: string; icon: ComponentType<{ className?: string }> }
 > = {
-  '/':             { label: 'En Vivo',      shortLabel: 'En Vivo',  icon: LiveIcon },
-  '/programacion': { label: 'Programación', shortLabel: 'Grilla',   icon: ScheduleIcon },
+  '/':             { label: 'En Vivo',      shortLabel: 'En Vivo',   icon: LiveIcon },
+  '/programacion': { label: 'Programación', shortLabel: 'Grilla',    icon: ScheduleIcon },
   '/participa':    { label: 'Participa',    shortLabel: 'Participa', icon: ParticipaIcon },
-  '/saludos':      { label: 'Saludos',      shortLabel: 'Saludos',  icon: SaludosIcon },
+  '/saludos':      { label: 'Saludos',      shortLabel: 'Saludos',   icon: SaludosIcon },
 }
 
 const TABS = APP_PRIMARY_NAV_ROUTES.map(href => ({
@@ -24,12 +25,44 @@ const TABS = APP_PRIMARY_NAV_ROUTES.map(href => ({
   icon: TAB_META[href].icon,
 }))
 
+const TAB_CLASS =
+  'app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0'
+
+function NavTabContent({
+  active,
+  label,
+  icon: Icon,
+  layoutId,
+}: {
+  active: boolean
+  label: string
+  icon: ComponentType<{ className?: string }>
+  layoutId: string
+}) {
+  return (
+    <>
+      {active && (
+        <motion.div
+          layoutId={layoutId}
+          className="app-bottom-nav__pill"
+          transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+        />
+      )}
+      <div className="relative flex flex-col items-center gap-0.5 px-0.5">
+        <Icon className="w-[17px] h-[17px] flex-shrink-0" />
+        <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide truncate max-w-full">
+          {label}
+        </span>
+      </div>
+    </>
+  )
+}
+
 export function BottomNav({
   onMoreOpen,
   onNavInteract,
 }: {
   onMoreOpen?: () => void
-  /** Cierra overlays al cambiar de pestaña (p. ej. sheet Más). */
   onNavInteract?: () => void
 }) {
   const pathname = usePathname()
@@ -58,23 +91,11 @@ export function BottomNav({
               key={href}
               href={href}
               onClick={onNavInteract}
-              className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+              className={TAB_CLASS}
               style={{ color: isActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
+              aria-current={isActive ? 'page' : undefined}
             >
-              {isActive && (
-                <motion.div
-                  layoutId="nav-tab-pill"
-                  className="absolute inset-1 rounded-xl"
-                  style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-                />
-              )}
-              <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-                <Icon className="w-[17px] h-[17px] flex-shrink-0" />
-                <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide truncate max-w-full">
-                  {label}
-                </span>
-              </div>
+              <NavTabContent active={isActive} label={label} icon={Icon} layoutId="nav-tab-pill" />
             </Link>
           )
         })}
@@ -82,46 +103,24 @@ export function BottomNav({
         <button
           type="button"
           onClick={() => { onNavInteract?.(); openTv() }}
-          className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+          className={TAB_CLASS}
           style={{ color: tvActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
           aria-label="Bienvenida TV en vivo"
           aria-pressed={isTvOpen}
         >
-          {tvActive && (
-            <motion.div
-              layoutId="nav-tv-pill"
-              className="absolute inset-1 rounded-xl"
-              style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
-              transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-            />
-          )}
-          <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-            <TvNavIcon className="w-[17px] h-[17px] flex-shrink-0" />
-            <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide">TV</span>
-          </div>
+          <NavTabContent active={tvActive} label="TV" icon={TvNavIcon} layoutId="nav-tv-pill" />
         </button>
 
         {FEATURES.publicidad && (
           <button
             type="button"
             onClick={() => onMoreOpen?.()}
-            className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+            className={TAB_CLASS}
             style={{ color: moreActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
             aria-label="Publicidad y patrocinadores"
             aria-haspopup="dialog"
           >
-            {moreActive && (
-              <motion.div
-                layoutId="nav-more-pill"
-                className="absolute inset-1 rounded-xl"
-                style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
-                transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-              />
-            )}
-            <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-              <MoreNavIcon className="w-[17px] h-[17px] flex-shrink-0" />
-              <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide">Más</span>
-            </div>
+            <NavTabContent active={moreActive} label="Más" icon={MoreNavIcon} layoutId="nav-more-pill" />
           </button>
         )}
       </div>

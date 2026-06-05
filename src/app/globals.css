@@ -337,6 +337,38 @@ body {
     box-sizing: border-box;
   }
 
+  /* Mismo aspecto para Link y button — evita caja gris/blanca nativa en TV y Más */
+  .app-bottom-nav a.app-bottom-nav__tab,
+  .app-bottom-nav button.app-bottom-nav__tab {
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    line-height: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+  }
+
+  .app-bottom-nav__tab:focus-visible {
+    outline: 2px solid rgba(219, 137, 24, 0.45);
+    outline-offset: 2px;
+  }
+
+  .app-bottom-nav__pill {
+    position: absolute;
+    inset: 0.2rem;
+    border-radius: 0.75rem;
+    background: rgba(219, 137, 24, 0.1);
+    border: 1px solid rgba(219, 137, 24, 0.18);
+    pointer-events: none;
+  }
+
   .app-bottom-nav--six .app-bottom-nav__label {
     font-size: 0.5rem;
     letter-spacing: 0.02em;
