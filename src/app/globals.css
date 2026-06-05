@@ -2369,6 +2369,31 @@ body {
   border-color: rgba(219, 137, 24, 0.28);
 }
 
+.nav-more-sheet__item--featured {
+  border-color: rgba(219, 137, 24, 0.38);
+  background: rgba(219, 137, 24, 0.08);
+}
+
+.anunciate-discover {
+  border: 1px solid rgba(219, 137, 24, 0.28);
+  background: rgba(219, 137, 24, 0.06);
+}
+
+.anunciate-discover__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.55rem;
+  color: var(--color-mag-400);
+  background: rgba(219, 137, 24, 0.12);
+}
+
+.anunciate-discover__cta {
+  color: var(--color-mag-400);
+}
+
 .nav-more-sheet__icon {
   font-size: 1.35rem;
   line-height: 1;

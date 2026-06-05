@@ -10,6 +10,7 @@ import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { EASE_OUT } from '@/lib/motion/framer'
 import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
+import { AnunciateDiscoverBanner } from '@/components/ads/AnunciateDiscoverBanner'
 import { NotificationsInbox } from '@/components/notifications/NotificationsInbox'
 import { PlayTapHint } from '@/components/player/PlayTapHint'
 import { FEATURES } from '@/lib/plan'
@@ -52,6 +53,8 @@ export function HomePageClient() {
         </motion.div>
 
         <PlayTapHint />
+
+        <AnunciateDiscoverBanner className="mb-2" />
 
         <ClientOnly
           fallback={
