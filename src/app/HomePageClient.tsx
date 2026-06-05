@@ -13,6 +13,7 @@ import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
 import { AnunciateDiscoverBanner } from '@/components/ads/AnunciateDiscoverBanner'
 import { NotificationsInbox } from '@/components/notifications/NotificationsInbox'
 import { PlayTapHint } from '@/components/player/PlayTapHint'
+import { EnVivoTvButton } from '@/components/tv/EnVivoTvButton'
 import { FEATURES } from '@/lib/plan'
 
 export function HomePageClient() {
@@ -37,6 +38,7 @@ export function HomePageClient() {
             <p className="text-white/40 text-[11px] mt-1 font-medium truncate">{RADIO.slogan}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <EnVivoTvButton />
             <NotificationsInbox />
             <BbxFrequencyGate
               className="font-display text-sm leading-none px-2.5 py-1.5 rounded-full shrink-0 active:scale-95 transition-transform"

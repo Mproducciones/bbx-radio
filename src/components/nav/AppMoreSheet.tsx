@@ -11,10 +11,10 @@ import { RADIO } from '@/lib/radioConfig'
 interface AppMoreSheetProps {
   open: boolean
   onClose: () => void
-  onOpenTv: () => void
 }
 
-export function AppMoreSheet({ open, onClose, onOpenTv }: AppMoreSheetProps) {
+/** Publicidad y patrocinadores — TV tiene botón propio en el menú inferior. */
+export function AppMoreSheet({ open, onClose }: AppMoreSheetProps) {
   const pathname = usePathname()
 
   useEffect(() => {
@@ -23,6 +23,8 @@ export function AppMoreSheet({ open, onClose, onOpenTv }: AppMoreSheetProps) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
+
+  if (!FEATURES.publicidad) return null
 
   return (
     <SheetPortal>
@@ -41,7 +43,7 @@ export function AppMoreSheet({ open, onClose, onOpenTv }: AppMoreSheetProps) {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Más opciones"
+              aria-label="Publicidad y más"
               className="nav-more-sheet fixed z-[1091] left-0 right-0 mx-auto w-full max-w-lg"
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
@@ -50,51 +52,36 @@ export function AppMoreSheet({ open, onClose, onOpenTv }: AppMoreSheetProps) {
             >
               <div className="nav-more-sheet__handle" aria-hidden />
               <header className="nav-more-sheet__header">
-                <h2 className="nav-more-sheet__title">Más</h2>
+                <h2 className="nav-more-sheet__title">Publicidad</h2>
                 <button type="button" onClick={onClose} className="nav-more-sheet__close" aria-label="Cerrar">
                   ✕
                 </button>
               </header>
               <nav className="nav-more-sheet__list">
-                {FEATURES.publicidad && (
-                  <Link
-                    href="/anunciate"
-                    onClick={onClose}
-                    className={`nav-more-sheet__item nav-more-sheet__item--featured ${pathname.startsWith('/anunciate') ? 'is-active' : ''}`}
-                  >
-                    <span className="nav-more-sheet__icon" aria-hidden>📣</span>
-                    <span className="min-w-0 flex-1">
-                      <span className="nav-more-sheet__label">Anunciate aquí</span>
-                      <span className="nav-more-sheet__desc">
-                        Promociona tu negocio en {RADIO.frequency} y en la app · planes desde $80.000
-                      </span>
-                    </span>
-                  </Link>
-                )}
-                <button
-                  type="button"
-                  onClick={() => { onClose(); onOpenTv() }}
-                  className="nav-more-sheet__item w-full text-left"
+                <Link
+                  href="/anunciate"
+                  onClick={onClose}
+                  className={`nav-more-sheet__item nav-more-sheet__item--featured ${pathname.startsWith('/anunciate') ? 'is-active' : ''}`}
                 >
-                  <span className="nav-more-sheet__icon" aria-hidden>📺</span>
+                  <span className="nav-more-sheet__icon" aria-hidden>📣</span>
                   <span className="min-w-0 flex-1">
-                    <span className="nav-more-sheet__label">Bienvenida TV</span>
-                    <span className="nav-more-sheet__desc">Señal de televisión en vivo · pantalla completa</span>
-                  </span>
-                </button>
-                {FEATURES.publicidad && (
-                  <Link
-                    href="/patrocinadores"
-                    onClick={onClose}
-                    className={`nav-more-sheet__item ${pathname.startsWith('/patrocinadores') ? 'is-active' : ''}`}
-                  >
-                    <span className="nav-more-sheet__icon" aria-hidden>⭐</span>
-                    <span className="min-w-0 flex-1">
-                      <span className="nav-more-sheet__label">Patrocinadores</span>
-                      <span className="nav-more-sheet__desc">Marcas que ya anuncian en la radio</span>
+                    <span className="nav-more-sheet__label">Anunciate aquí</span>
+                    <span className="nav-more-sheet__desc">
+                      Promociona tu negocio en {RADIO.frequency} y en la app · planes desde $80.000
                     </span>
-                  </Link>
-                )}
+                  </span>
+                </Link>
+                <Link
+                  href="/patrocinadores"
+                  onClick={onClose}
+                  className={`nav-more-sheet__item ${pathname.startsWith('/patrocinadores') ? 'is-active' : ''}`}
+                >
+                  <span className="nav-more-sheet__icon" aria-hidden>⭐</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="nav-more-sheet__label">Patrocinadores</span>
+                    <span className="nav-more-sheet__desc">Marcas que ya anuncian en la radio</span>
+                  </span>
+                </Link>
               </nav>
             </motion.div>
           </>
@@ -104,11 +91,6 @@ export function AppMoreSheet({ open, onClose, onOpenTv }: AppMoreSheetProps) {
   )
 }
 
-export function useAppMoreActive(pathname: string, isTvOpen: boolean): boolean {
-  return (
-    isTvOpen
-    || pathname.startsWith('/anunciate')
-    || pathname.startsWith('/patrocinadores')
-    || pathname.startsWith('/tv')
-  )
+export function useAppMoreActive(pathname: string): boolean {
+  return pathname.startsWith('/anunciate') || pathname.startsWith('/patrocinadores')
 }

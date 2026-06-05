@@ -337,6 +337,23 @@ body {
     box-sizing: border-box;
   }
 
+  .app-bottom-nav--six .app-bottom-nav__label {
+    font-size: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .envivo-tv-btn {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .envivo-tv-btn[aria-pressed='true'] {
+    color: var(--color-mag-400);
+    border-color: rgba(219, 137, 24, 0.35);
+    background: rgba(219, 137, 24, 0.12);
+  }
+
   .app-mobile-shell > [aria-hidden='true'] {
     clip-path: inset(0);
     overflow: hidden;

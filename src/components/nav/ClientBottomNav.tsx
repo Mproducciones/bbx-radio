@@ -2,16 +2,18 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { BottomNav } from './BottomNav'
 import { AppMoreSheet } from './AppMoreSheet'
 import { TvLiveOverlay } from '@/components/tv/TvLiveOverlay'
 
 export function ClientBottomNav() {
   const pathname = usePathname()
-  const { openTv } = useRadioPlayerContext()
   const [planSheetOpen, setPlanSheetOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+
+  useEffect(() => {
+    setMoreOpen(false)
+  }, [pathname])
 
   useEffect(() => {
     const sync = () => setPlanSheetOpen(document.body.dataset.planSheetOpen === 'true')
@@ -27,12 +29,11 @@ export function ClientBottomNav() {
 
   return (
     <>
-      <BottomNav onMoreOpen={() => setMoreOpen(true)} />
-      <AppMoreSheet
-        open={moreOpen}
-        onClose={() => setMoreOpen(false)}
-        onOpenTv={openTv}
+      <BottomNav
+        onMoreOpen={() => setMoreOpen(true)}
+        onNavInteract={() => setMoreOpen(false)}
       />
+      <AppMoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
       <TvLiveOverlay />
     </>
   )

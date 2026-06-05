@@ -6,77 +6,108 @@ import { motion } from 'framer-motion'
 import { APP_PRIMARY_NAV_ROUTES } from '@/lib/appNavRoutes'
 import { useAppMoreActive } from '@/components/nav/AppMoreSheet'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
+import { FEATURES } from '@/lib/plan'
 
 const TAB_META: Record<
   string,
-  { label: string; icon: React.ComponentType<{ className?: string }> }
+  { label: string; shortLabel?: string; icon: React.ComponentType<{ className?: string }> }
 > = {
-  '/':             { label: 'En Vivo',       icon: LiveIcon },
-  '/programacion': { label: 'Programación',  icon: ScheduleIcon },
-  '/participa':    { label: 'Participa',     icon: ParticipaIcon },
-  '/saludos':      { label: 'Saludos',       icon: SaludosIcon },
+  '/':             { label: 'En Vivo',      shortLabel: 'En Vivo',  icon: LiveIcon },
+  '/programacion': { label: 'Programación', shortLabel: 'Grilla',   icon: ScheduleIcon },
+  '/participa':    { label: 'Participa',    shortLabel: 'Participa', icon: ParticipaIcon },
+  '/saludos':      { label: 'Saludos',      shortLabel: 'Saludos',  icon: SaludosIcon },
 }
 
 const TABS = APP_PRIMARY_NAV_ROUTES.map(href => ({
   href,
-  label: TAB_META[href].label,
+  label: TAB_META[href].shortLabel ?? TAB_META[href].label,
   icon: TAB_META[href].icon,
 }))
 
-export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
+export function BottomNav({
+  onMoreOpen,
+  onNavInteract,
+}: {
+  onMoreOpen?: () => void
+  /** Cierra overlays al cambiar de pestaña (p. ej. sheet Más). */
+  onNavInteract?: () => void
+}) {
   const pathname = usePathname()
-  const { isTvOpen } = useRadioPlayerContext()
-  const moreActive = useAppMoreActive(pathname, isTvOpen)
+  const { openTv, isTvOpen } = useRadioPlayerContext()
+  const moreActive = useAppMoreActive(pathname)
+  const tvActive = isTvOpen || pathname.startsWith('/tv')
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
 
   return (
-    <>
-      <nav
-        className="app-bottom-nav shrink-0 w-full min-w-0 z-[1000] md:hidden border-t border-white/[0.06] overflow-hidden"
-        style={{
-          paddingBottom: 'var(--app-safe-bottom)',
-          background: 'rgba(7,7,14,0.92)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-        }}
-      >
-        <div className="app-bottom-nav__inner px-1.5 flex items-center h-[var(--app-nav-h)] overflow-x-hidden min-w-0 gap-0.5">
-          {TABS.map(({ href, label, icon: Icon }) => {
-            const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+    <nav
+      className="app-bottom-nav app-bottom-nav--six shrink-0 w-full min-w-0 z-[1000] md:hidden border-t border-white/[0.06] overflow-hidden"
+      style={{
+        paddingBottom: 'var(--app-safe-bottom)',
+        background: 'rgba(7,7,14,0.92)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+      }}
+    >
+      <div className="app-bottom-nav__inner px-1 flex items-center h-[var(--app-nav-h)] overflow-x-hidden min-w-0 gap-0">
+        {TABS.map(({ href, label, icon: Icon }) => {
+          const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 
-            return (
-              <Link
-                key={href}
-                href={href}
-                className="flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
-                style={{ color: isActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="nav-tab-pill"
-                    className="absolute inset-1 rounded-xl"
-                    style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-                  />
-                )}
+          return (
+            <Link
+              key={href}
+              href={href}
+              onClick={onNavInteract}
+              className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+              style={{ color: isActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="nav-tab-pill"
+                  className="absolute inset-1 rounded-xl"
+                  style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                />
+              )}
+              <div className="relative flex flex-col items-center gap-0.5 px-0.5">
+                <Icon className="w-[17px] h-[17px] flex-shrink-0" />
+                <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide truncate max-w-full">
+                  {label}
+                </span>
+              </div>
+            </Link>
+          )
+        })}
 
-                <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-                  <Icon className="w-[18px] h-[18px] flex-shrink-0" />
-                  <span className="text-[9px] font-semibold leading-none tracking-wide truncate max-w-full">
-                    {label}
-                  </span>
-                </div>
-              </Link>
-            )
-          })}
+        <button
+          type="button"
+          onClick={() => { onNavInteract?.(); openTv() }}
+          className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+          style={{ color: tvActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
+          aria-label="Bienvenida TV en vivo"
+          aria-pressed={isTvOpen}
+        >
+          {tvActive && (
+            <motion.div
+              layoutId="nav-tv-pill"
+              className="absolute inset-1 rounded-xl"
+              style={{ background: 'rgba(219,137,24,0.1)', border: '1px solid rgba(219,137,24,0.18)' }}
+              transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+            />
+          )}
+          <div className="relative flex flex-col items-center gap-0.5 px-0.5">
+            <TvNavIcon className="w-[17px] h-[17px] flex-shrink-0" />
+            <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide">TV</span>
+          </div>
+        </button>
 
+        {FEATURES.publicidad && (
           <button
             type="button"
             onClick={() => onMoreOpen?.()}
-            className="flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
+            className="app-bottom-nav__tab flex-1 flex flex-col items-center justify-center relative py-1.5 rounded-xl transition-colors min-w-0"
             style={{ color: moreActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
-            aria-label="Más opciones: anunciate, TV y patrocinadores"
+            aria-label="Publicidad y patrocinadores"
             aria-haspopup="dialog"
           >
             {moreActive && (
@@ -88,13 +119,21 @@ export function BottomNav({ onMoreOpen }: { onMoreOpen?: () => void }) {
               />
             )}
             <div className="relative flex flex-col items-center gap-0.5 px-0.5">
-              <MoreNavIcon className="w-[18px] h-[18px] flex-shrink-0" />
-              <span className="text-[9px] font-semibold leading-none tracking-wide">Más</span>
+              <MoreNavIcon className="w-[17px] h-[17px] flex-shrink-0" />
+              <span className="app-bottom-nav__label text-[8px] font-semibold leading-none tracking-wide">Más</span>
             </div>
           </button>
-        </div>
-      </nav>
-    </>
+        )}
+      </div>
+    </nav>
+  )
+}
+
+function TvNavIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z" />
+    </svg>
   )
 }
 
