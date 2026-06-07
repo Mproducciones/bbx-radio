@@ -1,4 +1,5 @@
 import type { SponsorPlanId } from '@/lib/sponsorPlans'
+import { EN_VIVO_AD_POLICY, enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 /** Tipos de banner en Sanity (`publicidad.tipo`). */
 export type AdBannerTipo =
@@ -35,11 +36,21 @@ export const AD_PLACEMENTS: Record<
     nota: 'Zona central del feed; ideal para plan Básico.',
   },
   banner_inferior: {
-    pantallas: ['Saludos', 'Programación (abajo)'],
-    componente: 'RotatingBanner position=bottom',
-    nota: 'Antes del menú inferior; buen complemento Básico.',
+    pantallas: ['Saludos', 'Programación (abajo)', 'En Vivo (intervalos)'],
+    componente: 'RotatingBanner position=bottom · EnVivoAdSlot',
+    nota: 'En En Vivo aparece por intervalos (plan Básico). Rota cada ~6–8 s en otras pantallas.',
   },
 }
+
+export const EN_VIVO_AD_PLACEMENT = {
+  componente: 'EnVivoAdSlot',
+  politica: EN_VIVO_AD_POLICY,
+  porPlan: {
+    basico: enVivoAdSalesLine('standard'),
+    premium: enVivoAdSalesLine('highlighted'),
+    empresarial: enVivoAdSalesLine('exclusive'),
+  },
+} as const
 
 export type AdPlanRule = {
   id: SponsorPlanId
@@ -69,6 +80,7 @@ export const AD_PLAN_RULES: AdPlanRule[] = [
       'Subir imagen (800×120 px aprox.) o URL + tagline + enlace WhatsApp/web.',
       'Fechas inicio/fin = mes contratado. Prioridad 3–5 si comparte espacio.',
       'NO usar banner_premium (reservado Premium/Empresarial).',
+      `En Vivo: ${enVivoAdSalesLine('standard')}.`,
     ],
     gestionFm: [
       'Programar 4 pases en la parrilla (no se administra desde la app).',
@@ -90,6 +102,7 @@ export const AD_PLAN_RULES: AdPlanRule[] = [
       'Crear campaña banner_premium con prioridad ≥ 8 (gana rotación flotante).',
       'Opcional: segunda campaña intermedio/superior con misma marca.',
       'colorAccent = color del cliente (borde y badge “Patrocinador”).',
+      `En Vivo: ${enVivoAdSalesLine('highlighted')}.`,
     ],
     gestionFm: [
       'Cuadrar 8 pases en franjas 07–10, 13–15, 18–21 con producción.',
@@ -97,6 +110,7 @@ export const AD_PLAN_RULES: AdPlanRule[] = [
     alertas: [
       'Si hay 2 premium activos, gana el de mayor prioridad.',
       'Banner flotante no aparece en En Vivo (no tapa el play).',
+      EN_VIVO_AD_POLICY,
     ],
   },
   {
@@ -111,14 +125,15 @@ export const AD_PLAN_RULES: AdPlanRule[] = [
       'Studio → Publicidad: plan “Empresarial”, prioridad ≥ 10, activar “Exclusivo en app”.',
       'Misma marca en todos los tipos de banner (opcional); la app oculta a otros anunciantes mientras dure.',
       'Studio → Programa del bloque (ej. Matinal): patrocinador + color, o se toma de la campaña exclusiva.',
-      'Comprobar en /, /participa, /programacion y /patrocinadores antes de entregar al cliente.',
+      'Comprobar en /, /participa, /programacion y /anunciate antes de entregar al cliente.',
+      `En Vivo: ${enVivoAdSalesLine('exclusive')}.`,
     ],
     gestionFm: [
       'Bloque fijo en parrilla + menciones conductor + 12 pases distribuidos.',
     ],
     alertas: [
       'Semana exclusiva = pausar otros premium o bajar su prioridad.',
-      'Revisar /patrocinadores: agrupa por cliente automáticamente.',
+      EN_VIVO_AD_POLICY,
     ],
   },
 ]

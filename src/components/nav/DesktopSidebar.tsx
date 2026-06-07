@@ -26,8 +26,7 @@ const ALL_NAV_ITEMS = [
   { href: '/noticias',      label: 'Noticias',        icon: NewsIcon,      show: FEATURES.noticias },
   { href: '/eventos',       label: 'Eventos',         icon: EventsIcon,    show: FEATURES.eventos },
   { href: '/replay',        label: 'Archivo',         icon: ReplayIcon,    show: FEATURES.replay },
-  { href: '/anunciate',     label: 'Publicidad',      icon: BusinessIcon,  show: FEATURES.publicidad },
-  { href: '/patrocinadores', label: 'Patrocinadores', icon: SponsorsIcon,  show: FEATURES.publicidad },
+  { href: '/anunciate',     label: 'Anunciate',       icon: BusinessIcon,  show: FEATURES.publicidad },
   { href: '/lanzamientos',  label: 'Lanzamientos',    icon: ReleasesIcon,  show: FEATURES.lanzamientos },
 ]
 
@@ -189,14 +188,6 @@ function BusinessIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.47 0 12.36 0c-1.73 0-3.24.87-4.36 2.18L6 5H4c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7.64-3.28C12.58 1.49 13.42 1 14.36 1c1.67 0 3 1.33 3 3 0 .47-.1.92-.26 1.32-.04.1-.12.36-.1.68H9.39c.01-.29-.08-.57-.16-.71C9 4.9 9 4.45 9 4c0-.66.31-1.26.79-1.71.17-.16.37-.3.57-.57zM20 20H4V8h16v12z" />
-    </svg>
-  )
-}
-
-function SponsorsIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L6 21l2.3-7-6-4.6h7.6L12 2z" />
     </svg>
   )
 }

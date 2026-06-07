@@ -2094,11 +2094,6 @@ body {
   isolation: isolate;
 }
 
-.envivo-ad-slot--reserved {
-  min-height: 4.5rem;
-  max-height: 4.5rem;
-}
-
 .premium-ad-fixed {
   contain: layout style paint;
   pointer-events: none;

@@ -1,6 +1,6 @@
 import { FEATURES } from '@/lib/plan'
 
-/** Bottom nav principal (4 tabs + botón Más) */
+/** Bottom nav principal (4 tabs + TV + Anunciate) */
 export const APP_PRIMARY_NAV_ROUTES = [
   '/',
   '/programacion',
@@ -8,7 +8,7 @@ export const APP_PRIMARY_NAV_ROUTES = [
   '/saludos',
 ] as const
 
-/** Rutas secundarias vinculadas al botón Más (TV se abre como overlay, no como página) */
+/** Rutas secundarias del bottom nav (Anunciate) */
 export const APP_MORE_NAV_ROUTES = [
   ...(FEATURES.publicidad ? (['/anunciate'] as const) : []),
 ] as const
@@ -39,7 +39,6 @@ export const APP_SCROLL_ROUTES = [
   '/anunciate',
   '/admin',
   '/studio',
-  '/patrocinadores',
   '/lanzamientos',
   '/replay',
   '/tv',

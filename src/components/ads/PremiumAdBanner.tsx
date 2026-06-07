@@ -35,7 +35,6 @@ const FIXED_EXCLUDED = [
   '/bbx',
   '/tv',
   '/anunciate',
-  '/patrocinadores',
   '/programacion',
   '/participa',
   '/saludos',

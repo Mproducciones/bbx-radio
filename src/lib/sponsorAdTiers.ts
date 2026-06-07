@@ -2,6 +2,7 @@ import type { SponsorPlanId } from '@/lib/sponsorPlans'
 import { SPONSOR_PLANS, getSponsorPlan } from '@/lib/sponsorPlans'
 import type { DemoAd } from '@/lib/demoCampaigns'
 import { RADIO_AD, floatingProgramLine, programPatrocinioLabel } from '@/lib/radioAdBranding'
+import { enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 export type SponsorAdTierId = SponsorPlanId
 
@@ -54,7 +55,7 @@ export const SPONSOR_TIER_PREVIEWS: Record<SponsorAdTierId, SponsorTierPreview> 
     showFloatingPremium: false,
     floatingTagline: '',
     showRotationBadge: true,
-    slotsLabel: 'Banner estándar · comparte espacio',
+    slotsLabel: enVivoAdSalesLine('standard'),
     incluyeHighlight: ['4 spots / día', 'Banner rotativo en app'],
   },
   premium: {
@@ -66,13 +67,13 @@ export const SPONSOR_TIER_PREVIEWS: Record<SponsorAdTierId, SponsorTierPreview> 
     bannerVariant: 'hero',
     cliente: 'Supermercado El Ahorro',
     brandInitial: 'S',
-    taglineAd: '2×1 esta semana · Banner fijo destacado',
+    taglineAd: '2×1 esta semana · Destacado por intervalos',
     cta: 'Ver oferta',
     imagenUrl: '/ads/ahorro-premium.svg',
     showFloatingPremium: true,
     floatingTagline: `Las mejores ofertas en ${RADIO_AD.city} · ${RADIO_AD.frequency}`,
     showRotationBadge: false,
-    slotsLabel: 'Banner destacado bajo el play',
+    slotsLabel: enVivoAdSalesLine('highlighted'),
     incluyeHighlight: ['8 spots peak', 'Banner premium flotante'],
   },
   empresarial: {
@@ -91,7 +92,7 @@ export const SPONSOR_TIER_PREVIEWS: Record<SponsorAdTierId, SponsorTierPreview> 
     floatingTagline: floatingProgramLine(),
     showRotationBadge: false,
     programBadge: programPatrocinioLabel('tu marca'),
-    slotsLabel: 'Tu marca en todos los banners de la app',
+    slotsLabel: `${enVivoAdSalesLine('exclusive')} · sin competencia en otros banners`,
     incluyeHighlight: ['12 spots / día', 'Badge en grilla', 'Sin competencia en app'],
   },
 }

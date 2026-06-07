@@ -4,6 +4,7 @@ import type { SponsorPlanId, PlanMockupKind } from '@/lib/sponsorPlans'
 import { RADIO } from '@/lib/radioConfig'
 import { RADIO_AD, demoSpotScript, programPatrocinioLabel } from '@/lib/radioAdBranding'
 import { getTierPreview } from '@/lib/sponsorAdTiers'
+import { enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 export type { PlanMockupKind }
 
@@ -125,15 +126,15 @@ function EnVivoScreen({
             <p className="text-[9px] text-white/50 truncate">{brandTagline}</p>
           </div>
           {!isHero && !isExclusive && (
-            <span className="text-[7px] text-white/30 shrink-0">Rota</span>
+            <span className="text-[7px] text-white/30 shrink-0">Intervalos</span>
           )}
         </div>
         <p className="text-[8px] text-white/30 text-center mt-1.5">
           {isHero
-            ? `Banner destacado · ${RADIO_AD.stamp}`
+            ? `${enVivoAdSalesLine('highlighted')} · ${RADIO_AD.stamp}`
             : isExclusive
-              ? `${RADIO_AD.featuredProgramName} · semana sin rotación`
-              : `Banner rotativo · ${RADIO_AD.stamp}`}
+              ? `${enVivoAdSalesLine('exclusive')} · ${RADIO_AD.featuredProgramName}`
+              : `${enVivoAdSalesLine('standard')} · ${RADIO_AD.stamp}`}
         </p>
       </div>
     </>

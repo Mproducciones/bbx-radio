@@ -5,6 +5,7 @@ import {
   RADIO_FM_FREQUENCIES_LABEL,
   RADIO_PUBLIC_FACTS,
 } from '@/lib/radioPublicFacts'
+import { EN_VIVO_AD_POLICY, enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 export const SPONSOR_WA = '56950291592'
 
@@ -97,13 +98,13 @@ export const SPONSOR_VALUE = {
       id: 'app',
       title: 'Banner en la app',
       color: '#40B9BF',
-      hook: 'Visible mientras escuchan en vivo.',
+      hook: 'Visible mientras escuchan — sin tapar el play.',
       image: '/sponsor/app.png',
-      benefit: 'Banners en En Vivo (bajo el play), Participa, Noticias, Saludos y Grilla — según el plan. Sin prometer pantallas que no existen.',
+      benefit: 'Banners en Participa, Noticias, Saludos y Grilla. En En Vivo aparecen por intervalos — el reproductor queda libre la mayor parte del tiempo.',
       breakdown: [
-        { label: 'Plan Básico', value: 'Banner rotativo + En Vivo' },
-        { label: 'Plan Premium', value: 'Destacado En Vivo + flotante' },
-        { label: 'Plan Empresarial', value: 'Exclusivo + badge grilla' },
+        { label: 'Plan Básico', value: enVivoAdSalesLine('standard') },
+        { label: 'Plan Premium', value: `${enVivoAdSalesLine('highlighted')} + flotante` },
+        { label: 'Plan Empresarial', value: `${enVivoAdSalesLine('exclusive')} + badge grilla` },
         { label: 'Arte', value: 'Coordinamos banner (plantilla si no tienes diseño)' },
       ],
       tip: 'Pide ver ejemplos en cada plan: mostramos mockups reales de la app.',
@@ -149,17 +150,20 @@ export const SPONSOR_FAQ = [
   },
   {
     q: '¿Qué funciones puedo probar ya en la app?',
-    a: 'En la app: banners en En Vivo, Participa, Grilla, etc.; patrocinadores en /patrocinadores; badge de programa en /programacion (Empresarial). Reporte y spots FM son gestión comercial (/admin y cabina), no pantallas públicas.',
+    a: 'En la app: banners por intervalos en En Vivo (no fijos), Participa, Grilla, etc.; badge de programa en /programacion (Empresarial). Reporte y spots FM son gestión comercial (/admin y cabina), no pantallas públicas.',
+  },
+  {
+    q: '¿El banner en En Vivo tapa el reproductor?',
+    a: EN_VIVO_AD_POLICY,
   },
 ] as const
 
 export const SPONSOR_LIVE = [
-  { label: 'En Vivo (bajo el play)', href: '/', status: 'En app', note: 'Básico rotativo · Premium destacado · Empresarial exclusivo' },
+  { label: 'En Vivo (intervalos)', href: '/', status: 'En app', note: 'Básico ~8 s/53 s · Premium ~10 s/45 s · Empresarial ~12 s/40 s' },
   { label: 'Banner premium flotante', href: '/participa', status: 'En app', note: 'Premium y Empresarial · no tapa el play' },
   { label: 'Banners rotativos', href: '/programacion', status: 'En app', note: 'Grilla, Noticias, Participa, Saludos' },
   { label: 'Patrocinio en grilla', href: '/programacion', status: 'En app', note: '“Presenta: …” en Studio o campaña Empresarial' },
   { label: 'Sorteo patrocinado', href: '/participa', status: 'En app', note: 'Tab Sorteo · registros reales' },
-  { label: 'Patrocinadores', href: '/patrocinadores', status: 'En app', note: 'Marcas con campaña activa de ejemplo' },
   { label: 'Reporte mensual', href: '/admin', status: 'Panel admin', note: 'CSV + WhatsApp anunciante' },
   { label: 'Spots FM 93.3', href: null, status: 'Cabina', note: 'Se activa al cerrar venta' },
 ] as const

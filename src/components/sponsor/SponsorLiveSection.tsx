@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { SPONSOR_LIVE } from '@/lib/sponsorContent'
 
 const ITEM_META: Record<string, { icon: string; color: string }> = {
-  'Banner en En Vivo':    { icon: '📱', color: '#40B9BF' },
+  'En Vivo (intervalos)': { icon: '📱', color: '#40B9BF' },
   'Sorteo patrocinado':   { icon: '🎁', color: '#7D59B5' },
   'Reporte mensual':      { icon: '📊', color: '#00D9A0' },
   'Patrocinadores':       { icon: '🏪', color: '#db8918' },

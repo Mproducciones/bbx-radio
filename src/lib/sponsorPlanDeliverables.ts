@@ -1,4 +1,5 @@
 import type { SponsorPlanId } from '@/lib/sponsorPlans'
+import { enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 export type DeliverableChannel = 'app' | 'fm' | 'gestion'
 
@@ -35,17 +36,11 @@ export const PLAN_DELIVERABLES: Record<SponsorPlanId, PlanDeliverable[]> = {
     },
     {
       id: 'banner-envivo',
-      label: 'Banner bajo el reproductor en En Vivo',
+      label: 'Banner en En Vivo por intervalos (no fijo)',
       channel: 'app',
       inApp: true,
       previewHref: '/',
-    },
-    {
-      id: 'patrocinadores',
-      label: 'Listado en /patrocinadores con campaña activa',
-      channel: 'app',
-      inApp: true,
-      previewHref: '/patrocinadores',
+      note: enVivoAdSalesLine('standard'),
     },
     {
       id: 'spots-4',
@@ -71,10 +66,11 @@ export const PLAN_DELIVERABLES: Record<SponsorPlanId, PlanDeliverable[]> = {
   premium: [
     {
       id: 'banner-destacado-envivo',
-      label: 'Banner destacado bajo el play en En Vivo',
+      label: 'Banner destacado en En Vivo por intervalos',
       channel: 'app',
       inApp: true,
       previewHref: '/',
+      note: enVivoAdSalesLine('highlighted'),
     },
     {
       id: 'banner-flotante',
@@ -90,13 +86,6 @@ export const PLAN_DELIVERABLES: Record<SponsorPlanId, PlanDeliverable[]> = {
       channel: 'app',
       inApp: true,
       previewHref: '/noticias',
-    },
-    {
-      id: 'patrocinadores',
-      label: 'Presencia en /patrocinadores',
-      channel: 'app',
-      inApp: true,
-      previewHref: '/patrocinadores',
     },
     {
       id: 'spots-peak',
@@ -130,10 +119,11 @@ export const PLAN_DELIVERABLES: Record<SponsorPlanId, PlanDeliverable[]> = {
     },
     {
       id: 'banner-envivo',
-      label: 'Banner destacado en En Vivo',
+      label: 'Banner exclusivo en En Vivo por intervalos',
       channel: 'app',
       inApp: true,
       previewHref: '/',
+      note: enVivoAdSalesLine('exclusive'),
     },
     {
       id: 'grilla-patrocinio',
@@ -142,13 +132,6 @@ export const PLAN_DELIVERABLES: Record<SponsorPlanId, PlanDeliverable[]> = {
       inApp: true,
       previewHref: '/programacion',
       note: 'Studio → Programa, o automático si hay campaña Empresarial exclusiva activa.',
-    },
-    {
-      id: 'patrocinadores',
-      label: 'Listado en /patrocinadores con etiqueta Plan Empresarial',
-      channel: 'app',
-      inApp: true,
-      previewHref: '/patrocinadores',
     },
     {
       id: 'spots-12',

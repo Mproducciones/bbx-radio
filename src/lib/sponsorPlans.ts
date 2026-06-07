@@ -1,4 +1,5 @@
 import { incluyeLabelsFromDeliverables } from '@/lib/sponsorPlanDeliverables'
+import { enVivoAdSalesLine } from '@/lib/enVivoAdSchedule'
 
 export type SponsorPlanId = 'basico' | 'premium' | 'empresarial'
 
@@ -40,18 +41,18 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
     precio: '80.000',
     color: '#40B9BF',
     tagline: 'Presencia en la app y spots en la radio',
-    features: ['Banner rotativo + En Vivo (inferior)', '4 spots al día en FM (cabina)'],
+    features: ['Banner rotativo + En Vivo por intervalos', '4 spots al día en FM (cabina)'],
     idealPara: 'Negocios locales, promociones del mes y marcas que quieren empezar a probar la radio.',
     detalle:
-      'Tu banner aparece en secciones clave de la PWA (incluido En Vivo bajo el reproductor) y rota con otras marcas. Los spots suenan al aire en horarios acordados con cabina.',
+      'Tu banner aparece en secciones clave de la PWA. En En Vivo se muestra por intervalos (no fijo) para no tapar el reproductor. Los spots suenan al aire en horarios acordados con cabina.',
     incluye: incluyeLabelsFromDeliverables('basico'),
     imagenes: [
       {
         id: 'banner',
         caption: 'Banner en En Vivo',
-        callouts: ['Bajo el play', 'Rota con otros', 'Logo + oferta'],
+        callouts: ['Por intervalos', 'Rota con otros', 'Logo + oferta'],
         visualNote:
-          'En la pantalla En Vivo tu banner va debajo del reproductor (no tapa los controles). Si hay varias campañas Básico, rotan cada pocos segundos.',
+          `En En Vivo el banner aparece debajo del reproductor unos segundos y desaparece — ${enVivoAdSalesLine('standard').toLowerCase()}. Si hay varias campañas Básico, rotan en cada aparición.`,
       },
       {
         id: 'spot',
@@ -69,18 +70,18 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
     color: '#db8918',
     popular: true,
     tagline: 'Banner destacado + presencia flotante en la app',
-    features: ['Destacado en En Vivo', 'Banner flotante', '8 spots peak (cabina)'],
+    features: ['Destacado En Vivo (intervalos)', 'Banner flotante', '8 spots peak (cabina)'],
     idealPara: 'Retail, restaurantes, clínicas y campañas que buscan volumen en mañana y tarde.',
     detalle:
-      'Banner con borde “Destacado” bajo el play en En Vivo, más banner flotante en Participa, Saludos y Grilla. Spots concentrados en horarios de mayor sintonía.',
+      'Banner “Destacado” en En Vivo por intervalos (más tiempo visible que Básico), más banner flotante en Participa, Saludos y Grilla. Spots concentrados en horarios de mayor sintonía.',
     incluye: incluyeLabelsFromDeliverables('premium'),
     imagenes: [
       {
         id: 'banner-hero',
         caption: 'Destacado en En Vivo',
-        callouts: ['Bajo el play', 'Borde destacado', 'Prioridad visual'],
+        callouts: ['Por intervalos', 'Borde destacado', 'Prioridad visual'],
         visualNote:
-          'Cuando tu campaña es tipo banner premium activa, el oyente la ve destacada bajo el reproductor en En Vivo, además del banner flotante en otras secciones.',
+          `Campaña banner premium activa: el oyente la ve destacada en En Vivo ${enVivoAdSalesLine('highlighted').replace('En En Vivo: ', '')}, además del banner flotante en otras secciones.`,
       },
       {
         id: 'peak',
@@ -129,7 +130,7 @@ export const SPONSOR_PLANS: SponsorPlan[] = [
         caption: 'Cobertura integral',
         callouts: ['FM 12 spots', 'App exclusiva', 'Redes (gestión)'],
         visualNote:
-          'En la app: banner sin rotación cuando está marcado exclusivo. Spots FM, menciones locutor y piezas en redes se coordinan con el equipo comercial — no son pantallas de la PWA.',
+          `En la app: banner exclusivo por intervalos en En Vivo (${enVivoAdSalesLine('exclusive').replace('En En Vivo: ', '')}). Spots FM, menciones locutor y piezas en redes se coordinan con el equipo comercial — no son pantallas de la PWA.`,
       },
     ],
   },

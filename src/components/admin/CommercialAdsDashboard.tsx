@@ -117,7 +117,7 @@ function NewCampaignWizard({
       preset.esCorta ? '⚠ Campaña corta — confirmar valor con ventas' : 'Duración estándar (mes)',
       `FM: ${rule.spotsFm}`,
       ...(plan === 'empresarial'
-        ? ['Studio: plan Empresarial, prioridad ≥ 10, activar “Exclusivo en app”', 'Verificar /, /participa, /programacion, /patrocinadores']
+        ? ['Studio: plan Empresarial, prioridad ≥ 10, activar “Exclusivo en app”', 'Verificar /, /participa, /programacion, /anunciate']
         : []),
     ]
     await navigator.clipboard.writeText(lines.join('\n'))

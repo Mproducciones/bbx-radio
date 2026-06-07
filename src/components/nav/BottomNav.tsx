@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import type { ComponentType } from 'react'
-import { APP_PRIMARY_NAV_ROUTES } from '@/lib/appNavRoutes'
-import { useAppMoreActive } from '@/components/nav/AppMoreSheet'
+import { APP_PRIMARY_NAV_ROUTES, isMoreNavRoute } from '@/lib/appNavRoutes'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { FEATURES } from '@/lib/plan'
 
@@ -59,15 +58,13 @@ function NavTabContent({
 }
 
 export function BottomNav({
-  onMoreOpen,
   onNavInteract,
 }: {
-  onMoreOpen?: () => void
   onNavInteract?: () => void
 }) {
   const pathname = usePathname()
   const { openTv, isTvOpen } = useRadioPlayerContext()
-  const moreActive = useAppMoreActive(pathname)
+  const moreActive = isMoreNavRoute(pathname)
   const tvActive = isTvOpen || pathname.startsWith('/tv')
 
   if (pathname.startsWith('/studio') || pathname.startsWith('/admin') || pathname.startsWith('/bbx')) return null
@@ -112,16 +109,16 @@ export function BottomNav({
         </button>
 
         {FEATURES.publicidad && (
-          <button
-            type="button"
-            onClick={() => onMoreOpen?.()}
+          <Link
+            href="/anunciate"
+            onClick={onNavInteract}
             className={TAB_CLASS}
             style={{ color: moreActive ? 'var(--color-mag-400)' : 'rgba(255,255,255,0.28)' }}
-            aria-label="Publicidad y patrocinadores"
-            aria-haspopup="dialog"
+            aria-label="Anunciate en Radio Bienvenida"
+            aria-current={moreActive ? 'page' : undefined}
           >
-            <NavTabContent active={moreActive} label="Más" icon={MoreNavIcon} layoutId="nav-more-pill" />
-          </button>
+            <NavTabContent active={moreActive} label="Anuncia" icon={MoreNavIcon} layoutId="nav-more-pill" />
+          </Link>
         )}
       </div>
     </nav>
