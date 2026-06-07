@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/lib/sanity'
 import { cn } from '@/lib/utils'
 import { getDemoAds } from '@/lib/demoCampaigns'
-import { demoAdsForSponsorTier, readSponsorDemoTier } from '@/lib/sponsorAdTiers'
+import { demoAdsForSponsorTier, readSponsorDemoTier, SPONSOR_DEMO_CHANGE_EVENT } from '@/lib/sponsorAdTiers'
 import { AdTrackView, trackAdClick } from '@/components/ads/AdTrackView'
 import { AdBannerVisual } from '@/components/ads/AdBannerVisual'
 import { AdRadioStamp } from '@/components/ads/AdRadioStamp'
@@ -71,11 +71,18 @@ export function RotatingBanner({
   const initialAds = useMemo(() => demoAdsForPosition(position), [position])
   const [ads, setAds] = useState<Ad[]>(initialAds)
   const [index, setIndex] = useState(0)
+  const [demoEpoch, setDemoEpoch] = useState(0)
+
+  useEffect(() => {
+    const onDemo = () => setDemoEpoch(n => n + 1)
+    window.addEventListener(SPONSOR_DEMO_CHANGE_EVENT, onDemo)
+    return () => window.removeEventListener(SPONSOR_DEMO_CHANGE_EVENT, onDemo)
+  }, [])
 
   useEffect(() => {
     setAds(demoAdsForPosition(position))
     setIndex(0)
-  }, [position])
+  }, [position, demoEpoch])
 
   useEffect(() => {
     const load = async () => {
@@ -94,7 +101,7 @@ export function RotatingBanner({
     load()
     const t = setInterval(load, refreshInterval * 1000)
     return () => clearInterval(t)
-  }, [position, refreshInterval])
+  }, [position, refreshInterval, demoEpoch])
 
   const total = ads.length
   const noRotation = total <= 1 || ads.some(a => isExclusiveCampaign(a))

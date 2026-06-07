@@ -159,7 +159,7 @@ export const SPONSOR_FAQ = [
 ] as const
 
 export const SPONSOR_LIVE = [
-  { label: 'En Vivo (intervalos)', href: '/', status: 'En app', note: 'Básico ~8 s/53 s · Premium ~10 s/45 s · Empresarial ~12 s/40 s' },
+  { label: 'En Vivo (intervalos)', href: '/', status: 'En app', note: 'Básico ~8 s/48 s · Premium ~10 s/42 s · Empresarial ~12 s/38 s' },
   { label: 'Banner premium flotante', href: '/participa', status: 'En app', note: 'Premium y Empresarial · no tapa el play' },
   { label: 'Banners rotativos', href: '/programacion', status: 'En app', note: 'Grilla, Noticias, Participa, Saludos' },
   { label: 'Patrocinio en grilla', href: '/programacion', status: 'En app', note: '“Presenta: …” en Studio o campaña Empresarial' },

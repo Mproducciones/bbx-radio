@@ -48,6 +48,9 @@ export async function GET(req: Request) {
   const tier = tierFromCookie(cookieStore.get(TIER_COOKIE)?.value)
 
   if (tier) {
+    if (tier === 'basico' && tipo === 'banner_premium') {
+      return NextResponse.json([])
+    }
     const pool = flattenDemoPool(demoAdsForSponsorTier(tier))
     const ads = getDemoAds(tipo, demoAdsForSponsorTier(tier))
     return NextResponse.json(sanitizeAds(resolveAdsForTipo(ads, pool)))

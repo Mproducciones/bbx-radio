@@ -17,23 +17,21 @@ export const EN_VIVO_AD_SCHEDULE: Record<EnVivoAdMode, EnVivoAdSchedule> = {
   /** Plan Básico — banner_inferior en En Vivo */
   standard: {
     displayMs: 8_000,
-    pauseMs: 45_000,
+    pauseMs: 40_000,
     rotateMs: 8_000,
-    initialDelayMs: 22_000,
+    initialDelayMs: 8_000,
   },
-  /** Plan Premium — banner_premium destacado */
   highlighted: {
     displayMs: 10_000,
-    pauseMs: 35_000,
+    pauseMs: 32_000,
     rotateMs: 8_000,
-    initialDelayMs: 18_000,
+    initialDelayMs: 6_000,
   },
-  /** Plan Empresarial — exclusivo en app */
   exclusive: {
     displayMs: 12_000,
-    pauseMs: 28_000,
+    pauseMs: 26_000,
     rotateMs: 12_000,
-    initialDelayMs: 15_000,
+    initialDelayMs: 6_000,
   },
 }
 

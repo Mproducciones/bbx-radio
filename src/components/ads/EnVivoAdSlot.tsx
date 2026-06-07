@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { urlFor } from '@/lib/sanity'
 import { cn } from '@/lib/utils'
@@ -15,37 +15,44 @@ import {
   resolveEnVivoAdMode,
   type EnVivoAdMode,
 } from '@/lib/enVivoAdSchedule'
+import {
+  enVivoNoRotation,
+  loadEnVivoAdsClient,
+  pickEnVivoFromApiRows,
+  type EnVivoSlotMode,
+} from '@/lib/enVivoAds'
+import { readSponsorDemoTier, SPONSOR_DEMO_CHANGE_EVENT } from '@/lib/sponsorAdTiers'
+import type { DemoAd } from '@/lib/demoCampaigns'
 
-type Ad = {
-  _id: string
-  nombre: string
-  cliente?: string
-  tipo: string
-  tagline?: string
-  cta?: string
-  colorAccent?: string
-  imagenUrl?: string
-  imagen?: unknown
-  enlace?: string
-  planContratado?: string
-  exclusivoApp?: boolean
-  prioridad?: number
-}
-
-type SlotMode = 'highlighted' | 'standard'
+type Ad = DemoAd & { imagen?: unknown }
 
 const SLOT_HEIGHT = 72
 
-/** Banner en En Vivo por intervalos — Básico (inferior) y Premium/Empresarial (destacado). */
+/** Banner en En Vivo por intervalos — respeta plan demo y plan comercial. */
 export function EnVivoAdSlot({ className }: { className?: string }) {
-  const [slotMode, setSlotMode] = useState<SlotMode>('standard')
+  const [slotMode, setSlotMode] = useState<EnVivoSlotMode>('standard')
   const [ads, setAds] = useState<Ad[]>([])
   const [index, setIndex] = useState(0)
   const [loaded, setLoaded] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [demoEpoch, setDemoEpoch] = useState(0)
+
+  const reloadDemo = useCallback(() => setDemoEpoch(n => n + 1), [])
+
+  useEffect(() => {
+    const onDemo = () => reloadDemo()
+    window.addEventListener(SPONSOR_DEMO_CHANGE_EVENT, onDemo)
+    return () => window.removeEventListener(SPONSOR_DEMO_CHANGE_EVENT, onDemo)
+  }, [reloadDemo])
 
   useEffect(() => {
     if (!FEATURES.publicidad) return
+
+    const tier = readSponsorDemoTier()
+    const clientFallback = loadEnVivoAdsClient()
+    setSlotMode(clientFallback.slotMode)
+    setAds(clientFallback.ads)
+    setIndex(0)
 
     async function load() {
       try {
@@ -53,47 +60,45 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
           fetch('/api/ads?tipo=banner_premium'),
           fetch('/api/ads?tipo=banner_inferior'),
         ])
-        const premium: Ad[] = premRes.ok ? await premRes.json() : []
-        const inferior: Ad[] = infRes.ok ? await infRes.json() : []
+        const premium = premRes.ok ? await premRes.json() : []
+        const inferior = infRes.ok ? await infRes.json() : []
+        const picked = pickEnVivoFromApiRows(
+          Array.isArray(premium) ? premium : [],
+          Array.isArray(inferior) ? inferior : [],
+          tier,
+        )
 
-        const highlight = premium.filter(a => a.imagenUrl || a.imagen)
-        if (highlight.length > 0) {
-          setSlotMode('highlighted')
-          setAds(highlight)
+        if (picked.ads.length > 0) {
+          setSlotMode(picked.slotMode)
+          setAds(picked.ads)
           setIndex(0)
-          return
-        }
-
-        const standard = inferior.filter(a => a.imagenUrl || a.imagen)
-        if (standard.length > 0) {
-          setSlotMode('standard')
-          setAds(standard)
-          setIndex(0)
+        } else if (clientFallback.ads.length > 0) {
+          setSlotMode(clientFallback.slotMode)
+          setAds(clientFallback.ads)
         }
       } catch {
-        /* keep empty */
+        if (clientFallback.ads.length > 0) {
+          setSlotMode(clientFallback.slotMode)
+          setAds(clientFallback.ads)
+        }
       } finally {
         setLoaded(true)
       }
     }
 
+    setLoaded(false)
     load()
     const t = setInterval(load, 30_000)
     return () => clearInterval(t)
-  }, [])
+  }, [demoEpoch])
 
   const total = ads.length
   const ad = useMemo(() => (total > 0 ? ads[index % total] : null), [ads, index, total])
   const isExclusive = ad ? isExclusiveCampaign(ad) : false
   const scheduleMode: EnVivoAdMode = resolveEnVivoAdMode(slotMode, isExclusive)
   const schedule = EN_VIVO_AD_SCHEDULE[scheduleMode]
+  const noRotation = useMemo(() => enVivoNoRotation(ads), [ads])
 
-  const noRotation = useMemo(
-    () => total <= 1 || ads.some(a => isExclusiveCampaign(a)),
-    [ads, total],
-  )
-
-  /** Ciclo visible → pausa → visible (sin reservar altura cuando está oculto). */
   useEffect(() => {
     if (!loaded || !ad) {
       setVisible(false)

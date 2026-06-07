@@ -10,7 +10,7 @@ import {
 } from '@/lib/sponsorAdTiers'
 import { RADIO_AD } from '@/lib/radioAdBranding'
 
-export function SponsorDemoBar() {
+export function SponsorDemoBar({ className }: { className?: string }) {
   const [tier, setTier] = useState<SponsorAdTierId | null>(null)
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function SponsorDemoBar() {
 
   return (
     <div
-      className="participa-demo-chip shrink-0 w-full min-w-0 max-w-full box-border"
+      className={`participa-demo-chip shrink-0 w-full min-w-0 max-w-full box-border ${className ?? ''}`}
       style={{
         color: p.color,
         background: `color-mix(in srgb, ${p.color} 12%, transparent)`,

@@ -1,11 +1,18 @@
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { SponsorPlanId } from '@/lib/sponsorPlans'
 import { deliverablesForPlan, channelLabel } from '@/lib/sponsorPlanDeliverables'
+import { activateSponsorDemoTier } from '@/lib/sponsorDemoSession'
 
 export function PlanDeliverablesChecklist({ planId, color }: { planId: SponsorPlanId; color: string }) {
+  const router = useRouter()
   const items = deliverablesForPlan(planId)
+
+  function openPreview(href: string) {
+    activateSponsorDemoTier(planId)
+    router.push(href)
+  }
 
   return (
     <section
@@ -28,9 +35,13 @@ export function PlanDeliverablesChecklist({ planId, color }: { planId: SponsorPl
               <p className="plan-deliverables__channel">{channelLabel(d.channel)}</p>
               {d.note && <p className="plan-deliverables__note">{d.note}</p>}
               {d.inApp && d.previewHref && (
-                <Link href={d.previewHref} className="plan-deliverables__link">
+                <button
+                  type="button"
+                  onClick={() => openPreview(d.previewHref!)}
+                  className="plan-deliverables__link text-left"
+                >
                   Ver en la app
-                </Link>
+                </button>
               )}
             </div>
           </li>

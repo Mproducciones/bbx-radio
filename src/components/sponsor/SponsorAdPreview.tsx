@@ -7,10 +7,10 @@ import { RADIO_AD } from '@/lib/radioAdBranding'
 import { FEATURES } from '@/lib/plan'
 import {
   getTierPreview,
-  persistSponsorDemoTier,
   appPathForTierDemo,
   type SponsorAdTierId,
 } from '@/lib/sponsorAdTiers'
+import { activateSponsorDemoTier } from '@/lib/sponsorDemoSession'
 import { Smartphone } from 'lucide-react'
 
 const NAV_TABS = [
@@ -93,7 +93,7 @@ function PreviewBrandBanner({ tier }: { tier: ReturnType<typeof getTierPreview> 
         )}
         {tier.showRotationBadge && (
           <span className="text-[6px] font-bold px-1 py-0.5 rounded-md bg-black/50 text-white/65 border border-white/10">
-            Rota
+            Intervalos
           </span>
         )}
       </div>
@@ -161,11 +161,8 @@ export function SponsorAdPreview({ tierId }: { tierId: SponsorAdTierId }) {
   const tier = getTierPreview(tierId)
 
   function openInApp() {
-    persistSponsorDemoTier(tierId)
-    if (typeof document !== 'undefined') {
-      document.cookie = `pulso_sponsor_demo_tier=${tierId};path=/;max-age=3600;SameSite=Lax`
-    }
-    router.push(appPathForTierDemo())
+    activateSponsorDemoTier(tierId)
+    router.push(appPathForTierDemo(tierId))
   }
 
   return (

@@ -8,6 +8,7 @@ import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
 import { useNowPlaying } from '@/hooks/useNowPlaying'
 import { EnVivoAdSlot } from '@/components/ads/EnVivoAdSlot'
+import { SponsorDemoBar } from '@/components/ads/SponsorDemoBar'
 import { AnunciateDiscoverBanner } from '@/components/ads/AnunciateDiscoverBanner'
 import { NotificationsInbox } from '@/components/notifications/NotificationsInbox'
 import { PlayTapHint } from '@/components/player/PlayTapHint'
@@ -24,6 +25,8 @@ export function HomePageClient() {
     >
       <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border">
         <TabContextBar className="mb-2" />
+
+        <SponsorDemoBar className="mb-2" />
 
         <PlayTapHint />
 

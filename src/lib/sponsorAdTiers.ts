@@ -159,7 +159,43 @@ export function demoAdsForSponsorTier(tier: SponsorAdTierId): Record<string, Dem
     }
   }
 
-  return {}
+  /* Plan Básico — rotación en feed; En Vivo usa banner_inferior (sin premium). */
+  const pizza = brand('banner_inferior', 5)
+  const pizzaMid = { ...brand('banner_intermedio', 4), _id: 'demo-tier-basico-mid' }
+  return {
+    banner_superior: [
+      {
+        _id: 'demo-tier-bas-superior',
+        nombre: 'AutoMundo Rancagua',
+        cliente: 'AutoMundo Rancagua',
+        tipo: 'banner_superior',
+        tagline: `Tu próximo auto en ${RADIO_AD.city}`,
+        cta: 'Ver catálogo',
+        colorAccent: '#40B9BF',
+        imagenUrl: '/ads/automundo-superior.svg',
+        enlace: WA,
+        activo: true,
+        prioridad: 2,
+      },
+    ],
+    banner_intermedio: [pizzaMid],
+    banner_inferior: [
+      pizza,
+      {
+        _id: 'demo-tier-basico-inf-2',
+        nombre: 'Farmacia Cruz Verde',
+        cliente: 'Farmacia Cruz Verde',
+        tipo: 'banner_inferior',
+        tagline: 'Medicamentos y perfumería',
+        cta: 'Ubicaciones',
+        colorAccent: '#40B9BF',
+        imagenUrl: '/ads/farmacia-inferior.svg',
+        enlace: WA,
+        activo: true,
+        prioridad: 3,
+      },
+    ],
+  }
 }
 
 export const SPONSOR_DEMO_TIER_STORAGE = 'pulso_sponsor_demo_tier'
@@ -190,6 +226,8 @@ export function clearSponsorDemoTier() {
   notifySponsorDemoChange()
 }
 
-export function appPathForTierDemo(): string {
-  return '/participa'
+export function appPathForTierDemo(tier: SponsorAdTierId, href?: string): string {
+  if (href) return href
+  if (tier === 'premium' || tier === 'empresarial') return '/'
+  return '/'
 }
