@@ -2079,6 +2079,52 @@ body {
 
 .premium-ad-inline {
   margin-bottom: 0.35rem;
+  contain: layout style;
+}
+
+/* Slots publicitarios — altura fija, sin empujar layout (Android WebView/Chrome) */
+.ad-banner-slot,
+.rotating-banner-slot,
+.envivo-ad-slot {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  contain: layout style;
+  isolation: isolate;
+}
+
+.envivo-ad-slot--reserved {
+  min-height: 4.5rem;
+  max-height: 4.5rem;
+}
+
+.premium-ad-fixed {
+  contain: layout style paint;
+  pointer-events: none;
+}
+
+.premium-ad-fixed > * {
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  .rotating-banner-slot {
+    margin-bottom: 0.35rem;
+  }
+
+  .saludos-sponsor-banner.rotating-banner-slot {
+    height: 4rem;
+    min-height: 4rem;
+    max-height: 4rem;
+  }
+
+  .saludos-sponsor-banner .ad-banner-slot,
+  .saludos-sponsor-banner .ad-banner-slot img {
+    height: 4rem !important;
+    min-height: 4rem !important;
+    max-height: 4rem !important;
+  }
 }
 
 /* ── Replay ─────────────────────────────────────────────────── */
@@ -3404,13 +3450,15 @@ body {
 
   .saludos-sponsor-banner a {
     display: block;
-    max-height: 4.75rem;
+    height: 4rem;
+    max-height: 4rem;
     overflow: hidden;
   }
 
   .saludos-sponsor-banner img {
-    max-height: 4.75rem !important;
-    min-height: 3rem !important;
+    height: 4rem !important;
+    max-height: 4rem !important;
+    min-height: 4rem !important;
     object-fit: cover;
   }
 }

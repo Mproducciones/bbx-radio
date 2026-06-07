@@ -34,6 +34,7 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
   const [mode, setMode] = useState<Mode>('standard')
   const [ads, setAds] = useState<Ad[]>([])
   const [index, setIndex] = useState(0)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (!FEATURES.publicidad) return
@@ -63,6 +64,8 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
         }
       } catch {
         /* keep empty */
+      } finally {
+        setLoaded(true)
       }
     }
 
@@ -84,8 +87,18 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
   }, [noRotation, total])
 
   const ad = useMemo(() => (total > 0 ? ads[index % total] : null), [ads, index, total])
+  const slotHeight = 72
 
-  if (!FEATURES.publicidad || !ad) return null
+  if (!FEATURES.publicidad) return null
+  if (loaded && !ad) return null
+  if (!ad) {
+    return (
+      <div
+        className={cn('envivo-ad-slot envivo-ad-slot--reserved w-full shrink-0', className)}
+        aria-hidden
+      />
+    )
+  }
 
   const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : undefined)
   const link = sanitizeAdLink(ad.enlace)
@@ -99,20 +112,24 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
       adId={ad._id}
       adTipo={ad.tipo}
       placement="en_vivo_below_play"
-      className={cn('w-full shrink-0 mt-2', className)}
+      className={cn('envivo-ad-slot w-full shrink-0 mt-2', className)}
     >
-      <AnimatePresence mode="wait">
-        <motion.a
-          key={ad._id}
-          href={link ?? '#'}
-          target={link?.startsWith('http') ? '_blank' : undefined}
-          rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-          onClick={() => trackAdClick(ad._id, ad.tipo, 'en_vivo_below_play')}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35 }}
-          className={cn('relative block overflow-hidden rounded-xl', isHighlighted && 'ring-1')}
+      <div
+        className="relative w-full min-w-0 max-w-full overflow-hidden rounded-xl"
+        style={{ height: slotHeight, minHeight: slotHeight, maxHeight: slotHeight }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.a
+            key={ad._id}
+            href={link ?? '#'}
+            target={link?.startsWith('http') ? '_blank' : undefined}
+            rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            onClick={() => trackAdClick(ad._id, ad.tipo, 'en_vivo_below_play')}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className={cn('absolute inset-0 block overflow-hidden rounded-xl', isHighlighted && 'ring-1')}
           style={
             isHighlighted
               ? {
@@ -132,13 +149,14 @@ export function EnVivoAdSlot({ className }: { className?: string }) {
           )}
           <AdBannerVisual
             ad={{ ...ad, imagenUrl: imageUrl }}
-            minHeight={56}
-            maxHeight={88}
+            minHeight={slotHeight}
+            maxHeight={slotHeight}
             highlighted={isHighlighted}
           />
           <AdRadioStamp compact />
         </motion.a>
       </AnimatePresence>
+      </div>
     </AdTrackView>
   )
 }

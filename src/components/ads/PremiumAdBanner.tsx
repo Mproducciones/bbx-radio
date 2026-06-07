@@ -267,15 +267,15 @@ export function PremiumAdBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ y: 60, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 60, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 1.5 }}
-          className="premium-ad-fixed fixed z-[90] md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, delay: 1.5 }}
+          className="premium-ad-fixed fixed z-[90] md:hidden w-[calc(100%-var(--app-shell-pad-x)-var(--app-shell-pad-right))] max-w-[28rem]"
           style={{
             bottom: 'calc(var(--app-nav-total) + var(--app-mini-player-total) + 4px)',
             left: 'var(--app-shell-pad-x)',
-            right: 'var(--app-shell-pad-right)',
+            transform: 'translateZ(0)',
           }}
         >
           <PremiumAdCard
@@ -305,11 +305,11 @@ export function PremiumAdInline() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.28 }}
-          className="premium-ad-inline w-full min-w-0 max-w-full shrink-0"
+          className="premium-ad-inline w-full min-w-0 max-w-full shrink-0 min-h-14"
         >
           <PremiumAdCard
             ad={ad}

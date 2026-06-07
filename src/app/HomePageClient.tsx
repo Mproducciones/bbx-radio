@@ -95,7 +95,7 @@ export function HomePageClient() {
 
         {FEATURES.publicidad && (
           <ClientOnly>
-            <EnVivoAdSlot />
+            <EnVivoAdSlot className="mt-2" />
           </ClientOnly>
         )}
       </div>

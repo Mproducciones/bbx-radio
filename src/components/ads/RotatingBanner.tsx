@@ -112,24 +112,27 @@ export function RotatingBanner({
   const imageUrl = ad.imagenUrl || (ad.imagen ? urlFor(ad.imagen).url() : undefined)
   const placement = `rotating_${position}`
   const link = sanitizeAdLink(ad.enlace)
-  const minH = compact ? 64 : 80
-  const maxH = compact ? 120 : 180
+  const slotHeight = compact ? 64 : 80
 
   return (
-    <AdTrackView adId={ad._id} adTipo={ad.tipo} placement={placement} className={cn('w-full shrink-0', className)}>
-      <AnimatePresence mode="wait">
-        <motion.a
-          key={ad._id}
-          href={link ?? '#'}
-          target={link?.startsWith('http') ? '_blank' : undefined}
-          rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
-          onClick={() => trackAdClick(ad._id, ad.tipo, placement)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative block overflow-hidden rounded-xl"
-        >
+    <AdTrackView adId={ad._id} adTipo={ad.tipo} placement={placement} className={cn('rotating-banner-slot w-full shrink-0', className)}>
+      <div
+        className="relative block w-full min-w-0 max-w-full overflow-hidden rounded-xl"
+        style={{ height: slotHeight, minHeight: slotHeight, maxHeight: slotHeight }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.a
+            key={ad._id}
+            href={link ?? '#'}
+            target={link?.startsWith('http') ? '_blank' : undefined}
+            rel={link?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            onClick={() => trackAdClick(ad._id, ad.tipo, placement)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="absolute inset-0 block overflow-hidden rounded-xl"
+          >
           {showExclusiveBadge && (
             <span
               className="absolute top-1.5 right-1.5 z-10 text-[7px] font-black uppercase px-1.5 py-0.5 rounded-md"
@@ -143,12 +146,13 @@ export function RotatingBanner({
           )}
           <AdBannerVisual
             ad={{ ...ad, imagenUrl: imageUrl }}
-            minHeight={minH}
-            maxHeight={maxH}
+            minHeight={slotHeight}
+            maxHeight={slotHeight}
           />
           <AdRadioStamp compact={compact} />
         </motion.a>
       </AnimatePresence>
+      </div>
     </AdTrackView>
   )
 }
