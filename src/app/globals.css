@@ -3721,8 +3721,13 @@ html.envivo-boot-active body {
   .participa-pedir-panel .participa-input,
   .participa-sorteo-panel .sorteo-input {
     font-size: 16px;
-    min-height: 2.65rem;
-    padding: 0.65rem 0.85rem;
+    min-height: 2.45rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .participa-route .sorteo-btn {
+    min-height: 2.55rem;
+    padding: 0.55rem 0.75rem;
   }
 
   .participa-btn-primary,
@@ -3784,6 +3789,10 @@ html.envivo-boot-active body {
 
   .sorteo-body {
     padding: 0.65rem 0.85rem 0.8rem;
+  }
+
+  .participa-route .sorteo-body {
+    padding: 0.45rem 0.6rem 0.55rem;
   }
 
   .participa-route .participa-tab-panel {
@@ -4740,6 +4749,77 @@ html.envivo-boot-active body {
   background: linear-gradient(135deg, #2a1848 0%, #12081f 45%, #07070e 100%);
 }
 
+.sorteo-live-banner--compact .sorteo-live-banner__visual {
+  min-height: auto;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__content {
+  padding: 0.45rem 0.6rem 0.5rem;
+  gap: 0.2rem;
+  min-height: 0;
+  justify-content: center;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__live {
+  margin-bottom: 0;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__prize {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  font-weight: 800;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__gift {
+  font-size: 1.65rem;
+  right: 0.4rem;
+  bottom: 0.2rem;
+  opacity: 0.18;
+}
+
+.sorteo-live-banner--compact .sorteo-live-banner__meta-line {
+  margin: 0;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sorteo-live-banner__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.sorteo-live-banner__meta-line {
+  margin: 0.15rem 0 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.48);
+}
+
 .sorteo-live-banner__img {
   position: absolute;
   inset: 0;
@@ -4873,25 +4953,33 @@ html.envivo-boot-active body {
   animation: sorteo-shimmer 5s ease-in-out infinite;
 }
 
-.sorteo-live-banner__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.35rem 0.75rem;
-  padding: 0.45rem 0.85rem;
-  font-size: 0.625rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.45);
-  background: rgba(125, 89, 181, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+.participa-route .sorteo-body {
+  padding: 0.5rem 0.65rem 0.65rem;
 }
 
-.sorteo-live-banner__deadline {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: rgba(255, 255, 255, 0.55);
+.participa-route .sorteo-step-title {
+  margin-bottom: 0.1rem;
+  font-size: 0.625rem;
+}
+
+.participa-route .sorteo-step-heading {
+  font-size: 0.9375rem;
+  line-height: 1.2;
+}
+
+.participa-route .sorteo-progress {
+  margin-bottom: 0.45rem;
+}
+
+.participa-route .sorteo-desc {
+  margin-bottom: 0.35rem;
+  font-size: 0.625rem;
+  line-height: 1.3;
+}
+
+.participa-route .sorteo-legal {
+  font-size: 0.5625rem;
+  margin-top: 0.15rem;
 }
 
 .participa-route .sorteo-panel {

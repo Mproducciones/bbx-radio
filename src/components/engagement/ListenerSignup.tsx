@@ -333,7 +333,7 @@ export function ListenerSignup({
               animate="center"
               exit="exit"
               transition={springSnappy}
-              className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
+              className="flex flex-col flex-1 min-h-0 min-w-0 gap-2 w-full"
             >
               <div className="min-w-0">
                 <p className="sorteo-step-title">Paso 1 de 2</p>
@@ -384,7 +384,7 @@ export function ListenerSignup({
               exit="exit"
               transition={springSnappy}
               onSubmit={submit}
-              className="flex flex-col flex-1 min-h-0 min-w-0 gap-3 w-full"
+              className="flex flex-col flex-1 min-h-0 min-w-0 gap-2 w-full"
               style={{ '--input-accent': ACCENT } as CSSProperties}
             >
               <div className="flex items-start gap-2 min-w-0 w-full">
