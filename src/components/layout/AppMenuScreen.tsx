@@ -45,7 +45,7 @@ export function AppMenuScreen({
     return (
       <main
         className={cn(
-          'scroll-tab-shell scroll-tab-shell--panel relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
+          'scroll-tab-shell relative z-[1] mx-auto w-full min-w-0 max-w-full md:max-w-2xl',
           'max-md:flex-1 max-md:min-h-0 max-md:flex max-md:flex-col',
           'max-md:pt-[var(--app-content-pad-y)] max-md:pb-[calc(var(--app-nav-total)+1rem)]',
           'md:min-h-screen md:px-4 md:pt-6 md:pb-24',

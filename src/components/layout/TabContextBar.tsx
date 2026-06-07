@@ -9,23 +9,12 @@ import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 
 /** Barra superior compartida — continuidad entre En Vivo y tabs scroll. */
-export function TabContextBar({
-  className,
-  integrated = true,
-}: {
-  className?: string
-  /** Sin caja ni borde — tipografía flotante */
-  integrated?: boolean
-}) {
+export function TabContextBar({ className }: { className?: string }) {
   const { isPlaying } = useRadioPlayerContext()
 
   return (
     <motion.div
-      className={
-        integrated
-          ? `tab-context-bar tab-context-bar--integrated flex items-center justify-between gap-3 shrink-0 min-w-0 max-w-full px-1 py-2 ${className ?? ''}`
-          : `tab-context-bar flex items-center justify-between gap-3 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03] ${className ?? ''}`
-      }
+      className={`tab-context-bar flex items-center justify-between gap-3 shrink-0 min-w-0 max-w-full rounded-xl px-3 py-2.5 border border-white/[0.07] bg-white/[0.03] ${className ?? ''}`}
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: EASE_OUT }}

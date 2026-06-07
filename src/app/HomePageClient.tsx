@@ -2,7 +2,8 @@
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
-import { EnVivoMobileStage } from '@/components/player/EnVivoMobileStage'
+import { TabContextBar } from '@/components/layout/TabContextBar'
+import { EnVivoBootMotion } from '@/components/player/EnVivoBootMotion'
 import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
@@ -23,50 +24,55 @@ export function HomePageClient() {
       className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)] overflow-x-hidden"
       style={{ zIndex: 1 }}
     >
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border gap-1.5">
-        <SponsorDemoBar />
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border">
+        <TabContextBar className="mb-2" />
+
+        <SponsorDemoBar className="mb-2" />
 
         <PlayTapHint />
 
-        <EnVivoMobileStage
-          locale={
-            <ClientOnly
-              fallback={
-                <div className="h-8 w-full rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
-              }
-            >
-              <RadioLocaleBar radio={RADIO} compact borderless />
-            </ClientOnly>
+        <AnunciateDiscoverBanner className="mb-2" />
+
+        <ClientOnly
+          fallback={
+            <div
+              className="mb-2 h-11 w-full rounded-xl animate-pulse shrink-0"
+              style={{ background: 'rgba(255,255,255,0.05)' }}
+            />
           }
         >
+          <RadioLocaleBar radio={RADIO} compact className="mb-2 shrink-0 relative z-[4]" />
+        </ClientOnly>
+
+        <div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
           <ClientOnly
             fallback={
-              <div className="flex-1 rounded-[1.75rem] animate-pulse min-h-[12rem]" style={{ background: 'rgba(255,255,255,0.03)' }} />
+              <div className="flex-1 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
             }
           >
-            <NowPlayingCard
-              immersive
-              radio={RADIO}
-              nowPlaying={{
-                title: nowPlaying?.title ?? 'En Vivo',
-                artist: nowPlaying?.artist ?? 'Radio Bienvenida 93.3 FM',
-                isLive: true,
-                startedAt: new Date(0),
-              }}
-              isPlaying={isPlaying}
-              isLoading={isLoading}
-              hasError={hasError}
-              analyser={analyser}
-              onToggle={toggle}
-            />
+            <EnVivoBootMotion>
+              <NowPlayingCard
+                immersive
+                radio={RADIO}
+                nowPlaying={{
+                  title: nowPlaying?.title ?? 'En Vivo',
+                  artist: nowPlaying?.artist ?? 'Radio Bienvenida 93.3 FM',
+                  isLive: true,
+                  startedAt: new Date(0),
+                }}
+                isPlaying={isPlaying}
+                isLoading={isLoading}
+                hasError={hasError}
+                analyser={analyser}
+                onToggle={toggle}
+              />
+            </EnVivoBootMotion>
           </ClientOnly>
-        </EnVivoMobileStage>
-
-        <AnunciateDiscoverBanner className="shrink-0 mx-1" />
+        </div>
 
         {FEATURES.publicidad && (
           <ClientOnly>
-            <EnVivoAdSlot className="mx-1" />
+            <EnVivoAdSlot className="mt-2" />
           </ClientOnly>
         )}
       </div>
