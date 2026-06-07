@@ -1,6 +1,7 @@
 'use client'
 
-import { useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { SectionHeader } from '@/components/layout/SectionHeader'
@@ -11,9 +12,14 @@ import { ParticipaHook } from '@/components/engagement/ParticipaHook'
 import { ParticipaActionTabs, type ParticipaTab } from '@/components/engagement/ParticipaActionTabs'
 import { SongPoll } from '@/components/engagement/SongPoll'
 import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
-import { ListenerSignup } from '@/components/engagement/ListenerSignup'
 import { PARTICIPA_ACTIONS } from '@/lib/participaCopy'
 import { FEATURES } from '@/lib/plan'
+import { prefetchActiveContest } from '@/lib/sorteoDefaults'
+
+const ListenerSignup = dynamic(
+  () => import('@/components/engagement/ListenerSignup').then(m => ({ default: m.ListenerSignup })),
+  { ssr: false },
+)
 
 const BASE_TABS: { id: ParticipaTab; label: string }[] = [
   { id: 'votar', label: 'Votar' },
@@ -21,9 +27,9 @@ const BASE_TABS: { id: ParticipaTab; label: string }[] = [
 ]
 
 const panelVariants = {
-  enter: { opacity: 0, y: 10 },
+  enter: { opacity: 0, y: 6 },
   center: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -6 },
+  exit: { opacity: 0, y: -4 },
 }
 
 export function ParticipaScreen() {
@@ -33,9 +39,16 @@ export function ParticipaScreen() {
   const [tab, setTab] = useState<ParticipaTab>('votar')
   const prevTab = useRef<ParticipaTab>('votar')
 
+  useEffect(() => {
+    if (!FEATURES.contests) return
+    prefetchActiveContest()
+    void import('@/components/engagement/ListenerSignup')
+  }, [])
+
   function selectTab(next: ParticipaTab) {
     prevTab.current = tab
     setTab(next)
+    if (next === 'sorteo') prefetchActiveContest()
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(8)
     }
@@ -72,7 +85,7 @@ export function ParticipaScreen() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="participa-panel participa-tab-panel flex flex-col w-full min-w-0 max-w-full overflow-x-hidden"
             >
               {tab === 'votar' ? (

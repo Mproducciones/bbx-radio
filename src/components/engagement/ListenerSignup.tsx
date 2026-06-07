@@ -2,26 +2,28 @@
 
 import { useState, useEffect, useRef, type CSSProperties, type FormEvent } from 'react'
 import { motion, AnimatePresence, animate as fmAnimate } from 'framer-motion'
-import { EASE_OUT, springSnappy, staggerItem } from '@/lib/motion/framer'
-import { animateStagger } from '@/lib/motion/anime'
+import { EASE_OUT } from '@/lib/motion/framer'
 import { SorteoLiveBanner } from '@/components/engagement/SorteoLiveBanner'
+import {
+  SORTEO_FALLBACK,
+  type ActiveContestClient,
+  getCachedActiveContest,
+  prefetchActiveContest,
+} from '@/lib/sorteoDefaults'
 
 const ACCENT = '#7D59B5'
 const ACCENT_HOT = '#FF006E'
 const SUCCESS = '#00D9A0'
 
 type Phase = 'nombre' | 'contacto' | 'sending' | 'done' | 'error'
-type ActiveContest = {
-  id: string
-  title: string
-  prize: string
-  description: string | null
-  sponsorName: string | null
-  deadline: string | null
-  imageUrl: string | null
-}
 
 const STEPS: Phase[] = ['nombre', 'contacto']
+
+function initialContest(): ActiveContestClient {
+  const cached = getCachedActiveContest()
+  if (cached) return cached
+  return SORTEO_FALLBACK
+}
 
 async function playEntrySound() {
   try {
@@ -143,25 +145,8 @@ const slideVariants = {
 }
 
 function SorteoEmpty() {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const t = requestAnimationFrame(() => {
-      void animateStagger(el, '[data-sorteo-empty]', {
-        opacity: [0, 1],
-        translateY: [16, 0],
-        duration: 520,
-        staggerMs: 90,
-        ease: 'out(3)',
-      })
-    })
-    return () => cancelAnimationFrame(t)
-  }, [])
-
   return (
-    <div ref={ref} className="sorteo-empty">
+    <div className="sorteo-empty">
       <SorteoLiveBanner
         title="Próximo sorteo en camino"
         prize="Premio sorpresa al aire"
@@ -169,10 +154,10 @@ function SorteoEmpty() {
         deadline={null}
         imageUrl={null}
       />
-      <p data-sorteo-empty className="font-display text-base text-white mt-3">
+      <p className="font-display text-base text-white mt-3">
         Quédate en la radio
       </p>
-      <p data-sorteo-empty className="text-white/40 text-xs max-w-[240px] mt-1.5 leading-relaxed">
+      <p className="text-white/40 text-xs max-w-[240px] mt-1.5 leading-relaxed">
         El locutor anuncia los concursos en vivo. Vuelve pronto para inscribirte.
       </p>
     </div>
@@ -212,39 +197,25 @@ export function ListenerSignup({
   playful?: boolean
   className?: string
 } = {}) {
-  const [contest, setContest] = useState<ActiveContest | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [contest, setContest] = useState<ActiveContestClient>(initialContest)
+  const [noContest, setNoContest] = useState(() => getCachedActiveContest() === null)
   const [phase, setPhase] = useState<Phase>('nombre')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [position, setPosition] = useState(0)
   const [errMsg, setErrMsg] = useState('')
-  const bodyRef = useRef<HTMLDivElement>(null)
 
   const stepIndex = STEPS.indexOf(phase as (typeof STEPS)[number])
 
   useEffect(() => {
-    fetch('/api/contests/active')
-      .then(r => r.json())
-      .then(data => { if (data?.id) setContest(data) })
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
-
-  useEffect(() => {
-    if (!['nombre', 'contacto'].includes(phase) || !bodyRef.current) return
-    const el = bodyRef.current
-    const t = requestAnimationFrame(() => {
-      void animateStagger(el, '[data-sorteo-field]', {
-        translateY: [10, 0],
-        opacity: [0, 1],
-        duration: 480,
-        staggerMs: 70,
-        ease: 'out(3)',
-      })
+    let cancelled = false
+    prefetchActiveContest().then(data => {
+      if (cancelled || data === undefined) return
+      if (data) setContest(data)
+      else setNoContest(true)
     })
-    return () => cancelAnimationFrame(t)
-  }, [phase, contest?.id])
+    return () => { cancelled = true }
+  }, [])
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -275,31 +246,12 @@ export function ListenerSignup({
     }
   }
 
-  if (loading) {
-    return (
-      <div className="sorteo-panel flex items-center justify-center min-h-[12rem]">
-        <div className="w-9 h-9 border-2 border-[#7D59B5] border-t-transparent rounded-full animate-spin" aria-label="Cargando" />
-      </div>
-    )
-  }
-
-  if (!contest) return <SorteoEmpty />
+  if (noContest) return <SorteoEmpty />
 
   return (
     <div
       className={`sorteo-panel participa-panel participa-sorteo-panel relative flex flex-col flex-1 min-h-0 min-w-0 max-w-full w-full ${className ?? ''}`}
     >
-      <div className="sorteo-panel__fx" aria-hidden>
-        <div className="sorteo-panel__mesh" />
-        <div className="sorteo-panel__scan" />
-        <motion.div
-          className="sorteo-panel__glow"
-          style={{ background: ACCENT }}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.32, 0.15] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
       <SorteoLiveBanner
         title={contest.title}
         prize={contest.prize}
@@ -308,7 +260,7 @@ export function ListenerSignup({
         imageUrl={contest.imageUrl}
       />
 
-      <div ref={bodyRef} className="sorteo-body relative z-[1] w-full min-w-0">
+      <div className="sorteo-body relative z-[1] w-full min-w-0">
         {!['sending', 'done', 'error'].includes(phase) && (
           <div className="sorteo-progress" role="progressbar" aria-valuenow={stepIndex + 1} aria-valuemin={1} aria-valuemax={2}>
             {STEPS.map((s, i) => (
@@ -329,10 +281,10 @@ export function ListenerSignup({
             <motion.div
               key="nombre"
               variants={slideVariants}
-              initial="enter"
+              initial={false}
               animate="center"
               exit="exit"
-              transition={springSnappy}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
               className="flex flex-col flex-1 min-h-0 min-w-0 gap-2 w-full"
             >
               <div className="min-w-0">
@@ -341,10 +293,10 @@ export function ListenerSignup({
               </div>
 
               {contest.description && (
-                <p data-sorteo-field className="sorteo-desc">{contest.description}</p>
+                <p className="sorteo-desc">{contest.description}</p>
               )}
 
-              <label data-sorteo-field className="flex flex-col min-w-0 w-full">
+              <label className="flex flex-col min-w-0 w-full">
                 <span className="sorteo-label">Tu nombre</span>
                 <input
                   value={name}
@@ -358,7 +310,6 @@ export function ListenerSignup({
 
               <motion.button
                 type="button"
-                data-sorteo-field
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { if (name.trim()) setPhase('contacto') }}
                 disabled={!name.trim()}
@@ -369,7 +320,7 @@ export function ListenerSignup({
                   <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" />
                 </svg>
               </motion.button>
-              <p data-sorteo-field className="sorteo-legal">
+              <p className="sorteo-legal">
                 Tus datos se usan solo para este concurso.
               </p>
             </motion.div>
@@ -379,10 +330,10 @@ export function ListenerSignup({
             <motion.form
               key="contacto"
               variants={slideVariants}
-              initial="enter"
+              initial={false}
               animate="center"
               exit="exit"
-              transition={springSnappy}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
               onSubmit={submit}
               className="flex flex-col flex-1 min-h-0 min-w-0 gap-2 w-full"
               style={{ '--input-accent': ACCENT } as CSSProperties}
@@ -409,7 +360,7 @@ export function ListenerSignup({
                 </div>
               </div>
 
-              <motion.label variants={staggerItem} data-sorteo-field className="flex flex-col min-w-0 w-full">
+              <label className="flex flex-col min-w-0 w-full">
                 <span className="sorteo-label">WhatsApp o teléfono</span>
                 <input
                   value={phone}
@@ -419,10 +370,9 @@ export function ListenerSignup({
                   autoFocus
                   className="sorteo-input"
                 />
-              </motion.label>
+              </label>
 
-              <motion.div
-                data-sorteo-field
+              <div
                 className="rounded-xl px-3 py-2.5 text-[11px] leading-relaxed min-w-0 w-full box-border"
                 style={{
                   background: 'rgba(125,89,181,0.08)',
@@ -431,11 +381,10 @@ export function ListenerSignup({
                 }}
               >
                 Al enviar quedas inscrito en la cola del sorteo. El locutor anuncia al ganador en vivo.
-              </motion.div>
+              </div>
 
               <motion.button
                 type="submit"
-                data-sorteo-field
                 whileTap={{ scale: 0.98 }}
                 disabled={!phone.trim()}
                 className={`sorteo-btn ${phone.trim() ? 'is-ready' : 'is-disabled'}`}
@@ -443,7 +392,7 @@ export function ListenerSignup({
                 <SorteoTicketIcon className="w-5 h-5" />
                 Quiero participar
               </motion.button>
-              <p data-sorteo-field className="sorteo-legal">
+              <p className="sorteo-legal">
                 Sin spam · solo para este sorteo.
               </p>
             </motion.form>
