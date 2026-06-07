@@ -1,7 +1,7 @@
 'use strict'
 
-const STATIC_CACHE  = 'radio-bienvenida-static-v25'
-const IMAGE_CACHE   = 'radio-bienvenida-images-v25'
+const STATIC_CACHE  = 'radio-bienvenida-static-v26'
+const IMAGE_CACHE   = 'radio-bienvenida-images-v26'
 
 const STATIC_FILES = [
   '/manifest.json',
@@ -153,6 +153,15 @@ self.addEventListener('fetch', function(event) {
     /\.(png|jpg|jpeg|webp|gif|svg|ico)(\?|$)/i.test(url)
 
   if (!isStatic && !isImage) return
+
+  // Imágenes externas: el navegador las carga con img-src; el SW no debe fetch (CSP connect-src).
+  if (isImage) {
+    try {
+      if (new URL(url).origin !== self.location.origin) return
+    } catch (e) {
+      return
+    }
+  }
 
   if (isStatic) {
     event.respondWith(
