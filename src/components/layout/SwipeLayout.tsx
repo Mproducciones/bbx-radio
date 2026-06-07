@@ -25,18 +25,7 @@ export function SwipeLayout({ children }: SwipeLayoutProps) {
   if (!isTabShell) {
     return (
       <div className="app-scroll-route flex-1 min-h-0 w-full min-w-0 max-w-full">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={pathname}
-            className="w-full min-w-0 max-w-full flex flex-col flex-1 min-h-0"
-            initial={tabCrossfade.initial}
-            animate={tabCrossfade.animate}
-            exit={tabCrossfade.exit}
-            transition={tabCrossfadeTransition}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        {children}
       </div>
     )
   }

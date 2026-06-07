@@ -1,33 +1,19 @@
 'use client'
 
 import { useRef, useState, type CSSProperties } from 'react'
-import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { SectionHeader } from '@/components/layout/SectionHeader'
-import { TabPanelSkeleton } from '@/components/ui/TabPanelSkeleton'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
 import { PremiumAdInline } from '@/components/ads/PremiumAdBanner'
 import { SponsorDemoBar } from '@/components/ads/SponsorDemoBar'
 import { ParticipaHook } from '@/components/engagement/ParticipaHook'
 import { ParticipaActionTabs, type ParticipaTab } from '@/components/engagement/ParticipaActionTabs'
+import { SongPoll } from '@/components/engagement/SongPoll'
+import { SongRequestForm } from '@/components/solicitudes/SongRequestForm'
+import { ListenerSignup } from '@/components/engagement/ListenerSignup'
 import { PARTICIPA_ACTIONS } from '@/lib/participaCopy'
 import { FEATURES } from '@/lib/plan'
-
-const SongPoll = dynamic(
-  () => import('@/components/engagement/SongPoll').then(m => ({ default: m.SongPoll })),
-  { loading: () => <TabPanelSkeleton />, ssr: false },
-)
-
-const SongRequestForm = dynamic(
-  () => import('@/components/solicitudes/SongRequestForm').then(m => ({ default: m.SongRequestForm })),
-  { loading: () => <TabPanelSkeleton />, ssr: false },
-)
-
-const ListenerSignup = dynamic(
-  () => import('@/components/engagement/ListenerSignup').then(m => ({ default: m.ListenerSignup })),
-  { loading: () => <TabPanelSkeleton />, ssr: false },
-)
 
 const BASE_TABS: { id: ParticipaTab; label: string }[] = [
   { id: 'votar', label: 'Votar' },
@@ -79,7 +65,7 @@ export function ParticipaScreen() {
         <RotatingBanner position="middle" compact className="shrink-0 w-full min-w-0 max-w-full" interval={8} />
 
         <div className="participa-content w-full min-w-0 max-w-full flex-1 min-h-0">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={tab}
               variants={panelVariants}

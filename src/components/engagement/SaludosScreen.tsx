@@ -1,19 +1,13 @@
 'use client'
 
 import { useState, type CSSProperties } from 'react'
-import dynamic from 'next/dynamic'
 import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { SectionHeader } from '@/components/layout/SectionHeader'
-import { TabPanelSkeleton } from '@/components/ui/TabPanelSkeleton'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
 import { SaludosHook } from '@/components/engagement/SaludosHook'
+import { SaludoForm } from '@/components/engagement/SaludoForm'
 import type { MotivoId } from '@/lib/saludoTypes'
 import { MOTIVOS } from '@/lib/saludoTypes'
-
-const SaludoForm = dynamic(
-  () => import('@/components/engagement/SaludoForm').then(m => ({ default: m.SaludoForm })),
-  { loading: () => <TabPanelSkeleton lines={4} />, ssr: false },
-)
 
 const DEFAULT_ACCENT = '#db8918'
 

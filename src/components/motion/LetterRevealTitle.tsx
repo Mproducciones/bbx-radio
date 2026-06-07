@@ -42,8 +42,8 @@ export function LetterRevealTitle({ text, className = '', stagger = 0.045 }: Let
       {text.split('').map((char, i) => (
         <motion.span
           key={`${char}-${i}`}
-          initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, delay: 0.08 + i * stagger, ease: EASE_OUT }}
           className={char === ' ' ? 'inline' : 'inline-block'}
         >

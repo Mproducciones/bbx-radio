@@ -3146,6 +3146,38 @@ body {
   min-height: 0;
 }
 
+@media (max-width: 767px) {
+  /* iOS Safari: flex anidado necesita altura explícita en la cadena scroll-tab */
+  .app-scroll-route {
+    min-height: 1px;
+  }
+
+  .scroll-tab-shell {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .scroll-tab-shell > .app-gutter-x {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scroll-tab-shell__body {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .scroll-tab-route__content {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
 /* Boot En Vivo — vinilo girando → tornamesa */
 .envivo-turntable__arm {
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.08);

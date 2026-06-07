@@ -2,9 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import type { ReactNode } from 'react'
-import { motion } from 'framer-motion'
 import { TabContextBar } from '@/components/layout/TabContextBar'
-import { EASE_OUT } from '@/lib/motion/framer'
 
 interface AppMenuScreenProps {
   children: ReactNode
@@ -29,19 +27,14 @@ export function AppMenuScreen({
   const isSnap = scroll === 'snap'
 
   const body = (
-    <motion.div
-      className="scroll-tab-shell__body w-full min-w-0 max-w-full flex flex-col flex-1 overflow-x-hidden"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: EASE_OUT }}
-    >
+    <div className="scroll-tab-shell__body w-full min-w-0 max-w-full flex flex-col flex-1 min-h-0 overflow-x-hidden">
       {contextBar && (
         <div className="md:hidden mb-2 shrink-0">
           <TabContextBar />
         </div>
       )}
       {children}
-    </motion.div>
+    </div>
   )
 
   if (isScroll) {
