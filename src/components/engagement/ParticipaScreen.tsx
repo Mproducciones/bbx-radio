@@ -7,6 +7,7 @@ import { AppMenuScreen } from '@/components/layout/AppMenuScreen'
 import { SectionHeader } from '@/components/layout/SectionHeader'
 import { TabPanelSkeleton } from '@/components/ui/TabPanelSkeleton'
 import { RotatingBanner } from '@/components/ads/RotatingBanner'
+import { PremiumAdInline } from '@/components/ads/PremiumAdBanner'
 import { SponsorDemoBar } from '@/components/ads/SponsorDemoBar'
 import { ParticipaHook } from '@/components/engagement/ParticipaHook'
 import { ParticipaActionTabs, type ParticipaTab } from '@/components/engagement/ParticipaActionTabs'
@@ -74,6 +75,8 @@ export function ParticipaScreen() {
         <SponsorDemoBar />
         <ParticipaHook accent={tabMeta.color} />
         <ParticipaActionTabs tabs={tabs} active={tab} onChange={selectTab} />
+        <PremiumAdInline />
+        <RotatingBanner position="middle" compact className="shrink-0 w-full min-w-0 max-w-full" interval={8} />
 
         <div className="participa-content w-full min-w-0 max-w-full flex-1 min-h-0">
           <AnimatePresence mode="wait">
@@ -96,8 +99,6 @@ export function ParticipaScreen() {
             </motion.div>
           </AnimatePresence>
         </div>
-
-        <RotatingBanner position="bottom" compact className="shrink-0 w-full min-w-0 max-w-full" interval={8} />
       </div>
     </AppMenuScreen>
   )

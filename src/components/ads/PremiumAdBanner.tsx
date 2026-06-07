@@ -87,9 +87,7 @@ function usePremiumAd(pathname: string, mode: 'fixed' | 'inline') {
 
   useEffect(() => {
     function syncVisibility() {
-      const tier = readSponsorDemoTier()
       const isInlineRoute = PREMIUM_AD_INLINE_ROUTES.some(r => pathname.startsWith(r))
-      const showForTierDemo = tier === 'premium' || tier === 'empresarial'
 
       if (mode === 'fixed') {
         if (FIXED_EXCLUDED.some(p => (p === '/' ? pathname === '/' : pathname.startsWith(p)))) {
@@ -102,7 +100,7 @@ function usePremiumAd(pathname: string, mode: 'fixed' | 'inline') {
         }
         setVisible(true)
       } else {
-        if (!isInlineRoute || !showForTierDemo) {
+        if (!isInlineRoute) {
           setVisible(false)
           return
         }
