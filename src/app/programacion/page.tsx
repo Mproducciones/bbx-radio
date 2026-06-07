@@ -18,9 +18,16 @@ export default async function ProgramacionPage() {
   const initialDay = getTodayInTimezone('America/Santiago')
 
   return (
-    <AppMenuScreen scroll fullWidth className="programacion-route w-full min-w-0 max-w-full">
-      <SectionHeader compact letterReveal centered title="Programación" className="min-w-0 max-w-full overflow-x-hidden" />
-      <div className="programacion-route__content flex flex-col gap-1.5 min-w-0 max-w-full md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
+    <AppMenuScreen scroll fullWidth className="programacion-route scroll-tab-route w-full min-w-0 max-w-full">
+      <SectionHeader
+        compact
+        letterReveal
+        centered
+        showLine={false}
+        title="Programación"
+        className="min-w-0 max-w-full overflow-x-hidden"
+      />
+      <div className="programacion-route__content scroll-tab-route__content flex flex-col gap-1.5 min-w-0 max-w-full md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
         <RotatingBanner position="top" compact className="shrink-0 w-full min-w-0 max-w-full" />
         <ProgramSchedule
           programs={programs}
@@ -29,7 +36,6 @@ export default async function ProgramacionPage() {
           hideHeader
           className="w-full min-w-0 max-w-full"
         />
-        <RotatingBanner position="bottom" compact className="shrink-0 w-full min-w-0 max-w-full" />
       </div>
     </AppMenuScreen>
   )

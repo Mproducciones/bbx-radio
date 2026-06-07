@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, type CSSProperties, type FormEvent } from 
 import { motion, AnimatePresence, animate as fmAnimate } from 'framer-motion'
 import { EASE_OUT, springSnappy, staggerItem } from '@/lib/motion/framer'
 import { animateStagger } from '@/lib/motion/anime'
+import { SorteoLiveBanner } from '@/components/engagement/SorteoLiveBanner'
 
 const ACCENT = '#7D59B5'
 const ACCENT_HOT = '#FF006E'
@@ -17,6 +18,7 @@ type ActiveContest = {
   description: string | null
   sponsorName: string | null
   deadline: string | null
+  imageUrl: string | null
 }
 
 const STEPS: Phase[] = ['nombre', 'contacto']
@@ -160,52 +162,20 @@ function SorteoEmpty() {
 
   return (
     <div ref={ref} className="sorteo-empty">
-      <div className="sorteo-panel__fx" aria-hidden>
-        <div className="sorteo-panel__mesh" />
-        <div className="sorteo-panel__scan" />
-      </div>
-      <div data-sorteo-empty className="sorteo-empty__ring">
-        <SorteoTicketIcon className="sorteo-ticket-icon" />
-      </div>
-      <p data-sorteo-empty className="font-display text-lg text-white">
-        Próximo sorteo en camino
+      <SorteoLiveBanner
+        title="Próximo sorteo en camino"
+        prize="Premio sorpresa al aire"
+        sponsorName={null}
+        deadline={null}
+        imageUrl={null}
+      />
+      <p data-sorteo-empty className="font-display text-base text-white mt-3">
+        Quédate en la radio
       </p>
-      <p data-sorteo-empty className="text-white/40 text-xs max-w-[220px] mt-2 leading-relaxed">
-        Quédate en la radio: el locutor anuncia los concursos al aire.
+      <p data-sorteo-empty className="text-white/40 text-xs max-w-[240px] mt-1.5 leading-relaxed">
+        El locutor anuncia los concursos en vivo. Vuelve pronto para inscribirte.
       </p>
     </div>
-  )
-}
-
-function SorteoPrizeHeader({ contest }: { contest: ActiveContest }) {
-  const ref = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    el.style.opacity = '0'
-    el.style.transform = 'translateY(10px)'
-    const id = requestAnimationFrame(() => {
-      el.style.transition = 'opacity 0.45s ease-out, transform 0.45s ease-out'
-      el.style.opacity = '1'
-      el.style.transform = 'translateY(0)'
-    })
-    return () => cancelAnimationFrame(id)
-  }, [contest.id])
-
-  return (
-    <header ref={ref} className="sorteo-prize relative z-[1] min-w-0">
-      <div className="sorteo-prize__shimmer" aria-hidden />
-      <span className="sorteo-prize__badge">
-        <span className="sorteo-prize__badge-dot" aria-hidden />
-        Sorteo en vivo
-      </span>
-      <h3 className="sorteo-prize__title break-words">{contest.title}</h3>
-      <p className="sorteo-prize__reward break-words">{contest.prize}</p>
-      {contest.sponsorName && (
-        <p className="sorteo-prize__sponsor truncate">Auspicia · {contest.sponsorName}</p>
-      )}
-    </header>
   )
 }
 
@@ -330,7 +300,13 @@ export function ListenerSignup({
         />
       </div>
 
-      <SorteoPrizeHeader contest={contest} />
+      <SorteoLiveBanner
+        title={contest.title}
+        prize={contest.prize}
+        sponsorName={contest.sponsorName}
+        deadline={contest.deadline}
+        imageUrl={contest.imageUrl}
+      />
 
       <div ref={bodyRef} className="sorteo-body relative z-[1] w-full min-w-0">
         {!['sending', 'done', 'error'].includes(phase) && (
@@ -366,15 +342,6 @@ export function ListenerSignup({
 
               {contest.description && (
                 <p data-sorteo-field className="sorteo-desc">{contest.description}</p>
-              )}
-              {contest.deadline && (
-                <p data-sorteo-field className="sorteo-deadline">
-                  <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3" stroke="currentColor" strokeWidth="2" aria-hidden>
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 2" strokeLinecap="round" />
-                  </svg>
-                  Cierra · {contest.deadline}
-                </p>
               )}
 
               <label data-sorteo-field className="flex flex-col min-w-0 w-full">

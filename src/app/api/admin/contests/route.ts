@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     description: body.description,
     sponsor_name: body.sponsor_name,
     sponsor_ad_id: body.sponsor_ad_id,
+    banner_image_url: body.banner_image_url,
     deadline: body.deadline,
     active: Boolean(body.active),
   })

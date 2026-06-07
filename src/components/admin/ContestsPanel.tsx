@@ -26,6 +26,7 @@ export function ContestsPanel() {
   const [description, setDescription] = useState('')
   const [sponsorName, setSponsorName] = useState('')
   const [deadline, setDeadline] = useState('')
+  const [bannerImageUrl, setBannerImageUrl] = useState('')
   const [activate, setActivate] = useState(true)
 
   function load() {
@@ -61,13 +62,14 @@ export function ContestsPanel() {
           prize,
           description: description || undefined,
           sponsor_name: sponsorName || undefined,
+          banner_image_url: bannerImageUrl || undefined,
           deadline: deadline || undefined,
           active: activate,
         }),
       })
       if (res.ok) {
         setMode('list')
-        setSlug(''); setTitle(''); setPrize(''); setDescription(''); setSponsorName(''); setDeadline('')
+        setSlug(''); setTitle(''); setPrize(''); setDescription(''); setSponsorName(''); setDeadline(''); setBannerImageUrl('')
         load()
       }
     } finally { setSaving(false) }
@@ -101,6 +103,8 @@ export function ContestsPanel() {
           <input value={sponsorName} onChange={e => setSponsorName(e.target.value)} placeholder="Patrocinador"
             className="w-full rounded-xl px-3 py-2.5 text-white text-sm bg-[#0A0A12] border border-[#1A1A2E]" />
           <input value={deadline} onChange={e => setDeadline(e.target.value)} placeholder="Fecha límite (texto libre)"
+            className="w-full rounded-xl px-3 py-2.5 text-white text-sm bg-[#0A0A12] border border-[#1A1A2E]" />
+          <input value={bannerImageUrl} onChange={e => setBannerImageUrl(e.target.value)} placeholder="URL imagen del banner (opcional)"
             className="w-full rounded-xl px-3 py-2.5 text-white text-sm bg-[#0A0A12] border border-[#1A1A2E]" />
           <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Descripción"
             rows={2}

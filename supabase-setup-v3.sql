@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS contests (
   description   TEXT,
   sponsor_name  TEXT,
   sponsor_ad_id TEXT,
+  banner_image_url TEXT,
   deadline      TEXT,
   active        BOOLEAN     DEFAULT false,
   created_at    TIMESTAMPTZ DEFAULT NOW()
@@ -49,6 +50,9 @@ ALTER TABLE ad_events DISABLE ROW LEVEL SECURITY;
 ALTER TABLE contests DISABLE ROW LEVEL SECURITY;
 ALTER TABLE app_notifications DISABLE ROW LEVEL SECURITY;
 ALTER TABLE push_subscriptions DISABLE ROW LEVEL SECURITY;
+
+-- Si ya ejecutaste v3 antes, agrega la columna del banner:
+-- ALTER TABLE contests ADD COLUMN IF NOT EXISTS banner_image_url TEXT;
 
 INSERT INTO contests (slug, title, prize, description, sponsor_name, deadline, active)
 VALUES (

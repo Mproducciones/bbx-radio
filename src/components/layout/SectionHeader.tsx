@@ -13,6 +13,8 @@ interface SectionHeaderProps {
   letterReveal?: boolean
   /** Título y línea centrados (Grilla) */
   centered?: boolean
+  /** Línea de acento bajo el título */
+  showLine?: boolean
   className?: string
 }
 
@@ -22,6 +24,7 @@ export function SectionHeader({
   accent = 'var(--color-mag-400)',
   letterReveal = false,
   centered = false,
+  showLine = true,
   className = '',
 }: SectionHeaderProps) {
   const titleClass = `${
@@ -46,13 +49,15 @@ export function SectionHeader({
           {title}
         </motion.h1>
       )}
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 0.5, delay: lineDelay, ease: EASE_OUT }}
-        className={`mt-2 h-px rounded-full${centered ? ' origin-center mx-auto' : ' origin-left'}`}
-        style={{ background: `linear-gradient(90deg, ${accent} 0%, ${accent}55 40%, transparent 100%)`, maxWidth: 80 }}
-      />
+      {showLine && (
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: lineDelay, ease: EASE_OUT }}
+          className={`mt-2 h-px rounded-full${centered ? ' origin-center mx-auto' : ' origin-left'}`}
+          style={{ background: `linear-gradient(90deg, ${accent} 0%, ${accent}55 40%, transparent 100%)`, maxWidth: 80 }}
+        />
+      )}
     </header>
   )
 }

@@ -8,6 +8,7 @@ export type Contest = {
   description: string | null
   sponsor_name: string | null
   sponsor_ad_id: string | null
+  banner_image_url: string | null
   deadline: string | null
   active: boolean
   created_at: string
@@ -21,6 +22,7 @@ const DEFAULT: Contest = {
   description: 'Regístrate y el locutor anuncia al ganador en la programación.',
   sponsor_name: 'Patrocinador Bienvenida',
   sponsor_ad_id: null,
+  banner_image_url: null,
   deadline: 'Esta semana',
   active: true,
   created_at: new Date().toISOString(),
@@ -38,6 +40,7 @@ function rowToContest(r: Record<string, unknown>): Contest {
     description: r.description ? String(r.description) : null,
     sponsor_name: r.sponsor_name ? String(r.sponsor_name) : null,
     sponsor_ad_id: r.sponsor_ad_id ? String(r.sponsor_ad_id) : null,
+    banner_image_url: r.banner_image_url ? String(r.banner_image_url) : null,
     deadline: r.deadline ? String(r.deadline) : null,
     active: Boolean(r.active),
     created_at: String(r.created_at ?? new Date().toISOString()),
@@ -87,6 +90,7 @@ export async function createContest(input: {
   description?: string
   sponsor_name?: string
   sponsor_ad_id?: string
+  banner_image_url?: string
   deadline?: string
   active?: boolean
 }): Promise<Contest | null> {
@@ -102,6 +106,7 @@ export async function createContest(input: {
     description: input.description ?? null,
     sponsor_name: input.sponsor_name ?? null,
     sponsor_ad_id: input.sponsor_ad_id ?? null,
+    banner_image_url: input.banner_image_url ?? null,
     deadline: input.deadline ?? null,
     active: input.active ?? false,
   }
@@ -116,6 +121,7 @@ export async function createContest(input: {
       description: row.description,
       sponsor_name: row.sponsor_name,
       sponsor_ad_id: row.sponsor_ad_id,
+      banner_image_url: row.banner_image_url,
       deadline: row.deadline,
       created_at: new Date().toISOString(),
     }

@@ -525,21 +525,59 @@ body {
     box-sizing: border-box;
   }
 
-  .programacion-route .prog-schedule {
+  .scroll-tab-route__content {
     width: 100%;
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
   }
 
+  .programacion-route .prog-schedule {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.25rem 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .programacion-route .prog-schedule__row {
+    border: none;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .programacion-route .prog-schedule__row.is-live {
+    background: color-mix(in srgb, var(--prog-accent, var(--color-mag-400)) 8%, rgba(255, 255, 255, 0.03));
+    box-shadow: none;
+  }
+
   .programacion-route .prog-schedule__days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     min-width: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    gap: clamp(0.08rem, 0.7vw, 0.18rem);
+    padding: 0.18rem;
   }
 
   .programacion-route .prog-schedule__day {
-    font-size: clamp(0.6875rem, 2.8vw, 0.8125rem);
-    padding-inline: clamp(0.05rem, 0.5vw, 0.15rem);
+    flex: none;
+    width: auto;
+    min-width: 0;
+    font-size: clamp(0.625rem, 2.35vw, 0.75rem);
+    padding-inline: 0.05rem;
+    letter-spacing: 0;
+  }
+
+  .programacion-route .prog-schedule__day.is-active {
+    font-size: clamp(0.625rem, 2.35vw, 0.75rem);
+    box-shadow: none;
   }
 
   .programacion-route .prog-schedule__row {
@@ -565,6 +603,185 @@ body {
     min-width: 0;
     max-width: 100%;
   }
+
+  .app-scroll-route:has(.saludos-route) {
+    align-items: stretch;
+  }
+
+  .app-scroll-route:has(.saludos-route) .scroll-tab-shell {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .app-scroll-route:has(.participa-route) {
+    align-items: stretch;
+  }
+
+  .app-scroll-route:has(.participa-route) .scroll-tab-shell {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .participa-route__content {
+    padding-bottom: 0.35rem;
+  }
+}
+
+/* ── Scroll tabs planos (Programación + Saludos) ─────────────── */
+.scroll-tab-route__content {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.programacion-route .prog-schedule {
+  padding: 0.25rem 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.programacion-route .prog-schedule__row {
+  border: none;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.programacion-route .prog-schedule__row.is-live {
+  background: color-mix(in srgb, var(--prog-accent, var(--color-mag-400)) 8%, rgba(255, 255, 255, 0.03));
+  box-shadow: none;
+}
+
+.programacion-route .prog-schedule__days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  gap: clamp(0.08rem, 0.7vw, 0.18rem);
+  padding: 0.18rem;
+}
+
+.programacion-route .prog-schedule__day {
+  flex: none;
+  width: auto;
+  min-width: 0;
+  font-size: clamp(0.625rem, 2.35vw, 0.75rem);
+  padding-inline: 0.05rem;
+  letter-spacing: 0;
+}
+
+.programacion-route .prog-schedule__day.is-active {
+  font-size: clamp(0.625rem, 2.35vw, 0.75rem);
+  box-shadow: none;
+}
+
+.saludos-route .saludos-form {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.saludos-route .saludos-rail__item {
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.saludos-route .saludos-rail__item.is-lit {
+  border-color: transparent;
+}
+
+.saludos-route .saludos-motivo-card {
+  border-width: 1px;
+  box-shadow: none;
+}
+
+.saludos-route .saludos-cabina-card {
+  border: none;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.participa-route__content {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.participa-hook {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.participa-hook__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--participa-hook-accent, #db8918) 88%, #fff);
+}
+
+.participa-hook__pill::before {
+  content: '';
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: var(--participa-hook-accent, #db8918);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.participa-hook__text {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.participa-route .participa-mode {
+  min-height: 3.1rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.38rem 0.3rem 0.42rem;
+  border-radius: 0.85rem;
+}
+
+.participa-route .participa-mode.is-active {
+  transform: none;
+}
+
+.participa-route .participa-mode__glow {
+  box-shadow: 0 8px 20px -10px color-mix(in srgb, var(--mode-accent, var(--color-mag-400)) 45%, transparent);
+}
+
+.participa-mode-sub {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  opacity: 0.92;
+}
+
+.participa-route .participa-panel {
+  border-radius: 0;
+}
+
+.participa-route .participa-content {
+  overflow: visible;
 }
 
 /* ── Programación / grilla ──────────────────────────────────── */
@@ -642,7 +859,8 @@ body {
 }
 
 .prog-schedule__days {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   align-items: stretch;
   gap: 0.2rem;
   padding: 0.2rem;
@@ -650,11 +868,15 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .prog-schedule__day {
   position: relative;
-  flex: 1;
+  flex: none;
+  width: auto;
   min-width: 0;
   min-height: 2.5rem;
   display: flex;
@@ -890,7 +1112,8 @@ body {
   }
 
   .prog-schedule__day.is-active {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    box-shadow: none;
   }
 
   .prog-schedule__today-dot {
@@ -3294,7 +3517,7 @@ html.envivo-boot-active body {
 
 .participa-modes {
   display: grid;
-  gap: 0.4rem;
+  gap: 0.35rem;
   flex-shrink: 0;
 }
 
@@ -3309,19 +3532,19 @@ html.envivo-boot-active body {
 .participa-mode {
   position: relative;
   min-width: 0;
-  min-height: 4.5rem;
+  min-height: 3.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.15rem;
-  padding: 0.45rem 0.35rem 0.5rem;
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--mode-accent, var(--color-mag-400)) 28%, rgba(255, 255, 255, 0.1));
-  background: rgba(255, 255, 255, 0.03);
+  gap: 0.12rem;
+  padding: 0.4rem 0.3rem 0.45rem;
+  border-radius: 0.85rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.88);
   overflow: hidden;
-  transition: transform 0.15s, border-color 0.2s;
+  transition: transform 0.15s, color 0.2s;
 }
 
 .participa-mode__glow {
@@ -3370,8 +3593,7 @@ html.envivo-boot-active body {
 
 .participa-mode.is-active {
   color: #07070e;
-  border-color: transparent;
-  transform: scale(1.02);
+  transform: none;
 }
 
 .participa-mode.is-active .participa-mode__hook {
@@ -3559,8 +3781,12 @@ html.envivo-boot-active body {
 
 @media (max-width: 380px) {
   .participa-mode {
-    min-height: 4rem;
-    padding: 0.4rem 0.25rem 0.45rem;
+    min-height: 2.85rem;
+    padding: 0.35rem 0.2rem 0.4rem;
+  }
+
+  .participa-route .participa-mode {
+    min-height: 2.85rem;
   }
 
   .participa-mode__emoji {
@@ -3573,12 +3799,12 @@ html.envivo-boot-active body {
 }
 
 @media (min-width: 420px) {
-  .participa-mode__hook {
-    display: block;
+  .participa-mode {
+    min-height: 3.35rem;
   }
 
-  .participa-mode {
-    min-height: 4.85rem;
+  .participa-route .participa-mode {
+    min-height: 3.1rem;
   }
 }
 
@@ -3595,20 +3821,57 @@ html.envivo-boot-active body {
     padding-top: 0;
   }
 
-  .saludos-route .saludos-arena {
+  .saludos-route__content {
     width: 100%;
     min-width: 0;
     max-width: 100%;
+    padding-bottom: 0.35rem;
     box-sizing: border-box;
   }
 
   .saludos-route .saludos-form {
     min-height: 14rem;
   }
+}
 
-  .saludos-arena__body {
-    padding: 0.55rem;
-  }
+/* Hook compacto — sin caja de ticker/hero */
+.saludos-hook {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.saludos-hook__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(239, 68, 68, 0.88);
+}
+
+.saludos-hook__pill::before {
+  content: '';
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.saludos-hook__text {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.saludos-route .saludos-step-heading {
+  font-size: 1.125rem;
 }
 
 .saludos-arena {
@@ -4431,6 +4694,196 @@ html.envivo-boot-active body {
   }
 }
 
+/* ── Sorteo en vivo — banner hero ─────────────────────────────────────── */
+.sorteo-live-banner {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sorteo-live-banner__visual {
+  position: relative;
+  min-height: clamp(8.5rem, 38vw, 11rem);
+  border-radius: 1rem 1rem 0 0;
+  background: linear-gradient(135deg, #2a1848 0%, #12081f 45%, #07070e 100%);
+}
+
+.sorteo-live-banner__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sorteo-live-banner__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sorteo-live-banner__overlay--photo {
+  background:
+    linear-gradient(180deg, rgba(7, 7, 14, 0.15) 0%, rgba(7, 7, 14, 0.55) 55%, rgba(7, 7, 14, 0.92) 100%),
+    linear-gradient(90deg, rgba(125, 89, 181, 0.35) 0%, transparent 45%);
+}
+
+.sorteo-live-banner__fallback {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.sorteo-live-banner__mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 70% at 15% 20%, rgba(125, 89, 181, 0.55) 0%, transparent 58%),
+    radial-gradient(ellipse 60% 55% at 90% 80%, rgba(255, 0, 110, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 70% 15%, rgba(219, 137, 24, 0.28) 0%, transparent 50%);
+}
+
+.sorteo-live-banner__rays {
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(from 0deg, transparent, rgba(255, 0, 110, 0.14), transparent 28%);
+  animation: sorteo-scan 10s linear infinite;
+}
+
+.sorteo-live-banner__floatie {
+  position: absolute;
+  font-size: 1.15rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sorteo-live-banner__gift {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.5rem;
+  font-size: clamp(2.75rem, 14vw, 4rem);
+  line-height: 1;
+  opacity: 0.22;
+  filter: blur(0.3px);
+  pointer-events: none;
+}
+
+.sorteo-live-banner__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: inherit;
+  padding: 0.75rem 0.85rem 0.8rem;
+  box-sizing: border-box;
+}
+
+.sorteo-live-banner__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  padding: 0.22rem 0.55rem;
+  margin-bottom: 0.4rem;
+  border-radius: 9999px;
+  font-size: 0.5625rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(255, 0, 110, 0.88);
+  box-shadow: 0 4px 16px -4px rgba(255, 0, 110, 0.65);
+}
+
+.sorteo-live-banner__live-dot {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: #fff;
+  animation: sorteo-live-pulse 2s ease-out infinite;
+}
+
+.sorteo-live-banner__prize {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.125rem, 5.2vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.sorteo-live-banner__title {
+  margin: 0.2rem 0 0;
+  font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.72);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sorteo-live-banner__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.07) 48%,
+    transparent 58%
+  );
+  animation: sorteo-shimmer 5s ease-in-out infinite;
+}
+
+.sorteo-live-banner__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(125, 89, 181, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sorteo-live-banner__deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.participa-route .sorteo-panel {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(125, 89, 181, 0.32);
+  box-shadow: 0 16px 40px -24px rgba(125, 89, 181, 0.5);
+  background: linear-gradient(168deg, rgba(14, 10, 22, 0.98) 0%, rgba(7, 7, 14, 0.96) 100%);
+}
+
+.participa-route .sorteo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0 1.25rem;
+  min-height: auto;
+}
+
+.participa-route .sorteo-empty .sorteo-live-banner {
+  width: 100%;
+  opacity: 0.72;
+}
+
 /* ── Sorteo en vivo — experiencia Participa ───────────────────────────── */
 .sorteo-panel {
   flex: 1;
@@ -4447,6 +4900,10 @@ html.envivo-boot-active body {
     0 18px 44px -20px rgba(125, 89, 181, 0.45),
     0 0 0 1px rgba(255, 0, 110, 0.06) inset,
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.participa-route .sorteo-panel .sorteo-live-banner__visual {
+  border-radius: 0;
 }
 
 .sorteo-panel__fx {

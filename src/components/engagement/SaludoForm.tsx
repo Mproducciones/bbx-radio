@@ -97,22 +97,6 @@ function AirBurstParticles({ color }: { color: string }) {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-10" aria-hidden />
 }
 
-function LiveMicPulse({ accent }: { accent: string }) {
-  return (
-    <div className="saludos-mic-pulse shrink-0" aria-hidden>
-      <motion.div
-        className="saludos-mic-pulse__ring"
-        style={{ borderColor: accent }}
-        animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
-      />
-      <div className="saludos-mic-pulse__core" style={{ background: `${accent}22`, borderColor: `${accent}55`, color: accent }}>
-        🎙️
-      </div>
-    </div>
-  )
-}
-
 function RadioWaves({ color = '#db8918' }: { color?: string }) {
   return (
     <div className="flex items-end justify-center gap-1.5 h-10" aria-hidden>
@@ -245,13 +229,7 @@ export function SaludoForm({
               transition={springSnappy}
               className="flex flex-col flex-1 min-h-0 min-w-0 gap-2.5 w-full"
             >
-              <div className="flex items-center gap-3">
-                <LiveMicPulse accent={accent} />
-                <div className="min-w-0">
-                  <h2 className="saludos-step-heading">¿Qué le mandamos al aire?</h2>
-                  <p className="saludos-step-sub">Toca la ocasión — el locutor lo lee en vivo</p>
-                </div>
-              </div>
+              <h2 className="saludos-step-heading">¿Qué le mandamos al aire?</h2>
 
               <div ref={gridRef} className="saludos-motivo-grid">
                 {MOTIVOS.map(m => (
