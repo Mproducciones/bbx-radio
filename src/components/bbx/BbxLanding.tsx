@@ -43,6 +43,7 @@ import { BbxPhoneMockup } from './BbxPhoneMockup'
 import { BbxHubTile } from './BbxHubTile'
 import { BbxSectionPage } from './BbxSectionPage'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
+import { RADIO_TAGLINE } from '@/lib/radioConfig'
 
 const FEATURE_ICONS: LucideIcon[] = [Mic2, MessageCircle, Megaphone, Tv, Vote, Settings2]
 
@@ -78,7 +79,7 @@ function LiveDemoBar() {
           <span className="w-1.5 h-1.5 rounded-full bg-[#db8918] animate-pulse shrink-0" aria-hidden />
           <p className="text-[10px] font-bold uppercase tracking-wide text-[#db8918]">Demo en vivo</p>
         </div>
-        <p className="text-[11px] text-white/55 truncate mt-0.5">Radio Bienvenida 93.3 · estás escuchando la app</p>
+        <p className="text-[11px] text-white/55 truncate mt-0.5">{RADIO_TAGLINE} · estás escuchando la app</p>
       </div>
       <button
         type="button"

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
+import { RADIO_TAGLINE } from '@/lib/radioConfig'
 
 const STREAM_URL = 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida'
 const META_INT   = 16000
-const FALLBACK   = { title: 'En Vivo', artist: 'Radio Bienvenida 93.3 FM', raw: '' }
+const FALLBACK   = { title: 'En Vivo', artist: RADIO_TAGLINE, raw: '' }
 
 // Cache 20 segundos — no golpear el stream en cada request
 let _cache: { data: NowPlayingMeta; ts: number } | null = null

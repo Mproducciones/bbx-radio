@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 import { PARTICIPA_ACTIONS } from '@/lib/participaCopy'
 
 export type ParticipaTab = 'votar' | 'pedir' | 'sorteo'
@@ -17,7 +18,14 @@ export function ParticipaActionTabs({
   onChange: (id: ParticipaTab) => void
 }) {
   return (
-    <div className="participa-segment w-full min-w-0 max-w-full" role="tablist" aria-label="Formas de participar">
+    <div
+      className={cn(
+        'participa-modes w-full min-w-0 max-w-full',
+        tabs.length === 2 ? 'participa-modes--duo' : 'participa-modes--trio',
+      )}
+      role="tablist"
+      aria-label="Formas de participar"
+    >
       {tabs.map(({ id, label }) => {
         const meta = PARTICIPA_ACTIONS[id]
         const isActive = active === id
@@ -29,21 +37,22 @@ export function ParticipaActionTabs({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(id)}
-            whileTap={{ scale: 0.97 }}
-            className={`participa-segment__btn ${isActive ? 'is-active' : ''}`}
-            style={
-              isActive
-                ? ({
-                    '--tab-accent': meta.color,
-                    background: `linear-gradient(135deg, ${meta.color}, color-mix(in srgb, ${meta.color} 72%, #fff))`,
-                  } as React.CSSProperties)
-                : undefined
-            }
+            whileTap={{ scale: 0.96 }}
+            className={cn('participa-mode', isActive && 'is-active')}
+            style={{ '--mode-accent': meta.color } as React.CSSProperties}
           >
-            <span className="participa-segment__emoji text-base leading-none" aria-hidden>
+            {isActive && (
+              <motion.div
+                layoutId="participa-mode-glow"
+                className="participa-mode__glow"
+                transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+              />
+            )}
+            <span className="participa-mode__emoji" aria-hidden>
               {meta.emoji}
             </span>
-            <span className="truncate">{label}</span>
+            <span className="participa-mode__label">{label}</span>
+            <span className="participa-mode__hook">{meta.hook}</span>
           </motion.button>
         )
       })}

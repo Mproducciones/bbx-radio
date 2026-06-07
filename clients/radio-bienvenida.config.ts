@@ -3,8 +3,8 @@ import type { RadioConfig } from '@/types/radio'
 const config: RadioConfig = {
   id:       'radio-bienvenida',
   name:     'Radio Bienvenida FM',
-  slogan:   'Tu radio de siempre',
-  frequency: '94.5 FM',
+  slogan:   'La radio de O\'Higgins',
+  frequency: '93.3 FM',
   city:     'Rancagua',
   country:  'CL',
   location: {

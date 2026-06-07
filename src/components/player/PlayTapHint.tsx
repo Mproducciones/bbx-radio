@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
+import { RADIO_TAGLINE } from '@/lib/radioConfig'
 
 /** Aviso discreto cuando iOS bloquea autoplay — no es mini reproductor */
 export function PlayTapHint() {
@@ -22,7 +23,7 @@ export function PlayTapHint() {
           aria-label="Toca para escuchar la radio en vivo"
         >
           <span className="play-tap-hint__dot" aria-hidden />
-          <span className="play-tap-hint__text">Toca y suena la 93.3 — estás a un click del aire</span>
+          <span className="play-tap-hint__text">Toca y suena — {RADIO_TAGLINE}</span>
         </motion.button>
       )}
     </AnimatePresence>

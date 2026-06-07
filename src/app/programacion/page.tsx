@@ -18,19 +18,18 @@ export default async function ProgramacionPage() {
   const initialDay = getTodayInTimezone('America/Santiago')
 
   return (
-    <AppMenuScreen scroll contextBar className="programacion-route w-full min-w-0">
-      <SectionHeader compact title="Programación" />
-      <p className="programacion-route__sub shrink-0">Horarios de la semana · programa en vivo resaltado</p>
-      <div className="programacion-route__content flex flex-col gap-1.5 md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
-        <RotatingBanner position="top" compact className="shrink-0" />
+    <AppMenuScreen scroll fullWidth className="programacion-route w-full min-w-0 max-w-full">
+      <SectionHeader compact letterReveal centered title="Programación" className="min-w-0 max-w-full overflow-x-hidden" />
+      <div className="programacion-route__content flex flex-col gap-1.5 min-w-0 max-w-full md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
+        <RotatingBanner position="top" compact className="shrink-0 w-full min-w-0 max-w-full" />
         <ProgramSchedule
           programs={programs}
           initialDay={initialDay}
           fill
           hideHeader
-          className="max-md:shrink-0"
+          className="w-full min-w-0 max-w-full"
         />
-        <RotatingBanner position="bottom" compact className="shrink-0" />
+        <RotatingBanner position="bottom" compact className="shrink-0 w-full min-w-0 max-w-full" />
       </div>
     </AppMenuScreen>
   )

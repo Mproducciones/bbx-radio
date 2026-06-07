@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { AdminCard, AdminCardHeader, AdminIcons } from './adminUi'
 import { NOTIFICATION_VISIBLE_PRESETS, type NotificationVisibleHours } from '@/lib/notificationSettings'
+import { RADIO_TAGLINE } from '@/lib/radioConfig'
 
 type SendState = 'idle' | 'sending' | 'done' | 'error'
 
@@ -41,7 +42,7 @@ const PLANTILLAS_LOCUTOR = [
   },
   {
     title: 'Grilla de hoy',
-    body: 'Mira qué programa viene en Radio Bienvenida 93.3.',
+    body: `Mira qué programa viene — ${RADIO_TAGLINE}.`,
     url: '/programacion',
   },
 ] as const

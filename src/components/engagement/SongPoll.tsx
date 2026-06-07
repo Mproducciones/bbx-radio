@@ -66,7 +66,7 @@ function VoteBurst({ active }: { active: boolean }) {
         ctx.translate(p.x, p.y)
         ctx.rotate(p.angle)
         ctx.globalAlpha = Math.max(0, p.alpha)
-        ctx.font = `${p.size}px serif`
+        ctx.font = `${p.size}px Montserrat, sans-serif`
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(p.glyph, 0, 0)
@@ -267,7 +267,7 @@ export function SongPoll({
             animate={{ opacity: [1, 0.35, 1], scale: [1, 1.2, 1] }}
             transition={{ duration: 1.2, repeat: Infinity }}
           />
-          <p className="text-[#db8918] text-[9px] font-black uppercase tracking-[0.2em]">Batalla de temas</p>
+          <p className="text-[#db8918] text-[10px] font-black uppercase tracking-[0.18em]">Batalla de temas</p>
           {poll.totalVotes > 0 && (
             <span className="ml-auto text-white/35 text-[9px] tabular-nums">
               {poll.totalVotes} voto{poll.totalVotes !== 1 ? 's' : ''}
@@ -275,7 +275,7 @@ export function SongPoll({
           )}
         </div>
 
-        <p className={`text-white font-display leading-tight ${compact ? 'text-sm mb-2 line-clamp-2' : 'text-lg mb-4'}`}>
+        <p className={`text-white font-display leading-tight ${compact ? 'text-base mb-2 line-clamp-2' : 'text-lg mb-4'}`}>
           {poll.question}
         </p>
 
@@ -322,11 +322,11 @@ export function SongPoll({
                 <div className="relative z-[1] min-w-0 w-full">
                   <VinylDisc color={accent} spinning={!voted && !voting} compact={compact} />
                   <p
-                    className={`text-white font-bold leading-tight line-clamp-2 ${compact ? 'text-[10px]' : 'text-xs'}`}
+                    className={`text-white font-bold leading-tight line-clamp-2 ${compact ? 'text-[11px]' : 'text-xs'}`}
                   >
                     {opt.title}
                   </p>
-                  <p className={`text-white/45 truncate ${compact ? 'text-[9px] mt-0' : 'text-[10px] mt-0.5'}`}>
+                  <p className={`text-white/50 truncate ${compact ? 'text-[10px] mt-0' : 'text-[10px] mt-0.5'}`}>
                     {opt.artist}
                   </p>
 

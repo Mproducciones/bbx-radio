@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
+import { RADIO_TAGLINE } from '@/lib/radioConfig'
+
 export function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true)
 
@@ -26,7 +28,8 @@ export function LoadingScreen() {
         </div>
         <div className="flex flex-col items-center gap-2">
           <h1 className="font-display text-2xl text-white">Radio Bienvenida</h1>
-          <p className="text-[var(--color-ink-400)] text-sm">Cargando...</p>
+          <p className="text-[var(--color-ink-400)] text-sm">{RADIO_TAGLINE}</p>
+          <p className="text-[var(--color-ink-500)] text-xs">Cargando…</p>
         </div>
         <div className="w-48 h-1 bg-[var(--color-ink-800)] rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-[#db8918] to-[#b56b0f]" style={{ animation: 'loading 2s ease-in-out' }} />

@@ -16,6 +16,8 @@ import { NotificationBubble } from '@/components/notifications/NotificationBubbl
 import { NoiseOverlay } from '@/components/pwa/NoiseOverlay'
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister'
 import { SubscriptionGraceBanner } from '@/components/billing/SubscriptionGraceBanner'
+import { RADIO_META } from '@/lib/radioConfig'
+import { radioFontClassName } from '@/lib/fonts/radioFonts'
 import './globals.css'
 
 const SITE_URL = process.env.VERCEL_URL
@@ -25,7 +27,7 @@ const SITE_URL = process.env.VERCEL_URL
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Radio Bienvenida 93.3 FM',
-  description: 'Escucha Radio Bienvenida 93.3 FM en vivo desde Rancagua. Tu radio favorita.',
+  description: RADIO_META.description,
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Radio Bienvenida 93.3 FM',
     title: 'Radio Bienvenida 93.3 FM — Rancagua',
-    description: 'Escúchanos en vivo. Tu radio en Rancagua.',
+    description: RADIO_META.descriptionShort,
     images: [
       {
         url: '/icons/icon-512.png',
@@ -58,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Radio Bienvenida 93.3 FM',
-    description: 'Escúchanos en vivo. Tu radio en Rancagua.',
+    description: RADIO_META.descriptionShort,
     images: ['/icons/icon-512.png'],
   },
 }
@@ -78,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" data-theme="dark" suppressHydrationWarning>
+    <html lang="es" data-theme="dark" className={radioFontClassName} suppressHydrationWarning>
       <body className="min-h-screen max-md:h-[100dvh] max-md:overflow-hidden overflow-x-clip antialiased" suppressHydrationWarning>
         <ServiceWorkerRegister />
         <SubscriptionGraceBanner />

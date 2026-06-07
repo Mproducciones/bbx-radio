@@ -17,6 +17,8 @@ interface RadioLocaleBarProps {
   compact?: boolean
   /** Sin borde ni caja — integrado al escenario En Vivo */
   borderless?: boolean
+  /** Barra grande legible en el escenario En Vivo */
+  stage?: boolean
 }
 
 function formatChileTime(timezone: string): string {
@@ -61,6 +63,7 @@ export function RadioLocaleBar({
   className = '',
   compact = false,
   borderless = false,
+  stage = false,
 }: RadioLocaleBarProps) {
   const timezone = radio.location?.timezone ?? 'America/Santiago'
   const lat = radio.location?.lat ?? -34.1708
@@ -134,16 +137,20 @@ export function RadioLocaleBar({
   }, [mounted, lat, lon, timezone])
 
   const wx = weather ? weatherFromCode(weather.code) : null
+  const isStage = stage
+  const isCompact = compact && !isStage
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 w-full min-w-0 max-w-full overflow-hidden relative z-[3] box-border ${
-        borderless
-          ? 'radio-locale-bar--borderless py-1.5 px-0.5 text-[11px] min-h-0'
-          : `rounded-xl ${compact ? 'py-2 px-2.5 text-xs min-h-[2.75rem]' : 'py-2.5 px-3.5 text-sm'}`
+      className={`flex items-center justify-between gap-3 w-full min-w-0 max-w-full overflow-hidden relative z-[3] box-border ${
+        isStage
+          ? 'radio-locale-bar--stage py-2.5 px-1 min-h-[3rem]'
+          : borderless
+            ? 'radio-locale-bar--borderless py-1.5 px-0.5 text-[11px] min-h-0'
+            : `rounded-xl ${compact ? 'py-2 px-2.5 text-xs min-h-[2.75rem]' : 'py-2.5 px-3.5 text-sm'}`
       } ${className}`}
       style={
-        borderless
+        isStage || borderless
           ? undefined
           : {
               background: 'rgba(7,7,14,0.88)',
@@ -154,30 +161,34 @@ export function RadioLocaleBar({
       aria-label={`Ubicación ${placeLabel}, hora y clima`}
     >
       <span
-        className={`font-bold truncate min-w-0 flex-1 ${compact ? 'text-xs' : 'text-sm'}`}
-        style={{ color: 'rgba(255,255,255,0.75)' }}
+        className={`font-semibold truncate min-w-0 flex-1 ${
+          isStage ? 'text-base tracking-wide' : isCompact ? 'text-xs' : 'text-sm'
+        }`}
+        style={{ color: isStage ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.75)' }}
         title={placeLabel}
       >
         {placeLabel}
       </span>
 
       <div
-        className={`flex items-center gap-2 flex-shrink-0 font-bold tabular-nums ${compact ? 'text-xs' : 'text-sm'}`}
+        className={`flex items-center gap-2.5 flex-shrink-0 font-bold tabular-nums ${
+          isStage ? 'text-base' : isCompact ? 'text-xs' : 'text-sm'
+        }`}
       >
         <time dateTime={time} style={{ color: accent }} title="Hora Chile">
           {mounted ? time : '--:--'}
         </time>
-        <span className="w-px h-4 bg-white/15" aria-hidden />
+        <span className={`w-px bg-white/15 ${isStage ? 'h-5' : 'h-4'}`} aria-hidden />
         {wx && weather ? (
           <span
-            className="flex items-center gap-1"
-            style={{ color: 'rgba(255,255,255,0.7)' }}
+            className="flex items-center gap-1.5"
+            style={{ color: isStage ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.7)' }}
             title={wx.label}
           >
-            <span className={`leading-none ${compact ? 'text-lg' : 'text-base'}`} aria-hidden>
+            <span className={`leading-none ${isStage ? 'text-2xl' : isCompact ? 'text-lg' : 'text-base'}`} aria-hidden>
               {wx.emoji}
             </span>
-            <span className={compact ? 'text-sm font-bold' : ''}>{weather.temp}°</span>
+            <span className={isStage ? 'text-lg font-bold' : isCompact ? 'text-sm font-bold' : ''}>{weather.temp}°</span>
           </span>
         ) : (
           <span style={{ color: 'rgba(255,255,255,0.35)' }} title={weatherError ? 'Clima no disponible' : 'Cargando'}>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { EASE_OUT } from '@/lib/motion/framer'
 import type { NowPlaying, RadioConfig } from '@/types/radio'
 import { useAlbumColors } from '@/hooks/useAlbumColors'
 import { readFrequencyData, readTimeDomainData } from '@/lib/analyserRead'
@@ -11,7 +12,10 @@ import { usePlayerSecrets } from './easterEggs/usePlayerSecrets'
 import { InteractiveLogo } from './easterEggs/InteractiveLogo'
 import { BbxFrequencyGate } from '@/components/pwa/BbxFrequencyGate'
 import { DotGridVisualizer } from './DotGridVisualizer'
-import { VinylDiscFrame, neumoControlStyle } from './VinylDiscFrame'
+import { neumoControlStyle } from './VinylDiscFrame'
+import { EnVivoVinylIntro } from './EnVivoVinylIntro'
+import { useEnVivoIntroActive, useEnVivoBoot } from './EnVivoBootMotion'
+import { useBootMorphOverlayOpacity } from '@/hooks/useBootMorphDrive'
 
 // ── Canvas circular bars ──────────────────────────────────────────────────────
 const CV = 220   // canvas size
@@ -195,36 +199,43 @@ export function NowPlayingCard({
   const artSrc   = hasRealSong && nowPlaying.albumArt ? nowPlaying.albumArt : '/icons/icon-512.png'
 
   const secrets = usePlayerSecrets(isPlaying)
+  const introActive = useEnVivoIntroActive()
+  const overlayOpacity = useBootMorphOverlayOpacity()
+  const { setLabelArtSrc, artSrc: bootArtSrc } = useEnVivoBoot()
+  const chromeOpacity = introActive
+    ? Math.max(0, Math.min(1, (0.82 - overlayOpacity) / 0.62))
+    : 1
+
+  useEffect(() => {
+    if (immersive && !introActive) setLabelArtSrc(artSrc)
+  }, [immersive, artSrc, setLabelArtSrc, introActive])
+
+  const logoArtSrc = introActive ? bootArtSrc : artSrc
 
   if (immersive && !showZeno) {
     const metaTitle = hasRealSong ? (nowPlaying.title ?? radio.name) : radio.name
     const metaSub = hasRealSong ? (nowPlaying.artist ?? '') : radio.slogan
-    const vinylOuter = CV + 56
 
     return (
       <>
         <style>{`@keyframes spin-slow { to { transform: rotate(360deg) } }`}</style>
-        <div className="relative flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full overflow-hidden">
-          <div className="relative z-[1] flex-1 flex flex-col items-center justify-center min-h-0 py-1 overflow-visible">
-            <div
-              className="relative shrink-0 flex items-center justify-center overflow-visible origin-center scale-[0.68] min-[380px]:scale-[0.74] sm:scale-[0.82]"
-              style={{ width: vinylOuter, height: vinylOuter }}
-            >
-              <div
-                className="absolute inset-0 m-auto rounded-full pointer-events-none"
-                style={{
-                  width: '94%',
-                  height: '94%',
-                  background: `radial-gradient(circle, ${primary}42 0%, ${primary}18 42%, ${secondary}08 58%, transparent 72%)`,
-                  filter: 'blur(22px)',
-                }}
-                aria-hidden
-              />
-              <div
-                className="absolute inset-0 m-auto rounded-full overflow-hidden opacity-45 pointer-events-none"
-                style={{ width: '88%', height: '88%' }}
-                aria-hidden
-              >
+        <div className="envivo-player-immersive relative w-full h-full overflow-visible">
+          <div className="envivo-player-immersive__vinyl relative z-[1] w-full overflow-visible">
+            <div className="envivo-vinyl-center">
+              <EnVivoVinylIntro
+              primary={primary}
+              secondary={secondary}
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              circularBars={
+                <CircularBars
+                  isPlaying={isPlaying}
+                  primary={primary}
+                  secondary={secondary}
+                  analyser={analyser}
+                />
+              }
+              dotGrid={
                 <DotGridVisualizer
                   analyser={analyser}
                   isPlaying={isPlaying}
@@ -232,11 +243,10 @@ export function NowPlayingCard({
                   secondary={secondary}
                   className="w-full h-full"
                 />
-              </div>
-              <VinylDiscFrame size={CV} isPlaying={isPlaying} isLoading={isLoading} accent={primary}>
-                <CircularBars isPlaying={isPlaying} primary={primary} secondary={secondary} analyser={analyser} />
+              }
+              interactiveLogo={
                 <InteractiveLogo
-                  artSrc={artSrc}
+                  artSrc={logoArtSrc}
                   title={title ?? radio.name}
                   frequency={radio.frequency}
                   isPlaying={isPlaying}
@@ -250,18 +260,25 @@ export function NowPlayingCard({
                   onTouchEnd={secrets.onLogoTouchEnd}
                   onTap={secrets.onLogoTap}
                 />
-              </VinylDiscFrame>
+              }
+              />
             </div>
           </div>
 
-          <AnimatePresence mode="wait" initial={false}>
+          <div className="envivo-player-immersive__controls relative z-[2] shrink-0 w-full">
+          <motion.div
+            initial={false}
+            animate={{ opacity: chromeOpacity, y: chromeOpacity < 0.4 ? 12 : 0 }}
+            transition={{ duration: introActive ? 0.12 : 0.45, ease: EASE_OUT, delay: introActive ? 0 : 0.05 }}
+          >
+            <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`${metaTitle}-${metaSub}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="relative z-[2] shrink-0 text-center px-2 pb-2"
+              className="relative z-[2] shrink-0 text-center px-2 pb-0.5 pt-0.5"
             >
               <div className="inline-flex items-center gap-1.5 mb-1">
                 <motion.span
@@ -280,22 +297,23 @@ export function NowPlayingCard({
               ) : null}
             </motion.div>
           </AnimatePresence>
+          </motion.div>
 
-          <div
-            className="relative z-[2] shrink-0 pt-2 pb-1 px-3 w-full min-w-0 max-w-full box-border overflow-hidden border-t border-white/[0.06]"
-            style={{
-              background: 'linear-gradient(180deg, transparent, rgba(7,7,14,0.92) 24%)',
-            }}
+          <motion.div
+            className="relative shrink-0 pt-1 pb-1 px-3 w-full min-w-0 max-w-full box-border overflow-hidden"
+            initial={false}
+            animate={{ opacity: chromeOpacity, y: chromeOpacity < 0.4 ? 16 : 0 }}
+            transition={{ duration: introActive ? 0.12 : 0.5, ease: EASE_OUT, delay: introActive ? 0 : 0.08 }}
           >
             <Waveform
               analyser={analyser}
               isPlaying={isPlaying}
               primary={primary}
               secondary={secondary}
-              height={36}
+              height={28}
             />
 
-            <div className="flex items-center justify-center mt-2 pb-1">
+            <div className="flex items-center justify-center mt-1 pb-0">
               <motion.button
                 whileTap={{ scale: 0.92 }}
                 onClick={() => {
@@ -332,6 +350,7 @@ export function NowPlayingCard({
                 )}
               </motion.button>
             </div>
+          </motion.div>
           </div>
         </div>
       </>
@@ -415,7 +434,7 @@ export function NowPlayingCard({
               {/* Frecuencia decorativa */}
               <div style={{
                 position: 'absolute', bottom: 4, right: 14,
-                fontFamily: 'var(--font-display, sans-serif)',
+        fontFamily: 'var(--font-ui)',
                 fontSize: 72, lineHeight: 1, letterSpacing: -2,
                 color: `${primary}07`, fontWeight: 700,
                 pointerEvents: 'none', userSelect: 'none',
@@ -446,7 +465,7 @@ export function NowPlayingCard({
                 )}
 
                 <InteractiveLogo
-                  artSrc={artSrc}
+                  artSrc={logoArtSrc}
                   title={title ?? radio.name}
                   frequency={radio.frequency}
                   isPlaying={isPlaying}

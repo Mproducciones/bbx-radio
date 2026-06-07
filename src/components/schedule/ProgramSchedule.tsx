@@ -85,13 +85,7 @@ export function ProgramSchedule({
             </motion.span>
           </AnimatePresence>
         </div>
-      ) : (
-        hydrated && (
-          <p className="prog-schedule__embedded-day" aria-live="polite">
-            {selectedFull}
-          </p>
-        )
-      )}
+      ) : null}
 
       <div
         role="tablist"
@@ -99,7 +93,7 @@ export function ProgramSchedule({
         className="prog-schedule__days"
         suppressHydrationWarning
       >
-        {hydrated && DAYS.map(d => {
+        {hydrated && DAYS.map((d, dayIndex) => {
           const isActive = d.key === selectedDay
           const isToday = d.key === today
           return (
@@ -111,6 +105,9 @@ export function ProgramSchedule({
               aria-label={`${d.full}${isToday ? ', hoy' : ''}`}
               onClick={() => setSelectedDay(d.key)}
               whileTap={{ scale: 0.92 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={staggerDelay(dayIndex, 0.04, 0.15)}
               className={cn('prog-schedule__day', isActive && 'is-active')}
             >
               {isToday && !isActive && (

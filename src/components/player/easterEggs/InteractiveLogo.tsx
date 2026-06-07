@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { FrequencyDial, FrequencyBurst } from './FrequencyDial'
 
+import { ENVIVO_VINYL_LABEL_ID } from '@/lib/player/vinylMetrics'
+
 const LR = 65
 const DRIP_COUNT = 5
 const BURST_RINGS = 3
@@ -60,6 +62,7 @@ export function InteractiveLogo({
 
   return (
     <div
+      id={ENVIVO_VINYL_LABEL_ID}
       className="absolute select-none"
       style={{
         width: LR * 2,

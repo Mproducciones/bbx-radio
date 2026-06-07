@@ -1,9 +1,12 @@
 import type { RadioConfig, NowPlaying, Program } from '@/types/radio'
 
+/** Eslogan oficial — reemplaza “La FM de la O'Higgins · 93.3”. */
+export const RADIO_TAGLINE = 'La radio de O\'Higgins'
+
 export const RADIO: RadioConfig = {
   id: 'bienvenida-933',
   name: 'Radio Bienvenida',
-  slogan: 'La FM de la O\'Higgins · 93.3',
+  slogan: RADIO_TAGLINE,
   frequency: '93.3 FM',
   streamUrl: 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida',
   zenoSlug: 'radio-bienvenida-fm',
@@ -17,9 +20,14 @@ export const RADIO: RadioConfig = {
   },
 }
 
+export const RADIO_META = {
+  description: `Escucha ${RADIO.name} ${RADIO.frequency} en vivo desde Rancagua. ${RADIO.slogan}.`,
+  descriptionShort: `Escúchanos en vivo. ${RADIO.slogan}.`,
+} as const
+
 export const NOW_PLAYING: NowPlaying = {
   title: 'En Vivo',
-  artist: 'Radio Bienvenida 93.3 FM',
+  artist: RADIO_TAGLINE,
   isLive: true,
   startedAt: new Date(0),
 }

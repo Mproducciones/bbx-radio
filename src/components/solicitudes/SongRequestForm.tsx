@@ -93,12 +93,9 @@ export function SongRequestForm({
           </motion.div>
           <div className="min-w-0 flex-1">
             <p
-              className={`text-white font-display leading-tight line-clamp-2 ${compact ? 'text-[15px]' : 'text-lg'}`}
+              className={`text-white font-display leading-tight line-clamp-2 ${compact ? 'text-base' : 'text-lg'}`}
             >
               {playful ? '¡Al aire con tu tema!' : 'Pide tu canción'}
-            </p>
-            <p className="text-white/40 text-[10px] truncate">
-              {playful ? 'El locutor lo recibe en vivo' : 'Al aire en tu próximo turno'}
             </p>
           </div>
         </div>

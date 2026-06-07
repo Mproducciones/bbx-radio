@@ -1,7 +1,7 @@
 {
   "name": "Radio Bienvenida 93.3 FM",
   "short_name": "Bienvenida 93.3",
-  "description": "Escucha Radio Bienvenida 93.3 FM en vivo desde Rancagua. Tu radio favorita.",
+  "description": "Escucha Radio Bienvenida 93.3 FM en vivo desde Rancagua. La radio de O'Higgins.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
