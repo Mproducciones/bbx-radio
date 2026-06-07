@@ -261,7 +261,7 @@ export function NowPlayingCard({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="relative z-[2] shrink-0 text-center px-2 pb-2"
+              className="envivo-player-meta relative z-[2] shrink-0 text-center px-2 pb-1"
             >
               <div className="inline-flex items-center gap-1.5 mb-1">
                 <motion.span
@@ -271,22 +271,17 @@ export function NowPlayingCard({
                   transition={{ duration: 1.2, repeat: Infinity }}
                 />
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/45">
-                  {isPlaying ? 'En vivo' : 'Pausado'}
+                  {isPlaying ? 'Al aire ahora' : 'Listo para sonar'}
                 </span>
               </div>
-              <p className="text-lg font-semibold text-white leading-tight line-clamp-1">{metaTitle}</p>
+              <p className="font-display text-xl text-white leading-tight line-clamp-1 tracking-wide">{metaTitle}</p>
               {metaSub ? (
-                <p className="text-sm text-white/45 mt-0.5 line-clamp-1">{metaSub}</p>
+                <p className="text-[13px] text-white/42 mt-1 line-clamp-1">{metaSub}</p>
               ) : null}
             </motion.div>
           </AnimatePresence>
 
-          <div
-            className="relative z-[2] shrink-0 pt-2 pb-1 px-3 w-full min-w-0 max-w-full box-border overflow-hidden border-t border-white/[0.06]"
-            style={{
-              background: 'linear-gradient(180deg, transparent, rgba(7,7,14,0.92) 24%)',
-            }}
-          >
+          <div className="envivo-player-deck relative z-[2] shrink-0 pt-1 pb-0.5 px-2 w-full min-w-0 max-w-full box-border overflow-hidden">
             <Waveform
               analyser={analyser}
               isPlaying={isPlaying}

@@ -15,6 +15,8 @@ interface RadioLocaleBarProps {
   className?: string
   /** Versión compacta para móvil bajo el header del home */
   compact?: boolean
+  /** Sin borde ni caja — integrado al escenario En Vivo */
+  borderless?: boolean
 }
 
 function formatChileTime(timezone: string): string {
@@ -58,6 +60,7 @@ export function RadioLocaleBar({
   accent = 'var(--color-mag-400)',
   className = '',
   compact = false,
+  borderless = false,
 }: RadioLocaleBarProps) {
   const timezone = radio.location?.timezone ?? 'America/Santiago'
   const lat = radio.location?.lat ?? -34.1708
@@ -134,14 +137,20 @@ export function RadioLocaleBar({
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 w-full min-w-0 max-w-full overflow-hidden rounded-xl relative z-[3] box-border ${
-        compact ? 'py-2 px-2.5 text-xs min-h-[2.75rem]' : 'py-2.5 px-3.5 text-sm'
+      className={`flex items-center justify-between gap-2 w-full min-w-0 max-w-full overflow-hidden relative z-[3] box-border ${
+        borderless
+          ? 'radio-locale-bar--borderless py-1.5 px-0.5 text-[11px] min-h-0'
+          : `rounded-xl ${compact ? 'py-2 px-2.5 text-xs min-h-[2.75rem]' : 'py-2.5 px-3.5 text-sm'}`
       } ${className}`}
-      style={{
-        background: 'rgba(7,7,14,0.88)',
-        border: '1px solid rgba(219,137,24,0.22)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
-      }}
+      style={
+        borderless
+          ? undefined
+          : {
+              background: 'rgba(7,7,14,0.88)',
+              border: '1px solid rgba(219,137,24,0.22)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
+            }
+      }
       aria-label={`Ubicación ${placeLabel}, hora y clima`}
     >
       <span

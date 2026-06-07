@@ -2,7 +2,7 @@
 
 import { NowPlayingCard } from '@/components/player/NowPlayingCard'
 import { RadioLocaleBar } from '@/components/player/RadioLocaleBar'
-import { TabContextBar } from '@/components/layout/TabContextBar'
+import { EnVivoMobileStage } from '@/components/player/EnVivoMobileStage'
 import { ClientOnly } from '@/components/ui/ClientOnly'
 import { useRadioPlayerContext } from '@/hooks/RadioPlayerContext'
 import { RADIO } from '@/lib/radioConfig'
@@ -23,30 +23,25 @@ export function HomePageClient() {
       className="relative w-full flex flex-col flex-1 min-h-0 md:min-h-[calc(100dvh-64px)] overflow-x-hidden"
       style={{ zIndex: 1 }}
     >
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border">
-        <TabContextBar className="mb-2" />
-
-        <SponsorDemoBar className="mb-2" />
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 max-w-full pt-[var(--app-content-pad-y)] pb-2 overflow-x-hidden box-border gap-1.5">
+        <SponsorDemoBar />
 
         <PlayTapHint />
 
-        <AnunciateDiscoverBanner className="mb-2" />
-
-        <ClientOnly
-          fallback={
-            <div
-              className="mb-2 h-11 w-full rounded-xl animate-pulse shrink-0"
-              style={{ background: 'rgba(255,255,255,0.05)' }}
-            />
+        <EnVivoMobileStage
+          locale={
+            <ClientOnly
+              fallback={
+                <div className="h-8 w-full rounded-lg animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
+              }
+            >
+              <RadioLocaleBar radio={RADIO} compact borderless />
+            </ClientOnly>
           }
         >
-          <RadioLocaleBar radio={RADIO} compact className="mb-2 shrink-0 relative z-[4]" />
-        </ClientOnly>
-
-        <div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
           <ClientOnly
             fallback={
-              <div className="flex-1 rounded-3xl animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
+              <div className="flex-1 rounded-[1.75rem] animate-pulse min-h-[12rem]" style={{ background: 'rgba(255,255,255,0.03)' }} />
             }
           >
             <NowPlayingCard
@@ -65,24 +60,23 @@ export function HomePageClient() {
               onToggle={toggle}
             />
           </ClientOnly>
-        </div>
+        </EnVivoMobileStage>
+
+        <AnunciateDiscoverBanner className="shrink-0 mx-1" />
 
         {FEATURES.publicidad && (
           <ClientOnly>
-            <EnVivoAdSlot className="mt-2" />
+            <EnVivoAdSlot className="mx-1" />
           </ClientOnly>
         )}
       </div>
 
       {/* Desktop: panel central inmersivo */}
       <div className="hidden md:flex flex-col items-center justify-center min-h-[80vh] px-8 text-center relative overflow-hidden">
-        {/* Gradient background glow */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: 'radial-gradient(ellipse at 50% 35%, rgba(219,137,24,0.1) 0%, rgba(64,185,191,0.04) 40%, transparent 70%)' }} />
 
-        {/* Radio waves SVG animation */}
         <div className="relative mb-10" style={{ width: 120, height: 120 }}>
-          {/* Rings */}
           {[0, 1, 2].map(i => (
             <span
               key={i}
@@ -90,7 +84,6 @@ export function HomePageClient() {
               style={{ color: '#db8918', animationDelay: `${i * 0.65}s` }}
             />
           ))}
-          {/* Center dot */}
           <div
             className="absolute inset-0 m-auto flex items-center justify-center rounded-full"
             style={{
@@ -106,10 +99,7 @@ export function HomePageClient() {
           </div>
         </div>
 
-        {/* Live badge */}
-        <div
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 glass-amber"
-        >
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 glass-amber">
           <span className="w-2 h-2 rounded-full bg-[#db8918] animate-pulse" />
           <span className="text-[#db8918] text-[10px] font-black uppercase tracking-widest">Transmitiendo en vivo</span>
           <span className="ml-2 border-l border-white/10 pl-2">
@@ -124,7 +114,6 @@ export function HomePageClient() {
         <p className="text-[#40B9BF] font-bold text-xl mb-2">{RADIO.frequency}</p>
         <p className="text-white/30 text-sm mb-10">{RADIO.city}</p>
 
-        {/* Quick nav */}
         <div className="flex flex-wrap gap-2 justify-center">
           {[
             { href: '/programacion', label: '📋 Programación', accent: '#db8918' },
