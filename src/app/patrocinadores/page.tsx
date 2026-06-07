@@ -13,23 +13,23 @@ export default async function PatrocinadoresPage() {
   const sponsors = await getSponsors()
 
   return (
-    <AppMenuScreen scroll className="md:max-w-4xl">
-      <div className="py-4 md:py-8">
+    <AppMenuScreen scroll className="patrocinadores-route md:max-w-4xl">
+      <div className="patrocinadores-hero rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-5 md:py-8 mb-4">
         <p className="text-[#40B9BF] text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Publicidad</p>
         <h1 className="font-display text-3xl md:text-4xl text-white leading-none mb-2">Patrocinadores</h1>
-        <p className="text-white/45 text-sm mb-6 max-w-lg">
-          Comercios y marcas con campaña activa en la app y en la radio. ¿Quieres aparecer aquí?
+        <p className="text-white/45 text-sm max-w-lg">
+          Marcas que suenan en la 93.3 y en la app. ¿Quieres que tu negocio aparezca aquí?
         </p>
-        <SponsorsGrid initialSponsors={sponsors} />
-        <div className="mt-6 text-center">
-          <Link
-            href="/anunciate"
-            className="inline-flex min-h-[44px] items-center px-6 py-3 rounded-xl text-sm font-bold text-[#07070e]"
-            style={{ background: 'linear-gradient(135deg, #db8918, #e8a840)' }}
-          >
-            Ver planes de publicidad
-          </Link>
-        </div>
+      </div>
+      <SponsorsGrid initialSponsors={sponsors} />
+      <div className="mt-6 text-center pb-2">
+        <Link
+          href="/anunciate"
+          className="inline-flex min-h-[44px] items-center px-6 py-3 rounded-xl text-sm font-bold text-[#07070e]"
+          style={{ background: 'linear-gradient(135deg, #db8918, #e8a840)' }}
+        >
+          Ver planes de publicidad
+        </Link>
       </div>
     </AppMenuScreen>
   )

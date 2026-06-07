@@ -2024,7 +2024,7 @@ body {
 /* ── Participa — encaje en pantalla, formas orgánicas ─────────────────── */
 @media (max-width: 767px) {
   .participa-route {
-    padding-top: max(12px, var(--app-safe-top), var(--app-content-pad-y));
+    padding-top: 0;
   }
 }
 
@@ -2391,6 +2391,24 @@ body {
   border-radius: 9999px;
   background: var(--color-mag-400);
   animation: pulse 1.4s ease-in-out infinite;
+}
+
+.tab-context-bar {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.tab-context-bar__live-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-mag-400);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-mag-400) 25%, transparent),
+    0 0 12px color-mix(in srgb, var(--color-mag-400) 55%, transparent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.scroll-tab-shell__body {
+  min-height: 0;
 }
 
 .nav-more-sheet__backdrop {
@@ -2985,7 +3003,7 @@ body {
 /* ── Saludos al aire — experiencia inmersiva ───────────────────────────── */
 @media (max-width: 767px) {
   .saludos-route {
-    padding-top: max(10px, var(--app-safe-top), var(--app-content-pad-y));
+    padding-top: 0;
   }
 }
 

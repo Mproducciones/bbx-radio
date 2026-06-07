@@ -18,7 +18,7 @@ export default async function ProgramacionPage() {
   const initialDay = getTodayInTimezone('America/Santiago')
 
   return (
-    <AppMenuScreen scroll className="programacion-route w-full min-w-0">
+    <AppMenuScreen scroll contextBar className="programacion-route w-full min-w-0">
       <SectionHeader compact title="Programación" />
       <p className="programacion-route__sub shrink-0">Horarios de la semana · programa en vivo resaltado</p>
       <div className="programacion-route__content flex flex-col gap-1.5 md:gap-5 md:min-h-0 md:flex-1 md:flex md:flex-col">
@@ -30,7 +30,7 @@ export default async function ProgramacionPage() {
           hideHeader
           className="max-md:shrink-0"
         />
-        <RotatingBanner position="bottom" compact className="shrink-0 hidden md:block" />
+        <RotatingBanner position="bottom" compact className="shrink-0" />
       </div>
     </AppMenuScreen>
   )

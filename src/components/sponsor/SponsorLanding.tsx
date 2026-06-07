@@ -186,7 +186,7 @@ export function SponsorLanding({ initialListeners = 0 }: { initialListeners?: nu
   const stats = buildAnunciateHeroStats(initialListeners)
 
   return (
-    <div className="anunciate-route app-gutter-x relative w-full min-w-0 max-w-full overflow-x-hidden pb-4">
+    <div className="anunciate-route relative w-full min-w-0 max-w-full overflow-x-hidden pb-4">
 
       <motion.div
         initial={{ opacity: 0, y: -10 }}

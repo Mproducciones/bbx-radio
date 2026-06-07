@@ -22,7 +22,7 @@ export function PlayTapHint() {
           aria-label="Toca para escuchar la radio en vivo"
         >
           <span className="play-tap-hint__dot" aria-hidden />
-          <span className="play-tap-hint__text">Toca aquí para escuchar en vivo</span>
+          <span className="play-tap-hint__text">Toca y suena la 93.3 — estás a un click del aire</span>
         </motion.button>
       )}
     </AnimatePresence>

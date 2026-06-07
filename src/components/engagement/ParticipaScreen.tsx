@@ -50,7 +50,7 @@ export function ParticipaScreen() {
   }
 
   return (
-    <AppMenuScreen scroll className="participa-route w-full min-w-0 max-w-full">
+    <AppMenuScreen scroll contextBar className="participa-route w-full min-w-0 max-w-full">
       <div className="participa-shell relative w-full min-w-0">
         <ParticipaHero />
         <SponsorDemoBar />

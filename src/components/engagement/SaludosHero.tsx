@@ -3,13 +3,8 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { RADIO } from '@/lib/radioConfig'
+import { SALUDOS_HOOKS } from '@/lib/saludosCopy'
 import { EASE_OUT } from '@/lib/motion/framer'
-
-const HOOKS = [
-  'Tu mensaje llega directo a cabina',
-  'Saludos en vivo · FM 93.3',
-  'El locutor lo lee al aire',
-]
 
 function WaveBars() {
   return (
@@ -30,7 +25,7 @@ export function SaludosHero() {
   const [idx, setIdx] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % HOOKS.length), 4000)
+    const t = setInterval(() => setIdx(i => (i + 1) % SALUDOS_HOOKS.length), 4000)
     return () => clearInterval(t)
   }, [])
 
@@ -66,7 +61,7 @@ export function SaludosHero() {
               transition={{ duration: 0.35, ease: EASE_OUT }}
               className="text-[11px] text-white/45 leading-snug"
             >
-              {HOOKS[idx]}
+              {SALUDOS_HOOKS[idx]}
             </motion.p>
           </AnimatePresence>
         </div>

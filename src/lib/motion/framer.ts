@@ -17,6 +17,15 @@ export const fadeIn = {
   exit: { opacity: 0 },
 }
 
+/** Transición suave entre tabs del bottom nav (sin slide horizontal). */
+export const tabCrossfadeTransition = { duration: 0.22, ease: EASE_OUT }
+
+export const tabCrossfade = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+}
+
 export const scaleIn = {
   initial: { opacity: 0, scale: 0.92 },
   animate: { opacity: 1, scale: 1 },

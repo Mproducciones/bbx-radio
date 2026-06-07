@@ -14,7 +14,7 @@ const SaludoForm = dynamic(
 
 export function SaludosScreen() {
   return (
-    <AppMenuScreen scroll className="saludos-route w-full min-w-0 max-w-full">
+    <AppMenuScreen scroll contextBar className="saludos-route w-full min-w-0 max-w-full">
       <div className="saludos-shell w-full min-w-0">
         <SaludosHero />
         <PremiumAdInline />

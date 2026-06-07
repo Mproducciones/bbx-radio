@@ -3,7 +3,7 @@ import type { RadioConfig, NowPlaying, Program } from '@/types/radio'
 export const RADIO: RadioConfig = {
   id: 'bienvenida-933',
   name: 'Radio Bienvenida',
-  slogan: 'Tu radio · 93.3 FM',
+  slogan: 'La FM de la O\'Higgins · 93.3',
   frequency: '93.3 FM',
   streamUrl: 'https://sonicstream-puntual.grupozgh.cl/8180/bienenida',
   zenoSlug: 'radio-bienvenida-fm',

@@ -27,7 +27,7 @@ export function AnunciateDiscoverBanner({ className }: { className?: string }) {
         </span>
       </span>
       <span className="anunciate-discover__cta shrink-0 text-[10px] font-bold uppercase tracking-wide">
-        Ver
+          Ver planes
       </span>
     </Link>
   )

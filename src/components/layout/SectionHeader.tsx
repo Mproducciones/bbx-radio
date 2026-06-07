@@ -9,7 +9,7 @@ interface SectionHeaderProps {
   accent?: string
 }
 
-export function SectionHeader({ title, compact, accent = '#db8918' }: SectionHeaderProps) {
+export function SectionHeader({ title, compact, accent = 'var(--color-mag-400)' }: SectionHeaderProps) {
   return (
     <header className={compact ? 'mb-3 shrink-0 md:mb-5' : 'mb-6'}>
       <motion.h1
