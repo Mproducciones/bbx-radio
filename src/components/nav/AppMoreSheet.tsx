@@ -34,7 +34,7 @@ export function AppMoreSheet({ open, onClose }: AppMoreSheetProps) {
             <motion.button
               type="button"
               aria-label="Cerrar menú"
-              className="nav-more-sheet__backdrop fixed inset-x-0 top-0 z-[1090] bg-black/70 backdrop-blur-sm"
+              className="nav-more-sheet__backdrop fixed inset-x-0 top-0 z-[1090]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
