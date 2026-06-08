@@ -84,36 +84,38 @@ export default function AdminPage() {
         title="Radio Bienvenida"
         subtitle="Publicidad, en vivo y contenido · 93.3 FM"
       >
-        <form onSubmit={onLogin} className="flex flex-col gap-5 p-7 sm:p-8">
-          <label className="flex flex-col gap-1.5">
-            <span className="admin-eyebrow">Usuario</span>
+        <form onSubmit={onLogin} className="admin-login-fields">
+          <label className="admin-login-field">
+            <span className="admin-login-label">Usuario</span>
             <input
               value={username}
               onChange={e => setUsername(e.target.value)}
               autoComplete="username"
-              className="admin-input"
+              placeholder="tu@email.com"
+              className="admin-login-input"
               required
               disabled={loginState === 'loading'}
             />
           </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="admin-eyebrow">Contraseña</span>
+          <label className="admin-login-field">
+            <span className="admin-login-label">Contraseña</span>
             <input
               value={password}
               onChange={e => setPassword(e.target.value)}
               type="password"
               autoComplete="current-password"
-              className="admin-input"
+              placeholder="••••••••••••"
+              className="admin-login-input"
               required
               disabled={loginState === 'loading'}
             />
           </label>
           {loginState === 'error' && loginError && (
-            <p className="text-red-400 text-sm text-center bg-red-500/10 rounded-xl py-3 px-3 border border-red-500/20">
+            <p className="admin-login-error">
               {loginError}
             </p>
           )}
-          <button type="submit" disabled={loginState === 'loading'} className="admin-btn-primary mt-1">
+          <button type="submit" disabled={loginState === 'loading'} className="admin-login-submit">
             {loginState === 'loading' ? 'Verificando…' : 'Entrar al panel'}
           </button>
         </form>

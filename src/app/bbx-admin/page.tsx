@@ -70,37 +70,39 @@ export default function BbxAdminPage() {
         accentBar="bbx"
         footer="Acceso restringido · No compartir este enlace"
       >
-        <form onSubmit={onLogin} className="flex flex-col gap-4 p-6">
-          <label className="flex flex-col gap-1.5">
-            <span className="admin-eyebrow">Usuario BBX</span>
+        <form onSubmit={onLogin} className="admin-login-fields">
+          <label className="admin-login-field">
+            <span className="admin-login-label">Usuario BBX</span>
             <input
               value={username}
               onChange={e => setUsername(e.target.value)}
               autoComplete="username"
-              className="admin-input"
+              placeholder="usuario bbx"
+              className="admin-login-input"
               required
               disabled={loginState === 'loading'}
             />
           </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="admin-eyebrow">Contraseña</span>
+          <label className="admin-login-field">
+            <span className="admin-login-label">Contraseña</span>
             <input
               value={password}
               onChange={e => setPassword(e.target.value)}
               type="password"
               autoComplete="current-password"
-              className="admin-input"
+              placeholder="••••••••••••"
+              className="admin-login-input"
               required
               disabled={loginState === 'loading'}
             />
           </label>
           {loginState === 'error' && loginError && (
-            <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-lg py-2 border border-red-500/20">
+            <p className="admin-login-error">
               {loginError}
             </p>
           )}
-          <button type="submit" disabled={loginState === 'loading'} className="admin-btn-primary mt-1">
-            {loginState === 'loading' ? 'Verificando…' : 'Entrar a suscripciones'}
+          <button type="submit" disabled={loginState === 'loading'} className="admin-login-submit">
+            {loginState === 'loading' ? 'Verificando…' : 'Entrar'}
           </button>
         </form>
       </AdminLoginScreen>
