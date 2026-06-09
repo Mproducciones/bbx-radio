@@ -1,15 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  AD_DURATION_PRESETS,
-  AD_MIN_STANDARD_DAYS,
-  computeCampaignDates,
-  formatDateCL,
-  getDurationPreset,
-  isShortCampaign,
-  type AdDurationPresetId,
-} from '@/lib/adCampaignDuration'
+import { AD_MIN_STANDARD_DAYS, formatDateCL, isShortCampaign } from '@/lib/adCampaignDuration'
 import {
   AD_PLAN_RULES,
   AD_TIPO_LABELS,
@@ -26,11 +18,7 @@ import {
   type ClientAdGroup,
 } from '@/lib/groupAdsByClient'
 import type { SponsorPlanId } from '@/lib/sponsorPlans'
-import {
-  studioCreateDocument,
-  studioEditDocument,
-  studioStructurePath,
-} from '@/lib/studioStructure'
+import { AdminCampaignForm } from '@/components/admin/AdminCampaignForm'
 import {
   AdminBadge,
   AdminCard,
@@ -43,7 +31,10 @@ import {
   AdminSpinner,
 } from './adminUi'
 
-const STUDIO_PUBLICIDAD = studioStructurePath('publicidad')
+type FormState =
+  | { mode: 'create'; plan: SponsorPlanId }
+  | { mode: 'edit'; ad: AdminAdRow }
+
 const PLAN_COLORS: Record<SponsorPlanId, string> = {
   basico: '#40B9BF',
   premium: '#db8918',
@@ -91,144 +82,16 @@ function PlanActionButton({
   )
 }
 
-function NewCampaignWizard({
-  plan,
-  onClose,
-}: {
-  plan: SponsorPlanId
-  onClose: () => void
-}) {
-  const rule = getAdPlanRule(plan)
-  const color = PLAN_COLORS[plan]
-  const [duration, setDuration] = useState<AdDurationPresetId>('mes_estandar')
-  const [tipo, setTipo] = useState<AdBannerTipo>(rule.tiposRecomendados[0])
-  const [copied, setCopied] = useState(false)
-
-  const dates = useMemo(() => computeCampaignDates(duration), [duration])
-  const preset = getDurationPreset(duration)
-
-  async function copyBrief() {
-    const lines = [
-      `Plan: ${rule.nombre}`,
-      `Tipo banner: ${AD_TIPO_LABELS[tipo]}`,
-      `Inicio: ${formatDateCL(dates.inicio)}`,
-      `Fin: ${formatDateCL(dates.fin)} (${dates.days} días)`,
-      `Prioridad sugerida: ${rule.prioridadSugerida.min}–${rule.prioridadSugerida.max}`,
-      preset.esCorta ? '⚠ Campaña corta — confirmar valor con ventas' : 'Duración estándar (mes)',
-      `FM: ${rule.spotsFm}`,
-      ...(plan === 'empresarial'
-        ? ['Studio: plan Empresarial, prioridad ≥ 10, activar “Exclusivo en app”', 'Verificar /, /participa, /programacion, /anunciate']
-        : []),
-    ]
-    await navigator.clipboard.writeText(lines.join('\n'))
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  return (
-    <div
-      className="admin-callout space-y-4"
-      style={{ background: `${color}0c`, borderColor: `${color}40` }}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-base font-bold text-white">Nueva campaña · {rule.nombre}</p>
-        <button type="button" onClick={onClose} className="admin-btn-ghost !min-h-0 !py-2 !px-3">
-          Cerrar
-        </button>
-      </div>
-
-      <div>
-        <p className="admin-label mb-2">Duración</p>
-        <div className="flex flex-wrap gap-2">
-          {AD_DURATION_PRESETS.map(p => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setDuration(p.id)}
-              className="admin-chip transition-colors"
-              style={{
-                background: duration === p.id ? `${color}30` : 'rgba(255,255,255,0.05)',
-                color: duration === p.id ? color : 'rgba(255,255,255,0.55)',
-                border: duration === p.id ? `1px solid ${color}55` : '1px solid transparent',
-              }}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        <p className="admin-hint mt-2">
-          {formatDateCL(dates.inicio)} → {formatDateCL(dates.fin)}
-          {dates.esCorta && (
-            <span className="text-[#FFB300]"> · Menos de {AD_MIN_STANDARD_DAYS} días (campaña corta)</span>
-          )}
-        </p>
-        <p className="admin-hint mt-1 opacity-80">{preset.nota}</p>
-      </div>
-
-      <div>
-        <p className="admin-label mb-2">Tipo en la app</p>
-        <div className="flex flex-wrap gap-2">
-          {rule.allowedTipos.map(t => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTipo(t)}
-              className="admin-chip"
-              style={{
-                background: tipo === t ? `${color}28` : 'rgba(255,255,255,0.04)',
-                color: tipo === t ? color : 'rgba(255,255,255,0.5)',
-                border: `1px solid ${tipo === t ? `${color}50` : 'rgba(255,255,255,0.06)'}`,
-              }}
-            >
-              {TIPO_SHORT[t]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {plan === 'empresarial' && (
-        <div className="rounded-xl p-3 space-y-1.5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="text-xs font-bold text-white/90">Checklist al publicar (Empresarial)</p>
-          <ul className="text-xs text-white/55 space-y-1 list-disc pl-4">
-            {rule.gestionApp.map((line, i) => (
-              <li key={i}>{line}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-2.5 pt-1">
-        <button type="button" onClick={copyBrief} className="admin-btn-ghost">
-          {copied ? 'Copiado ✓' : 'Copiar datos'}
-        </button>
-        <a
-          href={studioCreateDocument('publicidad')}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="admin-btn-accent"
-          style={{ background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 75%, #fff))`, boxShadow: `0 8px 24px -8px ${color}55` }}
-        >
-          Crear campaña (editor)
-        </a>
-        <a
-          href={STUDIO_PUBLICIDAD}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="admin-btn-ghost !min-h-0 self-center"
-        >
-          Ver listado
-        </a>
-      </div>
-    </div>
-  )
-}
-
 function ClientCard({
   group,
   metrics,
+  onEdit,
+  onToggleActivo,
 }: {
   group: ClientAdGroup
   metrics: Map<string, AdMetric>
+  onEdit: (ad: AdminAdRow) => void
+  onToggleActivo: (id: string, activo: boolean) => void
 }) {
   const color = group.dominantPlan ? PLAN_COLORS[group.dominantPlan] : '#db8918'
 
@@ -306,15 +169,23 @@ function ClientCard({
                   </span>
                 )}
               </div>
-              <div className="flex gap-1.5 shrink-0">
-                <a
-                  href={studioEditDocument('publicidad', ad._id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div className="flex gap-1.5 shrink-0 flex-wrap justify-end">
+                <button
+                  type="button"
+                  onClick={() => onEdit(ad)}
                   className="admin-btn-ghost !min-h-0 !py-2"
                 >
                   Editar
-                </a>
+                </button>
+                {st !== 'inactive' || ad.activo ? (
+                  <button
+                    type="button"
+                    onClick={() => onToggleActivo(ad._id, !ad.activo)}
+                    className="admin-btn-ghost !min-h-0 !py-2"
+                  >
+                    {ad.activo ? 'Pausar' : 'Activar'}
+                  </button>
+                ) : null}
                 <span
                   className="admin-chip uppercase !min-h-0"
                   style={{
@@ -340,22 +211,45 @@ export function CommercialAdsDashboard() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<FilterKey>('activos')
   const [newPlan, setNewPlan] = useState<SponsorPlanId | null>(null)
+  const [form, setForm] = useState<FormState | null>(null)
+  const [writeEnabled, setWriteEnabled] = useState(false)
 
   const load = useCallback(() => {
     setLoading(true)
     const month = new Date().toISOString().slice(0, 7)
     Promise.all([
-      fetch('/api/admin/ads', { credentials: 'include' }).then(r => (r.ok ? r.json() : [])),
+      fetch('/api/admin/ads', { credentials: 'include' }).then(r => (r.ok ? r.json() : { ads: [] })),
       fetch(`/api/admin/reports?scope=ads&month=${month}`, { credentials: 'include' }).then(r =>
         r.ok ? r.json() : { byAd: [] },
       ),
     ])
       .then(([adsData, report]) => {
-        setAds(adsData)
+        setAds(Array.isArray(adsData) ? adsData : (adsData.ads ?? []))
+        setWriteEnabled(Boolean(adsData.writeEnabled))
         setMetrics(report.byAd ?? [])
       })
       .finally(() => setLoading(false))
   }, [])
+
+  async function toggleActivo(id: string, activo: boolean) {
+    const res = await fetch('/api/admin/ads', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ _id: id, activo }),
+    })
+    if (res.ok) load()
+  }
+
+  function openCreate(plan: SponsorPlanId) {
+    setForm({ mode: 'create', plan })
+    setNewPlan(plan)
+  }
+
+  function closeForm() {
+    setForm(null)
+    setNewPlan(null)
+  }
 
   useEffect(() => {
     load()
@@ -395,9 +289,9 @@ export function CommercialAdsDashboard() {
           </>
         }
         action={
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <AdminGhostButton onClick={load}>Actualizar</AdminGhostButton>
-            <AdminGhostButton href={STUDIO_PUBLICIDAD}>Editor campañas</AdminGhostButton>
+            <AdminGhostButton onClick={() => openCreate('basico')}>+ Nueva campaña</AdminGhostButton>
           </div>
         }
       />
@@ -423,20 +317,36 @@ export function CommercialAdsDashboard() {
           ]}
         />
 
-        <div>
-          <p className="admin-label mb-3">Nueva campaña (elige plan)</p>
-          <div className="flex flex-wrap gap-2">
-            {AD_PLAN_RULES.map(r => (
-              <PlanActionButton
-                key={r.id}
-                plan={r.id}
-                active={newPlan === r.id}
-                onClick={() => setNewPlan(prev => (prev === r.id ? null : r.id))}
-              />
-            ))}
+        {!writeEnabled && (
+          <p className="text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2.5">
+            Para guardar campañas desde aquí, agrega <strong>SANITY_API_TOKEN</strong> en Vercel y redeploy.
+          </p>
+        )}
+
+        {form ? (
+          <AdminCampaignForm
+            mode={form.mode}
+            plan={form.mode === 'create' ? form.plan : (form.ad.planContratado ?? 'basico')}
+            initial={form.mode === 'edit' ? form.ad : undefined}
+            writeEnabled={writeEnabled}
+            onSuccess={() => { closeForm(); load() }}
+            onCancel={closeForm}
+          />
+        ) : (
+          <div>
+            <p className="admin-label mb-3">Nueva campaña (elige plan)</p>
+            <div className="flex flex-wrap gap-2">
+              {AD_PLAN_RULES.map(r => (
+                <PlanActionButton
+                  key={r.id}
+                  plan={r.id}
+                  active={newPlan === r.id}
+                  onClick={() => openCreate(r.id)}
+                />
+              ))}
+            </div>
           </div>
-          {newPlan && <div className="mt-3"><NewCampaignWizard plan={newPlan} onClose={() => setNewPlan(null)} /></div>}
-        </div>
+        )}
 
         <div>
           <p className="admin-label mb-3">
@@ -449,7 +359,7 @@ export function CommercialAdsDashboard() {
               <p className="admin-body">No hay clientes en este filtro.</p>
               <button
                 type="button"
-                onClick={() => setNewPlan('basico')}
+                onClick={() => openCreate('basico')}
                 className="mt-4 text-sm font-bold text-[#db8918] underline"
               >
                 Crear primera campaña
@@ -458,7 +368,13 @@ export function CommercialAdsDashboard() {
           ) : (
             <div className="space-y-3 max-h-[min(32rem,55vh)] overflow-y-auto pr-0.5">
               {groups.map(g => (
-                <ClientCard key={g.clientKey} group={g} metrics={metricsMap} />
+                <ClientCard
+                  key={g.clientKey}
+                  group={g}
+                  metrics={metricsMap}
+                  onEdit={ad => setForm({ mode: 'edit', ad })}
+                  onToggleActivo={toggleActivo}
+                />
               ))}
             </div>
           )}
@@ -469,7 +385,7 @@ export function CommercialAdsDashboard() {
           <ul className="mt-2 space-y-1 list-disc list-inside">
             <li>Estándar de venta: <strong className="text-white/60">mínimo ~{AD_MIN_STANDARD_DAYS} días</strong> (1 mes).</li>
             <li>Campañas de 3, 7 o 15 días: usar botones de duración corta y confirmar precio con ventas.</li>
-            <li>En Studio: fechas inicio/fin controlan cuándo se ve en la app (no el plan solo).</li>
+            <li>Las fechas inicio/fin controlan cuándo se ve en la app (no el plan solo).</li>
           </ul>
         </details>
       </div>

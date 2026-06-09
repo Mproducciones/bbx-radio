@@ -8,12 +8,17 @@ export type AdminAdRow = {
   cliente?: string
   tipo: string
   planContratado?: SponsorPlanId
+  duracionCampana?: string
   exclusivoApp?: boolean
   activo: boolean
   fechaInicio: string
   fechaFin: string
   prioridad: number
   colorAccent?: string
+  tagline?: string
+  cta?: string
+  imagenUrl?: string
+  enlace?: string
 }
 
 function isExpired(fechaFin: string) {

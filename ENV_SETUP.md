@@ -79,8 +79,11 @@ Redeploy. En `/admin` → **Comunicación** debe decir “listo” (sin banner r
 ```bash
 NEXT_PUBLIC_SANITY_PROJECT_ID=nmwhp66x
 NEXT_PUBLIC_SANITY_DATASET=production
-# SANITY_API_TOKEN=   # opcional, para escritura desde scripts
+# Token con permiso Editor — campañas desde /admin → Comercial (sin abrir Studio)
+SANITY_API_TOKEN=
 ```
+
+Crear token: [sanity.io/manage](https://sanity.io/manage) → proyecto → **API** → **Tokens** → Add API token → **Editor** → copiar a Vercel Production y redeploy.
 
 ## Radio Streams
 

@@ -52,7 +52,7 @@ export function AdsPanel() {
       fetch('/api/admin/ads', { credentials: 'include' }).then(r => r.ok ? r.json() : []),
       fetch(`/api/admin/reports?scope=ads&month=${month}`, { credentials: 'include' }).then(r => r.ok ? r.json() : { byAd: [] }),
     ]).then(([adsData, adsReport]) => {
-      setAds(adsData)
+      setAds(Array.isArray(adsData) ? adsData : (adsData.ads ?? []))
       setMetrics(adsReport.byAd ?? [])
     }).finally(() => setLoading(false))
   }, [])
